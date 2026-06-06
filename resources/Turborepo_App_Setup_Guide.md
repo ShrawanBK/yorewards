@@ -11,11 +11,13 @@ yorewards/
 ├── apps/
 │   ├── web/          → port 3000
 │   ├── docs/         → port 3001
-│   └── customer/     → port 3002
+│   ├── customer/     → port 3002
+│   └── merchant/     → port 3003
 ├── packages/
 │   ├── ui/                   → shared React components
 │   ├── eslint-config/        → shared ESLint rules
-│   └── typescript-config/    → shared tsconfig bases
+│   ├── typescript-config/    → shared tsconfig bases
+│   └── tailwind-config/      → shared Tailwind theme + PostCSS
 ├── package.json              → root scripts (turbo run …)
 ├── pnpm-workspace.yaml       → workspace definition
 ├── pnpm-lock.yaml            → single lockfile for the whole repo
@@ -30,6 +32,18 @@ Apps go under `apps/`. Root `pnpm-workspace.yaml` already includes `apps/*` — 
 
 ## Setup checklist
 
+### 0. Create the app
+
+From the repo root:
+
+```sh
+pnpm create next-app apps/<app> --typescript --tailwind --eslint --app --no-src-dir
+```
+
+Replace `<app>` with the app name (e.g. `admin`). Use the next free port when editing `package.json` in step 2.
+
+Then continue with the steps below to wire it into the monorepo.
+
 ### 1. Clean up standalone artifacts
 
 Delete from the app folder if present:
@@ -38,7 +52,14 @@ Delete from the app folder if present:
 - `pnpm-workspace.yaml`
 - `node_modules/`
 
+Also remove from `package.json` if scaffolded by `create-next-app`:
+
+- `eslint-config-next` (replaced by `@repo/eslint-config`)
+- `tailwindcss`, `@tailwindcss/postcss` (provided by `@repo/tailwind-config`)
+
 ### 2. `package.json`
+
+Add `"type": "module"`.
 
 **Scripts** (names must match `turbo.json`):
 
@@ -54,9 +75,28 @@ Delete from the app folder if present:
 }
 ```
 
-Assign the next free port: `web` 3000, `docs` 3001, `customer` 3002, then 3003+.
+**Ports:** `web` 3000, `docs` 3001, `customer` 3002, `merchant` 3003, then 3004+.
 
 **Workspace dependencies** (add manually before install):
+
+Tailwind apps (`customer`, `merchant`, etc.):
+
+```json
+{
+  "dependencies": {
+    "@repo/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/tailwind-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "eslint": "^9",
+    "typescript": "^5"
+  }
+}
+```
+
+Non-Tailwind apps (`web`, `docs`):
 
 ```json
 {
@@ -77,9 +117,10 @@ Or from the repo root:
 ```sh
 pnpm add @repo/ui --filter <app>
 pnpm add -D @repo/eslint-config @repo/typescript-config --filter <app>
+pnpm add -D @repo/tailwind-config --filter <app>   # Tailwind apps only
 ```
 
-App-specific deps (e.g. Tailwind) stay in that app's `package.json` only. Version numbers across apps do not need to match.
+Keep `eslint` and `typescript` in each app (local runners). Do **not** add `eslint-config-next`. Version numbers across apps do not need to match.
 
 ### 3. `tsconfig.json`
 
@@ -114,7 +155,29 @@ import { nextJsConfig } from "@repo/eslint-config/next-js";
 export default nextJsConfig;
 ```
 
-### 5. Install and verify
+### 5. Tailwind apps only — `postcss.config.mjs` + `tailwind.config.ts`
+
+`postcss.config.mjs`:
+
+```js
+export { default } from "@repo/tailwind-config/postcss";
+```
+
+`tailwind.config.ts`:
+
+```ts
+import sharedConfig from "@repo/tailwind-config";
+
+export default {
+  presets: [sharedConfig],
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
+  ],
+};
+```
+
+### 6. Install and verify
 
 From the repo root:
 
@@ -135,6 +198,9 @@ Workspace packages symlink to `apps/<app>/node_modules/@repo/`, not the repo roo
 ## Commands
 
 ```sh
+# Create a new Next.js app
+pnpm create next-app apps/<app> --typescript --tailwind --eslint --app --no-src-dir
+
 # All apps
 pnpm dev | pnpm build | pnpm lint | pnpm check-types
 

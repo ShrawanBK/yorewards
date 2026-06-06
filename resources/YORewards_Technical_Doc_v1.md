@@ -2,10 +2,28 @@
 
 ### Full Stack Architecture · Monorepo Structure · Implementation Guide
 
-> **Version:** 1.0 · **Date:** May 2026 · **Audience:** Development team / Cursor agent  
-> **Stack:** Next.js 14 · TypeScript · Supabase · Turborepo  
+> **Version:** 1.1 · **Date:** June 2026 · **Audience:** Development team / Cursor agent  
+> **Stack:** Next.js 16 (App Router) · TypeScript · Supabase · Turborepo  
 > **Architecture:** Turborepo monorepo — 3 separate Next.js apps  
 > **Hosting:** Vercel (3 deployments) · Supabase EU West (Frankfurt)
+
+---
+
+## Implementation Status
+
+| Area                                                                      | Status                                                                 |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Turborepo + pnpm workspace                                                | ✅ Done                                                                |
+| Customer PWA — `apps/customer`                                            | ✅ Scaffolded — local `localhost:3000` · prod `app.yorewards.com`      |
+| Merchant Dashboard — `apps/merchant`                                      | ✅ Scaffolded — local `localhost:3001` · prod `merchant.yorewards.com` |
+| Super Admin — `apps/admin`                                                | ✅ Scaffolded — local `localhost:3002` · prod `admin.yorewards.com`    |
+| `@repo/eslint-config`, `@repo/typescript-config`, `@repo/tailwind-config` | ✅ Done — brand colors live in `tailwind-config`                       |
+| `@repo/ui`                                                                | ✅ Scaffolded — shadcn components not yet added                        |
+| `@repo/supabase`, `@repo/utils`                                           | ⏳ Day 1 (planned)                                                     |
+| `supabase/` folder (migrations + RLS)                                     | ⏳ Day 1 (future reference — not in repo yet)                          |
+| shadcn/ui, next-intl, app routes, auth, DB                                | ⏳ Days 1–2                                                            |
+
+**Next up (Day 1 remainder):** Supabase project, schema + RLS, `@repo/supabase` package, shadcn/ui, `next-intl` scaffold, env vars, Vercel deployments.
 
 ---
 
@@ -26,7 +44,7 @@
 
 ## 1. Architecture Overview
 
-YORewards is a **Turborepo monorepo** containing three independent Next.js 14 applications sharing a common Supabase backend, a shared UI component library, shared TypeScript types, and shared utility functions.
+YORewards is a **Turborepo monorepo** containing three independent Next.js applications sharing a common Supabase backend, a shared UI component library, shared TypeScript types, and shared utility functions.
 
 > 💡 **Why Turborepo?** Clean separation between customer, merchant, and admin codebases. No merchant code ships to the customer app. Shared packages eliminate duplication. Three separate Vercel deployments from one Git repo. Scales cleanly into v2 without restructuring.
 
@@ -34,21 +52,25 @@ YORewards is a **Turborepo monorepo** containing three independent Next.js 14 ap
 
 ```
 yorewards/
-├── supabase/                    ← Supabase CLI config + migrations (version control for DB)
+├── supabase/                    ← Day 1: CLI config + migrations
 │   ├── config.toml
 │   ├── migrations/
 │   └── seed.sql
 ├── apps/
-│   ├── customer/                → app.yorewards.com        (Customer PWA)
-│   ├── merchant/                → merchant.yorewards.com   (Merchant Dashboard)
-│   └── admin/                   → admin.yorewards.com      (Super Admin)
+│   ├── customer/                → app.yorewards.com   (local: port 3000)
+│   ├── merchant/                → merchant.yorewards.com (local: port 3001)
+│   └── admin/                   → admin.yorewards.com (local: port 3002)
 ├── packages/
-│   ├── ui/                      → Shared shadcn/ui components
-│   ├── supabase/                → Supabase client + generated DB types + query functions
-│   ├── utils/                   → Shared helpers (formatters, validators, OTP)
-│   └── config/                  → Shared Tailwind + TypeScript configs
+│   ├── ui/                      → @repo/ui — shared shadcn/ui components
+│   ├── eslint-config/           → @repo/eslint-config
+│   ├── typescript-config/       → @repo/typescript-config
+│   ├── tailwind-config/         → @repo/tailwind-config — brand colors + PostCSS
+│   ├── supabase/                → @repo/supabase — Day 1: client, types, queries
+│   └── utils/                   → @repo/utils — Day 1: phone, currency, OTP helpers
 ├── turbo.json
-├── package.json                 → Root workspace config (pnpm)
+├── pnpm-workspace.yaml
+├── package.json                 → Root scripts delegate via turbo run
+├── resources/                   → PRD, this doc, Turborepo setup guide
 └── .env.example                 → All env vars documented — never commit real values
 ```
 
@@ -80,11 +102,12 @@ node_modules/ (root)       → Hoisted shared packages (React, Next.js — insta
 
 > ⚠️ **Always use `peerDependencies`** for React and Next.js in shared packages — never bundle them. Bundling causes version conflicts and hooks errors.
 
-### 1.5 Cursor Agent Rule — Critical
+### 1.6 Development Conventions
 
-> ⚠️ **One Cursor window per app — non-negotiable.**  
-> Open `apps/customer`, `apps/merchant`, and `apps/admin` as **separate Cursor projects**.  
-> Never open the monorepo root in Cursor — it confuses the agent about which `package.json`, `tsconfig`, and env file to use.
+- **Open the repo root** in your editor — pnpm and Turbo expect commands from root.
+- **Run app-specific tasks** with `--filter`: `pnpm exec turbo dev --filter=customer`
+- **Per-app env files** live in `apps/<app>/.env.local` (or root `.env.local` for shared Supabase keys)
+- See `resources/Turborepo_App_Setup_Guide.md` for adding new apps
 
 ---
 
@@ -120,47 +143,22 @@ node_modules/ (root)       → Hoisted shared packages (React, Next.js — insta
 
 ### 2.1 Tailwind Brand Configuration
 
-```ts
-// packages/config/tailwind.base.ts
-import type { Config } from "tailwindcss";
-
-export const brandColors = {
-  purple: "#7C3AED", // Primary — buttons, logo, active states
-  pink: "#EC4899", // Accent — gradient partner, highlights
-  green: "#10B981", // Success — stamp confirmed, reward unlocked
-  amber: "#F59E0B", // Warm — warnings, min spend alerts
-  deep: "#1E1B4B", // Dark — headings, dark text
-  surface: "#F8F7FF", // Background — app bg, card surfaces
-  red: "#EF4444", // Error — rejected, destructive
-};
-
-export const tailwindBase: Partial<Config> = {
-  theme: {
-    extend: {
-      colors: { brand: brandColors },
-      fontFamily: {
-        sans: ["Inter", "Plus Jakarta Sans", "sans-serif"],
-      },
-    },
-  },
-};
-```
-
-Each app extends this base:
+Brand colors and fonts live in `@repo/tailwind-config` (`packages/tailwind-config/tailwind.config.ts`). Each app presets the shared config:
 
 ```ts
 // apps/customer/tailwind.config.ts
-import { tailwindBase } from "@yorewards/config/tailwind.base";
-const config = {
-  ...tailwindBase,
+import sharedConfig from "@repo/tailwind-config";
+
+export default {
+  presets: [sharedConfig],
   content: [
-    "./app/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "../../packages/ui/src/**/*.{ts,tsx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
   ],
 };
-export default config;
 ```
+
+PostCSS is shared the same way: `export { default } from "@repo/tailwind-config/postcss";`
 
 ### 2.2 Critical Integration Rules
 
@@ -183,7 +181,7 @@ export default config;
 
 ## 3. Folder Structure — Per App
 
-### 3.1 Customer App (`apps/customer`)
+### 3.1 Customer PWA (`apps/customer` · `localhost:3000` · `app.yorewards.com`)
 
 ```
 apps/customer/
@@ -218,7 +216,7 @@ apps/customer/
     └── manifest.json                   → PWA manifest
 ```
 
-### 3.2 Merchant App (`apps/merchant`)
+### 3.2 Merchant Dashboard (`apps/merchant` · `localhost:3001` · `merchant.yorewards.com`)
 
 ```
 apps/merchant/
@@ -239,7 +237,7 @@ apps/merchant/
 ├── components/
 │   ├── stamp-queue/                    → Real-time queue UI (Realtime)
 │   ├── card-preview/                   → Live card preview renderer
-│   ├── analytics/                      → Chart components (recharts)
+│   ├── analytics/                      → Stats + activity feed components
 │   └── qr-display/                     → QR code + download
 ├── lib/
 │   ├── store/                          → Zustand (authStore, merchantStore)
@@ -249,7 +247,7 @@ apps/merchant/
     └── en.json
 ```
 
-### 3.3 Admin App (`apps/admin`)
+### 3.3 Super Admin (`apps/admin` · `localhost:3002` · `admin.yorewards.com`)
 
 ```
 apps/admin/
@@ -272,34 +270,27 @@ apps/admin/
 
 ### 3.4 Shared Packages Structure
 
+**Exists today:**
+
+| Package                      | Name                      | Purpose                                                        |
+| ---------------------------- | ------------------------- | -------------------------------------------------------------- |
+| `packages/ui`                | `@repo/ui`                | Shared React components (shadcn/ui + loyalty card, stamp grid) |
+| `packages/eslint-config`     | `@repo/eslint-config`     | Shared ESLint rules                                            |
+| `packages/typescript-config` | `@repo/typescript-config` | Shared `tsconfig` bases                                        |
+| `packages/tailwind-config`   | `@repo/tailwind-config`   | Brand colors, fonts, PostCSS                                   |
+
+**Planned (Day 1 — future reference, not in repo yet):**
+
 ```
-packages/
-├── ui/
-│   └── src/
-│       ├── index.ts                    → Barrel export
-│       ├── loyalty-card/              → Base card component (variants: customer/merchant-preview/admin)
-│       ├── stamp-grid/                → Base stamp grid
-│       └── [other shared components]
-├── supabase/
-│   └── src/
-│       ├── index.ts
-│       ├── client.ts                  → createClient setup
-│       ├── types.ts                   → Generated DB types (run: supabase gen types)
-│       └── queries/
-│           ├── customers.ts           → getCustomer(), createCustomer()
-│           ├── merchants.ts           → getMerchant(), approveMerchant()
-│           ├── stamps.ts              → createStampSession(), approveStamp()
-│           ├── cards.ts               → getLoyaltyCard(), createCard()
-│           └── redemptions.ts         → createRedemption(), redeemCode()
-├── utils/
-│   └── src/
-│       ├── index.ts
-│       ├── phone.ts                   → normalisePhone(), detectCountry()
-│       ├── currency.ts                → formatNPR(), formatEUR()
-│       └── otp.ts                     → generateSixDigitOTP()
-└── config/
-    ├── tailwind.base.ts               → Brand colors + fonts
-    └── tsconfig.base.json             → Shared TypeScript config
+packages/supabase/          → @repo/supabase
+  src/client.ts             → createClient setup
+  src/types.ts              → Generated DB types (supabase gen types)
+  src/queries/              → customers, merchants, stamps, cards, redemptions
+
+packages/utils/             → @repo/utils
+  src/phone.ts              → normalisePhone(), detectCountry()
+  src/currency.ts           → formatNPR(), formatEUR()
+  src/otp.ts                → generateSixDigitOTP()
 ```
 
 ---
@@ -407,6 +398,17 @@ packages/
 | `notes`       | `text`        | Optional admin notes.                                            |
 | `created_at`  | `timestamptz` | Auto-set.                                                        |
 
+#### `otp_tokens` (reward redemption only)
+
+| Column       | Type          | Notes                                |
+| ------------ | ------------- | ------------------------------------ |
+| `id`         | `uuid`        | Primary key.                         |
+| `phone`      | `text`        | Customer phone.                      |
+| `otp_hash`   | `text`        | Bcrypt hash — never store plain OTP. |
+| `purpose`    | `text`        | `'redemption'`                       |
+| `expires_at` | `timestamptz` | 5-minute expiry.                     |
+| `created_at` | `timestamptz` | Auto-set.                            |
+
 ### 4.2 Row Level Security — Required Policies
 
 > ⚠️ **Enable RLS before anything else.** Tell Cursor at the start of Day 1: _"Enable RLS on every table. Customers can only read their own records. Merchants can only read records belonging to their merchant_id. Admin has service role (bypasses RLS)."_
@@ -420,6 +422,7 @@ packages/
 | `stamp_sessions` | Customer (own) + Merchant (their queue)       | Insert: customer. Update: merchant (approve/reject).                                       |
 | `redemptions`    | Customer (own) + Merchant (their redemptions) | Insert: system. Update: merchant only.                                                     |
 | `audit_log`      | Admin only                                    | Admin only (service role).                                                                 |
+| `otp_tokens`     | Server only (service role)                    | Insert/verify via API routes only.                                                         |
 
 ### 4.3 Supabase Type Generation
 
@@ -433,14 +436,14 @@ npx supabase gen types typescript \
   > packages/supabase/src/types.ts
 
 # Import in any app:
-import type { Database } from '@yorewards/supabase/types'
+import type { Database } from '@repo/supabase/types'
 ```
 
 ### 4.4 Database Migrations
 
 ```
 supabase/migrations/
-  20260529_001_init.sql              ← All 7 tables created
+  20260529_001_init.sql              ← All 8 tables created
   20260529_002_add_min_spend.sql     ← Schema change example
   20260529_003_rls_policies.sql      ← RLS policies
 ```
@@ -728,9 +731,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key   # Server only — never expose to browser
 ```
 
-### 8.2 Customer App
+### 8.2 Customer App (Customer PWA — `localhost:3000` / `app.yorewards.com`)
 
 ```bash
+# Dev: http://localhost:3000 · Prod: https://app.yorewards.com
 NEXT_PUBLIC_APP_URL=https://app.yorewards.com
 NEXT_PUBLIC_MERCHANT_URL=https://merchant.yorewards.com
 SPARROW_SMS_TOKEN=your-sparrow-token              # Nepal OTP
@@ -741,16 +745,18 @@ TWILIO_PHONE_NUMBER=+1xxxxxxxxxx
 OTP_BCRYPT_ROUNDS=10                             # For hashing OTPs
 ```
 
-### 8.3 Merchant App
+### 8.3 Merchant App (Merchant Dashboard — `localhost:3001` / `merchant.yorewards.com`)
 
 ```bash
+# Dev: http://localhost:3001 · Prod: https://merchant.yorewards.com
 NEXT_PUBLIC_MERCHANT_URL=https://merchant.yorewards.com
 NEXT_PUBLIC_APP_URL=https://app.yorewards.com
 ```
 
-### 8.4 Admin App
+### 8.4 Admin App (Super Admin — `localhost:3002` / `admin.yorewards.com`)
 
 ```bash
+# Dev: http://localhost:3002 · Prod: https://admin.yorewards.com
 NEXT_PUBLIC_ADMIN_URL=https://admin.yorewards.com
 ADMIN_EMAIL=your-admin-email@yorewards.com       # Single super admin account
 ```
@@ -768,7 +774,7 @@ ADMIN_EMAIL=your-admin-email@yorewards.com       # Single super admin account
 | 🟡       | Magic link expires silently      | Merchant clicks link 90 min later, gets blank page.     | Add 'Link expired — request new one' screen on auth callback.           |
 | 🟡       | Logo upload too large            | Supabase Storage slow UX. Free tier 50MB limit.         | Use `browser-image-compression` before every upload. Max: 500KB.        |
 | 🟡       | Three envs not configured        | Preview deploys fail with missing API keys.             | Set `.env.local`, Vercel Preview, and Vercel Production on Day 1.       |
-| 🟡       | Cursor context lost mid-session  | Agent forgets stack, introduces wrong libraries.        | New Cursor session every day. Paste PRD + folder structure at start.    |
+| 🟡       | Cursor context lost mid-session  | Agent forgets stack, introduces wrong libraries.        | Start each session with PRD + this doc. Use `--filter` for app scope.   |
 | 🟢       | Supabase types outdated          | TypeScript errors after schema changes.                 | Run `supabase gen types` after every schema change. Commit the file.    |
 | 🟢       | iOS PWA push notifications       | iOS Safari has limited push support.                    | Use in-app only for iOS. Browser push works on Android + desktop.       |
 | 🟢       | Stamp count race condition       | Two fast approvals double-increment.                    | Use Supabase RPC (DB function) for increment — atomic operation.        |
@@ -777,20 +783,21 @@ ADMIN_EMAIL=your-admin-email@yorewards.com       # Single super admin account
 
 ## 10. Seven-Day Build Plan
 
-> 📋 **Cursor session starter prompt — paste at start of every session:**  
-> _"You are building YORewards. Follow the Technical Implementation Document exactly. Use only the specified stack. Do not add any libraries not in the stack. Start by reading the folder structure, then build today's task."_
+> Full day-by-day deliverables are in **PRD Section 11**. This section tracks technical milestones only.
 
-| Day   | Focus             | App(s)              | Exact Deliverables                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| ----- | ----------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **1** | Foundation        | All                 | Turborepo + pnpm init. All 3 Next.js apps scaffolded. Supabase project created (EU West). All 7 tables + RLS enabled. Tailwind brand config in `packages/config`. shadcn/ui installed in all apps. next-intl scaffold (`en.json`). All env vars set (`.env.local` + Vercel Preview + Vercel Production). GitHub repo created. All 3 apps deployed to Vercel.                                                                                                                               |
-| **2** | Auth & Onboarding | All                 | Customer phone login + Zustand `authStore`. Customer onboarding (name entry). Merchant email magic link + auth callback route. Merchant register form. Admin email+password login. Route guards on all protected pages. Merchant pending approval screen.                                                                                                                                                                                                                                  |
-| **3** | Card System       | Merchant            | Merchant card config form (name, description, logo, color, stamp target, min spend, all 3 reward types). `browser-image-compression` on logo upload. Live card preview renderer (branded, real-time). QR generation with `qrcode.react`. QR PNG download.                                                                                                                                                                                                                                  |
-| **4** | Stamp Flow        | Customer + Merchant | Customer QR scanner (`html5-qrcode`). Stamp session creation on scan. Supabase Realtime subscription in merchant dashboard. Merchant stamp queue UI (approve/reject + reason). Customer pending screen (Realtime). Stamp success + rejected screens. Framer Motion: stamp pop-in, page transitions, pending spinner. **Test on real iPhone today.**                                                                                                                                        |
-| **5** | Wallet & Rewards  | Customer + Merchant | Customer wallet home (TanStack Query, card grid, sort by last stamped). Card detail (stamp grid, progress bar shimmer). Reward unlock detection. OTP send (Sparrow SMS + Twilio). OTP verification. Redemption code generation + display. Merchant redemption code entry + confirmation. Cycle reset. `canvas-confetti` on reward unlock.                                                                                                                                                  |
-| **6** | Admin & Analytics | Admin + Merchant    | Super Admin dashboard (platform stats). Merchant approval queue + approve/reject. Merchant list + filter. Customer list + suspend. Manual stamp issue/void + `audit_log` insert. Full audit log table. Merchant analytics page (stamps + redemptions by period).                                                                                                                                                                                                                           |
-| **7** | Polish & Launch   | All                 | PWA `manifest.json` + icons (192px, 512px) + `next-pwa` config. Browser push notifications for reward unlock (Android + desktop). All empty states (wallet, queue, analytics). All error states (network fail, expired QR, invalid code). Privacy policy page (GDPR — required for Finnish users). Mobile responsiveness pass on all 3 apps. Full end-to-end test: register merchant → admin approve → customer scan → stamp → reward → OTP → redeem. Production deploy all 3 Vercel apps. |
+| Day   | Technical focus | Key outputs                                                                                                          |
+| ----- | --------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **1** | Foundation      | ~~Turborepo + 3 apps~~ ✅ · Supabase + 8 tables + RLS · `@repo/supabase` · shadcn/ui · next-intl · env vars · Vercel |
+| **2** | Auth            | Phone login, magic link, admin login, route guards, Zustand `authStore`                                              |
+| **3** | Cards           | Merchant card config, logo upload, live preview, QR generation                                                       |
+| **4** | Stamps          | QR scanner, Realtime queue, approval flow, Framer Motion — **test on real iPhone**                                   |
+| **5** | Rewards         | Wallet, OTP (Sparrow/Twilio), redemption codes, confetti                                                             |
+| **6** | Admin           | Merchant approval, audit log, analytics                                                                              |
+| **7** | Launch          | PWA, privacy policy, E2E test, production deploy                                                                     |
+
+> 📋 **Session starter:** _"Build YORewards per PRD + Technical Doc. Use only the locked stack. Check Implementation Status first."_
 
 ---
 
-_YORewards — Technical Implementation Document · v1.0 · Confidential_  
+_YORewards — Technical Implementation Document · v1.1_  
 _Build clean. Ship fast. Validate everything. · Nepal 🇳🇵 · Finland 🇫🇮_

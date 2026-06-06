@@ -362,7 +362,7 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 
 ## 8. App Routes
 
-### 8.1 Customer — `app.yorewards.com`
+### 8.1 Customer PWA — `apps/customer` · `localhost:3000` · `app.yorewards.com`
 
 | Route                        | Description                                        |
 | ---------------------------- | -------------------------------------------------- |
@@ -378,7 +378,7 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 | `/reward/[cardId]`           | Reward claim — OTP entry → redemption code display |
 | `/profile`                   | Phone number, name, logout                         |
 
-### 8.2 Merchant — `merchant.yorewards.com`
+### 8.2 Merchant Dashboard — `apps/merchant` · `localhost:3001` · `merchant.yorewards.com`
 
 | Route                 | Description                              |
 | --------------------- | ---------------------------------------- |
@@ -392,7 +392,7 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 | `/merchant/analytics` | Full analytics dashboard                 |
 | `/merchant/settings`  | Business profile + account settings      |
 
-### 8.3 Super Admin — `admin.yorewards.com`
+### 8.3 Super Admin — `apps/admin` · `localhost:3002` · `admin.yorewards.com`
 
 | Route                   | Description                              |
 | ----------------------- | ---------------------------------------- |

@@ -7,9 +7,9 @@ Add a new Next.js app to the YORewards monorepo.
 ```
 yorewards/
 ├── apps/
-│   ├── customer/     → port 3000
-│   ├── merchant/     → port 3001
-│   └── admin/        → port 3002
+│   ├── customer/     → Customer PWA        · localhost:3000 · app.yorewards.com
+│   ├── merchant/     → Merchant Dashboard  · localhost:3001 · merchant.yorewards.com
+│   └── admin/        → Super Admin         · localhost:3002 · admin.yorewards.com
 ├── packages/
 │   ├── ui/
 │   ├── eslint-config/
@@ -33,7 +33,7 @@ yorewards/
 pnpm create next-app apps/<app> --typescript --tailwind --eslint --app --no-src-dir
 ```
 
-Use the next free port: `customer` 3000, `merchant` 3001, `admin` 3002, then 3003+.
+Use the next free port: Customer PWA `3000`, Merchant Dashboard `3001`, Super Admin `3002`, then `3003+`.
 
 ### 2. Clean up
 

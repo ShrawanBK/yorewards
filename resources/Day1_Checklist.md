@@ -83,7 +83,7 @@ Create migrations in `supabase/migrations/` (see `README.md` — one concern per
 - [x] Stamp audit via `stamp_sessions` (`source`, `voided` status) — no separate events table
 - [x] Analytics counters: `targets_reached`, `cycle_number` on `customer_cards`
 - [x] Realtime publication includes `stamp_sessions`
-- [ ] Push migration: `pnpm exec supabase db push`
+- [x] Push migration: `pnpm exec supabase db push`
 - [ ] Verify all 8 tables visible in Supabase Table Editor
 
 ---
@@ -102,7 +102,7 @@ Migration: `supabase/migrations/20260607130000_rls_policies.sql`
 - [x] `redemptions` — customer own; merchant read/update (insert via service role)
 - [x] `audit_log` — no client policies (service role only)
 - [x] `otp_tokens` — no client policies (service role only)
-- [ ] Push: `pnpm exec supabase db push`
+- [x] Push: `pnpm exec supabase db push`
 - [ ] Smoke-test: anon key cannot read another user's `customer_cards`
 
 > **Day 2 auth note:** Customer JWT must include `app_metadata.customer_id` (see Technical Doc §4.2). Phone login lookup uses a **service-role API route** (anon cannot SELECT by phone).
@@ -111,9 +111,12 @@ Migration: `supabase/migrations/20260607130000_rls_policies.sql`
 
 ## D. Supabase Storage
 
-- [ ] Create bucket `merchant-logos` (public read, authenticated upload)
-- [ ] Storage RLS: merchants upload to their own folder (`{merchant_id}/…`)
-- [ ] Max file size policy aligned with PRD (2MB upload, compress to ~500KB in app)
+Migration: `supabase/migrations/20260607140000_storage_merchant_logos.sql`
+
+- [x] Create bucket `merchant-logos` (public read, authenticated upload)
+- [x] Storage RLS: merchants upload to their own folder (`{merchant_id}/…`)
+- [x] Max file size policy aligned with PRD (2MB upload, compress to ~500KB in app)
+- [x] Push: `pnpm exec supabase db push`
 
 ---
 
@@ -121,19 +124,20 @@ Migration: `supabase/migrations/20260607130000_rls_policies.sql`
 
 ### `@repo/supabase`
 
-- [ ] Create `packages/supabase/` with `package.json`, `tsconfig.json`
-- [ ] `src/client.ts` — browser client (anon key)
-- [ ] `src/server.ts` — server client (cookies / service role where needed)
-- [ ] Generate types: `pnpm exec supabase gen types typescript --project-id … > packages/supabase/src/types.ts`
-- [ ] Export `Database` type + re-export clients
-- [ ] Add workspace dep to all 3 apps
+- [x] Create `packages/supabase/` with `package.json`, `tsconfig.json`
+- [x] `src/client.ts` — browser client (anon key)
+- [x] `src/server.ts` — server client (cookies)
+- [x] `src/service-role.ts` — admin / OTP routes (service role)
+- [x] Generate types: `packages/supabase/src/types.ts`
+- [x] Export clients + `Database` type via package exports
+- [x] Add workspace dep to all 3 apps
 
 ### `@repo/utils`
 
-- [ ] Create `packages/utils/` with `package.json`, `tsconfig.json`
-- [ ] `src/phone.ts` — `normalisePhone()`, `detectCountry()` (+977 / +358)
-- [ ] `src/currency.ts` — `formatNPR()`, `formatEUR()`
-- [ ] `src/otp.ts` — `generateSixDigitOTP()` stub (full impl Day 5)
+- [x] Create `packages/utils/` with `package.json`, `tsconfig.json`
+- [x] `src/phone.ts` — `normalisePhone()`, `detectCountry()` (+977 / +358)
+- [x] `src/currency.ts` — `formatNPR()`, `formatEUR()`
+- [x] `src/otp.ts` — `generateSixDigitOTP()` stub (full impl Day 5)
 
 ---
 
@@ -157,7 +161,7 @@ Migration: `supabase/migrations/20260607130000_rls_policies.sql`
 
 ## H. Environment variables
 
-Create `.env.example` at repo root (document all vars — never commit real values).
+- [x] Create `.env.example` at repo root (document all vars — never commit real values)
 
 Per-app `.env.local` (gitignored):
 

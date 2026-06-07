@@ -7,5 +7,52 @@
   "nav": {
     "dashboard": "Dashboard",
     "customers": "Customers"
+  },
+  "auth": {
+    "brandEyebrow": "YORewards",
+    "brandTitle": "Grow repeat visits with digital stamps",
+    "brandBlurb": "Set up loyalty cards, approve stamps in real time, and reward your regulars — no paper cards required.",
+    "brandFooter": "Merchant dashboard",
+    "heading": "Account access",
+    "subheading": "Sign in or register your business to get started.",
+    "terms": "By continuing you agree to YORewards merchant terms.",
+    "tabs": {
+      "signin": "Sign in",
+      "signup": "Sign up"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "businessName": "Business name",
+      "category": "Category",
+      "country": "Country",
+      "phoneOptional": "Phone (optional)"
+    },
+    "placeholders": {
+      "email": "you@business.com",
+      "businessName": "Kathmandu Coffee Co.",
+      "category": "Café",
+      "phone": "+977…"
+    },
+    "countries": {
+      "NP": "Nepal",
+      "FI": "Finland"
+    },
+    "actions": {
+      "signin": "Sign in",
+      "signup": "Create account"
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password"
+    },
+    "errors": {
+      "email": "Enter a valid email",
+      "password": "At least 6 characters",
+      "confirmPassword": "Passwords don't match",
+      "businessName": "Business name is required",
+      "category": "Category is required"
+    }
   }
 }

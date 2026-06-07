@@ -32,6 +32,13 @@ When the user asks to build a feature, start a build day, design schema, or choo
 - **Zustand** — client components only (`'use client'`).
 - Run `pnpm` from repo root; use `--filter=<app>` for single-app tasks.
 
+## UI & forms conventions
+
+- **i18n is mandatory** — every user-facing string goes through `next-intl`. Never hardcode copy in components. Add keys to `apps/<app>/messages/en.json` and read them with `useTranslations(...)`. This covers labels, placeholders, buttons, headings, validation/error messages, and `aria-label`s (including zod error messages — build schemas inside the component so messages can be translated).
+- **Reusable first** — build shared form primitives in `@repo/ui` (e.g. `Field`, `PasswordInput`, `Input`, `Button`) and compose them; don't re-implement per app.
+- **Password inputs** always use `@repo/ui/password-input` (built-in show/hide toggle); pass translated `showLabel`/`hideLabel`.
+- **Minimalist forms** — clean layout, avoid redundant titles; group related fields into 2-col grids so multi-step/tabbed flows (e.g. sign in vs sign up) stay close in height.
+
 ## Implementation status
 
 Check **Technical Doc → Implementation Status** for what is done vs planned (e.g. `supabase/`, `@repo/supabase` are future reference, not in repo yet).

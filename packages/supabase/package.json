@@ -6,7 +6,10 @@
     "./client": "./src/client.ts",
     "./server": "./src/server.ts",
     "./service-role": "./src/service-role.ts",
-    "./types": "./src/types.ts"
+    "./proxy": "./src/proxy.ts",
+    "./types": "./src/types.ts",
+    "./queries/merchants": "./src/queries/merchants.ts",
+    "./queries/customers": "./src/queries/customers.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

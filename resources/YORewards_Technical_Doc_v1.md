@@ -309,8 +309,10 @@ packages/utils/             → @repo/utils
 | `phone`          | `text`        | UNIQUE. Primary identifier. E.164 format e.g. `+9779800000000` |
 | `name`           | `text`        | Customer's first name. Set at onboarding.                      |
 | `country_code`   | `text`        | `'NP'` or `'FI'`. Determines SMS provider for OTP.             |
+| `status`         | `text`        | `'active'` \| `'suspended'`. Default: `active`. v2-ready — no table rewrite. |
 | `created_at`     | `timestamptz` | Auto-set on insert.                                            |
 | `last_active_at` | `timestamptz` | Updated on each login.                                         |
+| `deleted_at`     | `timestamptz` | Nullable. Soft-delete for GDPR. Null = active record.          |
 
 #### `merchants`
 
@@ -323,12 +325,13 @@ packages/utils/             → @repo/utils
 | `country`       | `text`        | `'NP'` or `'FI'`.                                               |
 | `logo_url`      | `text`        | Supabase Storage URL. Null until uploaded.                      |
 | `primary_color` | `text`        | Hex e.g. `'#7C3AED'`. Default: brand purple.                    |
-| `status`        | `text`        | `'pending'` \| `'active'` \| `'suspended'`. Default: `pending`. |
+| `status`            | `text`        | `'pending'` \| `'active'` \| `'suspended'` \| `'rejected'`. Default: `pending`. |
 | `email`         | `text`        | Contact email. Used for magic link auth.                        |
 | `phone`         | `text`        | Contact phone. Optional.                                        |
 | `created_at`    | `timestamptz` | Auto-set.                                                       |
-| `approved_at`   | `timestamptz` | Set when Super Admin approves.                                  |
-| `approved_by`   | `uuid`        | Super Admin user ID.                                            |
+| `approved_at`       | `timestamptz` | Set when Super Admin approves.                                  |
+| `approved_by`       | `uuid`        | Super Admin user ID.                                            |
+| `rejection_reason`  | `text`        | Nullable. Set when Super Admin rejects registration.            |
 
 #### `loyalty_cards`
 
@@ -405,7 +408,7 @@ packages/utils/             → @repo/utils
 | `id`         | `uuid`        | Primary key.                         |
 | `phone`      | `text`        | Customer phone.                      |
 | `otp_hash`   | `text`        | Bcrypt hash — never store plain OTP. |
-| `purpose`    | `text`        | `'redemption'`                       |
+| `purpose`    | `text`        | `'redemption'` (v2: extend to `'signup'` — same table, no rewrite) |
 | `expires_at` | `timestamptz` | 5-minute expiry.                     |
 | `created_at` | `timestamptz` | Auto-set.                            |
 
@@ -415,7 +418,7 @@ packages/utils/             → @repo/utils
 
 | Table            | Who Can Read                                  | Who Can Write                                                                              |
 | ---------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `customers`      | Own record only                               | Insert: anyone (sign up). Update: own record.                                              |
+| `customers`      | Own record only (`deleted_at IS NULL`)        | Insert: anyone (sign up). Update: own record. Admin suspend via service role.              |
 | `merchants`      | Own record only                               | Insert: anyone (register). Update: own record.                                             |
 | `loyalty_cards`  | All authenticated users                       | Merchant who owns the card.                                                                |
 | `customer_cards` | Own cards only                                | Insert: customer on first scan. Update: merchant (stamp count) + customer (reward_status). |
@@ -443,12 +446,38 @@ import type { Database } from '@repo/supabase/types'
 
 ```
 supabase/migrations/
-  20260529_001_init.sql              ← All 8 tables created
-  20260529_002_add_min_spend.sql     ← Schema change example
-  20260529_003_rls_policies.sql      ← RLS policies
+  20260529_001_init.sql              ← All 8 tables + forward-compatible columns
+  20260529_002_rls_policies.sql      ← RLS policies
+  20260529_003_add_*.sql             ← Example: additive v2 migration (never edit 001)
 ```
 
 Anyone cloning the repo runs `supabase db push` and their database matches production exactly.
+
+### 4.5 Forward-Compatible Schema — v2 Without Rewrites
+
+> 🔴 **Never recreate tables.** All schema changes after Day 1 are **additive migrations** (`ALTER TABLE … ADD COLUMN`, new tables with FKs to existing UUIDs). Production data must survive every upgrade.
+
+| Rule | Why | v2 example |
+| ---- | --- | ---------- |
+| **UUID primary keys everywhere** | Stable references across migrations | New `merchant_staff` table FKs to existing `merchants.id` |
+| **Text status columns, not Postgres enums** | Add new values without `ALTER TYPE` pain | `'suspended'` on customers already works; v2 adds `'signup'` to `otp_tokens.purpose` |
+| **Nullable columns for future features** | Ship MVP without using every column | `merchants.rejection_reason`, `customers.deleted_at` |
+| **`stamp_sessions` = immutable event log** | Approved sessions are the stamp audit trail | v2 `stamp_events` can reference `stamp_sessions.id` instead of replacing counters |
+| **Denormalised `merchant_id` on child rows** | Fast RLS + wallet queries today | v2 multi-location adds optional `location_id` on `stamp_sessions` / `customer_cards` |
+| **`loyalty_cards` separate from `merchants`** | One merchant → many cards/locations later | v2 adds rows, not schema surgery |
+| **`auth.users` for merchant identity** | Supabase Auth owns credentials | v2 multi-staff = new `merchant_staff(user_id, merchant_id, role)` — `merchants.user_id` stays owner |
+| **Soft delete over hard delete** | GDPR + audit retention | `customers.deleted_at`; queries filter `WHERE deleted_at IS NULL` |
+| **One migration file per change** | Reproducible dev/staging/prod | `20260701_add_merchant_staff.sql` — never edit old migrations |
+
+**v2 features that add tables (not rewrites):**
+
+| v2 feature | New artifact | Existing tables unchanged |
+| ---------- | ------------ | ------------------------- |
+| Phone OTP at signup | Extend `otp_tokens.purpose` | `customers` |
+| Multi-staff merchants | `merchant_staff` table | `merchants`, `loyalty_cards` |
+| Subscription billing | `subscriptions` table | `merchants` |
+| Per-stamp void/history UI | `stamp_events` table (optional) | `stamp_sessions`, `customer_cards` |
+| Multi-location | `merchant_locations` + nullable `location_id` | `merchants`, `loyalty_cards` |
 
 ---
 
@@ -787,12 +816,12 @@ ADMIN_EMAIL=your-admin-email@yorewards.com       # Single super admin account
 
 | Day   | Technical focus | Key outputs                                                                                                          |
 | ----- | --------------- | -------------------------------------------------------------------------------------------------------------------- |
-| **1** | Foundation      | ~~Turborepo + 3 apps~~ ✅ · Supabase + 8 tables + RLS · `@repo/supabase` · shadcn/ui · next-intl · env vars · Vercel |
-| **2** | Auth            | Phone login, magic link, admin login, route guards, Zustand `authStore`                                              |
+| **1** | Foundation      | ~~Turborepo + 3 apps~~ ✅ · Supabase + 8 tables + RLS · forward-compatible columns · `@repo/supabase` · shadcn/ui · next-intl · env vars · Vercel |
+| **2** | Auth            | Phone login, magic link, admin login, route guards, Zustand `authStore`, **minimal merchant approval queue**       |
 | **3** | Cards           | Merchant card config, logo upload, live preview, QR generation                                                       |
-| **4** | Stamps          | QR scanner, Realtime queue, approval flow, Framer Motion — **test on real iPhone**                                   |
-| **5** | Rewards         | Wallet, OTP (Sparrow/Twilio), redemption codes, confetti                                                             |
-| **6** | Admin           | Merchant approval, audit log, analytics                                                                              |
+| **4** | Stamps + wallet | QR scanner, Realtime queue, approval flow, **read-only wallet grid**, Framer Motion — **test on real iPhone**       |
+| **5** | Rewards         | Card detail polish, OTP (Sparrow/Twilio), redemption codes, confetti                                                 |
+| **6** | Admin           | Platform dashboard, customer mgmt, audit log, analytics, manual stamp tool                                             |
 | **7** | Launch          | PWA, privacy policy, E2E test, production deploy                                                                     |
 
 > 📋 **Session starter:** _"Build YORewards per PRD + Technical Doc. Use only the locked stack. Check Implementation Status first."_

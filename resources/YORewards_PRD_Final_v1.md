@@ -161,10 +161,12 @@ Customers collect stamps by visiting businesses and scanning a QR code. Merchant
 
 ### Merchant
 
-- Registers business with name, category, country, and contact details
+- Registers a business with name, category, country, and contact details
+- **One owner account can run multiple businesses** — each business has its own profile, loyalty card(s), and QR code (e.g. a café *and* a salon under one login)
 - Creates and customises a loyalty card
 - Receives a unique QR code per loyalty card
 - Approves or rejects every stamp request — no auto-stamping
+- **Branches/outlets of the same business** (multi-location) are post-MVP. When added, one loyalty card is shared across all branches and a customer's stamps from any branch count toward the same card. The data model is built for this migration (see Technical Doc §4.5)
 
 ### Super Admin
 
@@ -442,6 +444,7 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 - Merchant dashboard: card setup + live preview, stamp approval queue, redemption, analytics
 - Super Admin dashboard: merchant approval, user management, platform stats, audit log
 - Phone-number-based customer identity (no OTP at login)
+- Multi-business per owner: one merchant login can create and manage several businesses
 - Email magic link for merchant, email+password for admin
 - SMS OTP via Sparrow SMS (Nepal) and Twilio (Finland) — at reward redemption only
 - All 3 reward types: Free Item, Percentage Discount, Fixed Discount
@@ -461,7 +464,7 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 - Phone OTP at customer registration (v2)
 - Nepali or Finnish language translations (scaffold only)
 - WhatsApp bot ordering integration (Phase 2)
-- Multi-location merchant support
+- Multi-location / branch (outlet) support — common in Finland; **schema-ready** for a clean later migration (one shared card across branches, cross-branch stamping). Not built in MVP
 - Multiple staff accounts per merchant
 - POS or payment gateway integration
 - Merchant subscription billing
@@ -508,7 +511,7 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 | ----- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | **2** | Month 2   | Phone OTP at signup, Nepali + Finnish translations, multi-staff merchant accounts, subscription billing (Stripe + eSewa/MobilePay) |
 | **3** | Month 3   | WhatsApp Business API bot — browse menu, order, auto-earn stamps                                                                   |
-| **4** | Month 4–5 | Native React Native / Expo app, push notifications via Expo, multi-location merchant support                                       |
+| **4** | Month 4–5 | Native React Native / Expo app, push notifications via Expo, **multi-location / outlet support** (shared card + cross-branch stamping, per-branch QR & analytics) |
 | **5** | Month 6+  | Cross-merchant reward exchange, eSewa / MobilePay auto-stamp on payment, advanced cohort analytics, SEA expansion                  |
 
 ---

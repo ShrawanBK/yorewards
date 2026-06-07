@@ -26,7 +26,7 @@ Install/update: `npx skills add <owner/repo@skill> -y` · Lock file: `skills-loc
 | Role         | Method           | Session                       | RLS identity                       |
 | ------------ | ---------------- | ----------------------------- | ---------------------------------- |
 | **Admin**    | Email + password | Supabase Auth cookie          | Service role for writes            |
-| **Merchant** | Magic link       | Supabase Auth cookie          | `auth.uid()` → `merchants.user_id` |
+| **Merchant** | Magic link       | Supabase Auth cookie          | `current_merchant_ids()` (owner → many businesses) |
 | **Customer** | Phone, no OTP    | Custom JWT / Supabase session | `app_metadata.customer_id`         |
 
 > **Critical:** Customer phone lookup uses a **service-role API route** — anon cannot `SELECT` by phone (RLS).  
@@ -39,6 +39,17 @@ Install/update: `npx skills add <owner/repo@skill> -y` · Lock file: `skills-loc
 ```text
 A. Shared auth infra  →  B. Admin  →  C. Merchant approval  →  D. Merchant auth  →  E. Customer auth  →  F. Verify
 ```
+
+---
+
+## Schema addendum — Multi-business per owner
+
+> Product decision: one owner login can run **multiple businesses**. Outlets/branches stay post-MVP but schema-ready. See PRD §4 (Merchant) + Technical Doc §4.7.
+
+- [ ] Apply migration `20260607150000_multi_business_ownership.sql` → `pnpm exec supabase db push`
+- [ ] Regenerate types after push → `supabase gen types` into `packages/supabase/src/types.ts` (adds `current_merchant_ids`)
+- [ ] Merchant queries return a **list** of owned businesses (not `.single()` on `user_id`)
+- [ ] (Deferred within MVP, after core auth) Business switcher + "add another business" in merchant app; default to the single business when only one exists
 
 ---
 

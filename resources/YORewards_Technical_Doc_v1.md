@@ -321,8 +321,8 @@ packages/utils/             → @repo/utils
 
 | Column             | Type          | Notes                                                                           |
 | ------------------ | ------------- | ------------------------------------------------------------------------------- |
-| `id`               | `uuid`        | Primary key.                                                                    |
-| `user_id`          | `uuid`        | References `auth.users(id)`. Supabase auth user.                                |
+| `id`               | `uuid`        | Primary key. One row = one **business**.                                        |
+| `user_id`          | `uuid`        | References `auth.users(id)`. Owner. **Not unique** — one owner may own many businesses (multi-business per owner). |
 | `business_name`    | `text`        | Display name of the business.                                                   |
 | `category`         | `text`        | e.g. `'cafe'`, `'salon'`, `'restaurant'`.                                       |
 | `country`          | `text`        | `'NP'` or `'FI'`.                                                               |
@@ -425,20 +425,22 @@ packages/utils/             → @repo/utils
 
 **Auth models (two roles, two JWT paths):**
 
-| Role                 | Auth                         | RLS identity                                           |
-| -------------------- | ---------------------------- | ------------------------------------------------------ |
-| **Merchant / Admin** | Supabase Auth (`auth.uid()`) | `current_merchant_id()` via `merchants.user_id`        |
-| **Customer**         | Custom session JWT (Day 2)   | `current_customer_id()` via `app_metadata.customer_id` |
-| **Admin writes**     | Service role                 | Bypasses RLS — never expose key to browser             |
+| Role                 | Auth                         | RLS identity                                                          |
+| -------------------- | ---------------------------- | -------------------------------------------------------------------- |
+| **Merchant / Admin** | Supabase Auth (`auth.uid()`) | `current_merchant_ids()` → **all** businesses owned via `merchants.user_id` |
+| **Customer**         | Custom session JWT (Day 2)   | `current_customer_id()` via `app_metadata.customer_id`               |
+| **Admin writes**     | Service role                 | Bypasses RLS — never expose key to browser                           |
 
 > **Day 2 requirement:** Customer login API route must issue a Supabase-compatible JWT (or session) with `app_metadata.customer_id` set to `customers.id`. Phone lookup on login uses **service role** server-side (anon cannot SELECT by phone).
 
-**Helper functions:** `public.current_customer_id()`, `public.current_merchant_id()`
+> **Multi-business per owner:** merchant policies scope to `merchant_id IN (SELECT public.current_merchant_ids())` so one logged-in owner can read/write data for **any business they own**. "Which business is active" is a client/display concern; the `WITH CHECK` guarantees writes target an owned business. (`current_merchant_id()` is retained but deprecated — it returns one arbitrary owned business.) Introduced in migration `20260607150000_multi_business_ownership.sql`.
+
+**Helper functions:** `public.current_customer_id()`, `public.current_merchant_ids()` (and legacy `public.current_merchant_id()`)
 
 | Table            | Who Can Read                                  | Who Can Write                                                                     |
 | ---------------- | --------------------------------------------- | --------------------------------------------------------------------------------- |
 | `customers`      | Own record only (`deleted_at IS NULL`)        | Insert: anon (signup). Update: own. Admin suspend via service role.               |
-| `merchants`      | Own record + active merchants for wallet/QR   | Insert/update: own (`user_id = auth.uid()`). Admin via service role.              |
+| `merchants`      | Owned records (any business) + active merchants for wallet/QR | Insert/update: own (`user_id = auth.uid()`). Admin via service role.              |
 | `loyalty_cards`  | Active cards: public read; merchant: all own  | Merchant who owns the card.                                                       |
 | `customer_cards` | Own cards + merchant's cards                  | Insert: customer (first scan). Update: merchant or customer (reward_status).      |
 | `stamp_sessions` | Customer (own) + Merchant (their queue)       | Insert: customer. Update: merchant (approve/reject). Admin void via service role. |
@@ -530,8 +532,10 @@ Redemption completion lives on `redemptions.status` (`pending` → `redeemed`), 
 | **Text status columns, not Postgres enums**   | Add new values without `ALTER TYPE` pain                   | `'suspended'` on customers already works; v2 adds `'signup'` to `otp_tokens.purpose`                |
 | **Nullable columns for future features**      | Ship MVP without using every column                        | `merchants.rejection_reason`, `customers.deleted_at`                                                |
 | **`stamp_sessions` = stamp event log**        | Every stamp (QR or admin) is a row; void = status `voided` | Admin void/issue without a separate `stamp_events` table                                            |
-| **Denormalised `merchant_id` on child rows**  | Fast RLS + wallet queries today                            | v2 multi-location adds optional `location_id` on `stamp_sessions` / `customer_cards`                |
-| **`loyalty_cards` separate from `merchants`** | One merchant → many cards/locations later                  | v2 adds rows, not schema surgery                                                                    |
+| **Denormalised `merchant_id` on child rows**  | Fast RLS + wallet queries today                            | Outlets add optional `location_id` on `stamp_sessions` / `redemptions` (attribution only — balance stays business-scoped) |
+| **`loyalty_cards` separate from `merchants`** | One merchant → many cards/locations later                  | Outlets add rows, not schema surgery                                                                |
+| **`merchants.user_id` not unique (owner FK)** | One owner → many businesses without rewrites               | Multi-business per owner ships in MVP; multi-**staff** later = `merchant_staff(user_id, merchant_id, role)` |
+| **Outlet = child of a merchant, never a `merchants` row** | Keeps one shared card + cross-branch stamping correct | Outlets land as `merchant_locations(merchant_id, …)`; registering a branch as its own merchant would split the balance |
 | **`auth.users` for merchant identity**        | Supabase Auth owns credentials                             | v2 multi-staff = new `merchant_staff(user_id, merchant_id, role)` — `merchants.user_id` stays owner |
 | **Soft delete over hard delete**              | GDPR + audit retention                                     | `customers.deleted_at`; queries filter `WHERE deleted_at IS NULL`                                   |
 | **One migration file per change**             | Reproducible dev/staging/prod                              | `20260701_add_merchant_staff.sql` — never edit old migrations                                       |
@@ -544,7 +548,37 @@ Redemption completion lives on `redemptions.status` (`pending` → `redeemed`), 
 | Multi-staff merchants     | `merchant_staff` table                        | `merchants`, `loyalty_cards`                     |
 | Subscription billing      | `subscriptions` table                         | `merchants`                                      |
 | Per-stamp void/history UI | Optional `stamp_events` in v2                 | `stamp_sessions` with `voided` status + `source` |
-| Multi-location            | `merchant_locations` + nullable `location_id` | `merchants`, `loyalty_cards`                     |
+| Outlets / branches        | `merchant_locations` + nullable `location_id` on `stamp_sessions` / `redemptions` | `merchants`, `loyalty_cards`, `customer_cards` (card stays business-scoped) |
+
+### 4.7 Ownership Model — Multi-Business (MVP) & Outlets (future)
+
+Three distinct concepts — do not conflate them:
+
+| Concept | Meaning | Status | Modeled as |
+| ------- | ------- | ------ | ---------- |
+| **Owner** | A person who logs in (`auth.users`) | MVP | `merchants.user_id` (**not unique**) |
+| **Business** | A brand/storefront with its own card + QR | MVP | a `merchants` row |
+| **Outlet / branch** | A physical location of one business | Future | `merchant_locations` (child of `merchants`) |
+
+**MVP — multi-business per owner**
+
+- One owner → many businesses. Each business is its own `merchants` row with its own `loyalty_cards` and QR.
+- RLS is set-based: `merchant_id IN (SELECT public.current_merchant_ids())`.
+- Merchant app picks an **active business** for display; writes pass the explicit `merchant_id`, validated by `WITH CHECK` to be owned.
+- The data layer is ready now; the **business switcher / "add another business" UI** is a follow-up within MVP (not required for core auth).
+
+**Future — outlets / branches (post-MVP migration, no rewrite)**
+
+1. `create table merchant_locations (id, merchant_id, name, address, …)`.
+2. Backfill one default location per existing merchant.
+3. Add nullable `location_id` to **event** tables only: `stamp_sessions`, `redemptions` (attribution + per-branch analytics).
+4. QR codes become `loyalty_card_id (+ location_id)` so each counter is identifiable; **all** QRs of a business still resolve to the **same** card.
+
+**Invariant (write this in stone):**
+
+- A customer holds **one** `customer_cards` row per business (`unique (customer_id, loyalty_card_id)`), so stamps from **any** branch increment the **same** balance, and a reward earned at branch A is redeemable at branch B.
+- `location_id` is **attribution only** — it must never filter or partition the stamp count or redemption scope (redemption stays `merchant_id`-scoped).
+- An outlet is **always a child of a merchant**, never its own `merchants` row. Registering a branch as a separate merchant would split the card balance and break cross-branch stamping.
 
 ---
 

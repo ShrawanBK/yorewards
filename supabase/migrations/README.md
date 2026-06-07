@@ -13,6 +13,12 @@ Supabase runs **every `.sql` file in this folder once**, in **filename order** (
 | `20260607130000_rls_policies.sql` | Row Level Security + helper functions |
 | `20260607140000_storage_merchant_logos.sql` | `merchant-logos` bucket + storage RLS |
 
+## Day 2 additions
+
+| File | What it does |
+| ---- | ------------ |
+| `20260607150000_multi_business_ownership.sql` | Multi-business per owner: drops `merchants.user_id` UNIQUE, adds `current_merchant_ids()`, re-points merchant RLS to the owned set |
+
 ## Rules
 
 - **Never edit** a migration after it has been pushed to production — add a new file instead.

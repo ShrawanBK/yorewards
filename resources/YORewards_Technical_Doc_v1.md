@@ -418,18 +418,30 @@ packages/utils/             → @repo/utils
 
 ### 4.2 Row Level Security — Required Policies
 
-> ⚠️ **Enable RLS before anything else.** Tell Cursor at the start of Day 1: _"Enable RLS on every table. Customers can only read their own records. Merchants can only read records belonging to their merchant_id. Admin has service role (bypasses RLS)."_
+> ⚠️ **Enable RLS before anything else.** Migration: `20260607130000_rls_policies.sql`
+
+**Auth models (two roles, two JWT paths):**
+
+| Role | Auth | RLS identity |
+| ---- | ---- | ------------ |
+| **Merchant / Admin** | Supabase Auth (`auth.uid()`) | `current_merchant_id()` via `merchants.user_id` |
+| **Customer** | Custom session JWT (Day 2) | `current_customer_id()` via `app_metadata.customer_id` |
+| **Admin writes** | Service role | Bypasses RLS — never expose key to browser |
+
+> **Day 2 requirement:** Customer login API route must issue a Supabase-compatible JWT (or session) with `app_metadata.customer_id` set to `customers.id`. Phone lookup on login uses **service role** server-side (anon cannot SELECT by phone).
+
+**Helper functions:** `public.current_customer_id()`, `public.current_merchant_id()`
 
 | Table            | Who Can Read                                  | Who Can Write                                                                              |
 | ---------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `customers`      | Own record only (`deleted_at IS NULL`)        | Insert: anyone (sign up). Update: own record. Admin suspend via service role.              |
-| `merchants`      | Own record only                               | Insert: anyone (register). Update: own record.                                             |
-| `loyalty_cards`  | All authenticated users                       | Merchant who owns the card.                                                                |
-| `customer_cards` | Own cards only                                | Insert: customer on first scan. Update: merchant (stamp count) + customer (reward_status). |
-| `stamp_sessions` | Customer (own) + Merchant (their queue)       | Insert: customer. Update: merchant (approve/reject).                                       |
-| `redemptions`    | Customer (own) + Merchant (their redemptions) | Insert: system. Update: merchant only.                                                     |
-| `audit_log`      | Admin only                                    | Admin only (service role).                                                                 |
-| `otp_tokens`     | Server only (service role)                    | Insert/verify via API routes only.                                                         |
+| `customers`      | Own record only (`deleted_at IS NULL`)        | Insert: anon (signup). Update: own. Admin suspend via service role.                        |
+| `merchants`      | Own record + active merchants for wallet/QR   | Insert/update: own (`user_id = auth.uid()`). Admin via service role.                       |
+| `loyalty_cards`  | Active cards: public read; merchant: all own    | Merchant who owns the card.                                                                |
+| `customer_cards` | Own cards + merchant's cards                  | Insert: customer (first scan). Update: merchant or customer (reward_status).               |
+| `stamp_sessions` | Customer (own) + Merchant (their queue)       | Insert: customer. Update: merchant (approve/reject). Admin void via service role.          |
+| `redemptions`    | Customer (own) + Merchant (their redemptions) | Insert: service role (OTP verify). Update: merchant (`complete_redemption`).               |
+| `audit_log`      | Denied (no policies)                          | Service role only.                                                                         |
+| `otp_tokens`     | Denied (no policies)                          | Service role only.                                                                         |
 
 ### 4.3 Supabase Type Generation
 

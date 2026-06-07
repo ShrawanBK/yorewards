@@ -10,7 +10,7 @@ Supabase runs **every `.sql` file in this folder once**, in **filename order** (
 | `20260607120001_tables.sql` | 8 core tables + indexes |
 | `20260607120002_functions.sql` | RPCs (`increment_stamps`, `void_stamp`, etc.) |
 | `20260607120003_realtime_and_grants.sql` | Realtime on `stamp_sessions` + role grants |
-| `20260607130000_rls_policies.sql` | Row Level Security *(Section C — coming next)* |
+| `20260607130000_rls_policies.sql` | Row Level Security + helper functions |
 
 ## Rules
 

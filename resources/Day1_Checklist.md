@@ -57,12 +57,12 @@ Use when you cannot add the dev dependency yet; prefer Option 1 for a pinned ver
 
 Create migrations in `supabase/migrations/` (see `README.md` — one concern per file):
 
-| File | Contents |
-| ---- | -------- |
-| `20260607120000_extensions.sql` | Postgres extensions |
-| `20260607120001_tables.sql` | 8 core tables + indexes |
-| `20260607120002_functions.sql` | Business RPCs |
-| `20260607120003_realtime_and_grants.sql` | Realtime + role grants |
+| File                                     | Contents                |
+| ---------------------------------------- | ----------------------- |
+| `20260607120000_extensions.sql`          | Postgres extensions     |
+| `20260607120001_tables.sql`              | 8 core tables + indexes |
+| `20260607120002_functions.sql`           | Business RPCs           |
+| `20260607120003_realtime_and_grants.sql` | Realtime + role grants  |
 
 | #   | Table            | Purpose                                                              |
 | --- | ---------------- | -------------------------------------------------------------------- |
@@ -90,18 +90,22 @@ Create migrations in `supabase/migrations/` (see `README.md` — one concern per
 
 ## C. Row Level Security (before any app queries)
 
-Create `supabase/migrations/20260607130000_rls_policies.sql`:
+Migration: `supabase/migrations/20260607130000_rls_policies.sql`
 
-- [ ] `ALTER TABLE … ENABLE ROW LEVEL SECURITY` on **every** table
-- [ ] `customers` — own record only; filter `deleted_at IS NULL`
-- [ ] `merchants` — own record only
-- [ ] `loyalty_cards` — read: authenticated; write: owning merchant
-- [ ] `customer_cards` — customer reads own; merchant updates stamps for their `merchant_id`
-- [ ] `stamp_sessions` — customer own sessions; merchant their queue
-- [ ] `redemptions` — customer own; merchant their redemptions
-- [ ] `audit_log` — admin service role only
-- [ ] `otp_tokens` — service role only (no client access)
+- [x] `ALTER TABLE … ENABLE ROW LEVEL SECURITY` on **every** table
+- [x] Helper functions: `current_customer_id()`, `current_merchant_id()`
+- [x] `customers` — own record only; filter `deleted_at IS NULL`
+- [x] `merchants` — own record + active merchant read for wallet/QR
+- [x] `loyalty_cards` — read: active cards public; write: owning merchant
+- [x] `customer_cards` — customer reads own; merchant reads/updates their `merchant_id`
+- [x] `stamp_sessions` — customer own sessions; merchant their queue
+- [x] `redemptions` — customer own; merchant read/update (insert via service role)
+- [x] `audit_log` — no client policies (service role only)
+- [x] `otp_tokens` — no client policies (service role only)
+- [ ] Push: `pnpm exec supabase db push`
 - [ ] Smoke-test: anon key cannot read another user's `customer_cards`
+
+> **Day 2 auth note:** Customer JWT must include `app_metadata.customer_id` (see Technical Doc §4.2). Phone login lookup uses a **service-role API route** (anon cannot SELECT by phone).
 
 ---
 

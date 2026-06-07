@@ -1,0 +1,11 @@
+{
+  "app": {
+    "title": "YORewards",
+    "description": "Your digital stamp wallet",
+    "cta": "Get started"
+  },
+  "nav": {
+    "wallet": "Wallet",
+    "scan": "Scan"
+  }
+}

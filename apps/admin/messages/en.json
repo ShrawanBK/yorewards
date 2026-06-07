@@ -1,0 +1,11 @@
+{
+  "app": {
+    "title": "YORewards Admin",
+    "description": "Super admin dashboard",
+    "cta": "Sign in"
+  },
+  "nav": {
+    "merchants": "Merchants",
+    "audit": "Audit log"
+  }
+}

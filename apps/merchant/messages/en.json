@@ -1,0 +1,11 @@
+{
+  "app": {
+    "title": "YORewards Merchant",
+    "description": "Merchant dashboard",
+    "cta": "Sign in"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "customers": "Customers"
+  }
+}

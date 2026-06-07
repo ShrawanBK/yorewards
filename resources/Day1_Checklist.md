@@ -12,7 +12,7 @@
 - [x] Three Next.js apps (`customer` :3000, `merchant` :3001, `admin` :3002)
 - [x] `@repo/eslint-config`, `@repo/typescript-config`, `@repo/tailwind-config`
 - [x] Brand colors in `@repo/tailwind-config`
-- [x] `@repo/ui` scaffolded (placeholder components only)
+- [x] `@repo/ui` — shadcn components (`button`, `input`, `label`, `card`, `badge`, `sonner`)
 - [x] Supabase project created (EU West / Frankfurt)
 
 ---
@@ -143,19 +143,19 @@ Migration: `supabase/migrations/20260607140000_storage_merchant_logos.sql`
 
 ## F. shadcn/ui in `@repo/ui`
 
-- [ ] Init shadcn in `packages/ui` (shared components pattern for monorepo)
-- [ ] Add Day 1 essentials: `button`, `input`, `label`, `card`, `badge`, `toast`/`sonner`
-- [ ] Verify one app imports `@repo/ui` button with brand Tailwind classes
-- [ ] Confirm `tailwind.config.ts` in each app presets `@repo/tailwind-config`
+- [x] Init shadcn in `packages/ui` (shared components pattern for monorepo)
+- [x] Add Day 1 essentials: `button`, `input`, `label`, `card`, `badge`, `toast`/`sonner`
+- [x] Verify one app imports `@repo/ui` button with brand Tailwind classes
+- [x] Confirm `tailwind.config.ts` in each app presets `@repo/tailwind-config`
 
 ---
 
 ## G. next-intl scaffold (all 3 apps)
 
-- [ ] Install `next-intl` in customer, merchant, admin
-- [ ] Add `messages/en.json` per app (minimal: app title, nav placeholders)
-- [ ] Wire `NextIntlClientProvider` in each app root layout
-- [ ] Confirm `pnpm exec turbo dev --filter=customer` loads without i18n errors
+- [x] Install `next-intl` in customer, merchant, admin
+- [x] Add `messages/en.json` per app (minimal: app title, nav placeholders)
+- [x] Wire `NextIntlClientProvider` + `i18n/request.ts` plugin (no middleware — en-only, Next 16 compatible)
+- [x] Confirm `pnpm exec turbo dev --filter=customer` loads without i18n errors
 
 ---
 
@@ -165,16 +165,16 @@ Migration: `supabase/migrations/20260607140000_storage_merchant_logos.sql`
 
 Per-app `.env.local` (gitignored):
 
-- [ ] **Shared (all apps):** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
-- [ ] **Customer:** `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_MERCHANT_URL` (+ SMS vars can be placeholders until Day 5)
-- [ ] **Merchant:** `NEXT_PUBLIC_MERCHANT_URL`, `NEXT_PUBLIC_APP_URL`
-- [ ] **Admin:** `NEXT_PUBLIC_ADMIN_URL`, `ADMIN_EMAIL`
+- [x] **Shared (all apps):** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- [x] **Customer:** `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_MERCHANT_URL` (+ SMS vars can be placeholders until Day 5)
+- [x] **Merchant:** `NEXT_PUBLIC_MERCHANT_URL`, `NEXT_PUBLIC_APP_URL`
+- [x] **Admin:** `NEXT_PUBLIC_ADMIN_URL`, `ADMIN_EMAIL`
 
-Set the same vars in **Vercel** for each project:
+Set the same vars in **Vercel** for each project (deferred):
 
 - [ ] Production env
 - [ ] Preview env
-- [ ] Local `.env.local` tested — at least one app connects to Supabase
+- [x] Local `.env.local` tested — at least one app connects to Supabase
 
 ---
 
@@ -235,4 +235,4 @@ pnpm exec turbo dev --filter=customer   # smoke test :3000
 
 ---
 
-_Day 1 complete → start Day 2: Auth & minimal admin merchant approval queue._
+_Day 1 complete → start Day 2: [`Day2_Checklist.md`](Day2_Checklist.md) — Auth & onboarding._

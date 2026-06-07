@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "@repo/ui/sonner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,20 +17,27 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "YORewards Admin",
-  description: "YORewards admin dashboard",
+  description: "Super admin dashboard",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const messages = await getMessages();
+
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <NextIntlClientProvider messages={messages}>
+          {children}
+          <Toaster />
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }

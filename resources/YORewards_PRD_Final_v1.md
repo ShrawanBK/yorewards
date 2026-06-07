@@ -198,11 +198,22 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 
 ### 5.2 Reward Redemption OTP Flow
 
-1. Customer reaches stamp target → reward status: `pending_otp`
+1. Customer reaches stamp target → `customer_cards.reward_status`: `pending_otp` (and `targets_reached` increments)
 2. Customer taps 'Claim Reward' → OTP sent to registered phone
-3. Customer enters 6-digit OTP → verified → redemption code generated
-4. OTP expires in 5 minutes — one attempt per claim
-5. This is the **only moment SMS cost is incurred** (~1 SMS per 10 visits)
+3. Customer enters 6-digit OTP → verified → `reward_status`: `unlocked`, redemption row created with code
+4. Customer shows code to merchant → merchant confirms → `complete_redemption` RPC resets stamps and starts new cycle
+5. OTP expires in 5 minutes — one attempt per claim
+6. This is the **only moment SMS cost is incurred** (~1 SMS per 10 visits)
+
+**Reward status state machine** (on `customer_cards`):
+
+| Status | Meaning |
+| --- | --- |
+| `collecting` | Earning stamps toward target |
+| `pending_otp` | Target reached — customer must verify phone to claim |
+| `unlocked` | OTP verified — redemption code active, awaiting merchant confirm |
+
+After merchant confirms, status returns to `collecting` with `current_stamps = 0` and `cycle_number` incremented. Completion is tracked on `redemptions.status`, not on `customer_cards`.
 
 ### 5.3 Known Limitation — Documented
 
@@ -249,7 +260,7 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 
 - Visual card grid — each card renders with full merchant branding
 - Sorted by most recently stamped
-- 'Reward Ready' green banner on unlocked reward cards
+- 'Reward Ready' green banner on cards with `reward_status` `pending_otp` or `unlocked`
 - Empty state: prompt to scan first QR
 
 **Card Detail**
@@ -259,7 +270,8 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 - Progress bar with shimmer animation
 - Reward type, description, and minimum spend clearly displayed
 - 'Scan to Earn' button → opens QR scanner
-- If reward unlocked: 'Claim Reward' CTA → triggers OTP verification
+- If reward ready (`pending_otp`): 'Claim Reward' CTA → triggers OTP verification
+- If OTP verified (`unlocked`): show redemption code to present to merchant
 
 **Stamp Flow**
 
@@ -271,12 +283,12 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 
 **Reward Redemption**
 
-1. Customer taps 'Claim Reward'
+1. Customer taps 'Claim Reward' (when `pending_otp`)
 2. OTP sent to registered phone
-3. Customer enters OTP → verified → unique 6-digit alphanumeric code generated
+3. Customer enters OTP → verified → `reward_status` set to `unlocked`, unique 6-digit alphanumeric code generated (`redemptions` row)
 4. Customer shows code to merchant
-5. Merchant enters code → validates → confirms
-6. Stamp count resets to 0 → new cycle → customer notified
+5. Merchant enters code → validates → confirms via `complete_redemption` RPC
+6. Stamp count resets to 0, new cycle starts (`cycle_number` increments), customer notified
 7. Code is single-use — cannot be reused
 
 ### 6.3 Merchant — Dashboard
@@ -293,8 +305,8 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 **Redemption Management**
 
 - Enter 6-digit code from customer screen
-- System validates → shows customer name, reward description, stamp history
-- Merchant confirms → logged → customer card resets
+- System validates → shows customer name, reward description, stamp history (approved `stamp_sessions`, excluding `voided`)
+- Merchant confirms → `complete_redemption` RPC → logged → customer card resets
 - Double redemption prevented: code single-use
 
 **Analytics**
@@ -302,8 +314,8 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 - Total active cards (customers currently collecting)
 - Stamps issued: today / this week / this month
 - Rewards redeemed: today / this week / this month
-- Redemption rate: % of completed cycles claimed
-- Recent activity feed: last 20 actions
+- Redemption rate: `redeemed count ÷ sum(targets_reached)` for merchant's `customer_cards` (both stored counters — no guesswork)
+- Recent activity feed: last 20 approved/`voided` `stamp_sessions` + redemptions
 
 ### 6.4 Super Admin — Dashboard
 
@@ -311,7 +323,7 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 - Merchant management: list, filter by country/category/status, suspend or reactivate
 - Customer management: view all, see active cards, suspend accounts
 - Platform analytics: total merchants, customers, stamps, rewards (all-time + by period)
-- Manual stamp tool: issue or void a stamp with audit log entry
+- Manual stamp tool: issue (`issue_stamp_manual` RPC) or void (`void_stamp` RPC on a specific approved `stamp_session`) with `audit_log` entry
 - Full audit log: all admin actions timestamped with admin ID
 
 ### 6.5 Notifications

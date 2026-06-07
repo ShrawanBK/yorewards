@@ -360,22 +360,25 @@ packages/utils/             → @repo/utils
 | `merchant_id`       | `uuid`        | Denormalised for fast wallet queries.                              |
 | `current_stamps`    | `integer`     | Stamp count in active cycle. Resets on redemption.                 |
 | `total_stamps_ever` | `integer`     | All-time count. Never resets.                                      |
-| `reward_status`     | `text`        | `'collecting'` \| `'pending_otp'` \| `'unlocked'` \| `'redeemed'`. |
+| `reward_status`     | `text`        | `'collecting'` \| `'pending_otp'` \| `'unlocked'`. See §4.6.       |
+| `cycle_number`      | `integer`     | Starts at 1; increments on each completed redemption.              |
+| `targets_reached`   | `integer`     | Times stamp target hit — analytics denominator for redemption rate. |
 | `last_stamped_at`   | `timestamptz` | Used for wallet sort order.                                        |
 | `created_at`        | `timestamptz` | Auto-set.                                                          |
 
-#### `stamp_sessions` (QR scan events)
+#### `stamp_sessions` (stamp event log)
 
 | Column             | Type          | Notes                                                       |
 | ------------------ | ------------- | ----------------------------------------------------------- |
 | `id`               | `uuid`        | Primary key.                                                |
 | `customer_card_id` | `uuid`        | References `customer_cards(id)`.                            |
 | `merchant_id`      | `uuid`        | References `merchants(id)`.                                 |
-| `session_token`    | `text`        | UNIQUE. One-time token per QR scan.                         |
-| `status`           | `text`        | `'pending'` \| `'approved'` \| `'rejected'` \| `'expired'`. |
+| `session_token`    | `text`        | UNIQUE. One-time token per QR scan (or UUID for admin issue). |
+| `source`           | `text`        | `'qr_scan'` \| `'admin_manual'`.                            |
+| `status`           | `text`        | `'pending'` \| `'approved'` \| `'rejected'` \| `'expired'` \| `'voided'`. |
 | `rejection_reason` | `text`        | Optional. Set by merchant on reject.                        |
-| `created_at`       | `timestamptz` | Auto-set. Expires 5 minutes after this.                     |
-| `resolved_at`      | `timestamptz` | Set when approved/rejected/expired.                         |
+| `created_at`       | `timestamptz` | Auto-set. Expires 5 minutes after this (QR pending only).   |
+| `resolved_at`      | `timestamptz` | Set when approved/rejected/expired/voided.                  |
 
 #### `redemptions`
 
@@ -385,6 +388,7 @@ packages/utils/             → @repo/utils
 | `customer_card_id` | `uuid`        | References `customer_cards(id)`.          |
 | `merchant_id`      | `uuid`        | References `merchants(id)`.               |
 | `redemption_code`  | `text`        | UNIQUE. 6-digit alphanumeric. Single use. |
+| `cycle_number`     | `integer`     | Snapshot of `customer_cards.cycle_number` at OTP verify. |
 | `status`           | `text`        | `'pending'` \| `'redeemed'`.              |
 | `created_at`       | `timestamptz` | Created when OTP verified.                |
 | `redeemed_at`      | `timestamptz` | Set when merchant confirms.               |
@@ -446,12 +450,60 @@ import type { Database } from '@repo/supabase/types'
 
 ```
 supabase/migrations/
-  20260529_001_init.sql              ← All 8 tables + forward-compatible columns
-  20260529_002_rls_policies.sql      ← RLS policies
-  20260529_003_add_*.sql             ← Example: additive v2 migration (never edit 001)
+  README.md                          ← What each file does (start here)
+  20260607120000_extensions.sql      ← pgcrypto
+  20260607120001_tables.sql          ← 8 tables + indexes
+  20260607120002_functions.sql       ← RPCs
+  20260607120003_realtime_and_grants.sql
+  20260607130000_rls_policies.sql    ← RLS policies (Section C)
+  20260607*_add_*.sql                ← Future additive migrations only
 ```
 
 Anyone cloning the repo runs `supabase db push` and their database matches production exactly.
+
+### 4.6 Business Logic — RPCs & State Machines
+
+> All multi-step mutations go through Postgres RPCs (atomic, auditable). Admin tools use **service role**; merchant/customer flows use authenticated clients where RLS allows.
+
+#### Reward status (`customer_cards.reward_status`)
+
+```
+collecting ──(target hit on approve)──► pending_otp
+pending_otp ──(OTP verified)──────────► unlocked
+unlocked ──(complete_redemption)──────► collecting  (+ current_stamps=0, cycle_number++)
+```
+
+Redemption completion lives on `redemptions.status` (`pending` → `redeemed`), not as a card status.
+
+#### Stamp sessions (`stamp_sessions`)
+
+| `source` | `status` flow | Used for |
+| -------- | ------------- | -------- |
+| `qr_scan` | `pending` → `approved` \| `rejected` \| `expired` | Customer scan + merchant queue |
+| `admin_manual` | `approved` (immediate) | Super Admin issue tool |
+| either | `approved` → `voided` | Super Admin void (row kept for audit) |
+
+**Stamp history query:** `WHERE status = 'approved'` (exclude `voided`). Pending/expired never counted as earned stamps.
+
+#### Database RPCs
+
+| RPC | Caller | Purpose |
+| --- | ------ | ------- |
+| `increment_stamps(card_id, new_status)` | Merchant approve | +1 stamp; sets `pending_otp` + `targets_reached++` when target hit |
+| `void_stamp(session_id)` | Admin (service role) | Void one approved session; decrement; recalc status |
+| `issue_stamp_manual(card_id)` | Admin (service role) | Insert `admin_manual` approved session + increment |
+| `complete_redemption(redemption_id)` | Merchant confirm | Mark redeemed; reset stamps; `cycle_number++` |
+
+#### Analytics formulas (merchant dashboard)
+
+| Metric | Query |
+| ------ | ----- |
+| Stamps issued (period) | Count `stamp_sessions` where `status = 'approved'` and `created_at` in range |
+| Rewards redeemed (period) | Count `redemptions` where `status = 'redeemed'` and `redeemed_at` in range |
+| Redemption rate | `SUM(redeemed redemptions) ÷ SUM(customer_cards.targets_reached)` for merchant |
+| Active collectors | Count `customer_cards` where `reward_status = 'collecting'` and `current_stamps > 0` |
+
+---
 
 ### 4.5 Forward-Compatible Schema — v2 Without Rewrites
 
@@ -462,7 +514,7 @@ Anyone cloning the repo runs `supabase db push` and their database matches produ
 | **UUID primary keys everywhere** | Stable references across migrations | New `merchant_staff` table FKs to existing `merchants.id` |
 | **Text status columns, not Postgres enums** | Add new values without `ALTER TYPE` pain | `'suspended'` on customers already works; v2 adds `'signup'` to `otp_tokens.purpose` |
 | **Nullable columns for future features** | Ship MVP without using every column | `merchants.rejection_reason`, `customers.deleted_at` |
-| **`stamp_sessions` = immutable event log** | Approved sessions are the stamp audit trail | v2 `stamp_events` can reference `stamp_sessions.id` instead of replacing counters |
+| **`stamp_sessions` = stamp event log** | Every stamp (QR or admin) is a row; void = status `voided` | Admin void/issue without a separate `stamp_events` table |
 | **Denormalised `merchant_id` on child rows** | Fast RLS + wallet queries today | v2 multi-location adds optional `location_id` on `stamp_sessions` / `customer_cards` |
 | **`loyalty_cards` separate from `merchants`** | One merchant → many cards/locations later | v2 adds rows, not schema surgery |
 | **`auth.users` for merchant identity** | Supabase Auth owns credentials | v2 multi-staff = new `merchant_staff(user_id, merchant_id, role)` — `merchants.user_id` stays owner |
@@ -476,7 +528,7 @@ Anyone cloning the repo runs `supabase db push` and their database matches produ
 | Phone OTP at signup | Extend `otp_tokens.purpose` | `customers` |
 | Multi-staff merchants | `merchant_staff` table | `merchants`, `loyalty_cards` |
 | Subscription billing | `subscriptions` table | `merchants` |
-| Per-stamp void/history UI | `stamp_events` table (optional) | `stamp_sessions`, `customer_cards` |
+| Per-stamp void/history UI | Optional `stamp_events` in v2 | `stamp_sessions` with `voided` status + `source` |
 | Multi-location | `merchant_locations` + nullable `location_id` | `merchants`, `loyalty_cards` |
 
 ---
@@ -744,6 +796,28 @@ export async function approveStamp(sessionId: string, customerCardId: string) {
   });
   // Supabase Realtime pushes session update to customer instantly
 }
+```
+
+### 7.4 Admin Stamp Tools & Redemption Complete
+
+```ts
+// Admin void — pick an approved stamp_session from history
+await supabase.rpc("void_stamp", { p_session_id: sessionId });
+await supabase.from("audit_log").insert({
+  admin_id,
+  action: "void_stamp",
+  target_type: "stamp",
+  target_id: sessionId,
+  notes,
+});
+
+// Admin manual issue
+const { data: sessionId } = await supabase.rpc("issue_stamp_manual", {
+  p_card_id: customerCardId,
+});
+
+// Merchant confirms redemption code
+await supabase.rpc("complete_redemption", { p_redemption_id: redemptionId });
 ```
 
 ---

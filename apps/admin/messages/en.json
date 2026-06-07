@@ -7,5 +7,71 @@
   "nav": {
     "merchants": "Merchants",
     "audit": "Audit log"
+  },
+  "auth": {
+    "title": "Admin sign in",
+    "subtitle": "Restricted access for YORewards staff.",
+    "fields": {
+      "email": "Email",
+      "password": "Password"
+    },
+    "placeholders": {
+      "email": "you@yorewards.com"
+    },
+    "actions": {
+      "signin": "Sign in"
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password"
+    },
+    "errors": {
+      "email": "Enter a valid email",
+      "password": "At least 6 characters",
+      "signin": "Invalid credentials"
+    }
+  },
+  "merchants": {
+    "title": "Merchants",
+    "subtitle": "Review registrations and manage merchant access.",
+    "logout": "Logout",
+    "filters": {
+      "all": "All",
+      "pending": "Pending",
+      "active": "Active",
+      "suspended": "Suspended",
+      "rejected": "Rejected"
+    },
+    "status": {
+      "pending": "Pending",
+      "active": "Active",
+      "suspended": "Suspended",
+      "rejected": "Rejected"
+    },
+    "empty": {
+      "title": "Nothing here",
+      "description": "No merchants match this filter yet."
+    },
+    "registered": "Registered {date}",
+    "approvedOn": "Approved {date}",
+    "rejectedReason": "Reason: {reason}",
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "suspend": "Suspend",
+      "reactivate": "Reactivate"
+    },
+    "reject": {
+      "placeholder": "Reason for rejection",
+      "label": "Rejection reason for {name}",
+      "required": "Add a reason before rejecting."
+    },
+    "toast": {
+      "approved": "{name} approved",
+      "rejected": "{name} rejected",
+      "suspended": "{name} suspended",
+      "reactivated": "{name} reactivated",
+      "error": "Something went wrong. Please try again."
+    }
   }
 }

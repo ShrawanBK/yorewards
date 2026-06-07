@@ -27,3 +27,14 @@ export async function getPendingMerchants() {
   if (error) throw error;
   return data ?? [];
 }
+
+export async function getAllMerchants() {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("merchants")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data ?? [];
+}

@@ -14,7 +14,8 @@
     "./badge": "./src/components/ui/badge.tsx",
     "./sonner": "./src/components/ui/sonner.tsx",
     "./tabs": "./src/components/ui/tabs.tsx",
-    "./separator": "./src/components/ui/separator.tsx"
+    "./separator": "./src/components/ui/separator.tsx",
+    "./dialog": "./src/components/ui/dialog.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

@@ -10,7 +10,9 @@
     "./active-merchant": "./src/active-merchant.ts",
     "./types": "./src/types.ts",
     "./queries/merchants": "./src/queries/merchants.ts",
-    "./queries/customers": "./src/queries/customers.ts"
+    "./queries/customers": "./src/queries/customers.ts",
+    "./queries/locations": "./src/queries/locations.ts",
+    "./queries/loyalty-cards": "./src/queries/loyalty-cards.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

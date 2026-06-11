@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@repo/supabase/server";
 import { createServiceRoleClient } from "@repo/supabase/service-role";
 import { switchActiveMerchant } from "@repo/supabase/queries/merchants";
+import { createDefaultLocationForMerchant } from "@repo/supabase/queries/locations";
 import type { CountryCode } from "@repo/supabase/types";
 import type { ActionResult } from "@/shared/types/action-result";
 import { isValidMerchantPhone } from "@/features/business/utils/phoneSchema";
@@ -44,9 +45,15 @@ export async function addBusinessAction(
 
   if (merchantError) return { error: merchantError.message };
 
+  await createDefaultLocationForMerchant(
+    merchant.id,
+    String(formData.get("business_name") ?? ""),
+  );
+
   await switchActiveMerchant(user.id, merchant.id);
 
   revalidatePath("/merchant/dashboard");
+  revalidatePath("/merchant/business");
   redirect("/merchant/dashboard");
 }
 
@@ -63,5 +70,7 @@ export async function switchActiveMerchantAction(
   if (!merchant) return { error: "Business not found" };
 
   revalidatePath("/merchant/dashboard");
+  revalidatePath("/merchant/business");
+  revalidatePath("/merchant/loyalty-card");
   return {};
 }

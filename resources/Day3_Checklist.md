@@ -6,6 +6,21 @@
 
 ---
 
+## Implementation status (June 2026)
+
+| Area | Status |
+| ---- | ------ |
+| Phase A — DB + queries + QR payload | ✅ Done |
+| Phase B — Business hub + branches UI | ✅ Done (loading skeletons deferred) |
+| Phase C — Loyalty card config (`/merchant/loyalty-card`) | ✅ Done (server-side validation; Zod-in-component deferred) |
+| Phase D — Automated verify | ✅ Done (`lint`, `check-types`, `build` pass) |
+| Phase D — Manual E2E + RLS smoke | ⏳ Your turn |
+| Day 3 git commit | ⏳ When you ask |
+
+**Code complete ~95%.** Remaining: manual browser test, optional RLS smoke test, commit.
+
+---
+
 ## Scope change (read once)
 
 | Concept             | What it is                               | Table / UI                                                                    |
@@ -21,17 +36,17 @@
 ## Build order (dependency chain)
 
 ```text
-1. DB migration (merchant_locations + location_id on events + backfill)
+1. DB migration (merchant_locations + location_id on events + backfill)     ✅
       ↓
-2. @repo/supabase queries + types regen
+2. @repo/supabase queries + types regen                                   ✅
       ↓
-3. Business hub UI (list → detail → branches panel)
+3. Business hub UI (list → detail → branches panel)                       ✅
       ↓
-4. PRD §6.1 — loyalty card config + live preview (/merchant/card)
+4. PRD §6.1 — loyalty card config + live preview (/merchant/loyalty-card) ✅
       ↓
-5. Per-branch QR generation + PNG download
+5. Per-branch QR generation + PNG download                                ✅
       ↓
-6. Lint / types / manual E2E smoke test
+6. Lint / types / manual E2E smoke test                                   ⏳ automated ✅ · manual pending
 ```
 
 ---
@@ -40,90 +55,94 @@
 
 ### A1. Migration `merchant_locations`
 
-- [ ] Apply `supabase/migrations/20260611120000_merchant_locations.sql`
-- [ ] Table `merchant_locations`: `id`, `merchant_id`, `name`, `address`, `city`, `is_primary`, `is_active`, timestamps
-- [ ] Nullable `location_id` on `stamp_sessions` and `redemptions` (FK → `merchant_locations`, `ON DELETE SET NULL`)
-- [ ] Backfill: one **primary** location per existing merchant (`name` = business name or `"Main location"`)
-- [ ] RLS: owner CRUD where `merchant_id IN (SELECT current_merchant_ids())`
-- [ ] Partial unique index: at most one `is_primary = true` per `merchant_id`
-- [ ] Run `pnpm exec supabase db push` then `pnpm supabase:types` (cloud-linked — **no Docker**)
-- [ ] Merge `types.generated.ts` into `packages/supabase/src/types.ts` (strict unions preserved)
+- [x] Apply `supabase/migrations/20260611120000_merchant_locations.sql`
+- [x] Table `merchant_locations`: `id`, `merchant_id`, `name`, `address`, `city`, `is_primary`, `is_active`, timestamps
+- [x] Nullable `location_id` on `stamp_sessions` and `redemptions` (FK → `merchant_locations`, `ON DELETE SET NULL`)
+- [x] Backfill: one **primary** location per existing merchant (`name` = business name or `"Main location"`)
+- [x] RLS: owner CRUD where `merchant_id IN (SELECT current_merchant_ids())`
+- [x] Partial unique index: at most one `is_primary = true` per `merchant_id`
+- [x] Run `pnpm exec supabase db push` then `pnpm supabase:types` (cloud-linked — **no Docker**)
+- [x] Merge `types.generated.ts` into `packages/supabase/src/types.ts` (strict unions preserved)
 
 ### A2. Query layer (`@repo/supabase`)
 
-- [ ] `getLocationsByMerchantId(merchantId)`
-- [ ] `createMerchantLocation(...)`, `updateMerchantLocation(...)`, `setPrimaryLocation(...)`
-- [ ] `deactivateMerchantLocation(...)` — soft via `is_active` (no hard delete if events reference it)
-- [ ] Server actions in `features/business/api/` (or new `features/branches/` if split)
+- [x] `getLocationsByMerchantId(merchantId)` — `packages/supabase/src/queries/locations.ts`
+- [x] `createMerchantLocation(...)`, `updateMerchantLocation(...)`, `setPrimaryLocation(...)`
+- [x] `deactivateMerchantLocation(...)` — soft via `is_active` (no hard delete if events reference it)
+- [x] `getLoyaltyCardByMerchantId`, `upsertLoyaltyCardForMerchant` — `packages/supabase/src/queries/loyalty-cards.ts`
+- [x] Server actions — `features/business/api/locationActions.ts` + `features/loyalty-card/api/loyaltyCardActions.ts`
+- [x] Default primary branch on new business — `createDefaultLocationForMerchant` in `addBusinessAction`
 
 ### A3. QR payload (design lock)
 
-- [ ] QR encodes: `loyalty_card_id` + `location_id` (and session token flow unchanged)
-- [ ] All branch QRs resolve to the **same** loyalty card; stamp session stores `location_id` for analytics
-- [ ] Document payload format in Technical Doc §6 (QR section)
+- [x] QR encodes: `loyalty_card_id` (`c`) + `location_id` (`l`) + `merchant_id` (`m`) — `buildLoyaltyCardQrUrl`
+- [x] All branch QRs resolve to the **same** loyalty card; stamp session will store `location_id` on scan (Day 5)
+- [x] Document payload format in Technical Doc §7.1 (`/scan?m=…&c=…&l=…`)
 
 ---
 
 ## Phase B — Business hub UI (professional & easy)
 
-> Replace the dashboard stub feel with a clear **Business** area. FDA: extend `features/business` or add `features/branches` + widget composition in `widgets/MerchantDashboard`.
+> FDA: `features/business` + `widgets/MerchantShell` / `MerchantProtectedShell`.
 
 ### B1. Navigation & layout
 
-- [ ] Merchant nav: **Dashboard** | **Business** | **Card** (Day 3) | Settings stub
-- [ ] Route: `/merchant/business` — business hub (list + detail + branches)
-- [ ] Active business cookie/context unchanged; all branch ops scoped to active `merchant_id`
+- [x] Merchant nav: **Dashboard** | **Business** | **Loyalty card** | **Settings** stub — `widgets/MerchantShell`
+- [x] Route: `/merchant/business` — business hub (list + detail + branches)
+- [x] Active business cookie/context unchanged; all branch ops scoped to active `merchant_id`
 
 ### B2. Business list (switcher upgrade)
 
-- [ ] Card-based list (not raw rows): logo/initial, name, category, status badge, branch count
-- [ ] Filters: All / Active / Pending / Inactive
-- [ ] Primary action: **Add business** → existing `/merchant/add-business`
-- [ ] Empty state + loading skeletons
+- [x] Card-based list: logo/initial, name, category, status badge, branch count — `MerchantBusinessHub`
+- [x] Filters: All / Active / Inactive
+- [x] Primary action: **Add business** → `/merchant/add-business`
+- [x] Empty state
+- [ ] Loading skeletons (deferred — uses instant server render today)
 
 ### B3. Business detail panel
 
-- [ ] Selected business: full profile (reuse/enhance `MerchantBusinessDetailCard`)
-- [ ] Sections: Overview | Branches | Card summary (link to `/merchant/card`)
-- [ ] Status, rejection reason, dates, contact, brand color — consistent typography and spacing
-- [ ] Mobile: stack layout; desktop: list left, detail right (master–detail)
+- [x] Selected business: full profile — `MerchantBusinessDetailCard` in Overview tab
+- [x] Sections: Overview | Branches | Loyalty card summary (link to `/merchant/loyalty-card`)
+- [x] Status, rejection reason, dates, contact, brand color
+- [x] Mobile: stack layout; desktop: master–detail (`lg:grid-cols-[340px_1fr]`)
 
 ### B4. Branches management
 
-- [ ] Branch list under active business: name, address/city, primary badge, active/inactive
-- [ ] **Add branch** dialog/sheet: name (required), address, city
-- [ ] **Edit branch** — same fields
-- [ ] **Set as primary** — moves primary flag (DB enforces one primary)
-- [ ] Deactivate branch (confirm dialog) — `is_active = false`; hide from QR picker
-- [ ] Cannot delete last branch; primary cannot be deactivated without picking another primary
-- [ ] i18n: all labels, validation, `aria-label`s in `messages/en.json`
+- [x] Branch list: name, address/city, primary badge, active/inactive — `BranchList`
+- [x] **Add branch** dialog — `BranchFormDialog`
+- [x] **Edit branch** — same dialog
+- [x] **Set as primary** — `setPrimaryBranchAction` + DB partial unique index
+- [x] Deactivate branch (confirm dialog) — hidden from loyalty-card QR list
+- [x] Cannot deactivate last active branch; primary auto-reassigned before deactivate
+- [x] i18n: `branches.*` in `messages/en.json`
 
 ### B5. UX polish
 
-- [ ] Use `@repo/ui` primitives (`Card`, `Badge`, `Button`, `Dialog`, `Sheet`, `Empty`)
-- [ ] Consistent empty/loading/error states
-- [ ] `useFormatter()` for dates (no hydration mismatch)
-- [ ] Phone display unchanged (NP/FI validation from Day 2)
+- [x] `@repo/ui`: `Card`, `Badge`, `Button`, `Dialog`, `Tabs`, `Field`, `Input`
+- [ ] `@repo/ui` `Sheet` / `Empty` primitives (used Dialog + inline empty states instead)
+- [x] Empty and error states on branch list and forms
+- [x] `useFormatter()` for dates in `MerchantBusinessDetailCard`
+- [x] Phone display unchanged (NP/FI validation from Day 2)
 
 ---
 
 ## Phase C — PRD §6.1 Loyalty Card Configuration
 
-Route: `/merchant/card` (active business must be selected; guard if no business or not `active`).
+Route: `/merchant/loyalty-card` (read-only preview when `merchant.status !== 'active'`).
 
 ### C1. Card identity
 
-- [ ] Logo upload — JPG/PNG, max 2MB → `browser-image-compression` before Supabase Storage (`merchant-logos` bucket)
-- [ ] Primary brand color — preset palette + custom hex (`merchants.primary_color` or card-level if split)
-- [ ] Card name — max 40 chars (`loyalty_cards.card_name`)
-- [ ] Card description — max 120 chars, shown to customer
-- [ ] **Live card preview** — updates in real time (shared `LoyaltyCard` renderer component for merchant + customer later)
+- [x] Logo upload — JPG/PNG, max 2MB → `browser-image-compression` → Supabase `merchant-logos` bucket
+- [x] Primary brand color — preset palette + custom hex (`merchants.primary_color`)
+- [x] Card name — max 40 chars (`loyalty_cards.card_name`)
+- [x] Card description — max 120 chars
+- [x] **Live card preview** — `LoyaltyCardPreview` (reusable for customer app later)
 
 ### C2. Stamp rules
 
-- [ ] Stamp target — integer 5–50 (`loyalty_cards.stamp_target`)
-- [ ] Minimum spend — optional, `0` = none (`min_spend` + `min_spend_currency` NPR/EUR from merchant country)
-- [ ] Preview shows customer-facing min spend line when set
+- [x] Stamp target — integer 5–50 (`loyalty_cards.stamp_target`)
+- [x] Minimum spend — optional, `0` = none (`min_spend` + `min_spend_currency` NPR/EUR)
+- [x] Preview shows customer-facing min spend line when set
 
 ### C3. Reward types (all three)
 
@@ -133,22 +152,22 @@ Route: `/merchant/card` (active business must be selected; guard if no business 
 | % discount     | `percent_discount` | Percent + scope text                              |
 | Fixed discount | `fixed_discount`   | Amount in NPR or EUR                              |
 
-- [ ] Radio/select reward type with conditional fields
-- [ ] Zod schemas inside component with `useTranslations` for errors
-- [ ] Save creates/updates single active `loyalty_cards` row per business (MVP: one card per merchant)
+- [x] Reward type toggle with conditional fields — `LoyaltyCardConfigForm`
+- [ ] Zod schemas inside component with `useTranslations` for errors (validation in `saveLoyaltyCardConfigAction` for now)
+- [x] Save creates/updates single `loyalty_cards` row per business (`upsertLoyaltyCardForMerchant`)
 
 ### C4. QR code (per branch)
 
-- [ ] After card exists: QR section lists **each active branch**
-- [ ] Generate static QR per branch (`qrcode.react`) — payload includes `loyalty_card_id` + `location_id`
-- [ ] Download PNG per branch for counter display
-- [ ] Copy: explain one card, many counters; stamps aggregate across branches
+- [x] QR section lists **each active branch** after card exists — `LoyaltyCardBranchQrDownloads`
+- [x] Static QR per branch (`qrcode.react` / `QRCodeCanvas`) — `loyalty_card_id` + `location_id`
+- [x] Download PNG per branch
+- [x] Copy explains one card, many counters (`loyaltyCard.qr.subtitle`)
 
 ### C5. API / server
 
-- [ ] Server actions or route handlers for card CRUD (authenticated + `merchant_id` ownership check)
-- [ ] Auto-create default `loyalty_cards` row on first save if missing
-- [ ] Block card publish if business `status !== 'active'` (pending merchants see read-only preview + message)
+- [x] Server actions — `saveLoyaltyCardConfigAction`, `uploadLoyaltyCardLogoAction` (ownership check)
+- [x] Auto-create `loyalty_cards` row on first save if missing
+- [x] Block save when `status !== 'active'`; read-only preview + `readOnlyNotice` banner
 
 ---
 
@@ -156,46 +175,52 @@ Route: `/merchant/card` (active business must be selected; guard if no business 
 
 ### D1. Automated
 
-```bash
-pnpm exec turbo lint --filter=merchant
-pnpm exec turbo check-types --filter=merchant
-pnpm exec turbo build --filter=merchant
-```
+- [x] `pnpm exec turbo lint --filter=merchant` — pass
+- [x] `pnpm exec turbo check-types --filter=merchant` — pass
+- [x] `pnpm exec turbo build --filter=merchant` — pass
 
 ### D2. Manual E2E (merchant)
 
-1. Log in as owner with **two businesses** — switcher still works
-2. Open **Business** hub — list looks correct; select business A
-3. Add 2 branches; set one primary; deactivate one — list updates
-4. Go to **Card** — configure logo, colors, stamp rules, reward type — preview updates live
-5. Download QR for each active branch — PNG opens
-6. (Optional if Day 4 queue ready) Scan branch QR — `stamp_sessions.location_id` populated
+- [ ] Log in as owner with **two businesses** — switcher still works
+- [ ] Open **Business** hub — list looks correct; select business A
+- [ ] Add 2 branches; set one primary; deactivate one — list updates
+- [ ] Go to **Loyalty card** — configure logo, colors, stamp rules, reward type — preview updates live
+- [ ] Download QR for each active branch — PNG opens
+- [ ] (Optional — Day 5) Scan branch QR — `stamp_sessions.location_id` populated
 
 ### D3. RLS smoke test
 
 - [ ] Owner A cannot read/write Owner B's `merchant_locations`
 - [ ] Anon/authenticated customer cannot insert locations
-- [ ] `location_id` on stamp insert must belong to same `merchant_id` as session (add CHECK or app validation)
+- [ ] `location_id` on stamp insert must belong to same `merchant_id` as session (app validation on Day 5 scan flow)
 
 ---
 
-## Files & folders (expected)
+## Files delivered
 
 ```text
 supabase/migrations/20260611120000_merchant_locations.sql
-packages/supabase/src/queries/locations.ts          # new
-apps/merchant/src/features/business/                # hub UI + actions
-  components/MerchantBusinessHub.tsx                # or split list/detail/branches
+packages/supabase/src/queries/locations.ts
+packages/supabase/src/queries/loyalty-cards.ts
+apps/merchant/src/features/business/
+  components/MerchantBusinessHub.tsx
   components/BranchList.tsx
-  components/AddBranchForm.tsx
-apps/merchant/src/features/card/                    # new feature
-  components/CardConfigForm.tsx
-  components/CardPreview.tsx
-  components/BranchQrDownloads.tsx
-  api/cardActions.ts
-apps/merchant/src/app/merchant/business/page.tsx
-apps/merchant/src/app/merchant/card/page.tsx
-apps/merchant/messages/en.json                      # business.*, branches.*, card.*
+  components/BranchFormDialog.tsx
+  api/locationActions.ts
+apps/merchant/src/features/loyalty-card/
+  components/LoyaltyCardPageView.tsx
+  components/LoyaltyCardConfigForm.tsx
+  components/LoyaltyCardPreview.tsx
+  components/LoyaltyCardBranchQrDownloads.tsx
+  api/loyaltyCardActions.ts
+  utils/loyaltyCardQr.ts
+apps/merchant/src/widgets/MerchantShell/
+apps/merchant/src/widgets/MerchantProtectedShell/
+apps/merchant/src/app/merchant/(protected)/business/page.tsx
+apps/merchant/src/app/merchant/(protected)/loyalty-card/page.tsx
+apps/merchant/src/app/merchant/(protected)/settings/page.tsx   # stub
+apps/merchant/messages/en.json                                  # business.*, branches.*, loyaltyCard.*
+packages/ui/src/components/ui/dialog.tsx                        # added for branch forms
 ```
 
 ---
@@ -224,11 +249,12 @@ apps/merchant/messages/en.json                      # business.*, branches.*, ca
 
 ## Done when
 
-- [ ] Migration applied; types regenerated
-- [ ] Business hub + branches CRUD polished and i18n-complete
-- [ ] `/merchant/card` satisfies PRD §6.1 (identity, rules, 3 reward types, preview, branch QR PNG)
-- [ ] Technical Doc + PRD updated for branch-in-MVP scope
-- [ ] Lint, types, build pass for `merchant`
+- [x] Migration applied; types regenerated
+- [x] Business hub + branches CRUD polished and i18n-complete
+- [x] `/merchant/loyalty-card` satisfies PRD §6.1 (identity, rules, 3 reward types, preview, branch QR PNG)
+- [x] Technical Doc + PRD updated for branch-in-MVP scope
+- [x] Lint, types, build pass for `merchant`
+- [ ] Manual E2E smoke test (D2)
 - [ ] Day 3 git commit (when you ask)
 
 ---

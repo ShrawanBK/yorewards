@@ -27,11 +27,11 @@
 | Admin + merchant auth, approval queue                                     | ✅ Done — email + password (no magic link)                               |
 | Multi-business per owner (queries + switcher)                             | ✅ Done                                                                  |
 | Merchant business hub UI (list + detail)                                  | ✅ Done (Day 2) — Day 3 polish + branches panel                          |
-| Branches / outlets (`merchant_locations`)                                 | ⏳ Day 3 — migration `20260611120000_merchant_locations.sql`             |
-| Loyalty card config (PRD §6.1)                                            | ⏳ Day 3 — `/merchant/card` + live preview + branch QR                   |
+| Branches / outlets (`merchant_locations`)                                 | ✅ Done — migration + business hub CRUD                                  |
+| Loyalty card config (PRD §6.1)                                            | ✅ Done — `/merchant/loyalty-card` + live preview + branch QR PNG          |
 | Customer auth + wallet routes                                             | ✅ Scaffolded — full flows start Day 5 per PRD §11                       |
 
-**Next up (Day 3):** See [`Day3_Checklist.md`](Day3_Checklist.md) — branches per business, business hub UI, PRD §6.1 card config, per-branch QR.
+**Next up (Day 4):** Stamp approval queue (Realtime), redemption flow — see PRD §11.
 
 ---
 
@@ -795,7 +795,8 @@ export async function adminLogin(email: string, password: string) {
 import { QRCodeSVG } from "qrcode.react";
 
 // QR encodes a URL — customer scans and browser opens it
-const qrValue = `https://app.yorewards.com/scan?m=${merchantId}&c=${cardId}`;
+// `l` = branch (merchant_locations.id) for attribution; same card balance across branches
+const qrValue = `https://app.yorewards.com/scan?m=${merchantId}&c=${cardId}&l=${locationId}`;
 
 export function MerchantQR({ merchantId, cardId }: Props) {
   return (

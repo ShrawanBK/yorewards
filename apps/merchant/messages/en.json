@@ -5,7 +5,12 @@
     "cta": "Sign in"
   },
   "nav": {
+    "main": "Main navigation",
     "dashboard": "Dashboard",
+    "business": "Business",
+    "loyaltyCard": "Loyalty card",
+    "settings": "Settings",
+    "logout": "Log out",
     "customers": "Customers"
   },
   "auth": {
@@ -66,8 +71,24 @@
     "subtitle": "Register another business under your account.",
     "formTitle": "Business details",
     "formSubtitle": "Each business gets its own loyalty card after approval.",
+    "hubTitle": "Business hub",
+    "hubSubtitle": "Manage your businesses, branches, and card settings in one place.",
     "listTitle": "Your businesses",
     "listSubtitle": "Select a business to manage. Use filters to show active or inactive accounts.",
+    "branchCount": "{count, plural, =0 {No branches} one {# branch} other {# branches}}",
+    "tabs": {
+      "overview": "Overview",
+      "branches": "Branches",
+      "loyaltyCard": "Loyalty card"
+    },
+    "loyaltyCardSummary": {
+      "title": "Loyalty card",
+      "subtitle": "One card per business — shared across all branches.",
+      "cardName": "Card name",
+      "stampTarget": "Stamps to reward",
+      "notConfigured": "No loyalty card configured yet.",
+      "configure": "Configure loyalty card"
+    },
     "selected": "Managing",
     "addAnother": "Add another business",
     "filters": {
@@ -128,7 +149,11 @@
     "logout": "Log out",
     "accountStatus": "Account status",
     "rejectionReason": "Rejection reason",
-    "activeHint": "Loyalty card setup arrives on Day 3. Stamp queue on Day 4.",
+    "activeHint": "Configure your loyalty card, then download branch QR codes. Stamp queue arrives on Day 4.",
+    "links": {
+      "business": "Manage businesses",
+      "loyaltyCard": "Configure loyalty card"
+    },
     "status": {
       "pending": {
         "label": "Pending approval",
@@ -146,6 +171,115 @@
         "label": "Suspended",
         "description": "Your account is temporarily suspended. Contact support for assistance."
       }
+    }
+  },
+  "branches": {
+    "listTitle": "Branches",
+    "listSubtitle": "Each branch gets its own counter QR. Stamps count toward the same loyalty card.",
+    "empty": {
+      "title": "No branches yet",
+      "description": "Add your first branch to generate a counter QR code."
+    },
+    "badges": {
+      "primary": "Primary",
+      "inactive": "Inactive"
+    },
+    "fields": {
+      "name": "Branch name",
+      "address": "Address",
+      "city": "City"
+    },
+    "placeholders": {
+      "name": "Thamel branch",
+      "address": "Street and number",
+      "city": "Kathmandu"
+    },
+    "form": {
+      "addTitle": "Add branch",
+      "addSubtitle": "Customers can stamp at any active branch.",
+      "editTitle": "Edit branch",
+      "editSubtitle": "Update branch details."
+    },
+    "deactivate": {
+      "title": "Deactivate branch?",
+      "description": "“{name}” will be hidden from QR downloads. Stamps already collected still count."
+    },
+    "actions": {
+      "addBranch": "Add branch",
+      "add": "Add branch",
+      "save": "Save changes",
+      "edit": "Edit",
+      "setPrimary": "Set as primary",
+      "deactivate": "Deactivate",
+      "cancel": "Cancel"
+    }
+  },
+  "loyaltyCard": {
+    "title": "Loyalty card",
+    "subtitle": "Design your card, set stamp rules, and download QR codes per branch.",
+    "readOnlyNotice": "Your business is pending approval. You can preview the card, but saving is disabled until an admin approves your account.",
+    "defaults": {
+      "description": "Collect stamps and unlock your reward."
+    },
+    "sections": {
+      "identity": "Card identity",
+      "rules": "Stamp rules",
+      "reward": "Reward"
+    },
+    "fields": {
+      "logo": "Business logo",
+      "primaryColor": "Brand color",
+      "cardName": "Card name",
+      "description": "Card description",
+      "stampTarget": "Stamps to reward",
+      "minSpend": "Minimum spend per visit",
+      "rewardDescription": "Customer-facing reward text",
+      "rewardValue": {
+        "free_item": "Free item name",
+        "percent_discount": "Discount percentage",
+        "fixed_discount": "Discount amount"
+      }
+    },
+    "hints": {
+      "logo": "JPG or PNG, max 2MB. Compressed automatically before upload.",
+      "minSpend": "Leave 0 for no minimum. Shown on the customer card when set."
+    },
+    "rewardTypes": {
+      "free_item": "Free item",
+      "percent_discount": "Percentage off",
+      "fixed_discount": "Fixed discount"
+    },
+    "preview": {
+      "label": "Live preview",
+      "stampsAria": "Stamp progress",
+      "progress": "{current} of {target} stamps",
+      "minSpend": "Min. spend {amount} per visit",
+      "rewardPlaceholder": "Your reward appears here",
+      "rewardType": {
+        "free_item": "Free item",
+        "percent_discount": "Discount",
+        "fixed_discount": "Fixed discount"
+      }
+    },
+    "qr": {
+      "title": "Branch QR codes",
+      "subtitle": "One loyalty card, many counters. Print a QR for each active branch.",
+      "download": "Download PNG",
+      "noBranches": "Add at least one active branch to generate QR codes."
+    },
+    "actions": {
+      "save": "Save card settings"
+    },
+    "errors": {
+      "logoUpload": "Could not upload logo. Try a smaller image."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Account and business preferences.",
+    "comingSoon": {
+      "title": "Coming soon",
+      "description": "Profile editing and notification preferences will be added in a later release."
     }
   }
 }

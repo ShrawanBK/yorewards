@@ -1,17 +1,32 @@
 import { createClient } from "@repo/supabase/server";
-import { getMerchantByUserId } from "@repo/supabase/queries/merchants";
+import {
+  getMerchantByUserId,
+  getMerchantsByUserId,
+} from "@repo/supabase/queries/merchants";
 import { redirect } from "next/navigation";
 import { logoutAction } from "../../actions";
 import { Button } from "@repo/ui/button";
 import { MerchantStatusPanel } from "@/components/merchant-status-panel";
+import { MerchantBusinessSwitcher } from "@/components/merchant-business-switcher";
 
 export default async function MerchantDashboardPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/merchant/login");
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect("/merchant/login");
+  }
+
+  const merchants = await getMerchantsByUserId(user.id);
+  if (merchants.length === 0) {
+    redirect("/merchant/login?tab=signup");
+  }
 
   const merchant = await getMerchantByUserId(user.id);
-  if (!merchant) redirect("/merchant/login?tab=signup");
+  if (!merchant) {
+    redirect("/merchant/login?tab=signup");
+  }
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 p-6">
@@ -27,6 +42,11 @@ export default async function MerchantDashboardPage() {
         </form>
       </div>
 
+      <MerchantBusinessSwitcher
+        merchants={merchants}
+        activeMerchantId={merchant.id}
+      />
+
       <MerchantStatusPanel
         businessName={merchant.business_name}
         status={merchant.status}
@@ -35,7 +55,7 @@ export default async function MerchantDashboardPage() {
 
       {merchant.status === "active" && (
         <p className="text-sm text-muted-foreground">
-          Stamp queue and QR tools arrive on Day 4.
+          Loyalty card setup arrives on Day 3. Stamp queue on Day 4.
         </p>
       )}
     </div>

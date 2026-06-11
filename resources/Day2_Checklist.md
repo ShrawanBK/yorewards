@@ -59,10 +59,10 @@ A. Shared auth infra  →  B. Admin  →  C. Merchant approval  →  D. Merchant
 > Product decision: one owner login can run **multiple businesses**. Outlets/branches stay post-MVP but schema-ready. See PRD §4 (Merchant) + Technical Doc §4.7.
 
 - [x] Migration `20260607150000_multi_business_ownership.sql` in repo
-- [ ] Apply to cloud → `pnpm exec supabase db push`
-- [ ] Regenerate types → `supabase gen types` into `packages/supabase/src/types.ts` (adds `current_merchant_ids`)
-- [ ] Merchant queries return a **list** of owned businesses (not `.maybeSingle()` on `user_id`)
-- [ ] Business switcher + "add another business" (when owner has multiple businesses; default to one when only one exists)
+- [x] Apply to cloud → `pnpm exec supabase db push`
+- [x] Regenerate types → `pnpm supabase:types` into `packages/supabase/src/types.ts` (adds `current_merchant_ids`)
+- [x] Merchant queries return a **list** of owned businesses (`getMerchantsByUserId`)
+- [x] Business switcher + "add another business" at `/merchant/add-business`
 
 ---
 
@@ -153,7 +153,7 @@ pnpm exec turbo dev --filter=merchant  # :3001
 ```
 
 - [ ] No secrets in git
-- [ ] Update Technical Doc **Implementation Status**
+- [x] Update Technical Doc **Implementation Status**
 - [ ] Git commit: _"Day 2: Admin + merchant auth and approval"_
 
 ---
@@ -162,11 +162,12 @@ pnpm exec turbo dev --filter=merchant  # :3001
 
 ### Merchant (`apps/merchant`)
 
-| Route                 | Purpose                              |
-| --------------------- | ------------------------------------ |
-| `/merchant/login`     | Email + password (sign in / sign up) |
-| `/merchant/register`  | Business registration                |
-| `/merchant/dashboard` | Stub + account status panel          |
+| Route                    | Purpose                              |
+| ------------------------ | ------------------------------------ |
+| `/merchant/login`        | Email + password (sign in / sign up) |
+| `/merchant/register`     | Business registration                |
+| `/merchant/dashboard`    | Stub + account status panel          |
+| `/merchant/add-business` | Add another business (same owner)    |
 
 ### Admin (`apps/admin`)
 

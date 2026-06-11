@@ -54,5 +54,53 @@
       "businessName": "Business name is required",
       "category": "Category is required"
     }
+  },
+  "business": {
+    "title": "Add a business",
+    "subtitle": "Register another business under your account.",
+    "formTitle": "Business details",
+    "formSubtitle": "Each business gets its own loyalty card after approval.",
+    "listTitle": "Your businesses",
+    "listSubtitle": "Select a business to manage. Use filters to show active or inactive accounts.",
+    "selected": "Managing",
+    "addAnother": "Add another business",
+    "filters": {
+      "all": "All",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "status": {
+      "pending": "Pending",
+      "active": "Active",
+      "suspended": "Suspended",
+      "rejected": "Rejected"
+    },
+    "empty": {
+      "title": "No businesses match this filter",
+      "description": "Try another filter or add a new business."
+    },
+    "fields": {
+      "businessName": "Business name",
+      "category": "Category",
+      "country": "Country",
+      "phoneOptional": "Phone (optional)"
+    },
+    "placeholders": {
+      "businessName": "Helsinki Hair Studio",
+      "category": "Salon",
+      "phone": "+358…"
+    },
+    "countries": {
+      "NP": "Nepal",
+      "FI": "Finland"
+    },
+    "actions": {
+      "submit": "Submit for approval",
+      "back": "Back to dashboard"
+    },
+    "errors": {
+      "businessName": "Business name is required",
+      "category": "Category is required"
+    }
   }
 }

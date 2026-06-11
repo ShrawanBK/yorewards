@@ -7,5 +7,34 @@
   "nav": {
     "wallet": "Wallet",
     "scan": "Scan"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome to YORewards",
+      "subtitle": "Enter your phone to sign in or create your wallet."
+    },
+    "onboarding": {
+      "title": "Almost there",
+      "subtitle": "Tell us your name to finish setting up your wallet."
+    },
+    "fields": {
+      "phone": "Phone (+977 / +358)",
+      "name": "Your name"
+    },
+    "placeholders": {
+      "phone": "+97798…",
+      "name": "e.g. Sita Sharma"
+    },
+    "actions": {
+      "continue": "Continue",
+      "start": "Get started"
+    },
+    "errors": {
+      "phone": "Enter a valid phone number",
+      "name": "Name is required",
+      "login": "Login failed",
+      "onboarding": "Something went wrong",
+      "missingPhone": "Missing phone. Go back to login."
+    }
   }
 }

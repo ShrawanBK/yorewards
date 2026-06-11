@@ -21,6 +21,9 @@ coverage
 # Vercel
 .vercel
 
+# Supabase CLI raw codegen (merge into packages/supabase/src/types.ts manually)
+packages/supabase/src/types.generated.ts
+
 # Build Outputs
 .next/
 out/

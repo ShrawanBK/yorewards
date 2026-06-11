@@ -3,17 +3,26 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@repo/supabase/server";
 import { createServiceRoleClient } from "@repo/supabase/service-role";
-import { getMerchantByUserId } from "@repo/supabase/queries/merchants";
+import {
+  clearActiveMerchantForUser,
+  getMerchantsByUserId,
+  switchActiveMerchant,
+} from "@repo/supabase/queries/merchants";
 import type { CountryCode } from "@repo/supabase/types";
 import { revalidatePath } from "next/cache";
+
+export type MerchantActionResult = { error?: string };
 
 export async function logoutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
+  await clearActiveMerchantForUser();
   redirect("/merchant/login");
 }
 
-export async function signInMerchantAction(formData: FormData) {
+export async function signInMerchantAction(
+  formData: FormData,
+): Promise<MerchantActionResult | void> {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
   const supabase = await createClient();
@@ -26,13 +35,17 @@ export async function signInMerchantAction(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) return { error: "Sign in failed" };
 
-  const merchant = await getMerchantByUserId(user.id);
-  if (!merchant) return { error: "No merchant account for this email." };
+  const merchants = await getMerchantsByUserId(user.id);
+  if (merchants.length === 0) {
+    return { error: "No merchant account for this email." };
+  }
 
   redirect("/merchant/dashboard");
 }
 
-export async function signUpMerchantAction(formData: FormData) {
+export async function signUpMerchantAction(
+  formData: FormData,
+): Promise<MerchantActionResult | void> {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
   const country = String(formData.get("country") ?? "NP") as CountryCode;
@@ -80,4 +93,55 @@ export async function signUpMerchantAction(formData: FormData) {
 
   revalidatePath("/merchant/dashboard");
   redirect("/merchant/dashboard");
+}
+
+export async function addBusinessAction(
+  formData: FormData,
+): Promise<MerchantActionResult | void> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+
+  const email = String(formData.get("email") ?? user.email ?? "");
+  const country = String(formData.get("country") ?? "NP") as CountryCode;
+  const admin = createServiceRoleClient();
+
+  const { data: merchant, error: merchantError } = await admin
+    .from("merchants")
+    .insert({
+      user_id: user.id,
+      business_name: String(formData.get("business_name") ?? ""),
+      category: String(formData.get("category") ?? ""),
+      country,
+      email,
+      phone: String(formData.get("phone") ?? "") || null,
+      status: "pending",
+    })
+    .select("*")
+    .single();
+
+  if (merchantError) return { error: merchantError.message };
+
+  await switchActiveMerchant(user.id, merchant.id);
+
+  revalidatePath("/merchant/dashboard");
+  redirect("/merchant/dashboard");
+}
+
+export async function switchActiveMerchantAction(
+  merchantId: string,
+): Promise<MerchantActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+
+  const merchant = await switchActiveMerchant(user.id, merchantId);
+  if (!merchant) return { error: "Business not found" };
+
+  revalidatePath("/merchant/dashboard");
+  return {};
 }

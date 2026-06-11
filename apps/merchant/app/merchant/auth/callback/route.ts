@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@repo/supabase/server";
-import { getMerchantByUserId } from "@repo/supabase/queries/merchants";
+import { getMerchantsByUserId } from "@repo/supabase/queries/merchants";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -17,10 +17,13 @@ export async function GET(request: Request) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.redirect(`${origin}/merchant/login`);
+  if (!user) {
+    return NextResponse.redirect(`${origin}/merchant/login`);
+  }
 
-  const merchant = await getMerchantByUserId(user.id);
-  if (!merchant)
+  const merchants = await getMerchantsByUserId(user.id);
+  if (merchants.length === 0) {
     return NextResponse.redirect(`${origin}/merchant/login?tab=signup`);
+  }
   return NextResponse.redirect(`${origin}/merchant/dashboard`);
 }

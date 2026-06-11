@@ -6,6 +6,13 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
+/**
+ * Hand-maintained Supabase `Database` types.
+ *
+ * `pnpm supabase:types` writes raw CLI output to `types.generated.ts` (gitignored).
+ * After schema changes: diff against this file and merge new columns/tables here,
+ * keeping strict unions below on check-constraint columns (Postgres `text` → plain `string` in codegen).
+ */
 /** Strict unions — mirror supabase/migrations check constraints */
 export type CountryCode = "NP" | "FI";
 export type CurrencyCode = "NPR" | "EUR";
@@ -400,6 +407,7 @@ export type Database = {
       };
       current_customer_id: { Args: never; Returns: string };
       current_merchant_id: { Args: never; Returns: string };
+      current_merchant_ids: { Args: never; Returns: string[] };
       increment_stamps: {
         Args: { card_id: string; new_status: string };
         Returns: undefined;

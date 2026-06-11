@@ -32,7 +32,7 @@ pnpm exec supabase --version
 
 Then run all Supabase CLI commands via `pnpm exec`:
 
-- [ ] Install CLI: `pnpm add -D supabase -w` → verify with `pnpm exec supabase --version`
+- [x] Install CLI: `pnpm add -D supabase -w` → verify with `pnpm exec supabase --version`
 - [ ] Log in: `pnpm exec supabase login` (opens browser)
 - [ ] Init repo: `pnpm exec supabase init` → creates `supabase/config.toml`
 - [ ] Link cloud project: `pnpm exec supabase link --project-ref <YOUR_PROJECT_REF>`
@@ -84,7 +84,7 @@ Create migrations in `supabase/migrations/` (see `README.md` — one concern per
 - [x] Analytics counters: `targets_reached`, `cycle_number` on `customer_cards`
 - [x] Realtime publication includes `stamp_sessions`
 - [x] Push migration: `pnpm exec supabase db push`
-- [ ] Verify all 8 tables visible in Supabase Table Editor
+- [ ] Verify all 8 tables visible in Supabase Table Editor (manual — Supabase dashboard)
 
 ---
 
@@ -103,7 +103,7 @@ Migration: `supabase/migrations/20260607130000_rls_policies.sql`
 - [x] `audit_log` — no client policies (service role only)
 - [x] `otp_tokens` — no client policies (service role only)
 - [x] Push: `pnpm exec supabase db push`
-- [ ] Smoke-test: anon key cannot read another user's `customer_cards`
+- [ ] Smoke-test: anon key cannot read another user's `customer_cards` (manual)
 
 > **Day 2 auth note:** Customer JWT must include `app_metadata.customer_id` (see Technical Doc §4.2). Phone login lookup uses a **service-role API route** (anon cannot SELECT by phone).
 
@@ -201,10 +201,10 @@ pnpm exec turbo build
 pnpm exec turbo dev --filter=customer   # smoke test :3000
 ```
 
-- [ ] `pnpm exec supabase db push` applies cleanly on a fresh clone
-- [ ] Generated types committed in `packages/supabase/src/types.ts`
+- [x] `pnpm exec supabase db push` applies cleanly on a fresh clone
+- [x] Generated types committed in `packages/supabase/src/types.ts`
 - [ ] No secrets in git (`git status` — no `.env.local` files staged)
-- [ ] Technical Doc **Implementation Status** updated to reflect Day 1 complete
+- [x] Technical Doc **Implementation Status** updated
 - [ ] Git commit: _"Day 1: Supabase schema + RLS, shared packages, shadcn, next-intl scaffold"_
 
 ---

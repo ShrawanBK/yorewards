@@ -24,9 +24,11 @@
 | next-intl scaffold (all 3 apps)                                           | ✅ Done — `messages/en.json`, middleware, provider                       |
 | Local `.env.local` (all 3 apps)                                           | ✅ Done — gitignored                                                     |
 | Vercel deployments                                                        | ⏳ Deferred                                                              |
-| Auth flows, app routes                                                    | ⏳ Day 2                                                                 |
+| Admin + merchant auth, approval queue                                     | ✅ Done — email + password (no magic link)                               |
+| Multi-business per owner (queries + switcher)                             | ✅ Done                                                                  |
+| Customer auth + wallet routes                                             | ✅ Scaffolded — full flows start Day 5 per PRD §11                       |
 
-**Next up (Day 2):** Auth & onboarding per [`Day2_Checklist.md`](Day2_Checklist.md).
+**Next up (Day 3):** Merchant card system — stamp rules, reward types, QR per [`YORewards_PRD_Final_v1.md`](YORewards_PRD_Final_v1.md) §11.
 
 ---
 
@@ -319,22 +321,22 @@ packages/utils/             → @repo/utils
 
 #### `merchants`
 
-| Column             | Type          | Notes                                                                           |
-| ------------------ | ------------- | ------------------------------------------------------------------------------- |
-| `id`               | `uuid`        | Primary key. One row = one **business**.                                        |
+| Column             | Type          | Notes                                                                                                              |
+| ------------------ | ------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `id`               | `uuid`        | Primary key. One row = one **business**.                                                                           |
 | `user_id`          | `uuid`        | References `auth.users(id)`. Owner. **Not unique** — one owner may own many businesses (multi-business per owner). |
-| `business_name`    | `text`        | Display name of the business.                                                   |
-| `category`         | `text`        | e.g. `'cafe'`, `'salon'`, `'restaurant'`.                                       |
-| `country`          | `text`        | `'NP'` or `'FI'`.                                                               |
-| `logo_url`         | `text`        | Supabase Storage URL. Null until uploaded.                                      |
-| `primary_color`    | `text`        | Hex e.g. `'#7C3AED'`. Default: brand purple.                                    |
-| `status`           | `text`        | `'pending'` \| `'active'` \| `'suspended'` \| `'rejected'`. Default: `pending`. |
-| `email`            | `text`        | Contact email. Used for magic link auth.                                        |
-| `phone`            | `text`        | Contact phone. Optional.                                                        |
-| `created_at`       | `timestamptz` | Auto-set.                                                                       |
-| `approved_at`      | `timestamptz` | Set when Super Admin approves.                                                  |
-| `approved_by`      | `uuid`        | Super Admin user ID.                                                            |
-| `rejection_reason` | `text`        | Nullable. Set when Super Admin rejects registration.                            |
+| `business_name`    | `text`        | Display name of the business.                                                                                      |
+| `category`         | `text`        | e.g. `'cafe'`, `'salon'`, `'restaurant'`.                                                                          |
+| `country`          | `text`        | `'NP'` or `'FI'`.                                                                                                  |
+| `logo_url`         | `text`        | Supabase Storage URL. Null until uploaded.                                                                         |
+| `primary_color`    | `text`        | Hex e.g. `'#7C3AED'`. Default: brand purple.                                                                       |
+| `status`           | `text`        | `'pending'` \| `'active'` \| `'suspended'` \| `'rejected'`. Default: `pending`.                                    |
+| `email`            | `text`        | Contact email. Used for magic link auth.                                                                           |
+| `phone`            | `text`        | Contact phone. Optional.                                                                                           |
+| `created_at`       | `timestamptz` | Auto-set.                                                                                                          |
+| `approved_at`      | `timestamptz` | Set when Super Admin approves.                                                                                     |
+| `approved_by`      | `uuid`        | Super Admin user ID.                                                                                               |
+| `rejection_reason` | `text`        | Nullable. Set when Super Admin rejects registration.                                                               |
 
 #### `loyalty_cards`
 
@@ -425,11 +427,11 @@ packages/utils/             → @repo/utils
 
 **Auth models (two roles, two JWT paths):**
 
-| Role                 | Auth                         | RLS identity                                                          |
-| -------------------- | ---------------------------- | -------------------------------------------------------------------- |
+| Role                 | Auth                         | RLS identity                                                                |
+| -------------------- | ---------------------------- | --------------------------------------------------------------------------- |
 | **Merchant / Admin** | Supabase Auth (`auth.uid()`) | `current_merchant_ids()` → **all** businesses owned via `merchants.user_id` |
-| **Customer**         | Custom session JWT (Day 2)   | `current_customer_id()` via `app_metadata.customer_id`               |
-| **Admin writes**     | Service role                 | Bypasses RLS — never expose key to browser                           |
+| **Customer**         | Custom session JWT (Day 2)   | `current_customer_id()` via `app_metadata.customer_id`                      |
+| **Admin writes**     | Service role                 | Bypasses RLS — never expose key to browser                                  |
 
 > **Day 2 requirement:** Customer login API route must issue a Supabase-compatible JWT (or session) with `app_metadata.customer_id` set to `customers.id`. Phone lookup on login uses **service role** server-side (anon cannot SELECT by phone).
 
@@ -437,16 +439,16 @@ packages/utils/             → @repo/utils
 
 **Helper functions:** `public.current_customer_id()`, `public.current_merchant_ids()` (and legacy `public.current_merchant_id()`)
 
-| Table            | Who Can Read                                  | Who Can Write                                                                     |
-| ---------------- | --------------------------------------------- | --------------------------------------------------------------------------------- |
-| `customers`      | Own record only (`deleted_at IS NULL`)        | Insert: anon (signup). Update: own. Admin suspend via service role.               |
+| Table            | Who Can Read                                                  | Who Can Write                                                                     |
+| ---------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `customers`      | Own record only (`deleted_at IS NULL`)                        | Insert: anon (signup). Update: own. Admin suspend via service role.               |
 | `merchants`      | Owned records (any business) + active merchants for wallet/QR | Insert/update: own (`user_id = auth.uid()`). Admin via service role.              |
-| `loyalty_cards`  | Active cards: public read; merchant: all own  | Merchant who owns the card.                                                       |
-| `customer_cards` | Own cards + merchant's cards                  | Insert: customer (first scan). Update: merchant or customer (reward_status).      |
-| `stamp_sessions` | Customer (own) + Merchant (their queue)       | Insert: customer. Update: merchant (approve/reject). Admin void via service role. |
-| `redemptions`    | Customer (own) + Merchant (their redemptions) | Insert: service role (OTP verify). Update: merchant (`complete_redemption`).      |
-| `audit_log`      | Denied (no policies)                          | Service role only.                                                                |
-| `otp_tokens`     | Denied (no policies)                          | Service role only.                                                                |
+| `loyalty_cards`  | Active cards: public read; merchant: all own                  | Merchant who owns the card.                                                       |
+| `customer_cards` | Own cards + merchant's cards                                  | Insert: customer (first scan). Update: merchant or customer (reward_status).      |
+| `stamp_sessions` | Customer (own) + Merchant (their queue)                       | Insert: customer. Update: merchant (approve/reject). Admin void via service role. |
+| `redemptions`    | Customer (own) + Merchant (their redemptions)                 | Insert: service role (OTP verify). Update: merchant (`complete_redemption`).      |
+| `audit_log`      | Denied (no policies)                                          | Service role only.                                                                |
+| `otp_tokens`     | Denied (no policies)                                          | Service role only.                                                                |
 
 ### 4.3 Supabase Type Generation
 
@@ -526,39 +528,39 @@ Redemption completion lives on `redemptions.status` (`pending` → `redeemed`), 
 
 > 🔴 **Never recreate tables.** All schema changes after Day 1 are **additive migrations** (`ALTER TABLE … ADD COLUMN`, new tables with FKs to existing UUIDs). Production data must survive every upgrade.
 
-| Rule                                          | Why                                                        | v2 example                                                                                          |
-| --------------------------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| **UUID primary keys everywhere**              | Stable references across migrations                        | New `merchant_staff` table FKs to existing `merchants.id`                                           |
-| **Text status columns, not Postgres enums**   | Add new values without `ALTER TYPE` pain                   | `'suspended'` on customers already works; v2 adds `'signup'` to `otp_tokens.purpose`                |
-| **Nullable columns for future features**      | Ship MVP without using every column                        | `merchants.rejection_reason`, `customers.deleted_at`                                                |
-| **`stamp_sessions` = stamp event log**        | Every stamp (QR or admin) is a row; void = status `voided` | Admin void/issue without a separate `stamp_events` table                                            |
-| **Denormalised `merchant_id` on child rows**  | Fast RLS + wallet queries today                            | Outlets add optional `location_id` on `stamp_sessions` / `redemptions` (attribution only — balance stays business-scoped) |
-| **`loyalty_cards` separate from `merchants`** | One merchant → many cards/locations later                  | Outlets add rows, not schema surgery                                                                |
-| **`merchants.user_id` not unique (owner FK)** | One owner → many businesses without rewrites               | Multi-business per owner ships in MVP; multi-**staff** later = `merchant_staff(user_id, merchant_id, role)` |
-| **Outlet = child of a merchant, never a `merchants` row** | Keeps one shared card + cross-branch stamping correct | Outlets land as `merchant_locations(merchant_id, …)`; registering a branch as its own merchant would split the balance |
-| **`auth.users` for merchant identity**        | Supabase Auth owns credentials                             | v2 multi-staff = new `merchant_staff(user_id, merchant_id, role)` — `merchants.user_id` stays owner |
-| **Soft delete over hard delete**              | GDPR + audit retention                                     | `customers.deleted_at`; queries filter `WHERE deleted_at IS NULL`                                   |
-| **One migration file per change**             | Reproducible dev/staging/prod                              | `20260701_add_merchant_staff.sql` — never edit old migrations                                       |
+| Rule                                                      | Why                                                        | v2 example                                                                                                                |
+| --------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **UUID primary keys everywhere**                          | Stable references across migrations                        | New `merchant_staff` table FKs to existing `merchants.id`                                                                 |
+| **Text status columns, not Postgres enums**               | Add new values without `ALTER TYPE` pain                   | `'suspended'` on customers already works; v2 adds `'signup'` to `otp_tokens.purpose`                                      |
+| **Nullable columns for future features**                  | Ship MVP without using every column                        | `merchants.rejection_reason`, `customers.deleted_at`                                                                      |
+| **`stamp_sessions` = stamp event log**                    | Every stamp (QR or admin) is a row; void = status `voided` | Admin void/issue without a separate `stamp_events` table                                                                  |
+| **Denormalised `merchant_id` on child rows**              | Fast RLS + wallet queries today                            | Outlets add optional `location_id` on `stamp_sessions` / `redemptions` (attribution only — balance stays business-scoped) |
+| **`loyalty_cards` separate from `merchants`**             | One merchant → many cards/locations later                  | Outlets add rows, not schema surgery                                                                                      |
+| **`merchants.user_id` not unique (owner FK)**             | One owner → many businesses without rewrites               | Multi-business per owner ships in MVP; multi-**staff** later = `merchant_staff(user_id, merchant_id, role)`               |
+| **Outlet = child of a merchant, never a `merchants` row** | Keeps one shared card + cross-branch stamping correct      | Outlets land as `merchant_locations(merchant_id, …)`; registering a branch as its own merchant would split the balance    |
+| **`auth.users` for merchant identity**                    | Supabase Auth owns credentials                             | v2 multi-staff = new `merchant_staff(user_id, merchant_id, role)` — `merchants.user_id` stays owner                       |
+| **Soft delete over hard delete**                          | GDPR + audit retention                                     | `customers.deleted_at`; queries filter `WHERE deleted_at IS NULL`                                                         |
+| **One migration file per change**                         | Reproducible dev/staging/prod                              | `20260701_add_merchant_staff.sql` — never edit old migrations                                                             |
 
 **v2 features that add tables (not rewrites):**
 
-| v2 feature                | New artifact                                  | Existing tables unchanged                        |
-| ------------------------- | --------------------------------------------- | ------------------------------------------------ |
-| Phone OTP at signup       | Extend `otp_tokens.purpose`                   | `customers`                                      |
-| Multi-staff merchants     | `merchant_staff` table                        | `merchants`, `loyalty_cards`                     |
-| Subscription billing      | `subscriptions` table                         | `merchants`                                      |
-| Per-stamp void/history UI | Optional `stamp_events` in v2                 | `stamp_sessions` with `voided` status + `source` |
+| v2 feature                | New artifact                                                                      | Existing tables unchanged                                                   |
+| ------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Phone OTP at signup       | Extend `otp_tokens.purpose`                                                       | `customers`                                                                 |
+| Multi-staff merchants     | `merchant_staff` table                                                            | `merchants`, `loyalty_cards`                                                |
+| Subscription billing      | `subscriptions` table                                                             | `merchants`                                                                 |
+| Per-stamp void/history UI | Optional `stamp_events` in v2                                                     | `stamp_sessions` with `voided` status + `source`                            |
 | Outlets / branches        | `merchant_locations` + nullable `location_id` on `stamp_sessions` / `redemptions` | `merchants`, `loyalty_cards`, `customer_cards` (card stays business-scoped) |
 
 ### 4.7 Ownership Model — Multi-Business (MVP) & Outlets (future)
 
 Three distinct concepts — do not conflate them:
 
-| Concept | Meaning | Status | Modeled as |
-| ------- | ------- | ------ | ---------- |
-| **Owner** | A person who logs in (`auth.users`) | MVP | `merchants.user_id` (**not unique**) |
-| **Business** | A brand/storefront with its own card + QR | MVP | a `merchants` row |
-| **Outlet / branch** | A physical location of one business | Future | `merchant_locations` (child of `merchants`) |
+| Concept             | Meaning                                   | Status | Modeled as                                  |
+| ------------------- | ----------------------------------------- | ------ | ------------------------------------------- |
+| **Owner**           | A person who logs in (`auth.users`)       | MVP    | `merchants.user_id` (**not unique**)        |
+| **Business**        | A brand/storefront with its own card + QR | MVP    | a `merchants` row                           |
+| **Outlet / branch** | A physical location of one business       | Future | `merchant_locations` (child of `merchants`) |
 
 **MVP — multi-business per owner**
 

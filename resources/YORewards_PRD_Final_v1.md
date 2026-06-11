@@ -166,7 +166,7 @@ Customers collect stamps by visiting businesses and scanning a QR code. Merchant
 - Creates and customises a loyalty card
 - Receives a unique QR code per loyalty card
 - Approves or rejects every stamp request — no auto-stamping
-- **Branches/outlets of the same business** (multi-location) are post-MVP. When added, one loyalty card is shared across all branches and a customer's stamps from any branch count toward the same card. The data model is built for this migration (see Technical Doc §4.5)
+- **Branches/outlets of the same business** (multi-location) — Day 3: one loyalty card shared across all branches; stamps from any branch count toward the same card; per-branch QR for counter attribution (see Technical Doc §4.7)
 
 ### Super Admin
 
@@ -403,17 +403,18 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 
 ### 8.2 Merchant Dashboard — `apps/merchant` · `localhost:3001` · `merchant.yorewards.com`
 
-| Route                    | Description                             |
-| ------------------------ | --------------------------------------- |
-| `/merchant/login`        | Email + password sign in / sign up      |
-| `/merchant/register`     | Redirects to sign-up tab on login       |
-| `/merchant/add-business` | First business or additional businesses |
-| `/merchant/dashboard`    | Account status + stamp queue (Day 4+)   |
-| `/merchant/card`         | Loyalty card config + live card preview |
-| `/merchant/card/qr`      | QR code display, download, print        |
-| `/merchant/redeem`       | Redemption code entry + confirmation    |
-| `/merchant/analytics`    | Full analytics dashboard                |
-| `/merchant/settings`     | Business profile + account settings     |
+| Route                    | Description                                   |
+| ------------------------ | --------------------------------------------- |
+| `/merchant/login`        | Email + password sign in / sign up            |
+| `/merchant/register`     | Redirects to sign-up tab on login             |
+| `/merchant/add-business` | First business or additional businesses       |
+| `/merchant/business`     | Business hub — list, detail, branches (Day 3) |
+| `/merchant/dashboard`    | Stamp queue + quick stats (Day 4+)            |
+| `/merchant/card`         | Loyalty card config + live card preview       |
+| `/merchant/card/qr`      | QR code display, download, print              |
+| `/merchant/redeem`       | Redemption code entry + confirmation          |
+| `/merchant/analytics`    | Full analytics dashboard                      |
+| `/merchant/settings`     | Business profile + account settings           |
 
 ### 8.3 Super Admin — `apps/admin` · `localhost:3002` · `admin.yorewards.com`
 
@@ -454,6 +455,7 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 - Super Admin dashboard: merchant approval, user management, platform stats, audit log
 - Phone-number-based customer identity (no OTP at login)
 - Multi-business per owner: one merchant login can create and manage several businesses
+- Multi-branch per business: outlets under one business share one loyalty card; per-branch QR codes
 - Email + password for merchant and admin
 - SMS OTP via Sparrow SMS (Nepal) and Twilio (Finland) — at reward redemption only
 - All 3 reward types: Free Item, Percentage Discount, Fixed Discount
@@ -473,7 +475,7 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 - Phone OTP at customer registration (v2)
 - Nepali or Finnish language translations (scaffold only)
 - WhatsApp bot ordering integration (Phase 2)
-- Multi-location / branch (outlet) support — common in Finland; **schema-ready** for a clean later migration (one shared card across branches, cross-branch stamping). Not built in MVP
+- Per-branch analytics dashboards (basic `location_id` attribution in Day 3; charts Day 4+)
 - Multiple staff accounts per merchant
 - POS or payment gateway integration
 - Merchant subscription billing
@@ -492,15 +494,15 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 
 > 🏗️ **Sequencing rule:** Build the **merchant side first** — card config, stamp rules, offers, QR, then stamp queue and redemption. Only after the merchant backend and dashboard are usable does the **customer PWA** get auth, wallet, scanner, and stamp flows. Customers need real cards and an approval queue to test against.
 
-| Day   | Focus                   | Deliverables                                                                                                                                                                                                                                                                                                                                                                                |
-| ----- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1** | Foundation              | Turborepo init. All 3 Next.js apps. Supabase project (EU West). All **8 tables** with RLS (incl. `otp_tokens`). Forward-compatible columns baked in (`customers.status`, `merchants.rejection_reason`). Migration-first setup in `supabase/migrations/`. Tailwind brand config. shadcn/ui. next-intl scaffold. `@repo/supabase` + `@repo/utils`. All env vars. GitHub + Vercel deployments. |
-| **2** | Auth (Admin + Merchant) | Merchant email+password register/login. Admin email+password. Route guards. Dashboard stub + account status. **Minimal admin merchant approval queue** (list + approve/reject with reason). **No customer auth yet** — see Day 5.                                                                                                                                                           |
-| **3** | Merchant Card System    | `/merchant/card` — loyalty card config (logo, colors, name, description). **Stamp rules** (target 5–50, optional minimum spend). **All 3 reward types** (free item, % discount, fixed discount). Live card preview. Image compression on logo upload. QR generation + PNG download.                                                                                                         |
-| **4** | Merchant Dashboard      | Stamp approval queue (Supabase Realtime). Approve/reject with optional reason. Redemption code entry + `complete_redemption`. Basic merchant analytics. Browser tab badge on new requests. Merchant settings stub.                                                                                                                                                                          |
-| **5** | Customer + Stamp Flow   | Customer phone login + onboarding + Zustand authStore. QR scanner. Stamp session creation. Customer pending + success + rejected screens. **Basic wallet home** (read-only card grid via TanStack Query). Framer Motion stamp animations. **Test on real iPhone today.**                                                                                                                    |
-| **6** | Rewards + Admin         | Card detail polish. Reward unlock detection. OTP send (Sparrow + Twilio). OTP verification. Redemption code display. Cycle reset. canvas-confetti. Super Admin dashboard (platform overview). Customer management. Merchant analytics page. Audit log UI. Manual stamp tool.                                                                                                                |
-| **7** | Polish & Launch         | PWA manifest + icons + next-pwa. Browser push for reward unlock. All empty + error states. Privacy policy page (GDPR). Mobile responsiveness pass. Full end-to-end test all 3 reward types. Production deploy all 3 Vercel apps.                                                                                                                                                            |
+| Day   | Focus                    | Deliverables                                                                                                                                                                                                                                                                                                                                                                                |
+| ----- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | Foundation               | Turborepo init. All 3 Next.js apps. Supabase project (EU West). All **8 tables** with RLS (incl. `otp_tokens`). Forward-compatible columns baked in (`customers.status`, `merchants.rejection_reason`). Migration-first setup in `supabase/migrations/`. Tailwind brand config. shadcn/ui. next-intl scaffold. `@repo/supabase` + `@repo/utils`. All env vars. GitHub + Vercel deployments. |
+| **2** | Auth (Admin + Merchant)  | Merchant email+password register/login. Admin email+password. Route guards. Dashboard stub + account status. **Minimal admin merchant approval queue** (list + approve/reject with reason). **No customer auth yet** — see Day 5.                                                                                                                                                           |
+| **3** | Merchant Card + Branches | **`merchant_locations` migration** + business hub UI (list, detail, add/edit branches). `/merchant/card` — PRD §6.1 loyalty card config (logo, colors, name, description). **Stamp rules** (target 5–50, optional minimum spend). **All 3 reward types**. Live card preview. Logo compression. **Per-branch QR** generation + PNG download. See [`Day3_Checklist.md`](Day3_Checklist.md).   |
+| **4** | Merchant Dashboard       | Stamp approval queue (Supabase Realtime). Approve/reject with optional reason. Redemption code entry + `complete_redemption`. Basic merchant analytics. Browser tab badge on new requests. Merchant settings stub.                                                                                                                                                                          |
+| **5** | Customer + Stamp Flow    | Customer phone login + onboarding + Zustand authStore. QR scanner. Stamp session creation. Customer pending + success + rejected screens. **Basic wallet home** (read-only card grid via TanStack Query). Framer Motion stamp animations. **Test on real iPhone today.**                                                                                                                    |
+| **6** | Rewards + Admin          | Card detail polish. Reward unlock detection. OTP send (Sparrow + Twilio). OTP verification. Redemption code display. Cycle reset. canvas-confetti. Super Admin dashboard (platform overview). Customer management. Merchant analytics page. Audit log UI. Manual stamp tool.                                                                                                                |
+| **7** | Polish & Launch          | PWA manifest + icons + next-pwa. Browser push for reward unlock. All empty + error states. Privacy policy page (GDPR). Mobile responsiveness pass. Full end-to-end test all 3 reward types. Production deploy all 3 Vercel apps.                                                                                                                                                            |
 
 ---
 

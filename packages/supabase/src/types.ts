@@ -270,6 +270,50 @@ export type Database = {
         };
         Relationships: [];
       };
+      merchant_locations: {
+        Row: {
+          address: string | null;
+          city: string | null;
+          created_at: string;
+          id: string;
+          is_active: boolean;
+          is_primary: boolean;
+          merchant_id: string;
+          name: string;
+          updated_at: string;
+        };
+        Insert: {
+          address?: string | null;
+          city?: string | null;
+          created_at?: string;
+          id?: string;
+          is_active?: boolean;
+          is_primary?: boolean;
+          merchant_id: string;
+          name: string;
+          updated_at?: string;
+        };
+        Update: {
+          address?: string | null;
+          city?: string | null;
+          created_at?: string;
+          id?: string;
+          is_active?: boolean;
+          is_primary?: boolean;
+          merchant_id?: string;
+          name?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "merchant_locations_merchant_id_fkey";
+            columns: ["merchant_id"];
+            isOneToOne: false;
+            referencedRelation: "merchants";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       otp_tokens: {
         Row: {
           created_at: string;
@@ -303,6 +347,7 @@ export type Database = {
           customer_card_id: string;
           cycle_number: number;
           id: string;
+          location_id: string | null;
           merchant_id: string;
           redeemed_at: string | null;
           redemption_code: string;
@@ -313,6 +358,7 @@ export type Database = {
           customer_card_id: string;
           cycle_number?: number;
           id?: string;
+          location_id?: string | null;
           merchant_id: string;
           redeemed_at?: string | null;
           redemption_code: string;
@@ -323,6 +369,7 @@ export type Database = {
           customer_card_id?: string;
           cycle_number?: number;
           id?: string;
+          location_id?: string | null;
           merchant_id?: string;
           redeemed_at?: string | null;
           redemption_code?: string;
@@ -334,6 +381,13 @@ export type Database = {
             columns: ["customer_card_id"];
             isOneToOne: false;
             referencedRelation: "customer_cards";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "redemptions_location_id_fkey";
+            columns: ["location_id"];
+            isOneToOne: false;
+            referencedRelation: "merchant_locations";
             referencedColumns: ["id"];
           },
           {
@@ -350,6 +404,7 @@ export type Database = {
           created_at: string;
           customer_card_id: string;
           id: string;
+          location_id: string | null;
           merchant_id: string;
           rejection_reason: string | null;
           resolved_at: string | null;
@@ -361,6 +416,7 @@ export type Database = {
           created_at?: string;
           customer_card_id: string;
           id?: string;
+          location_id?: string | null;
           merchant_id: string;
           rejection_reason?: string | null;
           resolved_at?: string | null;
@@ -372,6 +428,7 @@ export type Database = {
           created_at?: string;
           customer_card_id?: string;
           id?: string;
+          location_id?: string | null;
           merchant_id?: string;
           rejection_reason?: string | null;
           resolved_at?: string | null;
@@ -385,6 +442,13 @@ export type Database = {
             columns: ["customer_card_id"];
             isOneToOne: false;
             referencedRelation: "customer_cards";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "stamp_sessions_location_id_fkey";
+            columns: ["location_id"];
+            isOneToOne: false;
+            referencedRelation: "merchant_locations";
             referencedColumns: ["id"];
           },
           {

@@ -3,8 +3,8 @@
 -- Decision: one Supabase Auth user (owner) may own MANY businesses (merchants
 -- rows). RLS becomes set-based via current_merchant_ids().
 --
--- NOT in this migration (future, see Technical Doc §4.7):
---   * Outlets/branches  → merchant_locations + nullable location_id on events
+-- NOT in this migration (see Technical Doc §4.7):
+--   * Outlets/branches  → 20260611120000_merchant_locations.sql (Day 3)
 --   * Multi-staff        → merchant_staff(user_id, merchant_id, role)
 -- Guardrail: an outlet is a CHILD of a merchant, never its own merchants row.
 -- ============================================================================

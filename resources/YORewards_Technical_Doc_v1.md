@@ -26,9 +26,12 @@
 | Vercel deployments                                                        | ⏳ Deferred                                                              |
 | Admin + merchant auth, approval queue                                     | ✅ Done — email + password (no magic link)                               |
 | Multi-business per owner (queries + switcher)                             | ✅ Done                                                                  |
+| Merchant business hub UI (list + detail)                                  | ✅ Done (Day 2) — Day 3 polish + branches panel                          |
+| Branches / outlets (`merchant_locations`)                                 | ⏳ Day 3 — migration `20260611120000_merchant_locations.sql`             |
+| Loyalty card config (PRD §6.1)                                            | ⏳ Day 3 — `/merchant/card` + live preview + branch QR                   |
 | Customer auth + wallet routes                                             | ✅ Scaffolded — full flows start Day 5 per PRD §11                       |
 
-**Next up (Day 3):** Merchant card system — stamp rules, reward types, QR per [`YORewards_PRD_Final_v1.md`](YORewards_PRD_Final_v1.md) §11.
+**Next up (Day 3):** See [`Day3_Checklist.md`](Day3_Checklist.md) — branches per business, business hub UI, PRD §6.1 card config, per-branch QR.
 
 ---
 
@@ -338,6 +341,23 @@ packages/utils/             → @repo/utils
 | `approved_by`      | `uuid`        | Super Admin user ID.                                                                                               |
 | `rejection_reason` | `text`        | Nullable. Set when Super Admin rejects registration.                                                               |
 
+#### `merchant_locations` (branches / outlets)
+
+| Column        | Type          | Notes                                                                                   |
+| ------------- | ------------- | --------------------------------------------------------------------------------------- |
+| `id`          | `uuid`        | Primary key.                                                                            |
+| `merchant_id` | `uuid`        | References `merchants(id)`. CASCADE delete.                                             |
+| `name`        | `text`        | Branch label e.g. `'Thamel'`, `'Airport kiosk'`.                                        |
+| `address`     | `text`        | Optional street address.                                                                |
+| `city`        | `text`        | Optional.                                                                               |
+| `is_primary`  | `boolean`     | Default branch for UI; **at most one** `true` per `merchant_id` (partial unique index). |
+| `is_active`   | `boolean`     | `false` = hidden from QR list; prefer over hard delete.                                 |
+| `created_at`  | `timestamptz` | Auto-set.                                                                               |
+| `updated_at`  | `timestamptz` | Auto-updated on change.                                                                 |
+
+> **Migration:** `20260611120000_merchant_locations.sql` — backfills one primary location per existing merchant.  
+> **Invariant:** Branches never get their own `merchants` row. One `loyalty_cards` row per business; all branch QRs stamp the same card.
+
 #### `loyalty_cards`
 
 | Column               | Type          | Notes                                                        |
@@ -373,30 +393,32 @@ packages/utils/             → @repo/utils
 
 #### `stamp_sessions` (stamp event log)
 
-| Column             | Type          | Notes                                                                     |
-| ------------------ | ------------- | ------------------------------------------------------------------------- |
-| `id`               | `uuid`        | Primary key.                                                              |
-| `customer_card_id` | `uuid`        | References `customer_cards(id)`.                                          |
-| `merchant_id`      | `uuid`        | References `merchants(id)`.                                               |
-| `session_token`    | `text`        | UNIQUE. One-time token per QR scan (or UUID for admin issue).             |
-| `source`           | `text`        | `'qr_scan'` \| `'admin_manual'`.                                          |
-| `status`           | `text`        | `'pending'` \| `'approved'` \| `'rejected'` \| `'expired'` \| `'voided'`. |
-| `rejection_reason` | `text`        | Optional. Set by merchant on reject.                                      |
-| `created_at`       | `timestamptz` | Auto-set. Expires 5 minutes after this (QR pending only).                 |
-| `resolved_at`      | `timestamptz` | Set when approved/rejected/expired/voided.                                |
+| Column             | Type          | Notes                                                                                        |
+| ------------------ | ------------- | -------------------------------------------------------------------------------------------- |
+| `id`               | `uuid`        | Primary key.                                                                                 |
+| `customer_card_id` | `uuid`        | References `customer_cards(id)`.                                                             |
+| `merchant_id`      | `uuid`        | References `merchants(id)`.                                                                  |
+| `location_id`      | `uuid`        | Nullable. References `merchant_locations(id)`. **Attribution only** — which counter scanned. |
+| `session_token`    | `text`        | UNIQUE. One-time token per QR scan (or UUID for admin issue).                                |
+| `source`           | `text`        | `'qr_scan'` \| `'admin_manual'`.                                                             |
+| `status`           | `text`        | `'pending'` \| `'approved'` \| `'rejected'` \| `'expired'` \| `'voided'`.                    |
+| `rejection_reason` | `text`        | Optional. Set by merchant on reject.                                                         |
+| `created_at`       | `timestamptz` | Auto-set. Expires 5 minutes after this (QR pending only).                                    |
+| `resolved_at`      | `timestamptz` | Set when approved/rejected/expired/voided.                                                   |
 
 #### `redemptions`
 
-| Column             | Type          | Notes                                                    |
-| ------------------ | ------------- | -------------------------------------------------------- |
-| `id`               | `uuid`        | Primary key.                                             |
-| `customer_card_id` | `uuid`        | References `customer_cards(id)`.                         |
-| `merchant_id`      | `uuid`        | References `merchants(id)`.                              |
-| `redemption_code`  | `text`        | UNIQUE. 6-digit alphanumeric. Single use.                |
-| `cycle_number`     | `integer`     | Snapshot of `customer_cards.cycle_number` at OTP verify. |
-| `status`           | `text`        | `'pending'` \| `'redeemed'`.                             |
-| `created_at`       | `timestamptz` | Created when OTP verified.                               |
-| `redeemed_at`      | `timestamptz` | Set when merchant confirms.                              |
+| Column             | Type          | Notes                                                                               |
+| ------------------ | ------------- | ----------------------------------------------------------------------------------- |
+| `id`               | `uuid`        | Primary key.                                                                        |
+| `customer_card_id` | `uuid`        | References `customer_cards(id)`.                                                    |
+| `merchant_id`      | `uuid`        | References `merchants(id)`.                                                         |
+| `location_id`      | `uuid`        | Nullable. References `merchant_locations(id)`. Branch where redeemed (attribution). |
+| `redemption_code`  | `text`        | UNIQUE. 6-digit alphanumeric. Single use.                                           |
+| `cycle_number`     | `integer`     | Snapshot of `customer_cards.cycle_number` at OTP verify.                            |
+| `status`           | `text`        | `'pending'` \| `'redeemed'`.                                                        |
+| `created_at`       | `timestamptz` | Created when OTP verified.                                                          |
+| `redeemed_at`      | `timestamptz` | Set when merchant confirms.                                                         |
 
 #### `audit_log`
 
@@ -439,27 +461,28 @@ packages/utils/             → @repo/utils
 
 **Helper functions:** `public.current_customer_id()`, `public.current_merchant_ids()` (and legacy `public.current_merchant_id()`)
 
-| Table            | Who Can Read                                                  | Who Can Write                                                                     |
-| ---------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `customers`      | Own record only (`deleted_at IS NULL`)                        | Insert: anon (signup). Update: own. Admin suspend via service role.               |
-| `merchants`      | Owned records (any business) + active merchants for wallet/QR | Insert/update: own (`user_id = auth.uid()`). Admin via service role.              |
-| `loyalty_cards`  | Active cards: public read; merchant: all own                  | Merchant who owns the card.                                                       |
-| `customer_cards` | Own cards + merchant's cards                                  | Insert: customer (first scan). Update: merchant or customer (reward_status).      |
-| `stamp_sessions` | Customer (own) + Merchant (their queue)                       | Insert: customer. Update: merchant (approve/reject). Admin void via service role. |
-| `redemptions`    | Customer (own) + Merchant (their redemptions)                 | Insert: service role (OTP verify). Update: merchant (`complete_redemption`).      |
-| `audit_log`      | Denied (no policies)                                          | Service role only.                                                                |
-| `otp_tokens`     | Denied (no policies)                                          | Service role only.                                                                |
+| Table                | Who Can Read                                                  | Who Can Write                                                                     |
+| -------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `customers`          | Own record only (`deleted_at IS NULL`)                        | Insert: anon (signup). Update: own. Admin suspend via service role.               |
+| `merchants`          | Owned records (any business) + active merchants for wallet/QR | Insert/update: own (`user_id = auth.uid()`). Admin via service role.              |
+| `merchant_locations` | Merchant: locations for owned businesses                      | Insert/update: own (`merchant_id IN current_merchant_ids()`). Deactivate in app.  |
+| `loyalty_cards`      | Active cards: public read; merchant: all own                  | Merchant who owns the card.                                                       |
+| `customer_cards`     | Own cards + merchant's cards                                  | Insert: customer (first scan). Update: merchant or customer (reward_status).      |
+| `stamp_sessions`     | Customer (own) + Merchant (their queue)                       | Insert: customer. Update: merchant (approve/reject). Admin void via service role. |
+| `redemptions`        | Customer (own) + Merchant (their redemptions)                 | Insert: service role (OTP verify). Update: merchant (`complete_redemption`).      |
+| `audit_log`          | Denied (no policies)                                          | Service role only.                                                                |
+| `otp_tokens`         | Denied (no policies)                                          | Service role only.                                                                |
 
 ### 4.3 Supabase Type Generation
 
 Run after **every** schema change. Commit the output. Cursor writes much better code with accurate types.
 
 ```bash
-# Run from monorepo root
-npx supabase gen types typescript \
-  --project-id YOUR_PROJECT_ID \
-  --schema public \
-  > packages/supabase/src/types.ts
+# Run from monorepo root (cloud-linked — no Docker required)
+pnpm exec supabase db push
+pnpm supabase:types   # writes packages/supabase/src/types.generated.ts (gitignored)
+
+# Merge new tables/columns into packages/supabase/src/types.ts (strict unions kept manually)
 
 # Import in any app:
 import type { Database } from '@repo/supabase/types'
@@ -544,37 +567,37 @@ Redemption completion lives on `redemptions.status` (`pending` → `redeemed`), 
 
 **v2 features that add tables (not rewrites):**
 
-| v2 feature                | New artifact                                                                      | Existing tables unchanged                                                   |
-| ------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Phone OTP at signup       | Extend `otp_tokens.purpose`                                                       | `customers`                                                                 |
-| Multi-staff merchants     | `merchant_staff` table                                                            | `merchants`, `loyalty_cards`                                                |
-| Subscription billing      | `subscriptions` table                                                             | `merchants`                                                                 |
-| Per-stamp void/history UI | Optional `stamp_events` in v2                                                     | `stamp_sessions` with `voided` status + `source`                            |
-| Outlets / branches        | `merchant_locations` + nullable `location_id` on `stamp_sessions` / `redemptions` | `merchants`, `loyalty_cards`, `customer_cards` (card stays business-scoped) |
+| v2 feature                | New artifact                                                       | Existing tables unchanged                                                   |
+| ------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| Phone OTP at signup       | Extend `otp_tokens.purpose`                                        | `customers`                                                                 |
+| Multi-staff merchants     | `merchant_staff` table                                             | `merchants`, `loyalty_cards`                                                |
+| Subscription billing      | `subscriptions` table                                              | `merchants`                                                                 |
+| Per-stamp void/history UI | Optional `stamp_events` in v2                                      | `stamp_sessions` with `voided` status + `source`                            |
+| Outlets / branches        | ✅ Day 3 — `merchant_locations` + nullable `location_id` on events | `merchants`, `loyalty_cards`, `customer_cards` (card stays business-scoped) |
 
-### 4.7 Ownership Model — Multi-Business (MVP) & Outlets (future)
+### 4.7 Ownership Model — Multi-Business & Branches (MVP)
 
 Three distinct concepts — do not conflate them:
 
-| Concept             | Meaning                                   | Status | Modeled as                                  |
-| ------------------- | ----------------------------------------- | ------ | ------------------------------------------- |
-| **Owner**           | A person who logs in (`auth.users`)       | MVP    | `merchants.user_id` (**not unique**)        |
-| **Business**        | A brand/storefront with its own card + QR | MVP    | a `merchants` row                           |
-| **Outlet / branch** | A physical location of one business       | Future | `merchant_locations` (child of `merchants`) |
+| Concept             | Meaning                                   | Status    | Modeled as                                  |
+| ------------------- | ----------------------------------------- | --------- | ------------------------------------------- |
+| **Owner**           | A person who logs in (`auth.users`)       | MVP ✅    | `merchants.user_id` (**not unique**)        |
+| **Business**        | A brand/storefront with its own card + QR | MVP ✅    | a `merchants` row                           |
+| **Outlet / branch** | A physical location of one business       | MVP Day 3 | `merchant_locations` (child of `merchants`) |
 
-**MVP — multi-business per owner**
+**Multi-business per owner (done)**
 
-- One owner → many businesses. Each business is its own `merchants` row with its own `loyalty_cards` and QR.
+- One owner → many businesses. Each business is its own `merchants` row with its own `loyalty_cards`.
 - RLS is set-based: `merchant_id IN (SELECT public.current_merchant_ids())`.
-- Merchant app picks an **active business** for display; writes pass the explicit `merchant_id`, validated by `WITH CHECK` to be owned.
-- The data layer is ready now; the **business switcher / "add another business" UI** is a follow-up within MVP (not required for core auth).
+- Merchant app picks an **active business** via switcher; writes pass explicit `merchant_id`, validated by `WITH CHECK`.
 
-**Future — outlets / branches (post-MVP migration, no rewrite)**
+**Branches per business (Day 3)**
 
-1. `create table merchant_locations (id, merchant_id, name, address, …)`.
-2. Backfill one default location per existing merchant.
-3. Add nullable `location_id` to **event** tables only: `stamp_sessions`, `redemptions` (attribution + per-branch analytics).
-4. QR codes become `loyalty_card_id (+ location_id)` so each counter is identifiable; **all** QRs of a business still resolve to the **same** card.
+1. `merchant_locations` — migration `20260611120000_merchant_locations.sql`.
+2. Backfill one **primary** location per existing merchant on migrate.
+3. Nullable `location_id` on **event** tables only: `stamp_sessions`, `redemptions` (attribution + per-branch analytics).
+4. QR codes encode `loyalty_card_id` + `location_id` — each counter identifiable; **all** branch QRs resolve to the **same** card.
+5. Merchant UI: **Business hub** (`/merchant/business`) — list businesses, view detail, add/edit/deactivate branches.
 
 **Invariant (write this in stone):**
 
@@ -602,14 +625,15 @@ Keep stores minimal. Only put state here that is needed across multiple componen
 
 TanStack Query handles all data fetching from Supabase. Use it for everything except the stamp approval real-time queue.
 
-| Query Key                   | Data                                    | Stale Time                           |
-| --------------------------- | --------------------------------------- | ------------------------------------ |
-| `['wallet', customerId]`    | All `customer_cards`                    | 30 seconds — refetch on window focus |
-| `['card', cardId]`          | Single `customer_card` + `loyalty_card` | 10 seconds                           |
-| `['merchant', merchantId]`  | Merchant profile + card config          | 5 minutes                            |
-| `['analytics', merchantId]` | Stamp + redemption counts               | 1 minute                             |
-| `['admin', 'merchants']`    | All merchants list                      | 30 seconds                           |
-| `['admin', 'platform']`     | Platform-wide stats                     | 1 minute                             |
+| Query Key                   | Data                                     | Stale Time                           |
+| --------------------------- | ---------------------------------------- | ------------------------------------ |
+| `['wallet', customerId]`    | All `customer_cards`                     | 30 seconds — refetch on window focus |
+| `['card', cardId]`          | Single `customer_card` + `loyalty_card`  | 10 seconds                           |
+| `['merchant', merchantId]`  | Merchant profile + card config           | 5 minutes                            |
+| `['locations', merchantId]` | `merchant_locations` for active business | 5 minutes                            |
+| `['analytics', merchantId]` | Stamp + redemption counts                | 1 minute                             |
+| `['admin', 'merchants']`    | All merchants list                       | 30 seconds                           |
+| `['admin', 'platform']`     | Platform-wide stats                      | 1 minute                             |
 
 ### 5.3 Supabase Realtime — Stamp Queue Only
 
@@ -939,15 +963,15 @@ ADMIN_EMAIL=your-admin-email@yorewards.com       # Single super admin account
 
 > Full day-by-day deliverables are in **PRD Section 11**. This section tracks technical milestones only.
 
-| Day   | Technical focus | Key outputs                                                                                                                                       |
-| ----- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1** | Foundation      | ~~Turborepo + 3 apps~~ ✅ · Supabase + 8 tables + RLS · forward-compatible columns · `@repo/supabase` · shadcn/ui · next-intl · env vars · Vercel |
-| **2** | Auth            | Phone login, magic link, admin login, route guards, Zustand `authStore`, **minimal merchant approval queue**                                      |
-| **3** | Cards           | Merchant card config, logo upload, live preview, QR generation                                                                                    |
-| **4** | Stamps + wallet | QR scanner, Realtime queue, approval flow, **read-only wallet grid**, Framer Motion — **test on real iPhone**                                     |
-| **5** | Rewards         | Card detail polish, OTP (Sparrow/Twilio), redemption codes, confetti                                                                              |
-| **6** | Admin           | Platform dashboard, customer mgmt, audit log, analytics, manual stamp tool                                                                        |
-| **7** | Launch          | PWA, privacy policy, E2E test, production deploy                                                                                                  |
+| Day   | Technical focus  | Key outputs                                                                                                                                           |
+| ----- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | Foundation       | ~~Turborepo + 3 apps~~ ✅ · Supabase + 8 tables + RLS · forward-compatible columns · `@repo/supabase` · shadcn/ui · next-intl · env vars · Vercel     |
+| **2** | Auth             | Merchant/admin email+password, route guards, multi-business switcher, admin approval queue                                                            |
+| **3** | Cards + branches | `merchant_locations` migration, business hub UI, PRD §6.1 card config, live preview, per-branch QR PNG — see [`Day3_Checklist.md`](Day3_Checklist.md) |
+| **4** | Stamps + wallet  | QR scanner, Realtime queue, approval flow, **read-only wallet grid**, Framer Motion — **test on real iPhone**                                         |
+| **5** | Rewards          | Card detail polish, OTP (Sparrow/Twilio), redemption codes, confetti                                                                                  |
+| **6** | Admin            | Platform dashboard, customer mgmt, audit log, analytics, manual stamp tool                                                                            |
+| **7** | Launch           | PWA, privacy policy, E2E test, production deploy                                                                                                      |
 
 > 📋 **Session starter:** _"Build YORewards per PRD + Technical Doc. Use only the locked stack. Check Implementation Status first."_
 

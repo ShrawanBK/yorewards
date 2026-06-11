@@ -1,10 +1,10 @@
-import { requireMerchantAuth } from "@/features/auth";
+import { requireMerchantSession } from "@/features/auth";
 
 export default async function MerchantProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  await requireMerchantAuth();
+  await requireMerchantSession();
   return children;
 }

@@ -4,7 +4,6 @@ import type { Database } from "@repo/supabase/types";
 import { getTranslations } from "next-intl/server";
 import { logoutAction } from "@/features/auth";
 import { MerchantBusinessSwitcher } from "@/features/business";
-import { MerchantStatusPanel } from "@/features/dashboard";
 
 type Merchant = Database["public"]["Tables"]["merchants"]["Row"];
 
@@ -36,12 +35,6 @@ export async function MerchantDashboard({
       <MerchantBusinessSwitcher
         merchants={merchants}
         activeMerchantId={merchant.id}
-      />
-
-      <MerchantStatusPanel
-        businessName={merchant.business_name}
-        status={merchant.status}
-        rejectionReason={merchant.rejection_reason}
       />
 
       {merchant.status === "active" ? (

@@ -16,12 +16,12 @@ export async function getDashboardData() {
 
   const merchants = await getMerchantsByUserId(user.id);
   if (merchants.length === 0) {
-    redirect("/merchant/login?tab=signup");
+    redirect("/merchant/add-business");
   }
 
   const merchant = await getMerchantByUserId(user.id);
   if (!merchant) {
-    redirect("/merchant/login?tab=signup");
+    redirect("/merchant/add-business");
   }
 
   return { merchants, merchant };

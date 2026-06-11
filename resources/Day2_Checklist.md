@@ -114,14 +114,13 @@ A. Shared auth infra  →  B. Admin  →  C. Merchant approval  →  D. Merchant
 
 ## D. Merchant — auth & registration (`apps/merchant` · `:3001`)
 
-- [x] Route: `/merchant/login` — email + password (`signInWithPassword`), sign-up tab on same screen
-- [x] Route: `/merchant/register` — business form (or sign-up tab on login):
-  - `business_name`, `category`, `country` (NP/FI), `email`, password, optional `phone`
-  - Creates Supabase Auth user + `merchants` row with `status = 'pending'`, `user_id = auth.uid()`
+- [x] Route: `/merchant/login` — email + password (`signInWithPassword`), sign-up tab (email + password + confirm only)
+- [x] Route: `/merchant/register` — redirects to sign-up tab on login
+- [x] Route: `/merchant/add-business` — business form (`business_name`, `category`, `country`, optional `phone`); creates `merchants` row with `status = 'pending'`
 - [x] Status handling on dashboard — pending / active / rejected / suspended via `MerchantStatusPanel`
 - [x] Route guards:
   - Not logged in → `/merchant/login`
-  - Logged in, no merchant row → register / sign-up
+  - Logged in, no merchant row → `/merchant/add-business`
   - `status = 'active'` → full dashboard access (card config on Day 3)
 - [x] Dashboard stub at `/merchant/dashboard` — placeholder until Day 4 stamp queue
 - [x] `authStore` + merchant profile query (`merchants` by `user_id`)
@@ -136,7 +135,7 @@ A. Shared auth infra  →  B. Admin  →  C. Merchant approval  →  D. Merchant
 
 ### Manual E2E test (merchant + admin only)
 
-1. [ ] Merchant registers → sees **pending** status
+1. [ ] Merchant signs up → adds business → sees **pending** status
 2. [ ] Admin logs in → approves merchant
 3. [ ] Merchant refreshes → reaches **dashboard stub** with **active** status
 4. [ ] Merchant logout works
@@ -165,9 +164,9 @@ pnpm exec turbo dev --filter=merchant  # :3001
 | Route                    | Purpose                              |
 | ------------------------ | ------------------------------------ |
 | `/merchant/login`        | Email + password (sign in / sign up) |
-| `/merchant/register`     | Business registration                |
+| `/merchant/register`     | Redirect to sign-up tab              |
+| `/merchant/add-business` | First business or add another        |
 | `/merchant/dashboard`    | Stub + account status panel          |
-| `/merchant/add-business` | Add another business (same owner)    |
 
 ### Admin (`apps/admin`)
 

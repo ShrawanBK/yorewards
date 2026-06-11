@@ -3,28 +3,45 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Field } from "@repo/ui/field";
 import { addBusinessAction } from "@/features/business/api/businessActions";
+import { isValidMerchantPhone } from "@/features/business/utils/phoneSchema";
 
 export function AddBusinessForm({ ownerEmail }: { ownerEmail: string }) {
   const t = useTranslations("business");
   const [error, setError] = useState<string | null>(null);
 
-  const schema = z.object({
-    business_name: z.string().min(2, t("errors.businessName")),
-    category: z.string().min(2, t("errors.category")),
-    country: z.enum(["NP", "FI"]),
-    phone: z.string().optional(),
-  });
+  const schema = useMemo(
+    () =>
+      z
+        .object({
+          business_name: z.string().min(2, t("errors.businessName")),
+          category: z.string().min(2, t("errors.category")),
+          country: z.enum(["NP", "FI"]),
+          phone: z.string().optional(),
+        })
+        .superRefine((data, ctx) => {
+          if (!isValidMerchantPhone(data.phone, data.country)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: t(`errors.phone.${data.country}`),
+              path: ["phone"],
+            });
+          }
+        }),
+    [t],
+  );
 
   const form = useForm({
     resolver: zodResolver(schema),
-    defaultValues: { country: "NP" as const },
+    defaultValues: { country: "NP" as const, phone: "" },
   });
+
+  const country = form.watch("country");
 
   return (
     <form
@@ -70,11 +87,19 @@ export function AddBusinessForm({ ownerEmail }: { ownerEmail: string }) {
           <option value="FI">{t("countries.FI")}</option>
         </select>
       </Field>
-      <Field label={t("fields.phoneOptional")} htmlFor="phone">
+      <Field
+        label={t("fields.phoneOptional")}
+        htmlFor="phone"
+        error={form.formState.errors.phone?.message}
+      >
         <Input
           id="phone"
           type="tel"
-          placeholder={t("placeholders.phone")}
+          placeholder={
+            country === "FI"
+              ? t("placeholders.phoneFI")
+              : t("placeholders.phoneNP")
+          }
           {...form.register("phone")}
         />
       </Field>

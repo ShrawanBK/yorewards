@@ -23,7 +23,7 @@ export async function GET(request: Request) {
 
   const merchants = await getMerchantsByUserId(user.id);
   if (merchants.length === 0) {
-    return NextResponse.redirect(`${origin}/merchant/login?tab=signup`);
+    return NextResponse.redirect(`${origin}/merchant/add-business`);
   }
   return NextResponse.redirect(`${origin}/merchant/dashboard`);
 }

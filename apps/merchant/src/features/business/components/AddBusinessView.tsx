@@ -10,7 +10,13 @@ import {
 } from "@repo/ui/card";
 import { AddBusinessForm } from "@/features/business/components/AddBusinessForm";
 
-export async function AddBusinessView({ ownerEmail }: { ownerEmail: string }) {
+export async function AddBusinessView({
+  ownerEmail,
+  isFirstBusiness = false,
+}: {
+  ownerEmail: string;
+  isFirstBusiness?: boolean;
+}) {
   const t = await getTranslations("business");
 
   return (
@@ -18,19 +24,27 @@ export async function AddBusinessView({ ownerEmail }: { ownerEmail: string }) {
       <div className="flex items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight">
-            {t("title")}
+            {isFirstBusiness ? t("onboarding.title") : t("title")}
           </h1>
-          <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
+          <p className="text-sm text-muted-foreground">
+            {isFirstBusiness ? t("onboarding.subtitle") : t("subtitle")}
+          </p>
         </div>
-        <Button variant="outline" asChild>
-          <Link href="/merchant/dashboard">{t("actions.back")}</Link>
-        </Button>
+        {!isFirstBusiness ? (
+          <Button variant="outline" asChild>
+            <Link href="/merchant/dashboard">{t("actions.back")}</Link>
+          </Button>
+        ) : null}
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>{t("formTitle")}</CardTitle>
-          <CardDescription>{t("formSubtitle")}</CardDescription>
+          <CardTitle>
+            {isFirstBusiness ? t("onboarding.formTitle") : t("formTitle")}
+          </CardTitle>
+          <CardDescription>
+            {isFirstBusiness ? t("onboarding.formSubtitle") : t("formSubtitle")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <AddBusinessForm ownerEmail={ownerEmail} />

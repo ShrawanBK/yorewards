@@ -30,23 +30,14 @@ export function MerchantAuthForm({
     password: z.string().min(6, t("errors.password")),
   });
   const signUpSchema = signInSchema
-    .extend({
-      business_name: z.string().min(2, t("errors.businessName")),
-      category: z.string().min(2, t("errors.category")),
-      country: z.enum(["NP", "FI"]),
-      phone: z.string().optional(),
-      confirm_password: z.string(),
-    })
+    .extend({ confirm_password: z.string() })
     .refine((d) => d.password === d.confirm_password, {
       message: t("errors.confirmPassword"),
       path: ["confirm_password"],
     });
 
   const signInForm = useForm({ resolver: zodResolver(signInSchema) });
-  const signUpForm = useForm({
-    resolver: zodResolver(signUpSchema),
-    defaultValues: { country: "NP" as const },
-  });
+  const signUpForm = useForm({ resolver: zodResolver(signUpSchema) });
 
   const pw = { showLabel: t("password.show"), hideLabel: t("password.hide") };
 
@@ -111,51 +102,12 @@ export function MerchantAuthForm({
           onSubmit={signUpForm.handleSubmit(async (values) => {
             setError(null);
             const fd = new FormData();
-            Object.entries(values).forEach(([k, v]) => fd.set(k, v ?? ""));
+            fd.set("email", values.email);
+            fd.set("password", values.password);
             const result = await signUpMerchantAction(fd);
             if (result?.error) setError(result.error);
           })}
         >
-          <Field
-            label={t("fields.businessName")}
-            htmlFor="business_name"
-            error={signUpForm.formState.errors.business_name?.message}
-          >
-            <Input
-              id="business_name"
-              placeholder={t("placeholders.businessName")}
-              {...signUpForm.register("business_name")}
-            />
-          </Field>
-          <Field
-            label={t("fields.category")}
-            htmlFor="category"
-            error={signUpForm.formState.errors.category?.message}
-          >
-            <Input
-              id="category"
-              placeholder={t("placeholders.category")}
-              {...signUpForm.register("category")}
-            />
-          </Field>
-          <Field label={t("fields.country")} htmlFor="country">
-            <select
-              id="country"
-              className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-              {...signUpForm.register("country")}
-            >
-              <option value="NP">{t("countries.NP")}</option>
-              <option value="FI">{t("countries.FI")}</option>
-            </select>
-          </Field>
-          <Field label={t("fields.phoneOptional")} htmlFor="phone">
-            <Input
-              id="phone"
-              type="tel"
-              placeholder={t("placeholders.phone")}
-              {...signUpForm.register("phone")}
-            />
-          </Field>
           <Field
             label={t("fields.email")}
             htmlFor="signup-email"

@@ -14,7 +14,7 @@
     "brandBlurb": "Set up loyalty cards, approve stamps in real time, and reward your regulars — no paper cards required.",
     "brandFooter": "Merchant dashboard",
     "heading": "Account access",
-    "subheading": "Sign in or register your business to get started.",
+    "subheading": "Sign in or create your merchant account to get started.",
     "terms": "By continuing you agree to YORewards merchant terms.",
     "tabs": {
       "signin": "Sign in",
@@ -56,6 +56,12 @@
     }
   },
   "business": {
+    "onboarding": {
+      "title": "Set up your business",
+      "subtitle": "Add your first business to submit for approval.",
+      "formTitle": "Business details",
+      "formSubtitle": "We'll review your application before you can go live."
+    },
     "title": "Add a business",
     "subtitle": "Register another business under your account.",
     "formTitle": "Business details",
@@ -85,10 +91,19 @@
       "country": "Country",
       "phoneOptional": "Phone (optional)"
     },
+    "details": {
+      "title": "Account details",
+      "email": "Contact email",
+      "registered": "Registered",
+      "approved": "Approved",
+      "brandColor": "Brand color",
+      "phoneNotProvided": "Not provided"
+    },
     "placeholders": {
       "businessName": "Helsinki Hair Studio",
       "category": "Salon",
-      "phone": "+358…"
+      "phoneNP": "+977 98XXXXXXXX",
+      "phoneFI": "+358 4XXXXXXXX"
     },
     "countries": {
       "NP": "Nepal",
@@ -100,7 +115,11 @@
     },
     "errors": {
       "businessName": "Business name is required",
-      "category": "Category is required"
+      "category": "Category is required",
+      "phone": {
+        "NP": "Enter a valid Nepal mobile number (e.g. +977 98XXXXXXXX)",
+        "FI": "Enter a valid Finland mobile number (e.g. +358 4XXXXXXXX)"
+      }
     }
   },
   "dashboard": {

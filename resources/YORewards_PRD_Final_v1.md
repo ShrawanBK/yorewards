@@ -201,10 +201,11 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 ### 5.2 Merchant Auth Flow
 
 1. Merchant opens the dashboard → **sign in** or **sign up** with email + password (no magic link)
-2. Sign up collects business name, category, country, contact email, optional phone → `merchants` row created with `status = pending`
-3. Super Admin approves registration → merchant signs in → lands on dashboard
-4. Active merchant configures loyalty card, stamp rules, and reward offers (Day 3) before customers can scan
-5. Session persists via Supabase Auth httpOnly cookie
+2. Sign up creates auth account only (email + password) → redirected to **add business** if no `merchants` row exists
+3. Add business collects business name, category, country, contact email, optional phone → `merchants` row created with `status = pending`
+4. Super Admin approves registration → merchant signs in → lands on dashboard
+5. Active merchant configures loyalty card, stamp rules, and reward offers (Day 3) before customers can scan
+6. Session persists via Supabase Auth httpOnly cookie
 
 ### 5.3 Reward Redemption OTP Flow
 
@@ -402,16 +403,17 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 
 ### 8.2 Merchant Dashboard — `apps/merchant` · `localhost:3001` · `merchant.yorewards.com`
 
-| Route                 | Description                             |
-| --------------------- | --------------------------------------- |
-| `/merchant/login`     | Email + password sign in / sign up      |
-| `/merchant/register`  | Business registration form              |
-| `/merchant/dashboard` | Account status + stamp queue (Day 4+)   |
-| `/merchant/card`      | Loyalty card config + live card preview |
-| `/merchant/card/qr`   | QR code display, download, print        |
-| `/merchant/redeem`    | Redemption code entry + confirmation    |
-| `/merchant/analytics` | Full analytics dashboard                |
-| `/merchant/settings`  | Business profile + account settings     |
+| Route                    | Description                             |
+| ------------------------ | --------------------------------------- |
+| `/merchant/login`        | Email + password sign in / sign up      |
+| `/merchant/register`     | Redirects to sign-up tab on login       |
+| `/merchant/add-business` | First business or additional businesses |
+| `/merchant/dashboard`    | Account status + stamp queue (Day 4+)   |
+| `/merchant/card`         | Loyalty card config + live card preview |
+| `/merchant/card/qr`      | QR code display, download, print        |
+| `/merchant/redeem`       | Redemption code entry + confirmation    |
+| `/merchant/analytics`    | Full analytics dashboard                |
+| `/merchant/settings`     | Business profile + account settings     |
 
 ### 8.3 Super Admin — `apps/admin` · `localhost:3002` · `admin.yorewards.com`
 

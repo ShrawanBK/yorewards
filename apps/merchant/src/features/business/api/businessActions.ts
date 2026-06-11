@@ -7,6 +7,7 @@ import { createServiceRoleClient } from "@repo/supabase/service-role";
 import { switchActiveMerchant } from "@repo/supabase/queries/merchants";
 import type { CountryCode } from "@repo/supabase/types";
 import type { ActionResult } from "@/shared/types/action-result";
+import { isValidMerchantPhone } from "@/features/business/utils/phoneSchema";
 
 export async function addBusinessAction(
   formData: FormData,
@@ -19,6 +20,12 @@ export async function addBusinessAction(
 
   const email = String(formData.get("email") ?? user.email ?? "");
   const country = String(formData.get("country") ?? "NP") as CountryCode;
+  const phone = String(formData.get("phone") ?? "").trim() || null;
+
+  if (!isValidMerchantPhone(phone ?? undefined, country)) {
+    return { error: "Invalid phone number for the selected country." };
+  }
+
   const admin = createServiceRoleClient();
 
   const { data: merchant, error: merchantError } = await admin
@@ -29,7 +36,7 @@ export async function addBusinessAction(
       category: String(formData.get("category") ?? ""),
       country,
       email,
-      phone: String(formData.get("phone") ?? "") || null,
+      phone,
       status: "pending",
     })
     .select("*")

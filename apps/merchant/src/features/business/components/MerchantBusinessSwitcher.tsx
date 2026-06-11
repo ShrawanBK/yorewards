@@ -13,6 +13,7 @@ import type { MerchantRow } from "@repo/supabase/queries/merchants";
 import type { MerchantStatus } from "@repo/supabase/types";
 import { Check } from "lucide-react";
 import { switchActiveMerchantAction } from "@/features/business/api/businessActions";
+import { MerchantBusinessDetailCard } from "@/features/business/components/MerchantBusinessDetailCard";
 
 type FilterValue = "all" | "active" | "inactive";
 
@@ -64,6 +65,11 @@ export function MerchantBusinessSwitcher({
     }
     return merchants;
   }, [merchants, filter]);
+
+  const activeMerchant = useMemo(
+    () => merchants.find((m) => m.id === activeMerchantId),
+    [merchants, activeMerchantId],
+  );
 
   const selectBusiness = useCallback(
     (merchantId: string) => {
@@ -166,6 +172,10 @@ export function MerchantBusinessSwitcher({
             })}
           </ul>
         )}
+
+        {activeMerchant ? (
+          <MerchantBusinessDetailCard merchant={activeMerchant} />
+        ) : null}
       </CardContent>
     </Card>
   );

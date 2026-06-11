@@ -1,14 +1,12 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
 import { createClient } from "@repo/supabase/server";
 import { createServiceRoleClient } from "@repo/supabase/service-role";
 import {
   clearActiveMerchantForUser,
   getMerchantsByUserId,
 } from "@repo/supabase/queries/merchants";
-import type { CountryCode } from "@repo/supabase/types";
 import type { ActionResult } from "@/shared/types/action-result";
 
 export async function logoutAction() {
@@ -34,11 +32,11 @@ export async function signInMerchantAction(
   if (!user) return { error: "Sign in failed" };
 
   const merchants = await getMerchantsByUserId(user.id);
-  if (merchants.length === 0) {
-    return { error: "No merchant account for this email." };
-  }
 
-  redirect("/merchant/dashboard");
+  const redirectPath =
+    merchants.length === 0 ? "/merchant/add-business" : "/merchant/dashboard";
+
+  redirect(redirectPath);
 }
 
 export async function signUpMerchantAction(
@@ -46,7 +44,6 @@ export async function signUpMerchantAction(
 ): Promise<ActionResult | void> {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
-  const country = String(formData.get("country") ?? "NP") as CountryCode;
   const admin = createServiceRoleClient();
 
   const { data: authData, error: authError } =
@@ -67,21 +64,6 @@ export async function signUpMerchantAction(
 
   if (!authData.user) return { error: "Sign up failed" };
 
-  const { error: merchantError } = await admin.from("merchants").insert({
-    user_id: authData.user.id,
-    business_name: String(formData.get("business_name") ?? ""),
-    category: String(formData.get("category") ?? ""),
-    country,
-    email,
-    phone: String(formData.get("phone") ?? "") || null,
-    status: "pending",
-  });
-
-  if (merchantError) {
-    await admin.auth.admin.deleteUser(authData.user.id);
-    return { error: merchantError.message };
-  }
-
   const supabase = await createClient();
   const { error: signInError } = await supabase.auth.signInWithPassword({
     email,
@@ -89,6 +71,5 @@ export async function signUpMerchantAction(
   });
   if (signInError) return { error: signInError.message };
 
-  revalidatePath("/merchant/dashboard");
-  redirect("/merchant/dashboard");
+  redirect("/merchant/add-business");
 }

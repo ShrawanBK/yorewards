@@ -1,8 +1,20 @@
-# YORewards — Day 2 Checklist (Auth & Onboarding)
+# YORewards — Day 2 Checklist (Auth & Merchant Onboarding)
 
-> **Goal:** All three roles can log in, routes are guarded, and admin can approve merchants — unblocks Days 3–5.  
+> **Goal:** Admin and merchant can log in, routes are guarded, and admin can approve merchants — **merchant backend and dashboard come next; customer app waits until the merchant side is ready.**  
 > **Reference:** PRD §5, §8 · Technical Doc §4.2, §6, §3  
 > **Prerequisite:** Day 1 complete (schema, RLS, `@repo/supabase`, shadcn, next-intl, `.env.local`)
+
+---
+
+## Build philosophy (merchant-first)
+
+```text
+Admin + Merchant auth  →  Merchant card & stamp rules  →  Merchant dashboard (queue, redeem)
+                                                              ↓
+                                                    Customer auth + wallet + scan
+```
+
+Customer flows depend on merchants having configured cards, QR codes, and a working approval queue. Build and verify the **merchant side end-to-end** before investing in customer PWA routes beyond stubs.
 
 ---
 
@@ -23,21 +35,21 @@ Install/update: `npx skills add <owner/repo@skill> -y` · Lock file: `skills-loc
 
 ## Auth architecture (read once)
 
-| Role         | Method           | Session                       | RLS identity                       |
-| ------------ | ---------------- | ----------------------------- | ---------------------------------- |
-| **Admin**    | Email + password | Supabase Auth cookie          | Service role for writes            |
-| **Merchant** | Magic link       | Supabase Auth cookie          | `current_merchant_ids()` (owner → many businesses) |
-| **Customer** | Phone, no OTP    | Custom JWT / Supabase session | `app_metadata.customer_id`         |
+| Role         | Method           | Session              | RLS identity                                       |
+| ------------ | ---------------- | -------------------- | -------------------------------------------------- |
+| **Admin**    | Email + password | Supabase Auth cookie | Service role for writes                            |
+| **Merchant** | Email + password | Supabase Auth cookie | `current_merchant_ids()` (owner → many businesses) |
+| **Customer** | Phone, no OTP    | Supabase session     | `app_metadata.customer_id` (see PRD §11)           |
 
-> **Critical:** Customer phone lookup uses a **service-role API route** — anon cannot `SELECT` by phone (RLS).  
-> See Technical Doc §4.2.
+> **No magic link for merchants.** Registration and login use `signUp` / `signInWithPassword` (same pattern as admin, separate app).  
+> Customer phone auth is documented in Technical Doc §4.2 — not part of this checklist.
 
 ---
 
 ## Build order (dependency chain)
 
 ```text
-A. Shared auth infra  →  B. Admin  →  C. Merchant approval  →  D. Merchant auth  →  E. Customer auth  →  F. Verify
+A. Shared auth infra  →  B. Admin  →  C. Merchant approval  →  D. Merchant auth  →  E. Verify
 ```
 
 ---
@@ -46,22 +58,21 @@ A. Shared auth infra  →  B. Admin  →  C. Merchant approval  →  D. Merchant
 
 > Product decision: one owner login can run **multiple businesses**. Outlets/branches stay post-MVP but schema-ready. See PRD §4 (Merchant) + Technical Doc §4.7.
 
-- [ ] Apply migration `20260607150000_multi_business_ownership.sql` → `pnpm exec supabase db push`
-- [ ] Regenerate types after push → `supabase gen types` into `packages/supabase/src/types.ts` (adds `current_merchant_ids`)
-- [ ] Merchant queries return a **list** of owned businesses (not `.single()` on `user_id`)
-- [ ] (Deferred within MVP, after core auth) Business switcher + "add another business" in merchant app; default to the single business when only one exists
+- [x] Migration `20260607150000_multi_business_ownership.sql` in repo
+- [ ] Apply to cloud → `pnpm exec supabase db push`
+- [ ] Regenerate types → `supabase gen types` into `packages/supabase/src/types.ts` (adds `current_merchant_ids`)
+- [ ] Merchant queries return a **list** of owned businesses (not `.maybeSingle()` on `user_id`)
+- [ ] Business switcher + "add another business" (when owner has multiple businesses; default to one when only one exists)
 
 ---
 
 ## A. Shared auth infrastructure
 
-- [ ] `@repo/supabase/middleware` or per-app middleware — refresh Supabase session (merchant + admin)
-- [ ] Shared route-guard pattern (middleware and/or layout checks)
-- [ ] Zustand `authStore` scaffold per app (`session`, `role`, `isLoading`)
-- [ ] `packages/supabase/src/queries/` — move reusable DB helpers here as built
-- [ ] Confirm magic link redirect URLs in Supabase dashboard (Auth → URL config):
-  - `http://localhost:3001/auth/callback`
-  - Production: `https://merchant.yorewards.com/auth/callback`
+- [x] Per-app `proxy.ts` + `@repo/supabase/proxy` — refresh Supabase session (merchant + admin)
+- [x] Shared route-guard pattern (layout checks)
+- [x] Zustand `authStore` scaffold per app (`session`, `role`, `isLoading`)
+- [x] `packages/supabase/src/queries/` — reusable DB helpers (`merchants`, `customers`)
+- [x] No magic-link redirect URLs required for merchant auth
 
 ---
 
@@ -74,11 +85,11 @@ A. Shared auth infra  →  B. Admin  →  C. Merchant approval  →  D. Merchant
 
 **Build:**
 
-- [ ] Route: `/admin/login` — email + password form (react-hook-form + zod)
-- [ ] `signInWithPassword` via `@repo/supabase/server` or client
-- [ ] Redirect authenticated admin → `/admin/merchants` (or dashboard stub)
-- [ ] Logout action
-- [ ] `authStore` wired in admin layout
+- [x] Route: `/admin/login` — email + password form (react-hook-form + zod)
+- [x] `signInWithPassword` via `@repo/supabase/server` or client
+- [x] Redirect authenticated admin → `/admin/merchants`
+- [x] Logout action
+- [x] `authStore` wired in admin layout
 
 **Exit:** Log in at `localhost:3002/admin/login`.
 
@@ -86,16 +97,16 @@ A. Shared auth infra  →  B. Admin  →  C. Merchant approval  →  D. Merchant
 
 ## C. Admin — minimal merchant approval (`apps/admin`)
 
-> Pulled forward from Day 6 — **only** what unblocks merchant testing on Day 3.
+> Pulled forward from Day 6 — **only** what unblocks merchant testing on Days 3–4.
 
-- [ ] Route: `/admin/merchants` — list merchants where `status = 'pending'`
-- [ ] Approve action (service role):
+- [x] Route: `/admin/merchants` — merchant list with pending filter
+- [x] Approve action (service role):
   - Set `status = 'active'`, `approved_at`, `approved_by`
   - Insert `audit_log` row (`approve_merchant`)
-- [ ] Reject action (service role):
+- [x] Reject action (service role):
   - Set `status = 'rejected'`, `rejection_reason`
   - Insert `audit_log` row
-- [ ] Empty state when no pending merchants
+- [x] Empty state when no merchants match filter
 
 **Exit:** Pending merchant → approve → merchant can access dashboard on Day 3.
 
@@ -103,56 +114,33 @@ A. Shared auth infra  →  B. Admin  →  C. Merchant approval  →  D. Merchant
 
 ## D. Merchant — auth & registration (`apps/merchant` · `:3001`)
 
-- [ ] Route: `/merchant/login` — email → magic link (`signInWithOtp`)
-- [ ] Route: `/merchant/auth/callback` — exchange code, set session
-- [ ] Route: `/merchant/register` — business form:
-  - `business_name`, `category`, `country` (NP/FI), `email`, optional `phone`
-  - Creates Supabase Auth user (if new) + `merchants` row with `status = 'pending'`, `user_id = auth.uid()`
-- [ ] Route: `/merchant/pending` — "Awaiting approval" screen
-- [ ] Route guards:
+- [x] Route: `/merchant/login` — email + password (`signInWithPassword`), sign-up tab on same screen
+- [x] Route: `/merchant/register` — business form (or sign-up tab on login):
+  - `business_name`, `category`, `country` (NP/FI), `email`, password, optional `phone`
+  - Creates Supabase Auth user + `merchants` row with `status = 'pending'`, `user_id = auth.uid()`
+- [x] Status handling on dashboard — pending / active / rejected / suspended via `MerchantStatusPanel`
+- [x] Route guards:
   - Not logged in → `/merchant/login`
-  - `status = 'pending'` → `/merchant/pending`
-  - `status = 'rejected'` → show reason + support message
-  - `status = 'active'` → `/merchant/dashboard` (stub OK)
-- [ ] Dashboard stub at `/merchant/dashboard` — placeholder until Day 4 stamp queue
-- [ ] `authStore` + merchant profile query (`merchants` by `user_id`)
+  - Logged in, no merchant row → register / sign-up
+  - `status = 'active'` → full dashboard access (card config on Day 3)
+- [x] Dashboard stub at `/merchant/dashboard` — placeholder until Day 4 stamp queue
+- [x] `authStore` + merchant profile query (`merchants` by `user_id`)
+
+> **Note:** `/merchant/pending` may redirect to dashboard with status panel instead of a standalone screen — acceptable for MVP.
 
 **Exit:** Register → pending → admin approves → land on dashboard stub.
 
 ---
 
-## E. Customer — phone auth & onboarding (`apps/customer` · `:3000`)
+## E. Day 2 verification (exit criteria)
 
-- [ ] API: `POST /api/auth/customer/login` (service role):
-  - `normalisePhone()` from `@repo/utils/phone`
-  - Lookup by phone; if exists → update `last_active_at`
-  - If new → return `{ isNew: true }` (no row until onboarding)
-  - Issue session with `customer_id` in JWT claims for RLS
-- [ ] API: `POST /api/auth/customer/onboarding` — create `customers` row + set name + session
-- [ ] Route: `/login` — phone entry form (+977 / +358 aware)
-- [ ] Route: `/onboarding` — name entry (first-time only)
-- [ ] Route: `/wallet` — **empty state stub** ("Scan your first QR" — full wallet Day 4)
-- [ ] Route: `/profile` — phone, name, logout (minimal)
-- [ ] Route guards:
-  - `/` → `/wallet` if session, else `/login`
-  - Protect `(main)/*` routes — redirect to login if no session
-- [ ] `authStore` with `customerId`, `name`, `phone`
-- [ ] Logout clears session cookie
+### Manual E2E test (merchant + admin only)
 
-**Exit:** Phone → name (if new) → empty wallet. Refresh keeps session.
-
----
-
-## F. Day 2 verification (exit criteria)
-
-### Manual E2E test
-
-1. [ ] Merchant registers → sees **pending**
+1. [ ] Merchant registers → sees **pending** status
 2. [ ] Admin logs in → approves merchant
-3. [ ] Merchant refreshes → reaches **dashboard stub**
-4. [ ] Customer enters phone → onboarding → **wallet stub**
-5. [ ] Customer refresh → still logged in
-6. [ ] Merchant logout / customer logout works
+3. [ ] Merchant refreshes → reaches **dashboard stub** with **active** status
+4. [ ] Merchant logout works
+5. [ ] Admin logout works
 
 ### Commands (repo root)
 
@@ -161,64 +149,38 @@ pnpm exec turbo lint
 pnpm exec turbo check-types
 pnpm exec turbo build
 pnpm exec turbo dev --filter=admin     # :3002
-pnpm exec turbo dev --filter=merchant # :3001
-pnpm exec turbo dev --filter=customer  # :3000
+pnpm exec turbo dev --filter=merchant  # :3001
 ```
 
 - [ ] No secrets in git
 - [ ] Update Technical Doc **Implementation Status**
-- [ ] Git commit: _"Day 2: Auth flows + admin merchant approval"_
+- [ ] Git commit: _"Day 2: Admin + merchant auth and approval"_
 
 ---
 
-## Routes created today
-
-### Customer (`apps/customer`)
-
-| Route                           | Purpose                   |
-| ------------------------------- | ------------------------- |
-| `/login`                        | Phone entry               |
-| `/onboarding`                   | Name (new users)          |
-| `/wallet`                       | Empty stub                |
-| `/profile`                      | Phone, name, logout       |
-| `/api/auth/customer/login`      | Service-role phone lookup |
-| `/api/auth/customer/onboarding` | Create customer + session |
+## Routes — Day 2 scope
 
 ### Merchant (`apps/merchant`)
 
-| Route                     | Purpose               |
-| ------------------------- | --------------------- |
-| `/merchant/login`         | Magic link            |
-| `/merchant/register`      | Business registration |
-| `/merchant/auth/callback` | OAuth callback        |
-| `/merchant/pending`       | Awaiting approval     |
-| `/merchant/dashboard`     | Stub                  |
+| Route                 | Purpose                              |
+| --------------------- | ------------------------------------ |
+| `/merchant/login`     | Email + password (sign in / sign up) |
+| `/merchant/register`  | Business registration                |
+| `/merchant/dashboard` | Stub + account status panel          |
 
 ### Admin (`apps/admin`)
 
-| Route              | Purpose                |
-| ------------------ | ---------------------- |
-| `/admin/login`     | Email + password       |
-| `/admin/merchants` | Approve / reject queue |
-
----
-
-## Not Day 2 (defer)
-
-| Item                                      | When  |
-| ----------------------------------------- | ----- |
-| Loyalty card config, QR, logos            | Day 3 |
-| QR scanner, stamp queue, wallet grid      | Day 4 |
-| SMS OTP redemption                        | Day 5 |
-| Full admin dashboard, analytics, audit UI | Day 6 |
-| Customer phone OTP at signup              | v2    |
+| Route              | Purpose                          |
+| ------------------ | -------------------------------- |
+| `/admin/login`     | Email + password                 |
+| `/admin/merchants` | Approve / reject / suspend queue |
 
 ---
 
 ## Agent session starter
 
-> _"You are building YORewards Day 2. Follow `resources/Day2_Checklist.md` and PRD §5. Use `@repo/supabase`, `@repo/utils`, `@repo/ui`. Customer login = service-role API + JWT with `customer_id`. Merchant/admin = Supabase Auth. Start with section A, then B."_
+> _"You are building YORewards Day 2. Follow `resources/Day2_Checklist.md` and PRD §5. Use `@repo/supabase`, `@repo/utils`, `@repo/ui`. Merchant auth = email + password (no magic link). Admin = email + password. Start with section A, then B."_
 
 ---
 
-_Day 2 complete → start Day 3: Card System._
+_Day 2 complete → start Day 3: Merchant Card System (stamp rules, reward types, offers, QR)._

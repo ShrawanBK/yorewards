@@ -162,7 +162,7 @@ Customers collect stamps by visiting businesses and scanning a QR code. Merchant
 ### Merchant
 
 - Registers a business with name, category, country, and contact details
-- **One owner account can run multiple businesses** — each business has its own profile, loyalty card(s), and QR code (e.g. a café *and* a salon under one login)
+- **One owner account can run multiple businesses** — each business has its own profile, loyalty card(s), and QR code (e.g. a café _and_ a salon under one login)
 - Creates and customises a loyalty card
 - Receives a unique QR code per loyalty card
 - Approves or rejects every stamp request — no auto-stamping
@@ -186,7 +186,7 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 | --------------------------- | -------------------------------- | ------------------------ | ----------------------------------------------------------------- |
 | **Customer**                | Phone number — no OTP at login   | Supabase custom auth     | Nepal: high mobile, low email penetration. Stamps are low-stakes. |
 | **Customer (reward claim)** | SMS OTP fires at redemption only | Sparrow SMS / Twilio     | Verify phone identity only when real value is at stake            |
-| **Merchant**                | Email + magic link               | Supabase Auth (built-in) | Free, secure, no SMS cost                                         |
+| **Merchant**                | Email + password                 | Supabase Auth (built-in) | Same secure pattern as admin; no magic link, no SMS cost          |
 | **Super Admin**             | Email + password                 | Supabase Auth (built-in) | Single internal user. Highest access.                             |
 
 ### 5.1 Customer Auth Flow
@@ -198,7 +198,15 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 5. If new → name entry screen → account created → logged in
 6. Session persists via JWT in httpOnly cookie
 
-### 5.2 Reward Redemption OTP Flow
+### 5.2 Merchant Auth Flow
+
+1. Merchant opens the dashboard → **sign in** or **sign up** with email + password (no magic link)
+2. Sign up collects business name, category, country, contact email, optional phone → `merchants` row created with `status = pending`
+3. Super Admin approves registration → merchant signs in → lands on dashboard
+4. Active merchant configures loyalty card, stamp rules, and reward offers (Day 3) before customers can scan
+5. Session persists via Supabase Auth httpOnly cookie
+
+### 5.3 Reward Redemption OTP Flow
 
 1. Customer reaches stamp target → `customer_cards.reward_status`: `pending_otp` (and `targets_reached` increments)
 2. Customer taps 'Claim Reward' → OTP sent to registered phone
@@ -209,15 +217,15 @@ Authentication is tiered by risk level — minimal friction for customers, verif
 
 **Reward status state machine** (on `customer_cards`):
 
-| Status | Meaning |
-| --- | --- |
-| `collecting` | Earning stamps toward target |
-| `pending_otp` | Target reached — customer must verify phone to claim |
-| `unlocked` | OTP verified — redemption code active, awaiting merchant confirm |
+| Status        | Meaning                                                          |
+| ------------- | ---------------------------------------------------------------- |
+| `collecting`  | Earning stamps toward target                                     |
+| `pending_otp` | Target reached — customer must verify phone to claim             |
+| `unlocked`    | OTP verified — redemption code active, awaiting merchant confirm |
 
 After merchant confirms, status returns to `collecting` with `current_stamps = 0` and `cycle_number` incremented. Completion is tracked on `redemptions.status`, not on `customer_cards`.
 
-### 5.3 Known Limitation — Documented
+### 5.4 Known Limitation — Documented
 
 > ⚠️ Since customers are not OTP-verified at registration, anyone can register with any phone number. Risk is negligible for MVP — stamps have zero monetary value. OTP at redemption prevents the only meaningful fraud vector. Full phone OTP at registration introduced in v2.
 
@@ -338,7 +346,7 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 | Reward unlocked    | Customer  | In-app + browser push | 'Reward earned at [Merchant]!'            |
 | OTP for redemption | Customer  | SMS                   | 'Your YORewards code: XXXXXX'             |
 | Reward redeemed    | Customer  | In-app                | 'Reward redeemed! New cycle started.'     |
-| Merchant approved  | Merchant  | Email (magic link)    | 'Your account is live — set up your card' |
+| Merchant approved  | Merchant  | Email                 | 'Your account is live — set up your card' |
 
 ---
 
@@ -346,31 +354,31 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 
 > 🔴 **This stack is locked. Cursor must use these exact technologies. Do not substitute, upgrade, or add libraries without explicit instruction.**
 
-| Layer           | Package                         | Notes                                            |
-| --------------- | ------------------------------- | ------------------------------------------------ |
-| Framework       | `next`                          | App Router. Full-stack.                          |
-| Language        | `typescript`                    | No `any`. Types everywhere.                      |
-| UI Components   | `shadcn/ui`                     | Radix UI primitives. Premium look.               |
-| Styling         | `tailwindcss`                   | Brand config applied.                            |
-| Animations      | `framer-motion`                 | All animations. Spring physics.                  |
-| Confetti        | `canvas-confetti`               | Reward unlock celebration.                       |
-| Server State    | `@tanstack/react-query`         | All data fetching + caching.                     |
-| Client State    | `zustand`                       | Auth session, wallet state.                      |
-| Database        | `supabase (postgres)`           | Free tier. EU West (Frankfurt). RLS enabled.     |
-| Auth            | `@supabase/auth-helpers-nextjs` | Magic link, email+pw, custom phone.              |
-| Real-time       | `supabase realtime`             | Stamp queue only. Not mixed with TanStack.       |
-| Storage         | `supabase storage`              | Merchant logos.                                  |
-| Image Compress  | `browser-image-compression`     | Compress before upload.                          |
-| QR Generate     | `qrcode.react`                  | Merchant QR as SVG.                              |
-| QR Scan         | `html5-qrcode`                  | Browser camera. Test on real iPhone early.       |
-| SMS — Nepal     | `sparrow-sms (REST)`            | OTP at redemption for +977 only.                 |
-| SMS — Finland   | `twilio`                        | OTP at redemption for +358 only.                 |
-| i18n            | `next-intl`                     | English MVP. All strings in `/messages/en.json`. |
-| PWA             | `next-pwa`                      | Customer app only. Brand manifest.               |
-| Hosting         | `vercel`                        | 3 deployments. Auto-deploy from GitHub.          |
-| Forms           | `react-hook-form + zod`         | All form validation.                             |
-| Icons           | `lucide-react`                  | Ships with shadcn/ui.                            |
-| Package Manager | `pnpm`                          | Required for Turborepo monorepo.                 |
+| Layer           | Package                         | Notes                                                     |
+| --------------- | ------------------------------- | --------------------------------------------------------- |
+| Framework       | `next`                          | App Router. Full-stack.                                   |
+| Language        | `typescript`                    | No `any`. Types everywhere.                               |
+| UI Components   | `shadcn/ui`                     | Radix UI primitives. Premium look.                        |
+| Styling         | `tailwindcss`                   | Brand config applied.                                     |
+| Animations      | `framer-motion`                 | All animations. Spring physics.                           |
+| Confetti        | `canvas-confetti`               | Reward unlock celebration.                                |
+| Server State    | `@tanstack/react-query`         | All data fetching + caching.                              |
+| Client State    | `zustand`                       | Auth session, wallet state.                               |
+| Database        | `supabase (postgres)`           | Free tier. EU West (Frankfurt). RLS enabled.              |
+| Auth            | `@supabase/auth-helpers-nextjs` | Email+password (merchant/admin), custom phone (customer). |
+| Real-time       | `supabase realtime`             | Stamp queue only. Not mixed with TanStack.                |
+| Storage         | `supabase storage`              | Merchant logos.                                           |
+| Image Compress  | `browser-image-compression`     | Compress before upload.                                   |
+| QR Generate     | `qrcode.react`                  | Merchant QR as SVG.                                       |
+| QR Scan         | `html5-qrcode`                  | Browser camera. Test on real iPhone early.                |
+| SMS — Nepal     | `sparrow-sms (REST)`            | OTP at redemption for +977 only.                          |
+| SMS — Finland   | `twilio`                        | OTP at redemption for +358 only.                          |
+| i18n            | `next-intl`                     | English MVP. All strings in `/messages/en.json`.          |
+| PWA             | `next-pwa`                      | Customer app only. Brand manifest.                        |
+| Hosting         | `vercel`                        | 3 deployments. Auto-deploy from GitHub.                   |
+| Forms           | `react-hook-form + zod`         | All form validation.                                      |
+| Icons           | `lucide-react`                  | Ships with shadcn/ui.                                     |
+| Package Manager | `pnpm`                          | Required for Turborepo monorepo.                          |
 
 ---
 
@@ -394,17 +402,16 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 
 ### 8.2 Merchant Dashboard — `apps/merchant` · `localhost:3001` · `merchant.yorewards.com`
 
-| Route                 | Description                              |
-| --------------------- | ---------------------------------------- |
-| `/merchant/login`     | Email entry → magic link sent            |
-| `/merchant/register`  | Business registration form               |
-| `/merchant/pending`   | Awaiting Super Admin approval screen     |
-| `/merchant/dashboard` | Stamp queue (primary view) + quick stats |
-| `/merchant/card`      | Loyalty card config + live card preview  |
-| `/merchant/card/qr`   | QR code display, download, print         |
-| `/merchant/redeem`    | Redemption code entry + confirmation     |
-| `/merchant/analytics` | Full analytics dashboard                 |
-| `/merchant/settings`  | Business profile + account settings      |
+| Route                 | Description                             |
+| --------------------- | --------------------------------------- |
+| `/merchant/login`     | Email + password sign in / sign up      |
+| `/merchant/register`  | Business registration form              |
+| `/merchant/dashboard` | Account status + stamp queue (Day 4+)   |
+| `/merchant/card`      | Loyalty card config + live card preview |
+| `/merchant/card/qr`   | QR code display, download, print        |
+| `/merchant/redeem`    | Redemption code entry + confirmation    |
+| `/merchant/analytics` | Full analytics dashboard                |
+| `/merchant/settings`  | Business profile + account settings     |
 
 ### 8.3 Super Admin — `apps/admin` · `localhost:3002` · `admin.yorewards.com`
 
@@ -445,7 +452,7 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 - Super Admin dashboard: merchant approval, user management, platform stats, audit log
 - Phone-number-based customer identity (no OTP at login)
 - Multi-business per owner: one merchant login can create and manage several businesses
-- Email magic link for merchant, email+password for admin
+- Email + password for merchant and admin
 - SMS OTP via Sparrow SMS (Nepal) and Twilio (Finland) — at reward redemption only
 - All 3 reward types: Free Item, Percentage Discount, Fixed Discount
 - Minimum spend rule per stamp (optional, configurable)
@@ -481,15 +488,17 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 
 > 📐 **Schema rule:** Day 1 creates all **8 MVP tables** via Supabase migrations — additive only from Day 1 onward. v2 adds columns and new tables; never drop or recreate core tables. See Technical Doc §4.5.
 
-| Day   | Focus                      | Deliverables                                                                                                                                                                                                                                                                 |
-| ----- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1** | Foundation                 | Turborepo init. All 3 Next.js apps. Supabase project (EU West). All **8 tables** with RLS (incl. `otp_tokens`). Forward-compatible columns baked in (`customers.status`, `merchants.rejection_reason`). Migration-first setup in `supabase/migrations/`. Tailwind brand config. shadcn/ui. next-intl scaffold. `@repo/supabase` + `@repo/utils`. All env vars. GitHub + Vercel deployments. |
-| **2** | Auth & Onboarding          | Customer phone login + Zustand authStore. Customer onboarding. Merchant email magic link + auth callback. Merchant register form. Admin email+password. Route guards. Merchant pending screen. **Minimal admin merchant approval queue** (list + approve/reject with reason) — unblocks Days 3–5. |
-| **3** | Card System                | Merchant card config (all fields). Image compression on logo upload. All 3 reward types. Minimum spend rule. Live card preview renderer. QR generation. QR PNG download.                                                                                                      |
-| **4** | Stamp Flow + Wallet Shell  | Customer QR scanner. Stamp session creation. Supabase Realtime in merchant dashboard. Merchant stamp queue UI. Customer pending + success + rejected screens. Framer Motion animations. **Basic wallet home** (read-only card grid via TanStack Query). **Test on real iPhone today.** |
-| **5** | Rewards                    | Card detail + stamp grid polish. Reward unlock detection. OTP send (Sparrow + Twilio). OTP verification. Redemption code generation. Merchant redemption entry. Cycle reset. canvas-confetti.                                                                                |
-| **6** | Admin & Analytics          | Super Admin dashboard (platform overview). Customer management (list, suspend). Platform stats. Merchant analytics page. Audit log. Manual stamp tool.                                                                                                                      |
-| **7** | Polish & Launch            | PWA manifest + icons + next-pwa. Browser push for reward unlock. All empty + error states. Privacy policy page (GDPR). Mobile responsiveness pass. Full end-to-end test all 3 reward types. Production deploy all 3 Vercel apps.                                             |
+> 🏗️ **Sequencing rule:** Build the **merchant side first** — card config, stamp rules, offers, QR, then stamp queue and redemption. Only after the merchant backend and dashboard are usable does the **customer PWA** get auth, wallet, scanner, and stamp flows. Customers need real cards and an approval queue to test against.
+
+| Day   | Focus                   | Deliverables                                                                                                                                                                                                                                                                                                                                                                                |
+| ----- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | Foundation              | Turborepo init. All 3 Next.js apps. Supabase project (EU West). All **8 tables** with RLS (incl. `otp_tokens`). Forward-compatible columns baked in (`customers.status`, `merchants.rejection_reason`). Migration-first setup in `supabase/migrations/`. Tailwind brand config. shadcn/ui. next-intl scaffold. `@repo/supabase` + `@repo/utils`. All env vars. GitHub + Vercel deployments. |
+| **2** | Auth (Admin + Merchant) | Merchant email+password register/login. Admin email+password. Route guards. Dashboard stub + account status. **Minimal admin merchant approval queue** (list + approve/reject with reason). **No customer auth yet** — see Day 5.                                                                                                                                                           |
+| **3** | Merchant Card System    | `/merchant/card` — loyalty card config (logo, colors, name, description). **Stamp rules** (target 5–50, optional minimum spend). **All 3 reward types** (free item, % discount, fixed discount). Live card preview. Image compression on logo upload. QR generation + PNG download.                                                                                                         |
+| **4** | Merchant Dashboard      | Stamp approval queue (Supabase Realtime). Approve/reject with optional reason. Redemption code entry + `complete_redemption`. Basic merchant analytics. Browser tab badge on new requests. Merchant settings stub.                                                                                                                                                                          |
+| **5** | Customer + Stamp Flow   | Customer phone login + onboarding + Zustand authStore. QR scanner. Stamp session creation. Customer pending + success + rejected screens. **Basic wallet home** (read-only card grid via TanStack Query). Framer Motion stamp animations. **Test on real iPhone today.**                                                                                                                    |
+| **6** | Rewards + Admin         | Card detail polish. Reward unlock detection. OTP send (Sparrow + Twilio). OTP verification. Redemption code display. Cycle reset. canvas-confetti. Super Admin dashboard (platform overview). Customer management. Merchant analytics page. Audit log UI. Manual stamp tool.                                                                                                                |
+| **7** | Polish & Launch         | PWA manifest + icons + next-pwa. Browser push for reward unlock. All empty + error states. Privacy policy page (GDPR). Mobile responsiveness pass. Full end-to-end test all 3 reward types. Production deploy all 3 Vercel apps.                                                                                                                                                            |
 
 ---
 
@@ -507,12 +516,12 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 
 ## 13. Future Roadmap
 
-| Phase | Timeline  | Features                                                                                                                           |
-| ----- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| **2** | Month 2   | Phone OTP at signup, Nepali + Finnish translations, multi-staff merchant accounts, subscription billing (Stripe + eSewa/MobilePay) |
-| **3** | Month 3   | WhatsApp Business API bot — browse menu, order, auto-earn stamps                                                                   |
+| Phase | Timeline  | Features                                                                                                                                                          |
+| ----- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **2** | Month 2   | Phone OTP at signup, Nepali + Finnish translations, multi-staff merchant accounts, subscription billing (Stripe + eSewa/MobilePay)                                |
+| **3** | Month 3   | WhatsApp Business API bot — browse menu, order, auto-earn stamps                                                                                                  |
 | **4** | Month 4–5 | Native React Native / Expo app, push notifications via Expo, **multi-location / outlet support** (shared card + cross-branch stamping, per-branch QR & analytics) |
-| **5** | Month 6+  | Cross-merchant reward exchange, eSewa / MobilePay auto-stamp on payment, advanced cohort analytics, SEA expansion                  |
+| **5** | Month 6+  | Cross-merchant reward exchange, eSewa / MobilePay auto-stamp on payment, advanced cohort analytics, SEA expansion                                                 |
 
 ---
 

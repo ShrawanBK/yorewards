@@ -135,7 +135,7 @@ A. Shared auth infra  →  B. Admin  →  C. Merchant approval  →  D. Merchant
 
 ### Manual E2E test (merchant + admin only)
 
-1. [ ] Merchant signs up → adds business → sees **pending** status
+1. [x] Merchant signs up → adds business → sees **pending** status
 2. [ ] Admin logs in → approves merchant
 3. [ ] Merchant refreshes → reaches **dashboard stub** with **active** status
 4. [ ] Merchant logout works

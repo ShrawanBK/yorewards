@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { Badge } from "@repo/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
 import { cn } from "@repo/ui/lib/utils";
@@ -37,10 +37,12 @@ export function MerchantBusinessDetailCard({
 }) {
   const t = useTranslations("business");
   const tDash = useTranslations("dashboard");
+  const format = useFormatter();
   const badge = STATUS_BADGE[merchant.status];
-  const registered = new Date(merchant.created_at).toLocaleDateString();
+  const dateStyle = { dateStyle: "medium" as const };
+  const registered = format.dateTime(new Date(merchant.created_at), dateStyle);
   const approved = merchant.approved_at
-    ? new Date(merchant.approved_at).toLocaleDateString()
+    ? format.dateTime(new Date(merchant.approved_at), dateStyle)
     : null;
 
   return (

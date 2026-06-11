@@ -1,0 +1,76 @@
+---
+description: Enforce Feature-Driven Architecture folder structure for all new files and features in this Next.js project
+globs: src/**/*
+alwaysApply: true
+---
+
+# Project Architecture: Feature-Driven Architecture (FDA)
+
+This project uses a strict Feature-Driven Architecture. Follow these rules for EVERY file you create or modify.
+
+## Layer Hierarchy (top → bottom, imports flow downward only)
+
+```
+app/ → widgets/ → features/ → entities/ → shared/
+```
+
+**Hard rules:**
+- `app/` contains ONLY routing files (page.tsx, layout.tsx, route.ts). Zero business logic.
+- `features/` contain ALL business logic. One folder per domain (auth, dashboard, billing, etc.)
+- `shared/` contains ZERO business logic — only pure utils, UI primitives, lib configs
+- A feature NEVER imports from another feature directly
+- `shared/` NEVER imports from `features/`
+
+## When creating a new feature
+
+Always scaffold the full structure:
+
+```
+src/features/[name]/
+├── components/   ← UI only used inside this feature
+├── hooks/        ← custom hooks (combine store + queries)
+├── store/        ← Zustand slice (client/UI state only)
+├── api/          ← React Query hooks (server state)
+├── types/        ← feature-scoped TypeScript types
+├── utils/        ← pure functions, no side effects
+└── index.ts      ← barrel file, public API only
+```
+
+## index.ts barrel rule
+
+Every feature MUST have an `index.ts`. Only export what other layers need.
+Never export internal implementation details (raw store, internal hooks, api internals).
+
+```ts
+// GOOD
+export { LoginForm } from './components/LoginForm'
+export { useSession } from './hooks/useSession'
+export type { AuthUser } from './types/auth.types'
+
+// BAD — don't export internals
+export { useAuthStore } from './store/authStore'
+export { authApi } from './api/authQueries'
+```
+
+## Page files must be thin
+
+```tsx
+// GOOD — page just composes features
+import { DashboardView } from '@/features/dashboard'
+export default function Page() { return <DashboardView /> }
+
+// BAD — page contains logic
+export default function Page() {
+  const [data, setData] = useState([])
+  useEffect(() => { fetch(...).then(setData) }, [])
+  return <div>{data.map(...)}</div>
+}
+```
+
+## Path aliases
+
+Always use `@/` aliases, never relative `../../`:
+- `@/features/auth`
+- `@/shared/ui`
+- `@/entities/user`
+- `@/widgets/Navbar`

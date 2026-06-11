@@ -1,0 +1,97 @@
+---
+description: Component patterns with Tailwind CSS — apply when creating or editing any React component file
+globs: src/**/*.tsx
+---
+
+# Component Patterns
+
+## Component location rules
+
+| Component type          | Location                              |
+|-------------------------|---------------------------------------|
+| Feature-specific UI     | `features/[name]/components/`         |
+| Multi-feature assembled | `widgets/[Name]/`                     |
+| Generic reusable UI     | `shared/ui/`                          |
+| Page composition        | `app/**/page.tsx`                     |
+
+## Component file structure
+
+```tsx
+// 1. Imports (external → internal → types)
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useLogin } from '../hooks/useLogin'
+import type { LoginFormProps } from '../types'
+
+// 2. Types
+interface Props {
+  onSuccess?: () => void
+}
+
+// 3. Component (named export, not default)
+export function LoginForm({ onSuccess }: Props) {
+  // hooks first
+  // derived state
+  // handlers
+  // render
+}
+```
+
+**Always use named exports for components** — default exports make refactoring harder.
+
+## Tailwind rules
+
+- Use `cn()` from `@/shared/utils` for conditional classes (clsx + tailwind-merge)
+- Never inline long className strings — extract to a `const styles` object or component variants
+- Use `cva` (class-variance-authority) for components with variants:
+
+```tsx
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/shared/utils'
+
+const buttonVariants = cva(
+  'inline-flex items-center justify-center rounded-md font-medium transition-colors',
+  {
+    variants: {
+      variant: {
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        destructive: 'bg-destructive text-destructive-foreground',
+      },
+      size: {
+        sm: 'h-8 px-3 text-xs',
+        md: 'h-10 px-4 text-sm',
+        lg: 'h-12 px-6 text-base',
+      },
+    },
+    defaultVariants: { variant: 'default', size: 'md' },
+  }
+)
+
+interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {}
+
+export function Button({ className, variant, size, ...props }: ButtonProps) {
+  return <button className={cn(buttonVariants({ variant, size }), className)} {...props} />
+}
+```
+
+## Server vs Client components
+
+- Default to **Server Components** — add `'use client'` only when needed
+- Use client directive when: hooks, event handlers, browser APIs, Zustand store access
+- Keep client components as leaf nodes (push interactivity down the tree)
+
+```tsx
+// GOOD — server component fetches, client component handles interaction
+// app/dashboard/page.tsx (server)
+export default async function Page() {
+  const data = await fetchData()
+  return <DashboardClient initialData={data} />
+}
+
+// features/dashboard/components/DashboardClient.tsx
+'use client'
+export function DashboardClient({ initialData }) { ... }
+```

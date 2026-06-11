@@ -1,0 +1,63 @@
+---
+description: Zustand state management patterns — apply when creating or editing store files, or when asked about state management
+globs: src/features/**/store/*.ts, src/shared/lib/zustand.ts
+---
+
+# State Management: Zustand
+
+## Where state lives
+
+| State type        | Location                              |
+|-------------------|---------------------------------------|
+| Feature UI state  | `features/[name]/store/[name]Store.ts`|
+| Global UI state   | `shared/lib/zustand.ts`               |
+| Server/async data | React Query — NOT Zustand             |
+
+## Store slice pattern
+
+```ts
+// features/[name]/store/[name]Store.ts
+import { create } from 'zustand'
+import { devtools } from 'zustand/middleware'
+
+interface [Name]State {
+  // state fields
+  // actions (set*)
+}
+
+export const use[Name]Store = create<[Name]State>()(
+  devtools(
+    (set, get) => ({
+      // initial state
+      // actions
+    }),
+    { name: '[name]-store' }
+  )
+)
+```
+
+## Rules
+
+- Always wrap with `devtools()` for Redux DevTools support
+- Use `immer` middleware for complex nested state updates
+- Never store server data (API responses) in Zustand — use React Query
+- Never call Zustand stores directly in components — wrap in a feature hook first:
+
+```ts
+// features/auth/hooks/useSession.ts  ← wrap the store
+export const useSession = () => {
+  const user = useAuthStore((s) => s.user)
+  const setUser = useAuthStore((s) => s.setUser)
+  return { user, setUser, isAuthenticated: !!user }
+}
+```
+
+- Select only what you need (avoid `useStore(s => s)` — causes re-renders):
+
+```ts
+// GOOD
+const user = useAuthStore((s) => s.user)
+
+// BAD
+const { user, setUser, ...rest } = useAuthStore()
+```

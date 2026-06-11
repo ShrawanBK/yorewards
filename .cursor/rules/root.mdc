@@ -1,0 +1,47 @@
+---
+description: Root architectural principles — always active for all files in this Next.js project
+alwaysApply: true
+---
+
+# Next.js FDA — Core Principles (Always Active)
+
+This is a large-scale Next.js project using Feature-Driven Architecture (FDA) with an FSD-inspired layering system.
+
+## Non-negotiable rules
+
+1. **`app/` = routing only.** Pages import from features. No useState, no fetch, no logic in pages.
+
+2. **Features are islands.** `features/auth` cannot import from `features/billing`. If something is truly shared, it goes to `shared/` or `entities/`.
+
+3. **`index.ts` controls the public API.** Import from `@/features/auth`, never from `@/features/auth/components/LoginForm` directly.
+
+4. **Server state = React Query. Client/UI state = Zustand.** Never mix them.
+
+5. **`'use client'` is a last resort.** Default to Server Components. Add the directive only at the lowest possible leaf node.
+
+6. **Path aliases always.** Use `@/features/...`, `@/shared/...` — never `../../`.
+
+## Import layer enforcement
+
+```
+✅ app        → features, widgets, shared, entities
+✅ widgets    → features, entities, shared
+✅ features   → entities, shared
+✅ entities   → shared
+✅ shared     → (nothing internal)
+
+❌ features   → features
+❌ shared     → features
+❌ entities   → features
+❌ app        → direct sub-paths inside features
+```
+
+## Stack
+
+- **Framework**: Next.js 14+ App Router
+- **State (client)**: Zustand with devtools + immer
+- **State (server)**: React Query (@tanstack/react-query)
+- **Styling**: Tailwind CSS + cva + cn()
+- **Types**: TypeScript strict mode
+
+When in doubt: push logic DOWN into features, push UI primitives DOWN into shared.

@@ -1,9 +1,0 @@
-@import "tailwindcss";
-@import "@repo/ui/globals.css";
-
-@source "../../../packages/ui/src/**/*.{js,ts,jsx,tsx}";
-
-@theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}

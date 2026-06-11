@@ -102,5 +102,31 @@
       "businessName": "Business name is required",
       "category": "Category is required"
     }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Merchant portal",
+    "logout": "Log out",
+    "accountStatus": "Account status",
+    "rejectionReason": "Rejection reason",
+    "activeHint": "Loyalty card setup arrives on Day 3. Stamp queue on Day 4.",
+    "status": {
+      "pending": {
+        "label": "Pending approval",
+        "description": "Your application is under review. We'll notify you once an admin approves your account."
+      },
+      "active": {
+        "label": "Active",
+        "description": "Your account is approved. Set up loyalty cards and start collecting stamps."
+      },
+      "rejected": {
+        "label": "Rejected",
+        "description": "Your application was not approved. See the reason below or contact support."
+      },
+      "suspended": {
+        "label": "Suspended",
+        "description": "Your account is temporarily suspended. Contact support for assistance."
+      }
+    }
   }
 }

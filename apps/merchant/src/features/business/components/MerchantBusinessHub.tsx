@@ -17,21 +17,12 @@ import { Check, MapPin } from "lucide-react";
 import { switchActiveMerchantAction } from "@/features/business/api/businessActions";
 import { MerchantBusinessDetailCard } from "@/features/business/components/MerchantBusinessDetailCard";
 import { BranchList } from "@/features/business/components/BranchList";
+import {
+  MERCHANT_CHIP,
+  MERCHANT_STATUS_BADGE,
+} from "@/shared/constants/status-badges";
 
 type FilterValue = "all" | "active" | "inactive";
-
-const STATUS_BADGE: Record<
-  MerchantStatus,
-  {
-    variant: "default" | "secondary" | "outline" | "destructive";
-    className?: string;
-  }
-> = {
-  pending: { variant: "secondary" },
-  active: { variant: "default", className: "bg-brand-green text-white" },
-  suspended: { variant: "outline" },
-  rejected: { variant: "destructive" },
-};
 
 function isActiveStatus(status: MerchantStatus) {
   return status === "active";
@@ -97,12 +88,12 @@ export function MerchantBusinessHub({
   );
 
   return (
-    <div className="grid gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,340px)_1fr] lg:items-start">
-      <Card className="lg:sticky lg:top-28">
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,340px)_1fr] lg:items-start">
+      <Card className="merchant-glass-card lg:sticky lg:top-8 lg:py-5">
         <CardHeader className="gap-4 space-y-0 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1">
             <CardTitle className="text-lg">{t("listTitle")}</CardTitle>
-            <p className="text-sm text-muted-foreground">{t("listSubtitle")}</p>
+            <p className="text-sm merchant-body-muted">{t("listSubtitle")}</p>
           </div>
           <Button variant="outline" size="sm" asChild className="shrink-0">
             <Link href="/merchant/add-business">{t("addAnother")}</Link>
@@ -129,7 +120,7 @@ export function MerchantBusinessHub({
           {filtered.length === 0 ? (
             <div className="rounded-lg border border-dashed py-10 text-center">
               <p className="font-medium">{t("empty.title")}</p>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-sm merchant-body-muted">
                 {t("empty.description")}
               </p>
             </div>
@@ -137,7 +128,7 @@ export function MerchantBusinessHub({
             <ul className="space-y-2" role="list">
               {filtered.map((merchant) => {
                 const isSelected = merchant.id === activeMerchantId;
-                const badge = STATUS_BADGE[merchant.status];
+                const badge = MERCHANT_STATUS_BADGE[merchant.status];
                 const branches = branchCounts[merchant.id] ?? 0;
 
                 return (
@@ -148,11 +139,11 @@ export function MerchantBusinessHub({
                       onClick={() => selectBusiness(merchant.id)}
                       className={cn(
                         "flex w-full items-start gap-3 rounded-lg border p-3 text-left transition-colors",
-                        "hover:border-brand-purple/40 hover:bg-brand-surface/60",
-                        "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
+                        "border-border hover:border-primary/40 hover:bg-muted/50",
+                        "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
                         "disabled:pointer-events-none disabled:opacity-60",
                         isSelected &&
-                          "border-brand-purple bg-brand-surface ring-1 ring-brand-purple/30",
+                          "border-primary/50 bg-primary/15 ring-1 ring-primary/30",
                       )}
                       aria-current={isSelected ? "true" : undefined}
                     >
@@ -182,18 +173,18 @@ export function MerchantBusinessHub({
                           {isSelected ? (
                             <Badge
                               variant="outline"
-                              className="border-brand-purple text-brand-purple"
+                              className={MERCHANT_CHIP.selected}
                             >
                               <Check className="mr-1 size-3" aria-hidden />
                               {t("selected")}
                             </Badge>
                           ) : null}
                         </div>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm merchant-body-muted">
                           {merchant.category} ·{" "}
                           {t(`countries.${merchant.country}`)}
                         </p>
-                        <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <p className="flex items-center gap-1 text-xs merchant-body-muted">
                           <MapPin className="size-3" aria-hidden />
                           {t("branchCount", { count: branches })}
                         </p>
@@ -219,7 +210,9 @@ export function MerchantBusinessHub({
             <TabsList>
               <TabsTrigger value="overview">{t("tabs.overview")}</TabsTrigger>
               <TabsTrigger value="branches">{t("tabs.branches")}</TabsTrigger>
-              <TabsTrigger value="loyaltyCard">{t("tabs.loyaltyCard")}</TabsTrigger>
+              <TabsTrigger value="loyaltyCard">
+                {t("tabs.loyaltyCard")}
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="overview" className="mt-4">
               <MerchantBusinessDetailCard merchant={activeMerchant} />
@@ -231,12 +224,12 @@ export function MerchantBusinessHub({
               />
             </TabsContent>
             <TabsContent value="loyaltyCard" className="mt-4">
-              <Card>
+              <Card className="merchant-glass-card">
                 <CardHeader>
                   <CardTitle className="text-lg">
                     {t("loyaltyCardSummary.title")}
                   </CardTitle>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm merchant-body-muted">
                     {t("loyaltyCardSummary.subtitle")}
                   </p>
                 </CardHeader>
@@ -244,13 +237,13 @@ export function MerchantBusinessHub({
                   {loyaltyCard ? (
                     <dl className="grid gap-2 text-sm sm:grid-cols-2">
                       <div>
-                        <dt className="text-muted-foreground">
+                        <dt className="merchant-body-muted">
                           {t("loyaltyCardSummary.cardName")}
                         </dt>
                         <dd className="font-medium">{loyaltyCard.card_name}</dd>
                       </div>
                       <div>
-                        <dt className="text-muted-foreground">
+                        <dt className="merchant-body-muted">
                           {t("loyaltyCardSummary.stampTarget")}
                         </dt>
                         <dd className="font-medium">
@@ -259,7 +252,7 @@ export function MerchantBusinessHub({
                       </div>
                     </dl>
                   ) : (
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm merchant-body-muted">
                       {t("loyaltyCardSummary.notConfigured")}
                     </p>
                   )}

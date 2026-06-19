@@ -1,0 +1,72 @@
+---
+description: Accessibility (a11y) requirements for all YORewards UI — WCAG-oriented, Vercel Web Interface Guidelines
+alwaysApply: true
+---
+
+# Accessibility (required)
+
+All user-facing UI must be usable with keyboard, screen readers, and reduced motion. Review with `web-design-guidelines` skill before shipping large UI changes.
+
+## Semantic structure
+
+- One `<h1>` per page (via `PageHeader` or equivalent); headings descend in order (`h1` → `h2` → `h3`).
+- Use native landmarks: `<main>`, `<nav>`, `<header>`, `<aside>`, `<section>` with `aria-labelledby` when the section has a visible heading.
+- **Skip link** on app shells — first focusable element jumps to `#main-content`.
+
+## Keyboard & focus
+
+- Every interactive control reachable and operable via keyboard (Tab, Enter, Space, Escape in modals).
+- Visible **`:focus-visible`** ring on links, buttons, and custom controls — never `outline-none` without a replacement.
+- Nav links: `aria-current="page"` on the active route.
+- Icon-only buttons: translated `aria-label` (via `next-intl`, key in `messages/en.json`).
+- Mobile menu toggle: `aria-expanded`, `aria-controls` pointing at the nav panel `id`.
+
+## Forms
+
+- Every input has a visible `<label>` (`htmlFor`) or `aria-label` / `aria-labelledby`.
+- Correct `type`, `name`, and `autocomplete` where applicable.
+- Inline errors: `role="alert"` or `aria-live="polite"` next to the field; focus first invalid field on submit when practical.
+- Loading/submit: disable control + translated pending label (`"Saving…"`), not a silent spinner alone.
+- Do not block paste on inputs.
+
+## Images & icons
+
+- Meaningful `alt` on content images; `alt=""` only when purely decorative.
+- Decorative icons: `aria-hidden="true"`.
+- Logos used as branding only: `aria-hidden` on the mark if adjacent text names the product.
+
+## Motion & theme
+
+- Honor `prefers-reduced-motion` — disable or shorten animations (view transitions, shimmer, pulse).
+- Dark apps: `color-scheme: dark` on `<html>` so scrollbars and native controls match.
+- **Merchant contrast tokens** — do not lighten `--primary` for “accent” without fixing `--primary-foreground`; use `--accent-text` for link/nav labels on dark backgrounds.
+- **Helper text** — use `merchant-body-muted` or `--muted-foreground` ≥ `oklch(0.78 …)` on merchant dark; never rely on opacity below 70% for required reading.
+- **Status badges** — use `MERCHANT_STATUS_BADGE` (`@/shared/constants/status-badges`); pending must not be low-contrast grey-on-grey.
+
+## Async feedback
+
+- Toasts (Sonner) for success/error; form errors announced via `role="alert"`.
+- Empty states: heading + description, not a blank region.
+
+## Navigation
+
+- Use `<Link>` / `<a href>` for navigation — not `<div onClick>`.
+- Destructive actions: confirm dialog or explicit undo; never silent delete.
+
+## i18n & a11y
+
+- All `aria-label`, `aria-labelledby`, and live-region text go through `next-intl` (`a11y.*` keys in `messages/en.json`).
+
+## Anti-patterns (never ship)
+
+- `user-scalable=no` or `maximum-scale=1`
+- Clickable `<div>` / `<span>` without button semantics
+- Icon buttons without accessible name
+- Form fields without labels
+- Hover-only information required to complete a task
+- Hardcoded English in `aria-*` attributes
+
+## References
+
+- Vercel Web Interface Guidelines (fetch via `web-design-guidelines` skill)
+- `design-system/merchant/MASTER.md` § Accessibility (merchant app)

@@ -9,16 +9,12 @@ import {
   updateMerchantBranding,
   upsertLoyaltyCardForMerchant,
 } from "@repo/supabase/queries/loyalty-cards";
-import type { CountryCode, CurrencyCode, RewardType } from "@repo/supabase/types";
+import type { CurrencyCode, RewardType } from "@repo/supabase/types";
 import type { ActionResult } from "@/shared/types/action-result";
 
 const LOGO_BUCKET = "merchant-logos";
 const MAX_UPLOAD_BYTES = 2 * 1024 * 1024;
 const LOYALTY_CARD_ROUTE = "/merchant/loyalty-card";
-
-function currencyForCountry(country: CountryCode): CurrencyCode {
-  return country === "FI" ? "EUR" : "NPR";
-}
 
 function revalidateLoyaltyCardPaths() {
   revalidatePath(LOYALTY_CARD_ROUTE);
@@ -28,7 +24,8 @@ function revalidateLoyaltyCardPaths() {
 async function assertOwnsMerchant(userId: string, merchantId: string) {
   const merchants = await getMerchantsByUserId(userId);
   const merchant = merchants.find((m) => m.id === merchantId);
-  if (!merchant) return { error: "Business not found" as const, merchant: null };
+  if (!merchant)
+    return { error: "Business not found" as const, merchant: null };
   return { error: null, merchant };
 }
 
@@ -50,7 +47,8 @@ export async function saveLoyaltyCardConfigAction(
 
   if (merchant.status !== "active") {
     return {
-      error: "Your business must be approved before saving loyalty card settings.",
+      error:
+        "Your business must be approved before saving loyalty card settings.",
     };
   }
 
@@ -60,9 +58,14 @@ export async function saveLoyaltyCardConfigAction(
   const stampTarget = Number(formData.get("stamp_target"));
   const minSpendRaw = String(formData.get("min_spend") ?? "").trim();
   const minSpend = minSpendRaw === "" ? 0 : Number(minSpendRaw);
+  const minSpendCurrency = String(
+    formData.get("min_spend_currency") ?? "",
+  ).trim() as CurrencyCode;
   const rewardType = String(formData.get("reward_type") ?? "") as RewardType;
   const rewardValue = String(formData.get("reward_value") ?? "").trim();
-  const rewardDescription = String(formData.get("reward_description") ?? "").trim();
+  const rewardDescription = String(
+    formData.get("reward_description") ?? "",
+  ).trim();
 
   if (!cardName || cardName.length > 40) {
     return { error: "Card name is required (max 40 characters)." };
@@ -78,6 +81,9 @@ export async function saveLoyaltyCardConfigAction(
   }
   if (Number.isNaN(minSpend) || minSpend < 0) {
     return { error: "Minimum spend must be 0 or greater." };
+  }
+  if (!["NPR", "EUR"].includes(minSpendCurrency)) {
+    return { error: "Select a valid currency." };
   }
   if (
     !["free_item", "percent_discount", "fixed_discount"].includes(rewardType)
@@ -97,7 +103,7 @@ export async function saveLoyaltyCardConfigAction(
       description,
       stamp_target: stampTarget,
       min_spend: minSpend,
-      min_spend_currency: currencyForCountry(merchant.country),
+      min_spend_currency: minSpendCurrency,
       reward_type: rewardType,
       reward_value: rewardValue,
       reward_description: rewardDescription,

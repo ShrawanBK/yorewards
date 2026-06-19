@@ -14,10 +14,11 @@
 | Phase B — Business hub + branches UI | ✅ Done (loading skeletons deferred) |
 | Phase C — Loyalty card config (`/merchant/loyalty-card`) | ✅ Done (server-side validation; Zod-in-component deferred) |
 | Phase D — Automated verify | ✅ Done (`lint`, `check-types`, `build` pass) |
+| Phase E — Merchant UI polish (dark theme, sidebar, dashboard) | ✅ Done |
 | Phase D — Manual E2E + RLS smoke | ⏳ Your turn |
 | Day 3 git commit | ⏳ When you ask |
 
-**Code complete ~95%.** Remaining: manual browser test, optional RLS smoke test, commit.
+**Code complete ~98%.** Remaining: manual browser test, optional RLS smoke test, commit.
 
 ---
 
@@ -216,12 +217,38 @@ apps/merchant/src/features/loyalty-card/
   utils/loyaltyCardQr.ts
 apps/merchant/src/widgets/MerchantShell/
 apps/merchant/src/widgets/MerchantProtectedShell/
+apps/merchant/src/shared/ui/PageHeader.tsx
+apps/merchant/src/app/globals.css                              # dark tokens + mesh/glass utilities
+apps/merchant/src/app/layout.tsx                               # Plus Jakarta + dark html
+design-system/merchant/MASTER.md
+.cursor/rules/merchant-ui.mdc
+packages/ui/src/components/ui/skeleton.tsx
 apps/merchant/src/app/merchant/(protected)/business/page.tsx
 apps/merchant/src/app/merchant/(protected)/loyalty-card/page.tsx
 apps/merchant/src/app/merchant/(protected)/settings/page.tsx   # stub
 apps/merchant/messages/en.json                                  # business.*, branches.*, loyaltyCard.*
 packages/ui/src/components/ui/dialog.tsx                        # added for branch forms
 ```
+
+---
+
+## Phase E — Merchant UI polish
+
+- [x] Dark theme default (`dark` on `<html>`) + OLED-inspired tokens in `apps/merchant/src/app/globals.css`
+- [x] Plus Jakarta Sans typography (`apps/merchant/src/app/layout.tsx`)
+- [x] Sidebar shell on desktop + mobile drawer (`MerchantShell`)
+- [x] Dashboard redesign — stats, quick actions, status panel (`MerchantDashboard`)
+- [x] `PageHeader` shared component; business / loyalty-card / settings pages updated
+- [x] `merchant-glass-card` / `merchant-mesh-bg` surface utilities
+- [x] Auth layout right panel aligned with dark theme
+- [x] `@repo/ui/skeleton` export (for future loading states)
+- [x] Design system doc — `design-system/merchant/MASTER.md`
+- [x] Cursor rule — `.cursor/rules/merchant-ui.mdc`
+- [x] WCAG contrast pass — dark tokens, `merchant-body-muted`, `merchant-stat-label`, pending amber badge, visible quick-action links
+- [x] Cursor rule `.cursor/rules/accessibility.mdc` (project-wide)
+- [ ] Framer Motion page transitions (PRD §1.4) — deferred
+- [ ] Loading skeletons on hub / loyalty-card — deferred
+- [ ] Full `web-design-guidelines` audit on all merchant routes — incremental
 
 ---
 
@@ -232,8 +259,10 @@ packages/ui/src/components/ui/dialog.tsx                        # added for bran
 | `supabase`                         | Migrations, RLS, Storage   |
 | `supabase-postgres-best-practices` | Indexes, FK patterns       |
 | `shadcn`                           | Hub layout, forms, dialogs |
+| `ui-ux-pro-max`                    | Dark dashboard design system |
 | `vercel-react-best-practices`      | Server actions, forms      |
 | `web-design-guidelines`            | Master–detail UX, a11y     |
+| `merchant-ui` (cursor rule)        | Ongoing merchant UI guardrails |
 
 ---
 

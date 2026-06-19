@@ -1,0 +1,50 @@
+---
+description: Merchant dashboard UI — dark theme, sidebar layout, design system, accessibility
+globs:
+  - apps/merchant/**
+---
+
+# Merchant Dashboard UI
+
+Read `design-system/merchant/MASTER.md` before changing merchant UI. **Accessibility:** `.cursor/rules/accessibility.mdc` (always applies).
+
+## Defaults
+
+- **Dark mode** — `next-themes` with `defaultTheme="system"`; light and dark use `@repo/ui` tokens. Do not hardcode `className="dark"` on `<html>`.
+- **Font** — Plus Jakarta Sans via `apps/merchant/src/app/layout.tsx`; do not switch back to Geist for merchant.
+- **Layout** — desktop sidebar in `MerchantShell`; pages use `PageHeader` + `max-w-6xl` content (shell provides padding).
+- **Theme toggle** — `ThemeToggle` in sidebar footer + mobile header; use semantic `sidebar-*` and `border-border` tokens (not `border-white/*`).
+
+## Styling
+
+- Use `merchant-glass-card`, `merchant-mesh-bg`, `merchant-nav-active`, `merchant-body-muted`, `merchant-stat-label` from `apps/merchant/src/app/globals.css`.
+- Status badges: import `MERCHANT_STATUS_BADGE` — never ad-hoc grey pending badges.
+- Interactive cards/links: include `focus-visible:ring-[3px] focus-visible:ring-ring/50` (or use `@repo/ui/button`).
+
+## Accessibility checklist (merchant)
+
+- [ ] `PageHeader` provides the sole `h1` on the page
+- [ ] Sidebar/mobile nav: `aria-label`, `aria-current="page"`, menu `aria-expanded` + `aria-controls`
+- [ ] Icon-only controls: `a11y.*` translated `aria-label`
+- [ ] Form errors: `role="alert"`; Radix `Dialog` for modals (focus trap)
+- [ ] Sections: `aria-labelledby` linking to visible `h2` ids where used
+- [ ] `prefers-reduced-motion` respected in `globals.css`
+
+## i18n
+
+- Every label, heading, `aria-label`, and empty state → `apps/merchant/messages/en.json`.
+- Dashboard stats and quick actions live under `dashboard.*`; shared a11y strings under `a11y.*`.
+
+## Structure (FDA)
+
+- `app/` routes stay thin — compose from `@/features/*` and `@/widgets/*`.
+- Reusable page chrome → `apps/merchant/src/shared/ui/` (e.g. `PageHeader`, `SkipLink`).
+- Do not add business logic to `MerchantShell`.
+
+## New pages checklist
+
+1. `PageHeader` with translated title/description (single `h1`)
+2. Content in `merchant-glass-card` panels where appropriate
+3. No extra outer `p-4` — shell main area already pads
+4. Nav item in `MerchantShell` `navItems` + `nav.*` i18n key
+5. Run `web-design-guidelines` review on touched files before done

@@ -106,7 +106,7 @@ export function AddBusinessForm({ ownerEmail }: { ownerEmail: string }) {
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <Button
         type="submit"
-        className="w-full bg-brand-purple hover:bg-brand-purple/90 sm:w-auto"
+        className="w-full bg-primary hover:bg-primary/90 sm:w-auto"
         disabled={form.formState.isSubmitting}
       >
         {t("actions.submit")}

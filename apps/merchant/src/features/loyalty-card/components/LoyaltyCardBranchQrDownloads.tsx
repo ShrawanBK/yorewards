@@ -32,7 +32,7 @@ export function LoyaltyCardBranchQrDownloads({
   if (locations.length === 0) {
     return (
       <Card>
-        <CardContent className="py-8 text-center text-sm text-muted-foreground">
+        <CardContent className="py-8 text-center text-sm merchant-body-muted">
           {t("noBranches")}
         </CardContent>
       </Card>
@@ -43,7 +43,7 @@ export function LoyaltyCardBranchQrDownloads({
     <Card>
       <CardHeader>
         <CardTitle className="text-lg">{t("title")}</CardTitle>
-        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
+        <p className="text-sm merchant-body-muted">{t("subtitle")}</p>
       </CardHeader>
       <CardContent className="grid gap-6 sm:grid-cols-2">
         {locations.map((location) => {

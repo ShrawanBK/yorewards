@@ -4,6 +4,14 @@
     "description": "Merchant dashboard",
     "cta": "Sign in"
   },
+  "theme": {
+    "toggleTheme": "Toggle color theme",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "a11y": {
+    "skipToMain": "Skip to main content"
+  },
   "nav": {
     "main": "Main navigation",
     "dashboard": "Dashboard",
@@ -11,7 +19,9 @@
     "loyaltyCard": "Loyalty card",
     "settings": "Settings",
     "logout": "Log out",
-    "customers": "Customers"
+    "customers": "Customers",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "auth": {
     "brandEyebrow": "YORewards",
@@ -145,11 +155,40 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "subtitle": "Merchant portal",
+    "welcome": "Welcome back, {name}",
+    "subtitle": "Your loyalty program at a glance",
     "logout": "Log out",
     "accountStatus": "Account status",
     "rejectionReason": "Rejection reason",
     "activeHint": "Configure your loyalty card, then download branch QR codes. Stamp queue arrives on Day 4.",
+    "stats": {
+      "regionLabel": "Account overview statistics",
+      "branches": "Branches",
+      "activeBranches": "{count, plural, =0 {No active branches} one {# active branch} other {# active branches}}",
+      "loyaltyCard": "Loyalty card",
+      "configured": "Configured",
+      "notConfigured": "Not set up",
+      "configuredHint": "Customers can collect stamps toward your reward.",
+      "notConfiguredHint": "Set stamp target and reward to go live.",
+      "nextStep": "Next step",
+      "awaitingApproval": "Complete setup once your account is approved."
+    },
+    "quickActions": {
+      "title": "Quick actions",
+      "open": "Open",
+      "business": {
+        "title": "Business & branches",
+        "description": "Manage locations and counter QR codes."
+      },
+      "loyaltyCard": {
+        "title": "Loyalty card",
+        "description": "Customize stamps, rewards, and branding."
+      },
+      "settings": {
+        "title": "Settings",
+        "description": "Account and business preferences."
+      }
+    },
     "links": {
       "business": "Manage businesses",
       "loyaltyCard": "Configure loyalty card"
@@ -233,6 +272,7 @@
       "description": "Card description",
       "stampTarget": "Stamps to reward",
       "minSpend": "Minimum spend per visit",
+      "currency": "Currency",
       "rewardDescription": "Customer-facing reward text",
       "rewardValue": {
         "free_item": "Free item name",
@@ -251,8 +291,18 @@
     },
     "preview": {
       "label": "Live preview",
+      "orientationLabel": "Preview orientation",
+      "landscape": "Landscape",
+      "portrait": "Portrait",
+      "tapStampHint": "Tap stamps to preview progress.",
       "stampsAria": "Stamp progress",
+      "stampSlot": "Stamp {index}, {state}",
+      "stampFilled": "filled",
+      "stampEmpty": "empty",
+      "moreStamps": "{count} more stamps",
+      "progressShort": "{current} / {target}",
       "progress": "{current} of {target} stamps",
+      "minSpendShort": "Min. {amount} per visit",
       "minSpend": "Min. spend {amount} per visit",
       "rewardPlaceholder": "Your reward appears here",
       "rewardType": {

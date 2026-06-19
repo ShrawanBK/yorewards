@@ -21,6 +21,8 @@ This is a large-scale Next.js project using Feature-Driven Architecture (FDA) wi
 
 6. **Path aliases always.** Use `@/features/...`, `@/shared/...` — never `../../`.
 
+7. **Accessibility is required.** Follow `.cursor/rules/accessibility.mdc` — semantic HTML, keyboard + screen reader support, visible focus, translated `aria-*` via `next-intl`.
+
 ## Import layer enforcement
 
 ```

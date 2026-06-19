@@ -17,6 +17,7 @@ import {
 import { cn } from "@repo/ui/lib/utils";
 import type { MerchantLocationRow } from "@repo/supabase/queries/locations";
 import { BranchFormDialog } from "@/features/business/components/BranchFormDialog";
+import { MERCHANT_CHIP } from "@/shared/constants/status-badges";
 import {
   deactivateBranchAction,
   setPrimaryBranchAction,
@@ -80,11 +81,11 @@ export function BranchList({
 
   return (
     <>
-      <Card>
+      <Card className="merchant-glass-card">
         <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0">
           <div>
             <CardTitle className="text-lg">{t("listTitle")}</CardTitle>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm merchant-body-muted">
               {t("listSubtitle")}
             </p>
           </div>
@@ -102,7 +103,7 @@ export function BranchList({
           {locations.length === 0 ? (
             <div className="rounded-lg border border-dashed py-8 text-center">
               <p className="font-medium">{t("empty.title")}</p>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-sm merchant-body-muted">
                 {t("empty.description")}
               </p>
             </div>
@@ -120,16 +121,18 @@ export function BranchList({
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-medium">{location.name}</span>
                       {location.is_primary ? (
-                        <Badge variant="outline" className="border-brand-purple text-brand-purple">
+                        <Badge variant="outline" className={MERCHANT_CHIP.primary}>
                           {t("badges.primary")}
                         </Badge>
                       ) : null}
                       {!location.is_active ? (
-                        <Badge variant="secondary">{t("badges.inactive")}</Badge>
+                        <Badge variant="outline" className={MERCHANT_CHIP.inactive}>
+                          {t("badges.inactive")}
+                        </Badge>
                       ) : null}
                     </div>
                     {(location.address || location.city) && (
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm merchant-body-muted">
                         {[location.address, location.city]
                           .filter(Boolean)
                           .join(", ")}

@@ -10,23 +10,13 @@ import {
 import { cn } from "@repo/ui/lib/utils";
 import { CheckCircle2, Clock, ShieldAlert, XCircle } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { MERCHANT_STATUS_BADGE } from "@/shared/constants/status-badges";
 
-const STATUS_STYLE: Record<
-  MerchantStatus,
-  {
-    variant: "default" | "secondary" | "destructive" | "outline";
-    className?: string;
-    icon: typeof Clock;
-  }
-> = {
-  pending: { variant: "secondary", icon: Clock },
-  active: {
-    variant: "default",
-    className: "bg-brand-green text-white",
-    icon: CheckCircle2,
-  },
-  rejected: { variant: "destructive", icon: XCircle },
-  suspended: { variant: "outline", icon: ShieldAlert },
+const STATUS_ICON: Record<MerchantStatus, typeof Clock> = {
+  pending: Clock,
+  active: CheckCircle2,
+  rejected: XCircle,
+  suspended: ShieldAlert,
 };
 
 export async function MerchantStatusPanel({
@@ -39,38 +29,45 @@ export async function MerchantStatusPanel({
   rejectionReason: string | null;
 }) {
   const t = await getTranslations("dashboard");
-  const style = STATUS_STYLE[status];
-  const Icon = style.icon;
+  const badge = MERCHANT_STATUS_BADGE[status];
+  const Icon = STATUS_ICON[status];
 
   return (
-    <Card className="border-brand-purple/20 bg-gradient-to-br from-brand-surface to-white">
-      <CardHeader className="space-y-3">
+    <Card className="merchant-glass-card overflow-hidden">
+      <CardHeader className="space-y-3 border-b border-border">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <CardTitle className="text-xl">{businessName}</CardTitle>
-            <CardDescription>{t("accountStatus")}</CardDescription>
+            <CardTitle className="text-xl font-semibold">
+              {businessName}
+            </CardTitle>
+            <CardDescription className="merchant-body-muted">
+              {t("accountStatus")}
+            </CardDescription>
           </div>
           <Badge
-            variant={style.variant}
-            className={cn("shrink-0 capitalize", style.className)}
+            variant={badge.variant}
+            className={cn("shrink-0 capitalize", badge.className)}
           >
             {t(`status.${status}.label`)}
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex gap-3 rounded-lg border bg-background/80 p-4">
-          <Icon className="mt-0.5 size-5 shrink-0 text-brand-purple" />
-          <p className="text-sm leading-relaxed text-muted-foreground">
+      <CardContent className="space-y-4 pt-6">
+        <div className="flex gap-3 rounded-lg border border-border bg-muted/50 p-4">
+          <Icon
+            className="mt-0.5 size-5 shrink-0 text-primary-dark dark:text-primary"
+            aria-hidden
+          />
+          <p className="leading-relaxed merchant-body-muted">
             {t(`status.${status}.description`)}
           </p>
         </div>
         {status === "rejected" && rejectionReason ? (
-          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm">
+          <div className="rounded-lg border border-destructive/50 bg-destructive/15 p-4 text-sm">
             <p className="font-medium text-destructive">
               {t("rejectionReason")}
             </p>
-            <p className="mt-1 text-muted-foreground">{rejectionReason}</p>
+            <p className="mt-1 merchant-body-muted">{rejectionReason}</p>
           </div>
         ) : null}
       </CardContent>

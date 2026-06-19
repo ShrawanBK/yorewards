@@ -15,20 +15,9 @@ import { Check } from "lucide-react";
 import { switchActiveMerchantAction } from "@/features/business/api/businessActions";
 import { MerchantBusinessDetailCard } from "@/features/business/components/MerchantBusinessDetailCard";
 
-type FilterValue = "all" | "active" | "inactive";
+import { MERCHANT_CHIP, MERCHANT_STATUS_BADGE } from "@/shared/constants/status-badges";
 
-const STATUS_BADGE: Record<
-  MerchantStatus,
-  {
-    variant: "default" | "secondary" | "outline" | "destructive";
-    className?: string;
-  }
-> = {
-  pending: { variant: "secondary" },
-  active: { variant: "default", className: "bg-brand-green text-white" },
-  suspended: { variant: "outline" },
-  rejected: { variant: "destructive" },
-};
+type FilterValue = "all" | "active" | "inactive";
 
 function isActiveStatus(status: MerchantStatus) {
   return status === "active";
@@ -83,11 +72,11 @@ export function MerchantBusinessSwitcher({
   );
 
   return (
-    <Card>
+    <Card className="merchant-glass-card">
       <CardHeader className="gap-4 space-y-0 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1">
           <CardTitle className="text-lg">{t("listTitle")}</CardTitle>
-          <p className="text-sm text-muted-foreground">{t("listSubtitle")}</p>
+          <p className="text-sm merchant-body-muted">{t("listSubtitle")}</p>
         </div>
         <Button variant="outline" size="sm" asChild className="shrink-0">
           <Link href="/merchant/add-business">{t("addAnother")}</Link>
@@ -114,7 +103,7 @@ export function MerchantBusinessSwitcher({
         {filtered.length === 0 ? (
           <div className="rounded-lg border border-dashed py-10 text-center">
             <p className="font-medium">{t("empty.title")}</p>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm merchant-body-muted">
               {t("empty.description")}
             </p>
           </div>
@@ -122,7 +111,7 @@ export function MerchantBusinessSwitcher({
           <ul className="space-y-2" role="list">
             {filtered.map((merchant) => {
               const isSelected = merchant.id === activeMerchantId;
-              const badge = STATUS_BADGE[merchant.status];
+              const badge = MERCHANT_STATUS_BADGE[merchant.status];
 
               return (
                 <li key={merchant.id}>
@@ -132,11 +121,11 @@ export function MerchantBusinessSwitcher({
                     onClick={() => selectBusiness(merchant.id)}
                     className={cn(
                       "flex w-full items-start justify-between gap-3 rounded-lg border p-4 text-left transition-colors",
-                      "hover:border-brand-purple/40 hover:bg-brand-surface/60",
+                      "border-border hover:border-primary/40 hover:bg-muted/50",
                       "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
                       "disabled:pointer-events-none disabled:opacity-60",
                       isSelected &&
-                        "border-brand-purple bg-brand-surface ring-1 ring-brand-purple/30",
+                        "border-primary/50 bg-primary/15 ring-1 ring-primary/30",
                     )}
                     aria-current={isSelected ? "true" : undefined}
                   >
@@ -146,16 +135,13 @@ export function MerchantBusinessSwitcher({
                           {merchant.business_name}
                         </span>
                         {isSelected ? (
-                          <Badge
-                            variant="outline"
-                            className="border-brand-purple text-brand-purple"
-                          >
+                          <Badge variant="outline" className={MERCHANT_CHIP.selected}>
                             <Check className="mr-1 size-3" aria-hidden />
                             {t("selected")}
                           </Badge>
                         ) : null}
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm merchant-body-muted">
                         {merchant.category} ·{" "}
                         {t(`countries.${merchant.country}`)}
                       </p>

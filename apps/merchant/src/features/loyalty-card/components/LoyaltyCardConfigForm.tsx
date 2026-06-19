@@ -16,7 +16,7 @@ import {
   saveLoyaltyCardConfigAction,
   uploadLoyaltyCardLogoAction,
 } from "@/features/loyalty-card/api/loyaltyCardActions";
-import { LoyaltyCardPreview } from "@/features/loyalty-card/components/LoyaltyCardPreview";
+import { LoyaltyCardPreviewV2 } from "@/features/loyalty-card/components/LoyaltyCardPreviewV2";
 
 const PRESET_COLORS = [
   "#7C3AED",
@@ -64,10 +64,17 @@ export function LoyaltyCardConfigForm({
     String(loyaltyCard?.stamp_target ?? 10),
   );
   const [minSpend, setMinSpend] = useState(String(loyaltyCard?.min_spend ?? 0));
+  const defaultCurrency: CurrencyCode =
+    loyaltyCard?.min_spend_currency ??
+    (merchant.country === "FI" ? "EUR" : "NPR");
+  const [minSpendCurrency, setMinSpendCurrency] =
+    useState<CurrencyCode>(defaultCurrency);
   const [rewardType, setRewardType] = useState<RewardType>(
     loyaltyCard?.reward_type ?? "free_item",
   );
-  const [rewardValue, setRewardValue] = useState(loyaltyCard?.reward_value ?? "");
+  const [rewardValue, setRewardValue] = useState(
+    loyaltyCard?.reward_value ?? "",
+  );
   const [rewardDescription, setRewardDescription] = useState(
     loyaltyCard?.reward_description ?? "",
   );
@@ -76,11 +83,9 @@ export function LoyaltyCardConfigForm({
     () => ({
       stampTarget: Number(stampTarget) || 10,
       minSpend: Number(minSpend) || 0,
-      minSpendCurrency:
-        (loyaltyCard?.min_spend_currency ??
-          (merchant.country === "FI" ? "EUR" : "NPR")) as CurrencyCode,
+      minSpendCurrency,
     }),
-    [stampTarget, minSpend, loyaltyCard?.min_spend_currency, merchant.country],
+    [stampTarget, minSpend, minSpendCurrency],
   );
 
   async function handleLogoChange(file: File | undefined) {
@@ -115,6 +120,7 @@ export function LoyaltyCardConfigForm({
     formData.set("primary_color", primaryColor);
     formData.set("stamp_target", stampTarget);
     formData.set("min_spend", minSpend);
+    formData.set("min_spend_currency", minSpendCurrency);
     formData.set("reward_type", rewardType);
     formData.set("reward_value", rewardValue);
     formData.set("reward_description", rewardDescription);
@@ -127,7 +133,7 @@ export function LoyaltyCardConfigForm({
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_minmax(0,320px)] lg:items-start">
+    <div className="grid gap-6 lg:grid-cols-[1fr_minmax(0,360px)] lg:items-start">
       <div className="space-y-6">
         {readOnly ? (
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
@@ -135,7 +141,7 @@ export function LoyaltyCardConfigForm({
           </div>
         ) : null}
 
-        <Card>
+        <Card className="merchant-glass-card">
           <CardHeader>
             <CardTitle className="text-lg">{t("sections.identity")}</CardTitle>
           </CardHeader>
@@ -148,12 +154,15 @@ export function LoyaltyCardConfigForm({
                 disabled={readOnly || isPending}
                 onChange={(e) => handleLogoChange(e.target.files?.[0])}
               />
-              <p className="mt-1 text-xs text-muted-foreground">
+              <p className="mt-1 text-xs merchant-body-muted">
                 {t("hints.logo")}
               </p>
             </Field>
 
-            <Field label={t("fields.primaryColor")} htmlFor="loyalty-card-color">
+            <Field
+              label={t("fields.primaryColor")}
+              htmlFor="loyalty-card-color"
+            >
               <div className="flex flex-wrap gap-2">
                 {PRESET_COLORS.map((color) => (
                   <button
@@ -207,7 +216,7 @@ export function LoyaltyCardConfigForm({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="merchant-glass-card">
           <CardHeader>
             <CardTitle className="text-lg">{t("sections.rules")}</CardTitle>
           </CardHeader>
@@ -230,23 +239,46 @@ export function LoyaltyCardConfigForm({
               label={t("fields.minSpend")}
               htmlFor="loyalty-card-min-spend"
             >
-              <Input
-                id="loyalty-card-min-spend"
-                type="number"
-                min={0}
-                step="0.01"
-                value={minSpend}
-                onChange={(e) => setMinSpend(e.target.value)}
-                disabled={readOnly}
-              />
-              <p className="mt-1 text-xs text-muted-foreground">
+              <div className="flex flex-wrap gap-2">
+                <Input
+                  id="loyalty-card-min-spend"
+                  type="number"
+                  min={0}
+                  step="0.01"
+                  value={minSpend}
+                  onChange={(e) => setMinSpend(e.target.value)}
+                  disabled={readOnly}
+                  className="min-w-[8rem] flex-1"
+                />
+                <div
+                  className="flex shrink-0 rounded-lg border border-border p-0.5"
+                  role="group"
+                  aria-label={t("fields.currency")}
+                >
+                  {(["NPR", "EUR"] as const).map((code) => (
+                    <Button
+                      key={code}
+                      type="button"
+                      size="sm"
+                      variant={minSpendCurrency === code ? "default" : "ghost"}
+                      disabled={readOnly}
+                      className="min-w-[3.25rem] px-3"
+                      aria-pressed={minSpendCurrency === code}
+                      onClick={() => setMinSpendCurrency(code)}
+                    >
+                      {code}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <p className="mt-1 text-xs merchant-body-muted">
                 {t("hints.minSpend")}
               </p>
             </Field>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="merchant-glass-card">
           <CardHeader>
             <CardTitle className="text-lg">{t("sections.reward")}</CardTitle>
           </CardHeader>
@@ -308,10 +340,10 @@ export function LoyaltyCardConfigForm({
       </div>
 
       <div className="lg:sticky lg:top-28">
-        <p className="mb-3 text-sm font-medium text-muted-foreground">
+        <p className="mb-3 text-sm font-medium merchant-body-muted">
           {t("preview.label")}
         </p>
-        <LoyaltyCardPreview
+        <LoyaltyCardPreviewV2
           businessName={merchant.business_name}
           logoUrl={logoUrl}
           primaryColor={primaryColor}

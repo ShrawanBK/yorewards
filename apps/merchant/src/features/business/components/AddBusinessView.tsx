@@ -26,7 +26,7 @@ export async function AddBusinessView({
           <h1 className="text-2xl font-semibold tracking-tight">
             {isFirstBusiness ? t("onboarding.title") : t("title")}
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm merchant-body-muted">
             {isFirstBusiness ? t("onboarding.subtitle") : t("subtitle")}
           </p>
         </div>

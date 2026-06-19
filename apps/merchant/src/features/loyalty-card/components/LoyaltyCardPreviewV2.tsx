@@ -6,8 +6,12 @@ import { useTranslations } from "next-intl";
 import { formatEUR, formatNPR } from "@repo/utils/currency";
 import { cn } from "@repo/ui/lib/utils";
 import type { CurrencyCode, RewardType } from "@repo/supabase/types";
+import {
+  computeStampGridLayout,
+  stampGridBlockHeight,
+} from "@/features/loyalty-card/utils/stampGridLayout";
 
-export type LoyaltyCardPreviewProps = {
+export type LoyaltyCardPreviewV2Props = {
   businessName: string;
   logoUrl: string | null;
   primaryColor: string;
@@ -24,26 +28,24 @@ export type LoyaltyCardPreviewProps = {
 
 type PreviewOrientation = "landscape" | "portrait";
 
-const OVERFLOW_STAMP_THRESHOLD = 10;
-const VISIBLE_STAMPS_WHEN_OVERFLOW = 9;
-const MAX_STAMP_COLS = 5;
-const MIN_STAMP_PX = 28;
-const MAX_STAMP_PX = 46;
+const CARD_WIDTH = {
+  landscape: 340,
+  portrait: 240,
+} as const;
+
+const CARD_PADDING = {
+  landscape: { x: 14, y: 14 },
+  portrait: { x: 16, y: 16 },
+} as const;
+
+const FIXED_CHROME_HEIGHT = {
+  landscape: { base: 96, minSpend: 22, reward: 52 },
+  portrait: { base: 118, minSpend: 22, reward: 52 },
+} as const;
 
 function formatMinSpend(amount: number, currency: CurrencyCode) {
   if (amount <= 0) return null;
   return currency === "EUR" ? formatEUR(amount) : formatNPR(amount);
-}
-
-function getStampLayout(slotCount: number, innerWidth: number, gap: number) {
-  const cols = Math.min(MAX_STAMP_COLS, slotCount);
-  const rows = Math.ceil(slotCount / cols);
-  const sizePx = Math.max(
-    MIN_STAMP_PX,
-    Math.min(MAX_STAMP_PX, Math.floor((innerWidth - gap * (cols - 1)) / cols)),
-  );
-
-  return { cols, rows, gap, sizePx };
 }
 
 function StampSlot({
@@ -59,7 +61,7 @@ function StampSlot({
   onClick?: () => void;
   stampLabel: string;
 }) {
-  const iconSize = Math.max(12, Math.round(sizePx * 0.42));
+  const iconSize = Math.max(10, Math.round(sizePx * 0.42));
   const Tag = onClick ? "button" : "span";
 
   return (
@@ -75,8 +77,8 @@ function StampSlot({
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-1 focus-visible:ring-offset-transparent",
         filled
           ? "border-white bg-white shadow-[0_0_10px_rgba(255,255,255,0.35)]"
-          : "border-white/45 bg-white/10",
-        onClick && !filled && "hover:border-white/70 hover:bg-white/12",
+          : "border-white/50 bg-white/5",
+        onClick && !filled && "hover:border-white/75 hover:bg-white/10",
       )}
     >
       {filled ? (
@@ -85,28 +87,17 @@ function StampSlot({
           className="stroke-[2.5]"
           aria-hidden
         />
-      ) : null}
+      ) : (
+        <span
+          className="rounded-full bg-white/20"
+          style={{
+            width: Math.max(4, sizePx * 0.16),
+            height: Math.max(4, sizePx * 0.16),
+          }}
+          aria-hidden
+        />
+      )}
     </Tag>
-  );
-}
-
-function MoreStampsSlot({
-  count,
-  sizePx,
-  label,
-}: {
-  count: number;
-  sizePx: number;
-  label: string;
-}) {
-  return (
-    <div
-      aria-label={label}
-      style={{ width: sizePx, height: sizePx }}
-      className="flex shrink-0 flex-col items-center justify-center rounded-full border-2 border-dashed border-white/55 bg-white/5 text-white"
-    >
-      <span className="text-[10px] font-bold leading-none">+{count}</span>
-    </div>
   );
 }
 
@@ -136,29 +127,24 @@ function CardFace({
   t: ReturnType<typeof useTranslations<"loyaltyCard.preview">>;
 }) {
   const isPortrait = orientation === "portrait";
-  const cardWidth = isPortrait ? 240 : 340;
-  const paddingX = isPortrait ? 16 : 14;
-  const innerWidth = cardWidth - paddingX * 2;
-  const gap = isPortrait ? 8 : 7;
-
-  const hasOverflow = stampTarget > OVERFLOW_STAMP_THRESHOLD;
-  const visibleStamps = hasOverflow
-    ? VISIBLE_STAMPS_WHEN_OVERFLOW
-    : stampTarget;
-  const moreStampsCount = hasOverflow
-    ? stampTarget - VISIBLE_STAMPS_WHEN_OVERFLOW
-    : 0;
-  const slotCount = visibleStamps + (moreStampsCount > 0 ? 1 : 0);
+  const cardWidth = CARD_WIDTH[orientation];
+  const padding = CARD_PADDING[orientation];
+  const innerWidth = cardWidth - padding.x * 2;
+  const chrome = FIXED_CHROME_HEIGHT[orientation];
 
   const layout = useMemo(
-    () => getStampLayout(slotCount, innerWidth, gap),
-    [slotCount, innerWidth, gap],
+    () => computeStampGridLayout(stampTarget, innerWidth, orientation),
+    [stampTarget, innerWidth, orientation],
   );
 
-  const stampBlockHeight =
-    layout.rows * layout.sizePx + (layout.rows - 1) * layout.gap;
+  const stampBlockHeight = stampGridBlockHeight(layout);
+  const stampPaddingY = stampTarget <= 10 ? 12 : 8;
   const cardHeight =
-    (isPortrait ? 118 : 96) + stampBlockHeight + (minSpendLabel ? 22 : 0) + 52;
+    chrome.base +
+    stampBlockHeight +
+    stampPaddingY * 2 +
+    (minSpendLabel ? chrome.minSpend : 0) +
+    chrome.reward;
 
   const progressPct =
     stampTarget > 0 ? Math.min(100, (filled / stampTarget) * 100) : 0;
@@ -174,8 +160,11 @@ function CardFace({
       }}
     >
       <div
-        className={cn("flex flex-col", isPortrait ? "p-4" : "px-3.5 py-3.5")}
-        style={{ minHeight: cardHeight }}
+        className="flex flex-col"
+        style={{
+          minHeight: cardHeight,
+          padding: `${padding.y}px ${padding.x}px`,
+        }}
       >
         <div
           className={cn(
@@ -232,10 +221,8 @@ function CardFace({
         </div>
 
         <div
-          className={cn(
-            "flex shrink-0 items-center justify-center py-3",
-            isPortrait && "py-4",
-          )}
+          className="flex shrink-0 items-center justify-center"
+          style={{ padding: `${stampPaddingY}px 0` }}
         >
           <div
             className="grid justify-center"
@@ -245,7 +232,7 @@ function CardFace({
             }}
             aria-label={t("stampsAria")}
           >
-            {Array.from({ length: visibleStamps }, (_, i) => (
+            {Array.from({ length: stampTarget }, (_, i) => (
               <StampSlot
                 key={i}
                 filled={i < filled}
@@ -258,13 +245,6 @@ function CardFace({
                 })}
               />
             ))}
-            {moreStampsCount > 0 ? (
-              <MoreStampsSlot
-                count={moreStampsCount}
-                sizePx={layout.sizePx}
-                label={t("moreStamps", { count: moreStampsCount })}
-              />
-            ) : null}
           </div>
         </div>
 
@@ -294,7 +274,7 @@ function CardFace({
   );
 }
 
-export function LoyaltyCardPreview({
+export function LoyaltyCardPreviewV2({
   businessName,
   logoUrl,
   primaryColor,
@@ -307,7 +287,7 @@ export function LoyaltyCardPreview({
   rewardType: _rewardType,
   rewardDescription,
   className,
-}: LoyaltyCardPreviewProps) {
+}: LoyaltyCardPreviewV2Props) {
   const t = useTranslations("loyaltyCard.preview");
   const [demoStamps, setDemoStamps] = useState(currentStamps);
 

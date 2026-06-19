@@ -6,6 +6,7 @@ import {
   getLocationsByMerchantId,
 } from "@repo/supabase/queries/locations";
 import { getLoyaltyCardByMerchantId } from "@repo/supabase/queries/loyalty-cards";
+import { PageHeader } from "@/shared/ui/PageHeader";
 
 export default async function BusinessPage() {
   const t = await getTranslations("business");
@@ -18,13 +19,8 @@ export default async function BusinessPage() {
   ]);
 
   return (
-    <div className="space-y-2">
-      <div className="px-4 pt-4 sm:px-6 sm:pt-6">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {t("hubTitle")}
-        </h1>
-        <p className="text-sm text-muted-foreground">{t("hubSubtitle")}</p>
-      </div>
+    <div className="space-y-8">
+      <PageHeader title={t("hubTitle")} description={t("hubSubtitle")} />
       <MerchantBusinessHub
         merchants={merchants}
         activeMerchantId={merchant.id}

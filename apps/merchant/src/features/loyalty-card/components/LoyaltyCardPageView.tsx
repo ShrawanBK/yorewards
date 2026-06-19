@@ -4,6 +4,7 @@ import type { LoyaltyCardRow } from "@repo/supabase/queries/loyalty-cards";
 import type { MerchantLocationRow } from "@repo/supabase/queries/locations";
 import { LoyaltyCardConfigForm } from "@/features/loyalty-card/components/LoyaltyCardConfigForm";
 import { LoyaltyCardBranchQrDownloads } from "@/features/loyalty-card/components/LoyaltyCardBranchQrDownloads";
+import { PageHeader } from "@/shared/ui/PageHeader";
 
 export async function LoyaltyCardPageView({
   merchant,
@@ -20,11 +21,8 @@ export async function LoyaltyCardPageView({
   const readOnly = merchant.status !== "active";
 
   return (
-    <div className="space-y-8 p-4 sm:p-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
-      </div>
+    <div className="space-y-8">
+      <PageHeader title={t("title")} description={t("subtitle")} />
 
       <LoyaltyCardConfigForm
         merchant={merchant}

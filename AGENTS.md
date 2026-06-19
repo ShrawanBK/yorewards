@@ -12,6 +12,10 @@ Before feature work, read the current versions of:
 
 Keep docs in `resources/`. Update them there; do not duplicate requirements into code comments.
 
+## Accessibility
+
+All UI must meet `.cursor/rules/accessibility.mdc` — keyboard navigation, screen reader labels (via `next-intl` `a11y.*` keys), visible focus, semantic HTML, and `prefers-reduced-motion`. Use the `web-design-guidelines` skill to audit before merging large UI changes.
+
 ## Apps
 
 | Folder | App | Local | Production |

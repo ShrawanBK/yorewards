@@ -88,7 +88,7 @@ export function MerchantAuthForm({
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
           <Button
             type="submit"
-            className="w-full bg-brand-purple hover:bg-brand-purple/90"
+            className="w-full"
             disabled={signInForm.formState.isSubmitting}
           >
             {t("actions.signin")}
@@ -148,7 +148,7 @@ export function MerchantAuthForm({
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
           <Button
             type="submit"
-            className="w-full bg-brand-purple hover:bg-brand-purple/90"
+            className="w-full"
             disabled={signUpForm.formState.isSubmitting}
           >
             {t("actions.signup")}

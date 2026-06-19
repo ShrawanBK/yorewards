@@ -1,52 +1,163 @@
 import Link from "next/link";
+import { ArrowRight, Building2, CreditCard, MapPin, Settings } from "lucide-react";
 import { Button } from "@repo/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
-import { Badge } from "@repo/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
 import type { MerchantRow } from "@repo/supabase/queries/merchants";
 import type { Database } from "@repo/supabase/types";
 import { getTranslations } from "next-intl/server";
+import { MerchantStatusPanel } from "@/features/dashboard";
+import { PageHeader } from "@/shared/ui/PageHeader";
 
 type Merchant = Database["public"]["Tables"]["merchants"]["Row"];
 
+type DashboardMetrics = {
+  branchCount: number;
+  activeBranchCount: number;
+  loyaltyCardConfigured: boolean;
+  loyaltyCardName: string | null;
+};
+
 export async function MerchantDashboard({
   merchant,
+  metrics,
 }: {
   merchants: MerchantRow[];
   merchant: Merchant;
+  metrics: DashboardMetrics;
 }) {
   const t = await getTranslations("dashboard");
 
-  return (
-    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
-      </div>
+  const quickActions = [
+    {
+      href: "/merchant/business",
+      icon: Building2,
+      title: t("quickActions.business.title"),
+      description: t("quickActions.business.description"),
+    },
+    {
+      href: "/merchant/loyalty-card",
+      icon: CreditCard,
+      title: t("quickActions.loyaltyCard.title"),
+      description: t("quickActions.loyaltyCard.description"),
+    },
+    {
+      href: "/merchant/settings",
+      icon: Settings,
+      title: t("quickActions.settings.title"),
+      description: t("quickActions.settings.description"),
+    },
+  ] as const;
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between gap-3 space-y-0">
-          <CardTitle className="text-lg">{merchant.business_name}</CardTitle>
-          <Badge variant="secondary" className="capitalize">
-            {t(`status.${merchant.status}.label`)}
-          </Badge>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            {t(`status.${merchant.status}.description`)}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <Button asChild variant="outline" size="sm">
-              <Link href="/merchant/business">{t("links.business")}</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link href="/merchant/loyalty-card">{t("links.loyaltyCard")}</Link>
-            </Button>
-          </div>
-          {merchant.status === "active" ? (
-            <p className="text-sm text-muted-foreground">{t("activeHint")}</p>
-          ) : null}
-        </CardContent>
-      </Card>
+  return (
+    <div className="flex flex-col gap-8">
+      <PageHeader
+        title={t("welcome", { name: merchant.business_name })}
+        description={t("subtitle")}
+      />
+
+      <section
+        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        aria-label={t("stats.regionLabel")}
+      >
+        <Card className="merchant-glass-card">
+          <CardHeader className="gap-1.5">
+            <CardDescription className="merchant-stat-label flex items-center gap-2">
+              <MapPin className="size-4 shrink-0" aria-hidden />
+              {t("stats.branches")}
+            </CardDescription>
+            <CardTitle className="text-3xl font-semibold tabular-nums tracking-tight">
+              {metrics.branchCount}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="merchant-body-muted">
+              {t("stats.activeBranches", { count: metrics.activeBranchCount })}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="merchant-glass-card sm:col-span-1">
+          <CardHeader className="gap-1.5">
+            <CardDescription className="merchant-stat-label flex items-center gap-2">
+              <CreditCard className="size-4 shrink-0" aria-hidden />
+              {t("stats.loyaltyCard")}
+            </CardDescription>
+            <CardTitle className="text-xl font-semibold leading-snug">
+              {metrics.loyaltyCardConfigured
+                ? metrics.loyaltyCardName ?? t("stats.configured")
+                : t("stats.notConfigured")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="merchant-body-muted">
+              {metrics.loyaltyCardConfigured
+                ? t("stats.configuredHint")
+                : t("stats.notConfiguredHint")}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="merchant-glass-card sm:col-span-2 lg:col-span-1">
+          <CardHeader className="gap-1.5">
+            <CardDescription className="merchant-stat-label">
+              {t("stats.nextStep")}
+            </CardDescription>
+            <CardTitle className="text-base font-medium leading-snug">
+              {merchant.status === "active" ? t("activeHint") : t("stats.awaitingApproval")}
+            </CardTitle>
+          </CardHeader>
+        </Card>
+      </section>
+
+      <MerchantStatusPanel
+        businessName={merchant.business_name}
+        status={merchant.status}
+        rejectionReason={merchant.rejection_reason}
+      />
+
+      <section className="space-y-4" aria-labelledby="dashboard-quick-actions">
+        <h2
+          id="dashboard-quick-actions"
+          className="text-lg font-semibold tracking-tight text-pretty"
+        >
+          {t("quickActions.title")}
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {quickActions.map((action) => {
+            const Icon = action.icon;
+            return (
+              <Link
+                key={action.href}
+                href={action.href}
+                className="merchant-glass-card group flex flex-col gap-3 p-5 transition-colors hover:border-primary/45 hover:bg-card focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              >
+                <div className="flex size-10 items-center justify-center rounded-lg bg-primary/12 text-primary-dark transition-colors group-hover:bg-primary/18 dark:text-primary">
+                  <Icon className="size-5" aria-hidden />
+                </div>
+                <div className="space-y-1">
+                  <p className="font-semibold text-foreground">{action.title}</p>
+                  <p className="merchant-body-muted">{action.description}</p>
+                </div>
+                <span className="mt-auto flex items-center gap-1 text-sm font-medium text-primary-dark dark:text-primary">
+                  {t("quickActions.open")}
+                  <ArrowRight className="size-4" aria-hidden />
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {merchant.status === "active" ? (
+        <div className="flex flex-wrap gap-3">
+          <Button asChild>
+            <Link href="/merchant/loyalty-card">{t("links.loyaltyCard")}</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/merchant/business">{t("links.business")}</Link>
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 }

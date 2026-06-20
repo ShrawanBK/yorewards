@@ -22,7 +22,7 @@
 | Day 4 git commit                                                                            | ⏳ When you ask                               |
 | **Next:** [`Day5_Checklist.md`](Day5_Checklist.md) — merchant MVP finish (settings, polish) | ⏳                                            |
 
-**Target:** Merchant owner can run a counter shift end-to-end (queue → approve → redeem) using **seeded test data**. Live QR scan E2E lands on **Day 6** (customer PWA).
+**Target:** Merchant owner can run a counter shift end-to-end (queue → approve → redeem) using **seeded test data**. Live QR scan E2E lands on **Day 7** ([`Day7_Checklist.md`](Day7_Checklist.md)).
 
 ---
 
@@ -378,7 +378,7 @@ Day 5 finishes merchant-side MVP:
 3. Pending / suspended / rejected UX polish
 4. Full merchant sign-off before customer work
 
-Day 6 connects customers + admin (see Day 5 checklist §Day 6 preview).
+Day 6 is **super admin**; customer PWA is **Day 7** (see [`Day6_Checklist.md`](Day6_Checklist.md) · [`Day7_Checklist.md`](Day7_Checklist.md)).
 
 ---
 

@@ -31,9 +31,11 @@
 | Loyalty card config (PRD §6.1)                                            | ✅ Done — `/merchant/loyalty-card` + live preview + branch QR PNG          |
 | Merchant stamp queue + redeem + analytics (PRD §6.3)                      | ✅ Done (Day 4) — Realtime queue, `/merchant/redeem`, `/merchant/analytics`, customers list |
 | Merchant settings + status UX + branch context + success feedback         | ✅ Done (Day 5) — [`Day5_Checklist.md`](../resources/Day5_Checklist.md) |
-| Customer auth + wallet routes                                             | ⏳ Day 6 — full flows after merchant MVP sign-off                          |
+| Super Admin — full platform (dashboard, customers, stamps, audit)         | ⏳ Day 6 — [`Day6_Checklist.md`](../resources/Day6_Checklist.md) |
+| Customer auth + wallet + scan + OTP                                       | ⏳ Day 7 — [`Day7_Checklist.md`](../resources/Day7_Checklist.md) |
+| PWA, privacy, production deploy                                           | ⏳ Day 8 — [`Day8_Checklist.md`](../resources/Day8_Checklist.md) |
 
-**Next up (Day 6):** Customer PWA (scan, wallet, OTP) + super admin polish. Merchant dashboard MVP is code-complete — run manual E2E in [`Day5_Checklist.md`](../resources/Day5_Checklist.md) §F2 before Day 6. V2: [`V2_Backlog.md`](../resources/V2_Backlog.md).
+**Next up (Day 6):** Super Admin MVP — see [`Day6_Checklist.md`](../resources/Day6_Checklist.md). Optional: merchant manual E2E [`Day5_Checklist.md`](../resources/Day5_Checklist.md) §F2. V2: [`V2_Backlog.md`](../resources/V2_Backlog.md).
 
 ---
 
@@ -962,19 +964,20 @@ ADMIN_EMAIL=your-admin-email@yorewards.com       # Single super admin account
 
 ---
 
-## 10. Seven-Day Build Plan
+## 10. Build Plan (Days 1–8)
 
-> Full day-by-day deliverables are in **PRD Section 11**. This section tracks technical milestones only.
+> Full day-by-day deliverables are in **PRD Section 11**. Per-day checklists live in `resources/Day*_Checklist.md`.
 
 | Day   | Technical focus  | Key outputs                                                                                                                                           |
 | ----- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **1** | Foundation       | ~~Turborepo + 3 apps~~ ✅ · Supabase + 8 tables + RLS · forward-compatible columns · `@repo/supabase` · shadcn/ui · next-intl · env vars · Vercel     |
 | **2** | Auth             | Merchant/admin email+password, route guards, multi-business switcher, admin approval queue                                                            |
-| **3** | Cards + branches | `merchant_locations` migration, business hub UI, PRD §6.1 card config, live preview, per-branch QR PNG — see [`Day3_Checklist.md`](Day3_Checklist.md) |
-| **4** | Stamps + wallet  | Realtime queue, approval flow, redeem, analytics — see [`Day4_Checklist.md`](../resources/Day4_Checklist.md) |
-| **5** | Merchant MVP     | Settings, preferences, status UX, branch context, sign-off — [`Day5_Checklist.md`](../resources/Day5_Checklist.md) |
-| **6** | Customer + Admin | Customer PWA, OTP, wallet; super admin polish (resequenced from PRD §11) |
-| **7** | Launch           | PWA, privacy policy, E2E test, production deploy                                                                                                      |
+| **3** | Cards + branches | `merchant_locations` migration, business hub UI, PRD §6.1 card config, live preview, per-branch QR PNG — [`Day3_Checklist.md`](Day3_Checklist.md) |
+| **4** | Merchant counter | Realtime queue, approval flow, redeem, analytics, customers — [`Day4_Checklist.md`](Day4_Checklist.md) |
+| **5** | Merchant MVP     | Settings, preferences, status UX, branch context, sign-off — [`Day5_Checklist.md`](Day5_Checklist.md) |
+| **6** | Super Admin      | Platform dashboard, customers, manual stamps, audit log, FDA — [`Day6_Checklist.md`](Day6_Checklist.md) |
+| **7** | Customer PWA     | Auth, wallet, scan, Realtime stamp flow, OTP, redemption — [`Day7_Checklist.md`](Day7_Checklist.md) |
+| **8** | Launch           | PWA manifest, privacy policy, E2E, production deploy — [`Day8_Checklist.md`](Day8_Checklist.md) |
 
 > 📋 **Session starter:** _"Build YORewards per PRD + Technical Doc. Use only the locked stack. Check Implementation Status first."_
 

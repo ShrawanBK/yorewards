@@ -19,7 +19,7 @@
 | **Earn anywhere, redeem at primary** | Airport kiosk stamps, downtown redeems | `redeem_at_primary_only` flag on `loyalty_cards` + validate in `complete_redemption` |
 | **Separate card per branch** | Franchise-style independence | Multiple `loyalty_cards` per merchant + branch assignment (larger change to wallet + QR) |
 
-**Touch points when implemented:** QR scan validation (Day 6 customer), `createPendingStampSession`, redeem lookup, merchant loyalty-card config UI, PRD §6.1 + Technical Doc §4.7.
+**Touch points when implemented:** QR scan validation (Day 7 customer), `createPendingStampSession`, redeem lookup, merchant loyalty-card config UI, PRD §6.1 + Technical Doc §4.7.
 
 ---
 

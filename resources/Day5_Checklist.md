@@ -1,9 +1,9 @@
 # YORewards — Day 5 Checklist (Merchant MVP — Finish & Ship-Ready)
 
-> **Goal:** Close the **merchant dashboard MVP** — settings & preferences, status UX, branch context, polish, and sign-off — so **Day 6** can focus on **customer PWA + super admin** without merchant blockers.  
+> **Goal:** Close the **merchant dashboard MVP** — settings & preferences, status UX, branch context, polish, and sign-off — so **Day 6** can focus on **super admin** without merchant blockers.  
 > **Reference:** PRD §6.1, §6.3, routes table · Technical Doc §4.7, §6, Implementation Status  
 > **Prerequisite:** Day 4 complete — stamp queue (Realtime), redeem, analytics, customers list, demo seed, error codes, sidebar business/branch switcher  
-> **Resequenced from PRD §11:** Original “Day 5 = customer stamp flow” moves to **Day 6** (create checklist when starting Day 6).
+> **Resequenced from PRD §11:** Original “Day 5 = customer stamp flow” → [`Day7_Checklist.md`](Day7_Checklist.md). **Day 6 = admin** → [`Day6_Checklist.md`](Day6_Checklist.md).
 
 ---
 
@@ -36,7 +36,7 @@ An owner with at least one business can:
 7. **Settings:** see account email, active business summary, links to business hub / loyalty card, theme (Day 5).
 8. Pass **lint, types, build** for `merchant` app.
 
-Customer scan → wallet → OTP → live redemption E2E is **Day 6** (needs customer PWA).
+Customer scan → wallet → OTP → live redemption E2E is **Day 7** ([`Day7_Checklist.md`](Day7_Checklist.md)).
 
 ---
 
@@ -55,7 +55,11 @@ Customer scan → wallet → OTP → live redemption E2E is **Day 6** (needs cus
       ↓
 5. Full merchant MVP manual test + sign-off                            ⏳
       ↓
-6. Day 6 — customer PWA + admin (separate checklist)                   ⏳
+6. Day 6 — super admin ([`Day6_Checklist.md`](Day6_Checklist.md))                   ⏳
+      ↓
+7. Day 7 — customer PWA ([`Day7_Checklist.md`](Day7_Checklist.md))                 ⏳
+      ↓
+8. Day 8 — polish & launch ([`Day8_Checklist.md`](Day8_Checklist.md))               ⏳
 ```
 
 ---
@@ -205,11 +209,11 @@ resources/Day5_Checklist.md
 
 | Item                                                             | When                                  |
 | ---------------------------------------------------------------- | ------------------------------------- |
-| Customer phone login, wallet, QR scanner                         | Day 6                                 |
-| Stamp session from real scan + customer Realtime                 | Day 6                                 |
-| OTP (Sparrow / Twilio) + customer reward unlock                  | Day 6                                 |
-| Super admin platform dashboard, audit log UI, manual stamp tool  | Day 6                                 |
-| PWA manifest, privacy policy, production deploy all 3 apps       | Day 7                                 |
+| Super admin dashboard, customers, audit, manual stamp tool       | Day 6 — [`Day6_Checklist.md`](Day6_Checklist.md) |
+| Customer phone login, wallet, QR scanner                           | Day 7 — [`Day7_Checklist.md`](Day7_Checklist.md) |
+| Stamp session from real scan + customer Realtime                 | Day 7                                 |
+| OTP (Sparrow / Twilio) + customer reward unlock                  | Day 7                                 |
+| PWA manifest, privacy policy, production deploy all 3 apps       | Day 8 — [`Day8_Checklist.md`](Day8_Checklist.md) |
 | Branch-scoped loyalty programs (per-branch cards / redeem rules) | V2 — [`V2_Backlog.md`](V2_Backlog.md) |
 
 ---
@@ -221,21 +225,19 @@ resources/Day5_Checklist.md
 - [x] Demo seed respects active counter branch
 - [x] Lint, types, build pass for `merchant`
 - [ ] Full merchant manual E2E (F2) passes
-- [x] Technical Doc updated; ready to start Day 6 customer + admin
+- [x] Technical Doc updated; ready to start Day 6 admin
 - [ ] Day 5 git commit (when you ask)
 
 ---
 
-## Day 6 preview (customer + admin — not Day 5)
+## What's next
 
-Day 6 connects merchants to real customers:
-
-1. Customer auth + onboarding + wallet (TanStack Query)
-2. QR scan → `stamp_sessions` → merchant queue (Realtime)
-3. Customer pending / approved / rejected screens
-4. OTP → `redemptions` row → merchant redeem UI (already built Day 4)
-5. Admin: platform overview, customer management, audit log, manual stamp tool
+| Day | Focus | Checklist |
+| --- | ----- | --------- |
+| **6** | Super Admin — full platform control | [`Day6_Checklist.md`](Day6_Checklist.md) |
+| **7** | Customer PWA — scan, wallet, OTP | [`Day7_Checklist.md`](Day7_Checklist.md) |
+| **8** | Polish, privacy, production deploy | [`Day8_Checklist.md`](Day8_Checklist.md) |
 
 ---
 
-_Previous: [`Day4_Checklist.md`](Day4_Checklist.md) · V2 ideas: [`V2_Backlog.md`](V2_Backlog.md) · Next: Day 6 — customer PWA + super admin_
+_Previous: [`Day4_Checklist.md`](Day4_Checklist.md) · V2: [`V2_Backlog.md`](V2_Backlog.md) · **Start:** [`Day6_Checklist.md`](Day6_Checklist.md)_

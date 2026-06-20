@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { AlertTriangle, Inbox, Sparkles } from "lucide-react";
+import { AlertTriangle, Inbox, MapPin, Sparkles } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import type { PendingStampQueueItem } from "@repo/supabase/queries/stamps";
 import { StampQueueItem } from "@/features/stamp-queue/components/StampQueueItem";
@@ -28,11 +28,13 @@ export function StampQueuePanel({
   isActive,
   initialItems,
   loyaltyCardConfigured,
+  activeBranchName,
 }: {
   merchantId: string;
   isActive: boolean;
   initialItems: PendingStampQueueItem[];
   loyaltyCardConfigured: boolean;
+  activeBranchName?: string | null;
 }) {
   const t = useTranslations("stampQueue");
   const tErrors = useTranslations("errors.actions");
@@ -120,6 +122,12 @@ export function StampQueuePanel({
             {t("title")}
           </h2>
           <p className="merchant-body-muted text-sm">{t("subtitle")}</p>
+          {activeBranchName ? (
+            <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-foreground">
+              <MapPin className="size-3.5 shrink-0 text-primary" aria-hidden />
+              {t("workingAt", { branch: activeBranchName })}
+            </p>
+          ) : null}
         </div>
         {isDevEnvironment ? (
           <Button

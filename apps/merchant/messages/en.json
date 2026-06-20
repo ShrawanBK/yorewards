@@ -216,10 +216,14 @@
       "redeem": "Redeem a code",
       "analytics": "View analytics"
     },
+    "statusActions": {
+      "configureCard": "Configure loyalty card",
+      "viewSettings": "Account settings"
+    },
     "status": {
       "pending": {
         "label": "Pending approval",
-        "description": "Your application is under review. We'll notify you once an admin approves your account."
+        "description": "Your application is under review. Configure your loyalty card and branches while you wait — you'll go live as soon as an admin approves your account."
       },
       "active": {
         "label": "Active",
@@ -285,7 +289,8 @@
   "loyaltyCard": {
     "title": "Loyalty card",
     "subtitle": "Design your card, set stamp rules, and download QR codes per branch.",
-    "readOnlyNotice": "Your business is pending approval. You can preview the card, but saving is disabled until an admin approves your account.",
+    "readOnlyNotice": "Your account can't edit the loyalty card right now. Contact support if you think this is a mistake.",
+    "pendingSetupHint": "You're waiting for approval — set up your card now so you're ready to go live on day one.",
     "defaults": {
       "description": "Collect stamps and unlock your reward."
     },
@@ -360,6 +365,7 @@
   "stampQueue": {
     "title": "Stamp approval queue",
     "subtitle": "Approve or reject customer scan requests in real time.",
+    "workingAt": "Working at {branch}",
     "inactiveNotice": "Your business must be approved before you can approve stamp requests.",
     "unknownCustomer": "Customer",
     "progress": "{current} of {target} stamps collected",

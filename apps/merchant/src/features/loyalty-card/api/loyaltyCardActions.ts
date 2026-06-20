@@ -12,6 +12,7 @@ import {
 import type { CurrencyCode, RewardType } from "@repo/supabase/types";
 import { fail, logActionFailure } from "@repo/utils/action-error";
 import type { ActionFailure, ActionResult } from "@/shared/types/action-result";
+import { canConfigureLoyaltyCard } from "@/shared/utils/merchant-status";
 
 const LOGO_BUCKET = "merchant-logos";
 const MAX_UPLOAD_BYTES = 2 * 1024 * 1024;
@@ -51,7 +52,7 @@ export async function saveLoyaltyCardConfigAction(
   );
   if (denied || !merchant) return fail("BUSINESS_NOT_FOUND");
 
-  if (merchant.status !== "active") {
+  if (!canConfigureLoyaltyCard(merchant.status)) {
     return fail("BUSINESS_NOT_ACTIVE");
   }
 

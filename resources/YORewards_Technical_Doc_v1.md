@@ -30,10 +30,10 @@
 | Branches / outlets (`merchant_locations`)                                 | ✅ Done — migration + business hub CRUD                                  |
 | Loyalty card config (PRD §6.1)                                            | ✅ Done — `/merchant/loyalty-card` + live preview + branch QR PNG          |
 | Merchant stamp queue + redeem + analytics (PRD §6.3)                      | ✅ Done (Day 4) — Realtime queue, `/merchant/redeem`, `/merchant/analytics`, customers list |
-| Merchant settings                                                         | ⏳ Day 5 — account + business preferences ([`Day5_Checklist.md`](../resources/Day5_Checklist.md)) |
+| Merchant settings + status UX + branch context + success feedback         | ✅ Done (Day 5) — [`Day5_Checklist.md`](../resources/Day5_Checklist.md) |
 | Customer auth + wallet routes                                             | ⏳ Day 6 — full flows after merchant MVP sign-off                          |
 
-**Next up (Day 5):** Finish merchant MVP — settings, branch context, status UX, sign-off. See [`resources/Day5_Checklist.md`](../resources/Day5_Checklist.md). V2 ideas: [`resources/V2_Backlog.md`](../resources/V2_Backlog.md).
+**Next up (Day 6):** Customer PWA (scan, wallet, OTP) + super admin polish. Merchant dashboard MVP is code-complete — run manual E2E in [`Day5_Checklist.md`](../resources/Day5_Checklist.md) §F2 before Day 6. V2: [`V2_Backlog.md`](../resources/V2_Backlog.md).
 
 ---
 

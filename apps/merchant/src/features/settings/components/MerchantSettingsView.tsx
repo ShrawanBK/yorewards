@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { ArrowRight, Building2, CreditCard, Mail, MapPin } from "lucide-react";
+import { ArrowRight, Building2, Mail, MapPin } from "lucide-react";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";

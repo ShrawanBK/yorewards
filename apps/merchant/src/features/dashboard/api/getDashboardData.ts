@@ -7,7 +7,7 @@ import { getMerchantAnalyticsSummary } from "@repo/supabase/queries/analytics";
 import { getMerchantSessionData } from "@/features/dashboard/api/getMerchantSessionData";
 
 export async function getDashboardData() {
-  const { merchants, merchant } = await getMerchantSessionData();
+  const { merchants, merchant, activeBranch } = await getMerchantSessionData();
 
   const [locations, loyaltyCard, pendingQueue, analyticsSummary] =
     await Promise.all([
@@ -28,6 +28,7 @@ export async function getDashboardData() {
   return {
     merchants,
     merchant,
+    activeBranch,
     pendingQueue,
     metrics: {
       branchCount: locations.length,

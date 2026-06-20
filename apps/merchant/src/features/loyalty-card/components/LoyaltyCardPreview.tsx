@@ -299,12 +299,10 @@ export function LoyaltyCardPreview({
   logoUrl,
   primaryColor,
   cardName,
-  description: _description,
   stampTarget,
   currentStamps = 0,
   minSpend,
   minSpendCurrency,
-  rewardType: _rewardType,
   rewardDescription,
   className,
 }: LoyaltyCardPreviewProps) {

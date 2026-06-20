@@ -1,5 +1,7 @@
+import Link from "next/link";
 import type { MerchantStatus } from "@repo/supabase/types";
 import { Badge } from "@repo/ui/badge";
+import { Button } from "@repo/ui/button";
 import {
   Card,
   CardContent,
@@ -31,6 +33,9 @@ export async function MerchantStatusPanel({
   const t = await getTranslations("dashboard");
   const badge = MERCHANT_STATUS_BADGE[status];
   const Icon = STATUS_ICON[status];
+
+  const showConfigureCard = status === "pending";
+  const showSettingsLink = status !== "active";
 
   return (
     <Card className="merchant-glass-card overflow-hidden">
@@ -68,6 +73,24 @@ export async function MerchantStatusPanel({
               {t("rejectionReason")}
             </p>
             <p className="mt-1 merchant-body-muted">{rejectionReason}</p>
+          </div>
+        ) : null}
+        {showConfigureCard || showSettingsLink ? (
+          <div className="flex flex-wrap gap-2">
+            {showConfigureCard ? (
+              <Button asChild size="sm">
+                <Link href="/merchant/loyalty-card">
+                  {t("statusActions.configureCard")}
+                </Link>
+              </Button>
+            ) : null}
+            {showSettingsLink ? (
+              <Button asChild size="sm" variant="outline">
+                <Link href="/merchant/settings">
+                  {t("statusActions.viewSettings")}
+                </Link>
+              </Button>
+            ) : null}
           </div>
         ) : null}
       </CardContent>

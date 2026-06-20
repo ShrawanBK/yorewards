@@ -40,12 +40,14 @@ type LoyaltyCardConfigFormProps = {
   merchant: MerchantRow;
   loyaltyCard: LoyaltyCardRow | null;
   readOnly: boolean;
+  showPendingSetupHint?: boolean;
 };
 
 export function LoyaltyCardConfigForm({
   merchant,
   loyaltyCard,
   readOnly,
+  showPendingSetupHint = false,
 }: LoyaltyCardConfigFormProps) {
   const t = useTranslations("loyaltyCard");
   const tErrors = useTranslations("errors.actions");
@@ -144,8 +146,14 @@ export function LoyaltyCardConfigForm({
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_minmax(0,360px)] lg:items-start">
       <div className="space-y-6">
+        {showPendingSetupHint ? (
+          <div className="rounded-lg border border-primary/30 bg-primary/8 p-4 text-sm text-foreground">
+            {t("pendingSetupHint")}
+          </div>
+        ) : null}
+
         {readOnly ? (
-          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950 dark:border-amber-500/35 dark:bg-amber-500/10 dark:text-amber-50">
             {t("readOnlyNotice")}
           </div>
         ) : null}

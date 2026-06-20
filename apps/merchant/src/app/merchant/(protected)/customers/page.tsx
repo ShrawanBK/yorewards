@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getLocationsByMerchantId } from "@repo/supabase/queries/locations";
 import { getMerchantCustomers } from "@repo/supabase/queries/merchant-customers";
@@ -29,6 +30,14 @@ async function CustomersContent({
 
 export default async function MerchantCustomersPage({ searchParams }: PageProps) {
   const params = await searchParams;
+
+  if (!params.branch) {
+    const { activeBranch, branches } = await getMerchantSessionData();
+    if (activeBranch && branches.length > 1) {
+      redirect(`/merchant/customers?branch=${activeBranch.id}`);
+    }
+  }
+
   const t = await getTranslations("customers");
 
   return (

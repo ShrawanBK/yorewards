@@ -26,11 +26,13 @@ export async function MerchantDashboard({
   merchant,
   metrics,
   pendingQueue,
+  activeBranchName,
 }: {
   merchants: MerchantRow[];
   merchant: Merchant;
   metrics: DashboardMetrics;
   pendingQueue: PendingStampQueueItem[];
+  activeBranchName: string | null;
 }) {
   const t = await getTranslations("dashboard");
 
@@ -79,6 +81,7 @@ export async function MerchantDashboard({
         isActive={merchant.status === "active"}
         initialItems={pendingQueue}
         loyaltyCardConfigured={metrics.loyaltyCardConfigured}
+        activeBranchName={activeBranchName}
       />
 
       <section

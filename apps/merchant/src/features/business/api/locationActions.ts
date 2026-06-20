@@ -7,6 +7,7 @@ import {
   createMerchantLocation,
   deactivateMerchantLocation,
   setPrimaryLocation,
+  switchActiveLocation,
   updateMerchantLocation,
 } from "@repo/supabase/queries/locations";
 import { fail, logActionFailure } from "@repo/utils/action-error";
@@ -143,4 +144,26 @@ export async function deactivateBranchAction(
     logActionFailure("deactivateBranch", e);
     return fail("DEACTIVATE_BRANCH_FAILED");
   }
+}
+
+export async function switchActiveBranchAction(
+  merchantId: string,
+  locationId: string,
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return fail("UNAUTHORIZED");
+
+  const denied = await assertOwnsMerchant(user.id, merchantId);
+  if (denied) return denied;
+
+  const location = await switchActiveLocation(merchantId, locationId);
+  if (!location) return fail("BRANCH_NOT_FOUND");
+
+  revalidateMerchantPaths();
+  revalidatePath("/merchant/dashboard");
+  revalidatePath("/merchant/customers");
+  return {};
 }

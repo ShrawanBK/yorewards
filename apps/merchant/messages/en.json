@@ -23,7 +23,11 @@
     "settings": "Settings",
     "logout": "Log out",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "switchBusiness": "Switch business",
+    "switchBranch": "Counter branch",
+    "allBranchesHint": "Select which branch you are working at",
+    "addBusiness": "Add another business"
   },
   "auth": {
     "brandEyebrow": "YORewards",
@@ -359,7 +363,10 @@
     "emptyCta": "View loyalty card & QR codes",
     "loadDemo": "Load demo data",
     "demoSeeded": "Demo stamp requests added to the queue.",
-    "demoSeededWithCode": "Demo data loaded. Redeem code: {code} (see Redeem page)."
+    "demoSeededWithCode": "Demo data loaded. Redeem code: {code} (see Redeem page).",
+    "demoLoyaltyAlertTitle": "Configure your loyalty card first",
+    "demoLoyaltyAlertDescription": "Save your loyalty card settings before loading demo stamp and redemption data.",
+    "demoLoyaltyAlertCta": "Go to loyalty card"
   },
   "customers": {
     "title": "Customers",
@@ -458,6 +465,7 @@
       "BUSINESS_NOT_FOUND": "Business not found.",
       "BUSINESS_NOT_ACTIVE": "Your business must be approved before using this feature.",
       "INVALID_PHONE": "Invalid phone number for the selected country.",
+      "BRANCH_NOT_FOUND": "Branch not found.",
       "BRANCH_NAME_REQUIRED": "Branch name is required.",
       "ADD_BRANCH_FAILED": "Could not add branch. Please try again.",
       "UPDATE_BRANCH_FAILED": "Could not update branch. Please try again.",

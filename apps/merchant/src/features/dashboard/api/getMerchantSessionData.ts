@@ -4,6 +4,10 @@ import {
   getMerchantByUserId,
   getMerchantsByUserId,
 } from "@repo/supabase/queries/merchants";
+import {
+  getActiveLocationsByMerchantId,
+  resolveActiveLocationForMerchant,
+} from "@repo/supabase/queries/locations";
 
 export async function getMerchantSessionData() {
   const supabase = await createClient();
@@ -24,5 +28,16 @@ export async function getMerchantSessionData() {
     redirect("/merchant/add-business");
   }
 
-  return { user, merchants, merchant };
+  const [branches, activeBranch] = await Promise.all([
+    getActiveLocationsByMerchantId(merchant.id),
+    resolveActiveLocationForMerchant(merchant.id),
+  ]);
+
+  return {
+    user,
+    merchants,
+    merchant,
+    branches,
+    activeBranch,
+  };
 }

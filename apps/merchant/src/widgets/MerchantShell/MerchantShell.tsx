@@ -19,13 +19,19 @@ import { useId, useState } from "react";
 import { Button } from "@repo/ui/button";
 import { Separator } from "@repo/ui/separator";
 import { cn } from "@repo/ui/lib/utils";
+import type { MerchantRow } from "@repo/supabase/queries/merchants";
+import type { MerchantLocationRow } from "@repo/supabase/queries/locations";
 import { logoutAction } from "@/features/auth/api/authActions";
+import { MerchantSidebarSwitcher } from "@/features/business/components/MerchantSidebarSwitcher";
 import { SkipLink } from "@/shared/ui/SkipLink";
 import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 
 type MerchantShellProps = {
   children: React.ReactNode;
-  businessName?: string | null;
+  merchants: MerchantRow[];
+  activeMerchantId: string;
+  branches: MerchantLocationRow[];
+  activeBranchId: string | null;
 };
 
 const navItems = [
@@ -38,7 +44,13 @@ const navItems = [
   { href: "/merchant/settings", icon: Settings, labelKey: "settings" as const },
 ];
 
-export function MerchantShell({ children, businessName }: MerchantShellProps) {
+export function MerchantShell({
+  children,
+  merchants,
+  activeMerchantId,
+  branches,
+  activeBranchId,
+}: MerchantShellProps) {
   const t = useTranslations("nav");
   const tA11y = useTranslations("a11y");
   const pathname = usePathname();
@@ -73,6 +85,15 @@ export function MerchantShell({ children, businessName }: MerchantShellProps) {
     );
   };
 
+  const switcher = (
+    <MerchantSidebarSwitcher
+      merchants={merchants}
+      activeMerchantId={activeMerchantId}
+      branches={branches}
+      activeBranchId={activeBranchId}
+    />
+  );
+
   return (
     <div className="merchant-app-bg flex min-h-svh">
       <SkipLink href="#main-content">{tA11y("skipToMain")}</SkipLink>
@@ -82,21 +103,19 @@ export function MerchantShell({ children, businessName }: MerchantShellProps) {
         className="sticky top-0 hidden h-svh w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground lg:flex"
         aria-label={t("main")}
       >
-        <div className="flex h-[4.25rem] items-center gap-3 border-b border-sidebar-border px-5">
-          <div
-            className="flex size-9 items-center justify-center rounded-lg bg-sidebar-primary text-sm font-bold text-sidebar-primary-foreground"
-            aria-hidden
-          >
-            YO
-          </div>
-          <div className="min-w-0 flex-1">
+        <div className="space-y-3 border-b border-sidebar-border px-4 py-4">
+          <div className="flex items-center gap-3">
+            <div
+              className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sm font-bold text-sidebar-primary-foreground"
+              aria-hidden
+            >
+              YO
+            </div>
             <p className="truncate text-sm font-semibold tracking-tight" translate="no">
               YORewards
             </p>
-            {businessName ? (
-              <p className="truncate text-xs text-sidebar-foreground/75">{businessName}</p>
-            ) : null}
           </div>
+          {switcher}
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-3" aria-label={t("main")}>
@@ -157,6 +176,9 @@ export function MerchantShell({ children, businessName }: MerchantShellProps) {
             id={mobileNavId}
             className="border-b border-border bg-card p-3 lg:hidden"
           >
+            <div className="mb-3 rounded-lg border border-border bg-muted/30 p-3">
+              {switcher}
+            </div>
             <nav className="flex flex-col gap-1" aria-label={t("main")}>
               {navItems.map((item) => navLink(item, () => setMobileOpen(false)))}
             </nav>

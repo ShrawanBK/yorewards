@@ -7,6 +7,7 @@ import {
   clearActiveMerchantForUser,
   getMerchantsByUserId,
 } from "@repo/supabase/queries/merchants";
+import { clearActiveLocationForMerchant } from "@repo/supabase/queries/locations";
 import {
   fail,
   logActionFailure,
@@ -18,6 +19,7 @@ export async function logoutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   await clearActiveMerchantForUser();
+  await clearActiveLocationForMerchant();
   redirect("/merchant/login");
 }
 

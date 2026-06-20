@@ -78,6 +78,7 @@ export async function MerchantDashboard({
         merchantId={merchant.id}
         isActive={merchant.status === "active"}
         initialItems={pendingQueue}
+        loyaltyCardConfigured={metrics.loyaltyCardConfigured}
       />
 
       <section

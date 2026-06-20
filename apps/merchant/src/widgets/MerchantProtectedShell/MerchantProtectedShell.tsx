@@ -6,10 +6,16 @@ export async function MerchantProtectedShell({
 }: {
   children: React.ReactNode;
 }) {
-  const { merchant } = await getMerchantSessionData();
+  const { merchants, merchant, branches, activeBranch } =
+    await getMerchantSessionData();
 
   return (
-    <MerchantShell businessName={merchant.business_name}>
+    <MerchantShell
+      merchants={merchants}
+      activeMerchantId={merchant.id}
+      branches={branches}
+      activeBranchId={activeBranch?.id ?? null}
+    >
       {children}
     </MerchantShell>
   );

@@ -3,6 +3,7 @@ import {
   getActiveMerchantIdFromCookie,
   setActiveMerchantIdCookie,
 } from "../active-merchant";
+import { clearActiveLocationIdCookie } from "../active-location";
 import { createServiceRoleClient } from "../service-role";
 import type { Database, MerchantStatus } from "../types";
 
@@ -79,6 +80,7 @@ export async function switchActiveMerchant(
     return null;
   }
   await setActiveMerchantIdCookie(merchantId);
+  await clearActiveLocationIdCookie();
   return match;
 }
 

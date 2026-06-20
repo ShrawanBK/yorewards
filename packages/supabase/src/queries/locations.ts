@@ -1,5 +1,10 @@
 import { createServiceRoleClient } from "../service-role";
 import type { Database } from "../types";
+import {
+  clearActiveLocationIdCookie,
+  getActiveLocationIdFromCookie,
+  setActiveLocationIdCookie,
+} from "../active-location";
 
 export type MerchantLocationRow =
   Database["public"]["Tables"]["merchant_locations"]["Row"];
@@ -171,4 +176,48 @@ export async function countActiveLocations(merchantId: string): Promise<number> 
 
   if (error) throw error;
   return count ?? 0;
+}
+
+function pickDefaultLocation(
+  locations: MerchantLocationRow[],
+): MerchantLocationRow | null {
+  if (locations.length === 0) return null;
+  return (
+    locations.find((l) => l.is_primary) ??
+    locations.find((l) => l.is_active) ??
+    locations[0] ??
+    null
+  );
+}
+
+/** Read-only: cookie match, else primary / first active (no cookie write — use in RSC). */
+export async function resolveActiveLocationForMerchant(
+  merchantId: string,
+): Promise<MerchantLocationRow | null> {
+  const activeLocations = await getActiveLocationsByMerchantId(merchantId);
+  if (activeLocations.length === 0) return null;
+
+  const cookieId = await getActiveLocationIdFromCookie();
+  if (cookieId) {
+    const match = activeLocations.find((l) => l.id === cookieId);
+    if (match) return match;
+  }
+
+  return pickDefaultLocation(activeLocations);
+}
+
+export async function switchActiveLocation(
+  merchantId: string,
+  locationId: string,
+): Promise<MerchantLocationRow | null> {
+  const activeLocations = await getActiveLocationsByMerchantId(merchantId);
+  const match = activeLocations.find((l) => l.id === locationId);
+  if (!match) return null;
+
+  await setActiveLocationIdCookie(locationId);
+  return match;
+}
+
+export async function clearActiveLocationForMerchant() {
+  await clearActiveLocationIdCookie();
 }

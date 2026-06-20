@@ -8,6 +8,7 @@
     "./service-role": "./src/service-role.ts",
     "./proxy": "./src/proxy.ts",
     "./active-merchant": "./src/active-merchant.ts",
+    "./active-location": "./src/active-location.ts",
     "./types": "./src/types.ts",
     "./queries/merchants": "./src/queries/merchants.ts",
     "./queries/customers": "./src/queries/customers.ts",

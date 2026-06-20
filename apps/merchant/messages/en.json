@@ -27,7 +27,11 @@
     "switchBusiness": "Switch business",
     "switchBranch": "Counter branch",
     "allBranchesHint": "Select which branch you are working at",
-    "addBusiness": "Add another business"
+    "addBusiness": "Add another business",
+    "success": {
+      "businessSwitched": "You're now managing {business}.",
+      "branchSwitched": "Counter set to {branch} — new scans tag here."
+    }
   },
   "auth": {
     "brandEyebrow": "YORewards",
@@ -270,6 +274,12 @@
       "setPrimary": "Set as primary",
       "deactivate": "Deactivate",
       "cancel": "Cancel"
+    },
+    "success": {
+      "added": "{branch} is live! Download its QR code when you're ready.",
+      "updated": "{branch} saved.",
+      "primarySet": "{branch} is now your primary branch.",
+      "deactivated": "{branch} deactivated. Stamps already collected still count."
     }
   },
   "loyaltyCard": {
@@ -339,8 +349,12 @@
     "actions": {
       "save": "Save card settings"
     },
+    "success": {
+      "saved": "{card} is saved — customers will see these updates.",
+      "logoUploaded": "Logo uploaded for {card}!"
+    },
     "errors": {
-      "logoUpload": "Could not upload logo. Try a smaller image."
+      "logoUpload": "We couldn't upload that image — try a smaller JPG or PNG."
     }
   },
   "stampQueue": {
@@ -362,11 +376,16 @@
     "emptyDescription": "When a customer scans your branch QR, their request appears here instantly.",
     "emptyCta": "View loyalty card & QR codes",
     "loadDemo": "Load demo data",
-    "demoSeeded": "Demo stamp requests added to the queue.",
-    "demoSeededWithCode": "Demo data loaded. Redeem code: {code} (see Redeem page).",
+    "demoSeeded": "Demo stamp requests are in the queue — try approving one!",
+    "demoSeededWithCode": "Demo ready! Try redeeming code {code} on the Redeem page.",
     "demoLoyaltyAlertTitle": "Configure your loyalty card first",
     "demoLoyaltyAlertDescription": "Save your loyalty card settings before loading demo stamp and redemption data.",
-    "demoLoyaltyAlertCta": "Go to loyalty card"
+    "demoLoyaltyAlertCta": "Go to loyalty card",
+    "success": {
+      "approved": "Stamp added for {customer} — one step closer to their reward!",
+      "rejected": "{customer}'s request declined. They can scan again when ready.",
+      "demoSeeded": "Demo queue is ready — try approving a stamp!"
+    }
   },
   "customers": {
     "title": "Customers",
@@ -415,8 +434,11 @@
     "cycle": "Cycle",
     "confirmHint": "Confirm only after you have given the customer their reward. Their card will reset to 0 stamps and start a new cycle.",
     "confirm": "Confirm redemption",
-    "successTitle": "Reward redeemed",
-    "successDescription": "The customer's card has been reset for a new stamp cycle."
+    "successTitle": "Reward delivered to {customer}!",
+    "successDescription": "Their card is reset to zero stamps — they're ready to start collecting again.",
+    "success": {
+      "confirmed": "Reward confirmed for {customer}! Their new stamp cycle has started."
+    }
   },
   "analytics": {
     "title": "Analytics",
@@ -448,63 +470,81 @@
   "settings": {
     "title": "Settings",
     "subtitle": "Account and business preferences.",
-    "comingSoon": {
-      "title": "Coming soon",
-      "description": "Profile editing and notification preferences will be added in a later release."
+    "account": {
+      "title": "Account",
+      "subtitle": "Your merchant login details.",
+      "email": "Email",
+      "emailUnknown": "No email on file",
+      "signOutHint": "Use Log out in the sidebar to sign out of this device."
+    },
+    "business": {
+      "title": "Active business",
+      "subtitle": "The business you are managing in the sidebar switcher.",
+      "switchHint": "Use Switch business in the sidebar to change which business you manage.",
+      "manageLink": "Business & branches",
+      "loyaltyLink": "Loyalty card & QR"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "subtitle": "Appearance and counter context.",
+      "theme": "Color theme",
+      "branch": "Counter branch",
+      "branchUnknown": "Primary branch",
+      "branchHint": "Change your counter branch from the sidebar when you have multiple locations."
     }
   },
   "errors": {
     "actions": {
-      "UNAUTHORIZED": "You must be signed in to continue.",
-      "UNKNOWN": "Something went wrong. Please try again.",
-      "AUTH_FAILED": "Authentication failed. Please try again.",
-      "INVALID_CREDENTIALS": "Invalid email or password.",
-      "SIGN_IN_FAILED": "Sign in failed. Please try again.",
-      "SIGN_UP_FAILED": "Could not create your account. Please try again.",
-      "EMAIL_ALREADY_EXISTS": "An account with this email already exists. Sign in instead.",
-      "BUSINESS_NOT_FOUND": "Business not found.",
-      "BUSINESS_NOT_ACTIVE": "Your business must be approved before using this feature.",
-      "INVALID_PHONE": "Invalid phone number for the selected country.",
-      "BRANCH_NOT_FOUND": "Branch not found.",
-      "BRANCH_NAME_REQUIRED": "Branch name is required.",
-      "ADD_BRANCH_FAILED": "Could not add branch. Please try again.",
-      "UPDATE_BRANCH_FAILED": "Could not update branch. Please try again.",
-      "SET_PRIMARY_BRANCH_FAILED": "Could not set primary branch. Please try again.",
-      "DEACTIVATE_BRANCH_FAILED": "Could not deactivate branch. Please try again.",
-      "MERCHANT_UPDATE_FAILED": "Could not update merchant. Please try again.",
-      "REJECTION_REASON_REQUIRED": "Add a reason before rejecting.",
-      "LOYALTY_CARD_NAME_INVALID": "Card name is required (max 40 characters).",
-      "LOYALTY_CARD_DESCRIPTION_INVALID": "Description is required (max 120 characters).",
-      "LOYALTY_CARD_COLOR_INVALID": "Pick a valid brand color.",
-      "LOYALTY_CARD_STAMP_TARGET_INVALID": "Stamp target must be between 5 and 50.",
-      "LOYALTY_CARD_MIN_SPEND_INVALID": "Minimum spend must be 0 or greater.",
-      "LOYALTY_CARD_CURRENCY_INVALID": "Select a valid currency.",
-      "LOYALTY_CARD_REWARD_TYPE_INVALID": "Select a reward type.",
-      "LOYALTY_CARD_REWARD_VALUE_REQUIRED": "Reward value is required.",
-      "LOYALTY_CARD_REWARD_DESCRIPTION_REQUIRED": "Reward description is required.",
-      "LOYALTY_CARD_SAVE_FAILED": "Could not save loyalty card settings. Please try again.",
-      "LOGO_FILE_REQUIRED": "Choose an image to upload.",
-      "LOGO_FILE_TOO_LARGE": "Image must be 2MB or smaller.",
-      "LOGO_FILE_TYPE_INVALID": "Use JPG, PNG, or WebP.",
-      "LOGO_UPLOAD_FAILED": "Could not upload logo. Please try again.",
-      "REDEMPTION_CODE_INVALID": "Enter a valid 6-character redemption code.",
-      "REDEMPTION_NOT_FOUND": "No pending redemption found for this code.",
-      "REDEMPTION_LOOKUP_FAILED": "Could not look up redemption code.",
-      "REDEMPTION_ALREADY_COMPLETED": "This redemption has already been completed.",
-      "REDEMPTION_CONFIRM_FAILED": "Could not confirm redemption.",
-      "STAMP_QUEUE_LOAD_FAILED": "Could not load stamp queue.",
-      "STAMP_NOT_FOUND": "Stamp request not found.",
-      "STAMP_EXPIRED": "This stamp request has expired.",
-      "STAMP_NOT_PENDING": "This stamp request is no longer pending.",
-      "STAMP_APPROVE_FAILED": "Could not approve stamp.",
-      "STAMP_REJECT_REASON_TOO_LONG": "Rejection reason is too long (max 120 characters).",
-      "STAMP_REJECT_FAILED": "Could not reject stamp.",
-      "DEMO_DEV_ONLY": "Demo data is only available in development.",
-      "DEMO_LOYALTY_CARD_REQUIRED": "Configure your loyalty card before loading demo data.",
-      "DEMO_SEED_FAILED": "Could not create demo data.",
-      "DEMO_NO_REDEMPTION_CODE": "Stamp queue loaded, but no demo redemption code is available (DEMO01–DEMO99 all used).",
-      "DEMO_REDEMPTION_CREATE_FAILED": "Stamp queue loaded, but the demo redemption code could not be created.",
-      "ANALYTICS_LOAD_FAILED": "Could not load analytics."
+      "UNAUTHORIZED": "Please sign in to continue.",
+      "UNKNOWN": "That didn't work — give it another try in a moment.",
+      "AUTH_FAILED": "We couldn't verify your session. Please sign in again.",
+      "INVALID_CREDENTIALS": "That email or password doesn't look right. Double-check and try again.",
+      "SIGN_IN_FAILED": "We couldn't sign you in right now. Please try again.",
+      "SIGN_UP_FAILED": "We couldn't create your account yet. Please try again.",
+      "EMAIL_ALREADY_EXISTS": "You already have an account with this email — try signing in instead.",
+      "BUSINESS_NOT_FOUND": "We couldn't find that business. Refresh the page and try again.",
+      "BUSINESS_NOT_ACTIVE": "This unlocks once your business is approved — hang tight!",
+      "INVALID_PHONE": "That phone number doesn't match the format for your selected country.",
+      "BRANCH_NOT_FOUND": "We couldn't find that branch. Refresh the page and try again.",
+      "BRANCH_NAME_REQUIRED": "Give your branch a name so customers know where they're stamping.",
+      "ADD_BRANCH_FAILED": "We couldn't add the branch — please try again.",
+      "UPDATE_BRANCH_FAILED": "We couldn't save those branch details — please try again.",
+      "SET_PRIMARY_BRANCH_FAILED": "We couldn't set the primary branch — please try again.",
+      "DEACTIVATE_BRANCH_FAILED": "We couldn't deactivate that branch — please try again.",
+      "MERCHANT_UPDATE_FAILED": "We couldn't save those changes — please try again.",
+      "REJECTION_REASON_REQUIRED": "Please add a reason before rejecting.",
+      "LOYALTY_CARD_NAME_INVALID": "Add a card name — up to 40 characters.",
+      "LOYALTY_CARD_DESCRIPTION_INVALID": "Add a short description for customers — up to 120 characters.",
+      "LOYALTY_CARD_COLOR_INVALID": "Pick a valid hex color (e.g. #7C3AED).",
+      "LOYALTY_CARD_STAMP_TARGET_INVALID": "Stamps to reward must be between 5 and 50.",
+      "LOYALTY_CARD_MIN_SPEND_INVALID": "Minimum spend can't be negative — use 0 for no minimum.",
+      "LOYALTY_CARD_CURRENCY_INVALID": "Choose NPR or EUR for minimum spend.",
+      "LOYALTY_CARD_REWARD_TYPE_INVALID": "Pick how customers earn their reward.",
+      "LOYALTY_CARD_REWARD_VALUE_REQUIRED": "Tell us what they're earning (e.g. free coffee or 10% off).",
+      "LOYALTY_CARD_REWARD_DESCRIPTION_REQUIRED": "Add reward text — this is what customers see on their card.",
+      "LOYALTY_CARD_SAVE_FAILED": "We couldn't save your card — check the fields and try again.",
+      "LOGO_FILE_REQUIRED": "Choose a logo image to upload.",
+      "LOGO_FILE_TOO_LARGE": "That image is too large — keep it under 2MB.",
+      "LOGO_FILE_TYPE_INVALID": "Use a JPG, PNG, or WebP image for your logo.",
+      "LOGO_UPLOAD_FAILED": "We couldn't upload your logo — try a smaller image.",
+      "REDEMPTION_CODE_INVALID": "Enter the full 6-character code from the customer's app.",
+      "REDEMPTION_NOT_FOUND": "No active redemption for that code — ask the customer to check their app.",
+      "REDEMPTION_LOOKUP_FAILED": "We couldn't look up that code — please try again.",
+      "REDEMPTION_ALREADY_COMPLETED": "This reward was already redeemed.",
+      "REDEMPTION_CONFIRM_FAILED": "We couldn't confirm the redemption — please try again.",
+      "STAMP_QUEUE_LOAD_FAILED": "We couldn't load the stamp queue — refresh the page.",
+      "STAMP_NOT_FOUND": "That stamp request is gone — it may have expired or been handled already.",
+      "STAMP_EXPIRED": "This request timed out — the customer can scan your QR again.",
+      "STAMP_NOT_PENDING": "Someone already handled this request.",
+      "STAMP_APPROVE_FAILED": "We couldn't approve the stamp — please try again.",
+      "STAMP_REJECT_REASON_TOO_LONG": "Keep the reason under 120 characters.",
+      "STAMP_REJECT_FAILED": "We couldn't decline the request — please try again.",
+      "DEMO_DEV_ONLY": "Demo data is only available while developing locally.",
+      "DEMO_LOYALTY_CARD_REQUIRED": "Save your loyalty card first, then load demo data.",
+      "DEMO_SEED_FAILED": "We couldn't create demo data — please try again.",
+      "DEMO_NO_REDEMPTION_CODE": "Demo stamps loaded! Redemption codes DEMO01–DEMO99 are all in use.",
+      "DEMO_REDEMPTION_CREATE_FAILED": "Demo stamps loaded, but we couldn't create a redemption code.",
+      "ANALYTICS_LOAD_FAILED": "We couldn't load analytics — refresh the page."
     }
   }
 }

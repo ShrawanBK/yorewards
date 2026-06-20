@@ -23,6 +23,7 @@ import {
   setPrimaryBranchAction,
 } from "@/features/business/api/locationActions";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
+import { showActionSuccess } from "@/shared/utils/action-feedback";
 
 export function BranchList({
   merchantId,
@@ -55,11 +56,15 @@ export function BranchList({
   }
 
   function setPrimary(locationId: string) {
+    const branch = locations.find((l) => l.id === locationId);
     startTransition(async () => {
       const result = await setPrimaryBranchAction(merchantId, locationId);
       if (result.error) setError(resolveActionError(tErrors, result.error));
       else {
         setError(null);
+        showActionSuccess(t, "success.primarySet", {
+          branch: branch?.name ?? t("fields.name"),
+        });
         router.refresh();
       }
     });
@@ -67,6 +72,7 @@ export function BranchList({
 
   function confirmDeactivate() {
     if (!deactivating) return;
+    const branchName = deactivating.name;
     startTransition(async () => {
       const result = await deactivateBranchAction(
         merchantId,
@@ -76,6 +82,7 @@ export function BranchList({
       else {
         setError(null);
         setDeactivating(null);
+        showActionSuccess(t, "success.deactivated", { branch: branchName });
         router.refresh();
       }
     });

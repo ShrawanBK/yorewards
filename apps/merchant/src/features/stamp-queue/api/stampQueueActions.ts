@@ -6,6 +6,7 @@ import { getMerchantsByUserId } from "@repo/supabase/queries/merchants";
 import { getLoyaltyCardByMerchantId } from "@repo/supabase/queries/loyalty-cards";
 import { getLocationsByMerchantId } from "@repo/supabase/queries/locations";
 import { createServiceRoleClient } from "@repo/supabase/service-role";
+import { getActiveLocationIdFromCookie } from "@repo/supabase/active-location";
 import {
   approveStampSession,
   createPendingStampSession,
@@ -251,9 +252,14 @@ export async function seedDemoStampQueueAction(
   }
 
   const locations = await getLocationsByMerchantId(merchantId);
+  const activeLocations = locations.filter((l) => l.is_active);
+  const cookieLocationId = await getActiveLocationIdFromCookie();
   const locationId =
-    locations.find((l) => l.is_active && l.is_primary)?.id ??
-    locations.find((l) => l.is_active)?.id ??
+    (cookieLocationId && activeLocations.some((l) => l.id === cookieLocationId)
+      ? cookieLocationId
+      : null) ??
+    activeLocations.find((l) => l.is_primary)?.id ??
+    activeLocations[0]?.id ??
     null;
 
   const admin = createServiceRoleClient();

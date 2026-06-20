@@ -21,6 +21,7 @@ import {
   resolveActionError,
   resolveActionWarning,
 } from "@/shared/utils/resolve-action-error";
+import { showActionSuccess } from "@/shared/utils/action-feedback";
 
 export function StampQueuePanel({
   merchantId,
@@ -86,11 +87,11 @@ export function StampQueuePanel({
       if (result.warning) {
         setSeedMessage(resolveActionWarning(tErrors, result.warning));
       } else {
-        setSeedMessage(
-          result.code
-            ? t("demoSeededWithCode", { code: result.code })
-            : t("demoSeeded"),
-        );
+        const message = result.code
+          ? t("demoSeededWithCode", { code: result.code })
+          : t("demoSeeded");
+        setSeedMessage(message);
+        showActionSuccess(t, "success.demoSeeded");
       }
       const refreshed = await fetchPendingStampQueueAction(merchantId);
       if (refreshed.items) setItems(refreshed.items);

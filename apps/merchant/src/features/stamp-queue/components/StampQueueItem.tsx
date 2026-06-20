@@ -20,6 +20,7 @@ import {
   rejectStampAction,
 } from "@/features/stamp-queue/api/stampQueueActions";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
+import { showActionSuccess } from "@/shared/utils/action-feedback";
 
 const PENDING_TTL_MS = 5 * 60 * 1000;
 
@@ -64,6 +65,7 @@ export function StampQueueItem({
     startTransition(async () => {
       const result = await approveStampAction(merchantId, item.id);
       if (result.error) setError(resolveActionError(tErrors, result.error));
+      else showActionSuccess(t, "success.approved", { customer: displayName });
     });
   }
 
@@ -79,6 +81,7 @@ export function StampQueueItem({
         setError(resolveActionError(tErrors, result.error));
         return;
       }
+      showActionSuccess(t, "success.rejected", { customer: displayName });
       setRejectOpen(false);
       setRejectReason("");
     });

@@ -10,6 +10,11 @@ import type { MerchantRow } from "@repo/supabase/queries/merchants";
 import type { MerchantLocationRow } from "@repo/supabase/queries/locations";
 import { switchActiveMerchantAction } from "@/features/business/api/businessActions";
 import { switchActiveBranchAction } from "@/features/business/api/locationActions";
+import { resolveActionError } from "@/shared/utils/resolve-action-error";
+import {
+  showActionError,
+  showActionSuccess,
+} from "@/shared/utils/action-feedback";
 
 type MerchantSidebarSwitcherProps = {
   merchants: MerchantRow[];
@@ -31,6 +36,7 @@ export function MerchantSidebarSwitcher({
 }: MerchantSidebarSwitcherProps) {
   const t = useTranslations("nav");
   const tBranches = useTranslations("branches");
+  const tErrors = useTranslations("errors.actions");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -39,23 +45,36 @@ export function MerchantSidebarSwitcher({
   const switchBusiness = useCallback(
     (merchantId: string) => {
       if (merchantId === activeMerchantId || isPending) return;
+      const business =
+        merchants.find((m) => m.id === merchantId)?.business_name ?? "";
       startTransition(async () => {
         const result = await switchActiveMerchantAction(merchantId);
-        if (!result?.error) router.refresh();
+        if (result?.error) {
+          showActionError(resolveActionError(tErrors, result.error));
+          return;
+        }
+        showActionSuccess(t, "success.businessSwitched", { business });
+        router.refresh();
       });
     },
-    [activeMerchantId, isPending, router],
+    [activeMerchantId, isPending, merchants, router, t, tErrors],
   );
 
   const switchBranch = useCallback(
     (locationId: string) => {
       if (locationId === activeBranchId || isPending) return;
+      const branch = branches.find((b) => b.id === locationId)?.name ?? "";
       startTransition(async () => {
         const result = await switchActiveBranchAction(activeMerchantId, locationId);
-        if (!result?.error) router.refresh();
+        if (result?.error) {
+          showActionError(resolveActionError(tErrors, result.error));
+          return;
+        }
+        showActionSuccess(t, "success.branchSwitched", { branch });
+        router.refresh();
       });
     },
-    [activeBranchId, activeMerchantId, isPending, router],
+    [activeBranchId, activeMerchantId, branches, isPending, router, t, tErrors],
   );
 
   return (

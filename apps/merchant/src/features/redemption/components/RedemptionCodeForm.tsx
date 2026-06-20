@@ -13,6 +13,7 @@ import {
   lookupRedemptionAction,
 } from "@/features/redemption/api/redemptionActions";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
+import { showActionSuccess } from "@/shared/utils/action-feedback";
 
 export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
   const t = useTranslations("redemption");
@@ -21,12 +22,16 @@ export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [redemption, setRedemption] = useState<RedemptionLookup | null>(null);
   const [success, setSuccess] = useState(false);
+  const [confirmedCustomer, setConfirmedCustomer] = useState<string | null>(
+    null,
+  );
   const [isPending, startTransition] = useTransition();
 
   function handleLookup(event: React.FormEvent) {
     event.preventDefault();
     setError(null);
     setSuccess(false);
+    setConfirmedCustomer(null);
     startTransition(async () => {
       const result = await lookupRedemptionAction(merchantId, code);
       if (result.error) {
@@ -40,6 +45,8 @@ export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
 
   function handleConfirm() {
     if (!redemption) return;
+    const customer =
+      redemption.customerName?.split(" ")[0] ?? t("unknownCustomer");
     setError(null);
     startTransition(async () => {
       const result = await confirmRedemptionAction(merchantId, redemption.id);
@@ -47,7 +54,9 @@ export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
         setError(resolveActionError(tErrors, result.error));
         return;
       }
+      setConfirmedCustomer(customer);
       setSuccess(true);
+      showActionSuccess(t, "success.confirmed", { customer });
       setRedemption(null);
       setCode("");
     });
@@ -83,10 +92,12 @@ export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
         </p>
       ) : null}
 
-      {success ? (
+      {success && confirmedCustomer ? (
         <Card className="merchant-glass-card border-emerald-500/30">
           <CardHeader>
-            <CardTitle className="text-base">{t("successTitle")}</CardTitle>
+            <CardTitle className="text-base">
+              {t("successTitle", { customer: confirmedCustomer })}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="merchant-body-muted text-sm">

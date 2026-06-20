@@ -8,20 +8,21 @@
 
 ## Implementation status (June 2026)
 
-| Area | Status |
-| ---- | ------ |
-| Phase A — Stamp/redemption/analytics queries + actions | ✅ Done |
-| Phase B — Realtime stamp queue (dashboard) | ✅ Done |
-| Phase C — Redemption flow (`/merchant/redeem`) | ✅ Done |
-| Phase D — Analytics (`/merchant/analytics`) | ✅ Done |
-| Phase E — Nav, tab badge, i18n | ✅ Done |
-| Phase F — Dev demo seed + SQL script | ✅ Done (polished) |
-| Phase G — Automated verify | ✅ Done |
-| Phase H — Customer list per business + branch filter | ✅ Done |
-| Phase G — Manual E2E + RLS smoke | ⏳ Your turn |
-| Day 4 git commit | ⏳ When you ask |
+| Area                                                                                        | Status                                        |
+| ------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| Phase A — Stamp/redemption/analytics queries + actions                                      | ✅ Done                                       |
+| Phase B — Realtime stamp queue (dashboard)                                                  | ✅ Done                                       |
+| Phase C — Redemption flow (`/merchant/redeem`)                                              | ✅ Done                                       |
+| Phase D — Analytics (`/merchant/analytics`)                                                 | ✅ Done                                       |
+| Phase E — Nav, tab badge, i18n                                                              | ✅ Done                                       |
+| Phase F — Dev demo seed + SQL script                                                        | ✅ Done (polished)                            |
+| Phase G — Automated verify                                                                  | ✅ Done                                       |
+| Phase H — Customer list per business + branch filter                                        | ✅ Done                                       |
+| Phase G — Manual E2E + RLS smoke                                                            | ⏳ Your turn (optional before Day 5 sign-off) |
+| Day 4 git commit                                                                            | ⏳ When you ask                               |
+| **Next:** [`Day5_Checklist.md`](Day5_Checklist.md) — merchant MVP finish (settings, polish) | ⏳                                            |
 
-**Target:** Merchant owner can run a counter shift end-to-end (queue → approve → redeem) using **seeded test data**; full QR scan E2E lands on **Day 5**.
+**Target:** Merchant owner can run a counter shift end-to-end (queue → approve → redeem) using **seeded test data**. Live QR scan E2E lands on **Day 6** (customer PWA).
 
 ---
 
@@ -324,31 +325,31 @@ supabase/migrations/YYYYMMDD_approve_stamp_session_rpc.sql   # optional
 
 ## Agent skills (Day 4)
 
-| Skill                              | Purpose                              |
-| ---------------------------------- | ------------------------------------ |
-| `supabase`                         | Realtime, RLS, RPCs                  |
-| `supabase-postgres-best-practices` | Atomic approve RPC, indexes          |
-| `vercel-react-best-practices`      | Realtime vs TanStack split, actions  |
-| `shadcn`                           | Queue cards, dialogs, redeem form    |
-| `merchant-ui`                      | Dark/light, glass cards, contrast    |
-| `accessibility.mdc`                | 44px approve/reject, live regions    |
+| Skill                              | Purpose                             |
+| ---------------------------------- | ----------------------------------- |
+| `supabase`                         | Realtime, RLS, RPCs                 |
+| `supabase-postgres-best-practices` | Atomic approve RPC, indexes         |
+| `vercel-react-best-practices`      | Realtime vs TanStack split, actions |
+| `shadcn`                           | Queue cards, dialogs, redeem form   |
+| `merchant-ui`                      | Dark/light, glass cards, contrast   |
+| `accessibility.mdc`                | 44px approve/reject, live regions   |
 
 ---
 
 ## Out of scope for Day 4 (Day 5+)
 
-| Item | When |
-| ---- | ---- |
-| Customer QR scanner (`/scan`) | Day 5 |
-| Stamp session creation from scan | Day 5 |
-| Customer pending / success / rejected screens + Realtime | Day 5 |
-| OTP (Sparrow / Twilio) + reward unlock | Day 5 |
-| Customer wallet grid polish | Day 5 |
-| Framer Motion stamp pop-in | Day 5 (PRD §1.4) |
-| Per-branch analytics charts | Day 6+ |
-| Multi-staff (`merchant_staff`) | v2 |
-| Push notifications (beyond tab title) | v2 |
-| Full merchant settings (password, notifications) | Post-MVP |
+| Item                                                     | When             |
+| -------------------------------------------------------- | ---------------- |
+| Customer QR scanner (`/scan`)                            | Day 5            |
+| Stamp session creation from scan                         | Day 5            |
+| Customer pending / success / rejected screens + Realtime | Day 5            |
+| OTP (Sparrow / Twilio) + reward unlock                   | Day 5            |
+| Customer wallet grid polish                              | Day 5            |
+| Framer Motion stamp pop-in                               | Day 5 (PRD §1.4) |
+| Per-branch analytics charts                              | Day 6+           |
+| Multi-staff (`merchant_staff`)                           | v2               |
+| Push notifications (beyond tab title)                    | v2               |
+| Full merchant settings (password, notifications)         | Post-MVP         |
 
 ---
 
@@ -366,14 +367,19 @@ supabase/migrations/YYYYMMDD_approve_stamp_session_rpc.sql   # optional
 
 ---
 
-## Day 5 preview (customer — not Day 4)
+## Day 5 preview (merchant MVP finish — not customer yet)
 
-Day 5 connects the pipeline Day 4 built:
+> **Resequenced:** Day 5 closes the **merchant app** (settings, preferences, polish). See [`Day5_Checklist.md`](Day5_Checklist.md).
 
-1. Customer scans branch QR → creates `stamp_sessions` row → merchant queue (Realtime) fires.
-2. Customer sees pending → approved/rejected via Realtime.
-3. Customer claims reward → OTP → `redemptions` row → merchant redeems on Day 4 UI.
+Day 5 finishes merchant-side MVP:
+
+1. Settings — account email, business links, preferences
+2. Branch context on demo seed + optional UI labels
+3. Pending / suspended / rejected UX polish
+4. Full merchant sign-off before customer work
+
+Day 6 connects customers + admin (see Day 5 checklist §Day 6 preview).
 
 ---
 
-_Previous: [`Day3_Checklist.md`](Day3_Checklist.md) · Next: Day 5 — customer auth, wallet, scanner, stamp flow_
+_Previous: [`Day3_Checklist.md`](Day3_Checklist.md) · Next: [`Day5_Checklist.md`](Day5_Checklist.md) — merchant MVP finish_

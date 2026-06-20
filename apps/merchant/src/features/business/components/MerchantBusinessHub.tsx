@@ -21,6 +21,11 @@ import {
   MERCHANT_CHIP,
   MERCHANT_STATUS_BADGE,
 } from "@/shared/constants/status-badges";
+import { resolveActionError } from "@/shared/utils/resolve-action-error";
+import {
+  showActionError,
+  showActionSuccess,
+} from "@/shared/utils/action-feedback";
 
 type FilterValue = "all" | "active" | "inactive";
 
@@ -46,6 +51,8 @@ export function MerchantBusinessHub({
   loyaltyCard: LoyaltyCardRow | null;
 }) {
   const t = useTranslations("business");
+  const tNav = useTranslations("nav");
+  const tErrors = useTranslations("errors.actions");
   const router = useRouter();
   const [filter, setFilter] = useState<FilterValue>("all");
   const [detailTab, setDetailTab] = useState("overview");
@@ -79,12 +86,19 @@ export function MerchantBusinessHub({
   const selectBusiness = useCallback(
     (merchantId: string) => {
       if (merchantId === activeMerchantId || isPending) return;
+      const business =
+        merchants.find((m) => m.id === merchantId)?.business_name ?? "";
       startTransition(async () => {
         const result = await switchActiveMerchantAction(merchantId);
-        if (!result?.error) router.refresh();
+        if (result?.error) {
+          showActionError(resolveActionError(tErrors, result.error));
+          return;
+        }
+        showActionSuccess(tNav, "success.businessSwitched", { business });
+        router.refresh();
       });
     },
-    [activeMerchantId, isPending, router],
+    [activeMerchantId, isPending, merchants, router, tErrors, tNav],
   );
 
   return (

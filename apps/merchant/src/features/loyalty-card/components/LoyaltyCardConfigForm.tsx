@@ -18,6 +18,7 @@ import {
 } from "@/features/loyalty-card/api/loyaltyCardActions";
 import { LoyaltyCardPreviewV2 } from "@/features/loyalty-card/components/LoyaltyCardPreviewV2";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
+import { showActionSuccess } from "@/shared/utils/action-feedback";
 
 const PRESET_COLORS = [
   "#7C3AED",
@@ -90,6 +91,8 @@ export function LoyaltyCardConfigForm({
     [stampTarget, minSpend, minSpendCurrency],
   );
 
+  const displayCardName = cardName.trim() || merchant.business_name;
+
   async function handleLogoChange(file: File | undefined) {
     if (!file || readOnly) return;
     setError(null);
@@ -106,6 +109,7 @@ export function LoyaltyCardConfigForm({
         if (result.error) setError(resolveActionError(tErrors, result.error));
         else if (result.logoUrl) {
           setLogoUrl(result.logoUrl);
+          showActionSuccess(t, "success.logoUploaded", { card: displayCardName });
           router.refresh();
         }
       });
@@ -130,7 +134,10 @@ export function LoyaltyCardConfigForm({
     startTransition(async () => {
       const result = await saveLoyaltyCardConfigAction(merchant.id, formData);
       if (result.error) setError(resolveActionError(tErrors, result.error));
-      else router.refresh();
+      else {
+        showActionSuccess(t, "success.saved", { card: displayCardName });
+        router.refresh();
+      }
     });
   }
 

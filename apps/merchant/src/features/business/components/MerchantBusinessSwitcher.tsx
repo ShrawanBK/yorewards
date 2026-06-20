@@ -16,6 +16,11 @@ import { switchActiveMerchantAction } from "@/features/business/api/businessActi
 import { MerchantBusinessDetailCard } from "@/features/business/components/MerchantBusinessDetailCard";
 
 import { MERCHANT_CHIP, MERCHANT_STATUS_BADGE } from "@/shared/constants/status-badges";
+import { resolveActionError } from "@/shared/utils/resolve-action-error";
+import {
+  showActionError,
+  showActionSuccess,
+} from "@/shared/utils/action-feedback";
 
 type FilterValue = "all" | "active" | "inactive";
 
@@ -31,6 +36,8 @@ export function MerchantBusinessSwitcher({
   activeMerchantId: string;
 }) {
   const t = useTranslations("business");
+  const tNav = useTranslations("nav");
+  const tErrors = useTranslations("errors.actions");
   const router = useRouter();
   const [filter, setFilter] = useState<FilterValue>("all");
   const [isPending, startTransition] = useTransition();
@@ -63,12 +70,19 @@ export function MerchantBusinessSwitcher({
   const selectBusiness = useCallback(
     (merchantId: string) => {
       if (merchantId === activeMerchantId || isPending) return;
+      const business =
+        merchants.find((m) => m.id === merchantId)?.business_name ?? "";
       startTransition(async () => {
         const result = await switchActiveMerchantAction(merchantId);
-        if (!result?.error) router.refresh();
+        if (result?.error) {
+          showActionError(resolveActionError(tErrors, result.error));
+          return;
+        }
+        showActionSuccess(tNav, "success.businessSwitched", { business });
+        router.refresh();
       });
     },
-    [activeMerchantId, isPending, router],
+    [activeMerchantId, isPending, merchants, router, tErrors, tNav],
   );
 
   return (

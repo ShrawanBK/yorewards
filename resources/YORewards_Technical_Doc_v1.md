@@ -29,9 +29,11 @@
 | Merchant business hub UI (list + detail)                                  | ✅ Done (Day 2) — Day 3 polish + branches panel                          |
 | Branches / outlets (`merchant_locations`)                                 | ✅ Done — migration + business hub CRUD                                  |
 | Loyalty card config (PRD §6.1)                                            | ✅ Done — `/merchant/loyalty-card` + live preview + branch QR PNG          |
-| Customer auth + wallet routes                                             | ✅ Scaffolded — full flows start Day 5 per PRD §11                       |
+| Merchant stamp queue + redeem + analytics (PRD §6.3)                      | ✅ Done (Day 4) — Realtime queue, `/merchant/redeem`, `/merchant/analytics`, customers list |
+| Merchant settings                                                         | ⏳ Day 5 — account + business preferences ([`Day5_Checklist.md`](../resources/Day5_Checklist.md)) |
+| Customer auth + wallet routes                                             | ⏳ Day 6 — full flows after merchant MVP sign-off                          |
 
-**Next up (Day 4):** Stamp approval queue (Realtime), redemption flow — see PRD §11.
+**Next up (Day 5):** Finish merchant MVP — settings, branch context, status UX, sign-off. See [`resources/Day5_Checklist.md`](../resources/Day5_Checklist.md). V2 ideas: [`resources/V2_Backlog.md`](../resources/V2_Backlog.md).
 
 ---
 
@@ -969,9 +971,9 @@ ADMIN_EMAIL=your-admin-email@yorewards.com       # Single super admin account
 | **1** | Foundation       | ~~Turborepo + 3 apps~~ ✅ · Supabase + 8 tables + RLS · forward-compatible columns · `@repo/supabase` · shadcn/ui · next-intl · env vars · Vercel     |
 | **2** | Auth             | Merchant/admin email+password, route guards, multi-business switcher, admin approval queue                                                            |
 | **3** | Cards + branches | `merchant_locations` migration, business hub UI, PRD §6.1 card config, live preview, per-branch QR PNG — see [`Day3_Checklist.md`](Day3_Checklist.md) |
-| **4** | Stamps + wallet  | QR scanner, Realtime queue, approval flow, **read-only wallet grid**, Framer Motion — **test on real iPhone**                                         |
-| **5** | Rewards          | Card detail polish, OTP (Sparrow/Twilio), redemption codes, confetti                                                                                  |
-| **6** | Admin            | Platform dashboard, customer mgmt, audit log, analytics, manual stamp tool                                                                            |
+| **4** | Stamps + wallet  | Realtime queue, approval flow, redeem, analytics — see [`Day4_Checklist.md`](../resources/Day4_Checklist.md) |
+| **5** | Merchant MVP     | Settings, preferences, status UX, branch context, sign-off — [`Day5_Checklist.md`](../resources/Day5_Checklist.md) |
+| **6** | Customer + Admin | Customer PWA, OTP, wallet; super admin polish (resequenced from PRD §11) |
 | **7** | Launch           | PWA, privacy policy, E2E test, production deploy                                                                                                      |
 
 > 📋 **Session starter:** _"Build YORewards per PRD + Technical Doc. Use only the locked stack. Check Implementation Status first."_

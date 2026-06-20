@@ -20,6 +20,7 @@ import {
   updateBranchAction,
 } from "@/features/business/api/locationActions";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
+import { showActionSuccess } from "@/shared/utils/action-feedback";
 
 type BranchFormDialogProps = {
   merchantId: string;
@@ -56,6 +57,10 @@ export function BranchFormDialog({
         setError(resolveActionError(tErrors, result.error));
         return;
       }
+      const branchName = String(formData.get("name") ?? "").trim();
+      showActionSuccess(t, isEdit ? "success.updated" : "success.added", {
+        branch: branchName,
+      });
       onOpenChange(false);
       router.refresh();
     });

@@ -42,6 +42,26 @@ if (result.error) setError(resolveActionError(tErrors, result.error));
 
 For React Query / thrown errors, resolve inside the hook with the same helper.
 
+## Success feedback
+
+After a successful mutation (save, approve, switch context, etc.), show a **translated toast** so users get clear confirmation — especially when the UI refreshes or the item disappears from the list.
+
+```tsx
+import { showActionSuccess } from "@/shared/utils/action-feedback";
+
+const t = useTranslations("loyaltyCard");
+// ...
+if (!result.error) {
+  showActionSuccess(t, "success.saved");
+  router.refresh();
+}
+```
+
+- Add copy under `<feature>.success.*` in `apps/<app>/messages/en.json` (same namespace as the feature UI).
+- Use `{customer}`, `{branch}`, `{business}`, `{card}`, etc. in message strings and pass matching values to `showActionSuccess`.
+- Use `showActionSuccess` from `@/shared/utils/action-feedback` (wraps Sonner; `Toaster` is in the app root layout).
+- Redirect-on-success flows (sign-in, add business) do not need a toast — navigation is the feedback.
+
 ## Warnings (non-fatal)
 
 Partial success may return `{ warning: { code: "DEMO_NO_REDEMPTION_CODE" } }`. Resolve with `resolveActionWarning` (merchant) or the same `errors.actions` namespace.

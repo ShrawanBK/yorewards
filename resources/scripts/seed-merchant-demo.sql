@@ -1,0 +1,38 @@
+-- YORewards Day 4 · Dev demo fixtures (optional manual run)
+-- Replace :merchant_id and :loyalty_card_id with your active business IDs.
+--
+-- Or use the "Load demo data" button on the merchant dashboard (development only).
+
+-- Example: pending stamp session for an existing customer_card
+-- insert into public.stamp_sessions (
+--   customer_card_id,
+--   merchant_id,
+--   location_id,
+--   session_token,
+--   source,
+--   status
+-- )
+-- values (
+--   '<customer_card_uuid>',
+--   '<merchant_uuid>',
+--   '<location_uuid>',
+--   gen_random_uuid()::text,
+--   'qr_scan',
+--   'pending'
+-- );
+
+-- Example: pending redemption (test code DEMO01)
+-- insert into public.redemptions (
+--   customer_card_id,
+--   merchant_id,
+--   redemption_code,
+--   cycle_number,
+--   status
+-- )
+-- values (
+--   '<customer_card_uuid>',
+--   '<merchant_uuid>',
+--   'DEMO01',
+--   1,
+--   'pending'
+-- );

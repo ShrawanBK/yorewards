@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { ArrowRight, Building2, CreditCard, MapPin, Settings } from "lucide-react";
+import { ArrowRight, Building2, CreditCard, Gift, MapPin, Settings, Stamp, Users } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
 import type { MerchantRow } from "@repo/supabase/queries/merchants";
+import type { PendingStampQueueItem } from "@repo/supabase/queries/stamps";
 import type { Database } from "@repo/supabase/types";
 import { getTranslations } from "next-intl/server";
 import { MerchantStatusPanel } from "@/features/dashboard";
+import { StampQueuePanel } from "@/features/stamp-queue";
 import { PageHeader } from "@/shared/ui/PageHeader";
 
 type Merchant = Database["public"]["Tables"]["merchants"]["Row"];
@@ -15,19 +17,36 @@ type DashboardMetrics = {
   activeBranchCount: number;
   loyaltyCardConfigured: boolean;
   loyaltyCardName: string | null;
+  activeCollectors: number;
+  stampsThisWeek: number;
+  redeemedThisWeek: number;
 };
 
 export async function MerchantDashboard({
   merchant,
   metrics,
+  pendingQueue,
 }: {
   merchants: MerchantRow[];
   merchant: Merchant;
   metrics: DashboardMetrics;
+  pendingQueue: PendingStampQueueItem[];
 }) {
   const t = await getTranslations("dashboard");
 
   const quickActions = [
+    {
+      href: "/merchant/redeem",
+      icon: Gift,
+      title: t("quickActions.redeem.title"),
+      description: t("quickActions.redeem.description"),
+    },
+    {
+      href: "/merchant/analytics",
+      icon: Stamp,
+      title: t("quickActions.analytics.title"),
+      description: t("quickActions.analytics.description"),
+    },
     {
       href: "/merchant/business",
       icon: Building2,
@@ -55,10 +74,52 @@ export async function MerchantDashboard({
         description={t("subtitle")}
       />
 
+      <StampQueuePanel
+        merchantId={merchant.id}
+        isActive={merchant.status === "active"}
+        initialItems={pendingQueue}
+      />
+
       <section
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
         aria-label={t("stats.regionLabel")}
       >
+        <Card className="merchant-glass-card">
+          <CardHeader className="gap-1.5">
+            <CardDescription className="merchant-stat-label flex items-center gap-2">
+              <Users className="size-4 shrink-0" aria-hidden />
+              {t("stats.collectors")}
+            </CardDescription>
+            <CardTitle className="text-3xl font-semibold tabular-nums tracking-tight">
+              {metrics.activeCollectors}
+            </CardTitle>
+          </CardHeader>
+        </Card>
+
+        <Card className="merchant-glass-card">
+          <CardHeader className="gap-1.5">
+            <CardDescription className="merchant-stat-label flex items-center gap-2">
+              <Stamp className="size-4 shrink-0" aria-hidden />
+              {t("stats.stampsWeek")}
+            </CardDescription>
+            <CardTitle className="text-3xl font-semibold tabular-nums tracking-tight">
+              {metrics.stampsThisWeek}
+            </CardTitle>
+          </CardHeader>
+        </Card>
+
+        <Card className="merchant-glass-card">
+          <CardHeader className="gap-1.5">
+            <CardDescription className="merchant-stat-label flex items-center gap-2">
+              <Gift className="size-4 shrink-0" aria-hidden />
+              {t("stats.redeemedWeek")}
+            </CardDescription>
+            <CardTitle className="text-3xl font-semibold tabular-nums tracking-tight">
+              {metrics.redeemedThisWeek}
+            </CardTitle>
+          </CardHeader>
+        </Card>
+
         <Card className="merchant-glass-card">
           <CardHeader className="gap-1.5">
             <CardDescription className="merchant-stat-label flex items-center gap-2">
@@ -74,38 +135,6 @@ export async function MerchantDashboard({
               {t("stats.activeBranches", { count: metrics.activeBranchCount })}
             </p>
           </CardContent>
-        </Card>
-
-        <Card className="merchant-glass-card sm:col-span-1">
-          <CardHeader className="gap-1.5">
-            <CardDescription className="merchant-stat-label flex items-center gap-2">
-              <CreditCard className="size-4 shrink-0" aria-hidden />
-              {t("stats.loyaltyCard")}
-            </CardDescription>
-            <CardTitle className="text-xl font-semibold leading-snug">
-              {metrics.loyaltyCardConfigured
-                ? metrics.loyaltyCardName ?? t("stats.configured")
-                : t("stats.notConfigured")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="merchant-body-muted">
-              {metrics.loyaltyCardConfigured
-                ? t("stats.configuredHint")
-                : t("stats.notConfiguredHint")}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="merchant-glass-card sm:col-span-2 lg:col-span-1">
-          <CardHeader className="gap-1.5">
-            <CardDescription className="merchant-stat-label">
-              {t("stats.nextStep")}
-            </CardDescription>
-            <CardTitle className="text-base font-medium leading-snug">
-              {merchant.status === "active" ? t("activeHint") : t("stats.awaitingApproval")}
-            </CardTitle>
-          </CardHeader>
         </Card>
       </section>
 

@@ -15,11 +15,13 @@
   "nav": {
     "main": "Main navigation",
     "dashboard": "Dashboard",
+    "redeem": "Redeem",
+    "analytics": "Analytics",
+    "customers": "Customers",
     "business": "Business",
     "loyaltyCard": "Loyalty card",
     "settings": "Settings",
     "logout": "Log out",
-    "customers": "Customers",
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
   },
@@ -160,9 +162,12 @@
     "logout": "Log out",
     "accountStatus": "Account status",
     "rejectionReason": "Rejection reason",
-    "activeHint": "Configure your loyalty card, then download branch QR codes. Stamp queue arrives on Day 4.",
+    "activeHint": "Approve stamp requests in real time and confirm reward redemptions.",
     "stats": {
-      "regionLabel": "Account overview statistics",
+      "regionLabel": "Program statistics",
+      "collectors": "Active collectors",
+      "stampsWeek": "Stamps this week",
+      "redeemedWeek": "Redeemed this week",
       "branches": "Branches",
       "activeBranches": "{count, plural, =0 {No active branches} one {# active branch} other {# active branches}}",
       "loyaltyCard": "Loyalty card",
@@ -176,6 +181,14 @@
     "quickActions": {
       "title": "Quick actions",
       "open": "Open",
+      "redeem": {
+        "title": "Redeem reward",
+        "description": "Enter a customer's 6-character code."
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Stamps, redemptions, and recent activity."
+      },
       "business": {
         "title": "Business & branches",
         "description": "Manage locations and counter QR codes."
@@ -191,7 +204,9 @@
     },
     "links": {
       "business": "Manage businesses",
-      "loyaltyCard": "Configure loyalty card"
+      "loyaltyCard": "Configure loyalty card",
+      "redeem": "Redeem a code",
+      "analytics": "View analytics"
     },
     "status": {
       "pending": {
@@ -322,6 +337,105 @@
     },
     "errors": {
       "logoUpload": "Could not upload logo. Try a smaller image."
+    }
+  },
+  "stampQueue": {
+    "title": "Stamp approval queue",
+    "subtitle": "Approve or reject customer scan requests in real time.",
+    "inactiveNotice": "Your business must be approved before you can approve stamp requests.",
+    "unknownCustomer": "Customer",
+    "progress": "{current} of {target} stamps collected",
+    "expiresIn": "Expires in {time}",
+    "approveAria": "Approve stamp for {name}",
+    "rejectAria": "Reject stamp for {name}",
+    "rejectTitle": "Reject stamp request",
+    "rejectDescription": "Optionally tell the customer why this request was rejected.",
+    "rejectReasonLabel": "Reason (optional)",
+    "rejectReasonPlaceholder": "e.g. Minimum spend not met",
+    "cancel": "Cancel",
+    "confirmReject": "Reject",
+    "emptyTitle": "No pending requests",
+    "emptyDescription": "When a customer scans your branch QR, their request appears here instantly.",
+    "emptyCta": "View loyalty card & QR codes",
+    "loadDemo": "Load demo data",
+    "demoSeeded": "Demo stamp requests added to the queue.",
+    "demoSeededWithCode": "Demo data loaded. Redeem code: {code} (see Redeem page)."
+  },
+  "customers": {
+    "title": "Customers",
+    "subtitle": "Everyone collecting stamps at this business — filter by branch to see who visited a specific location.",
+    "loading": "Loading customers…",
+    "branchFilter": "Branch",
+    "allBranches": "All branches",
+    "branchFilterHint": "Branch filter shows customers with at least one stamp event at that location.",
+    "emptyTitle": "No customers yet",
+    "emptyDescription": "Customers appear here after their first stamp request is approved or they scan your QR (Day 5). Load demo data on the dashboard to preview.",
+    "unknownCustomer": "Customer",
+    "unknownBranch": "—",
+    "never": "Never",
+    "progress": "{current} / {target}",
+    "rewardStatus": {
+      "collecting": "Collecting",
+      "pending_otp": "Reward ready",
+      "unlocked": "Unlocked"
+    },
+    "table": {
+      "name": "Customer",
+      "progress": "Stamps",
+      "cycle": "Cycle",
+      "status": "Status",
+      "lastBranch": "Last branch",
+      "lastVisit": "Last visit",
+      "totalStamps": "All-time stamps"
+    }
+  },
+  "redemption": {
+    "title": "Redeem reward",
+    "subtitle": "Enter the customer's 6-character code to confirm their reward.",
+    "inactiveNotice": "Your business must be approved before confirming redemptions.",
+    "codeLabel": "Redemption code",
+    "codePlaceholder": "ABC123",
+    "lookup": "Look up code",
+    "unknownCustomer": "Customer",
+    "confirmTitle": "Confirm reward for {name}",
+    "reward": "Reward",
+    "card": "Card",
+    "stampsThisCycle": "Stamps this cycle",
+    "stampProgress": "{current} / {target}",
+    "approvedThisCycle": "Approved this cycle",
+    "allTimeVisits": "All-time approved visits",
+    "approvedCount": "{count, plural, one {# visit} other {# visits}}",
+    "cycle": "Cycle",
+    "confirmHint": "Confirm only after you have given the customer their reward. Their card will reset to 0 stamps and start a new cycle.",
+    "confirm": "Confirm redemption",
+    "successTitle": "Reward redeemed",
+    "successDescription": "The customer's card has been reset for a new stamp cycle."
+  },
+  "analytics": {
+    "title": "Analytics",
+    "subtitle": "Track stamps issued, rewards redeemed, and recent activity.",
+    "stats": {
+      "regionLabel": "Analytics overview",
+      "collectors": "Active collectors",
+      "collectorsHint": "Customers with at least one stamp on an active card.",
+      "stamps": "Stamps issued",
+      "redeemed": "Rewards redeemed",
+      "redemptionRate": "Redemption rate",
+      "rateHint": "Redeemed rewards ÷ times customers reached the stamp target.",
+      "period": {
+        "today": "Today",
+        "week": "This week",
+        "month": "This month"
+      }
+    },
+    "activity": {
+      "title": "Recent activity",
+      "empty": "No stamp or redemption activity yet.",
+      "types": {
+        "stamp_approved": "Stamp approved",
+        "stamp_voided": "Stamp voided",
+        "redemption": "Reward redeemed"
+      }
     }
   },
   "settings": {

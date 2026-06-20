@@ -8,15 +8,15 @@
 
 ## Implementation status (June 2026)
 
-| Area | Status |
-| ---- | ------ |
-| Phase A — DB + queries + QR payload | ✅ Done |
-| Phase B — Business hub + branches UI | ✅ Done (loading skeletons deferred) |
-| Phase C — Loyalty card config (`/merchant/loyalty-card`) | ✅ Done (server-side validation; Zod-in-component deferred) |
-| Phase D — Automated verify | ✅ Done (`lint`, `check-types`, `build` pass) |
-| Phase E — Merchant UI polish (dark theme, sidebar, dashboard) | ✅ Done |
-| Phase D — Manual E2E + RLS smoke | ⏳ Your turn |
-| Day 3 git commit | ⏳ When you ask |
+| Area                                                          | Status                                                      |
+| ------------------------------------------------------------- | ----------------------------------------------------------- |
+| Phase A — DB + queries + QR payload                           | ✅ Done                                                     |
+| Phase B — Business hub + branches UI                          | ✅ Done (loading skeletons deferred)                        |
+| Phase C — Loyalty card config (`/merchant/loyalty-card`)      | ✅ Done (server-side validation; Zod-in-component deferred) |
+| Phase D — Automated verify                                    | ✅ Done (`lint`, `check-types`, `build` pass)               |
+| Phase E — Merchant UI polish (dark theme, sidebar, dashboard) | ✅ Done                                                     |
+| Phase D — Manual E2E + RLS smoke                              | ⏳ Your turn                                                |
+| Day 3 git commit                                              | ⏳ When you ask                                             |
 
 **Code complete ~98%.** Remaining: manual browser test, optional RLS smoke test, commit.
 
@@ -254,14 +254,14 @@ packages/ui/src/components/ui/dialog.tsx                        # added for bran
 
 ## Agent skills (Day 3)
 
-| Skill                              | Purpose                    |
-| ---------------------------------- | -------------------------- |
-| `supabase`                         | Migrations, RLS, Storage   |
-| `supabase-postgres-best-practices` | Indexes, FK patterns       |
-| `shadcn`                           | Hub layout, forms, dialogs |
-| `ui-ux-pro-max`                    | Dark dashboard design system |
-| `vercel-react-best-practices`      | Server actions, forms      |
-| `web-design-guidelines`            | Master–detail UX, a11y     |
+| Skill                              | Purpose                        |
+| ---------------------------------- | ------------------------------ |
+| `supabase`                         | Migrations, RLS, Storage       |
+| `supabase-postgres-best-practices` | Indexes, FK patterns           |
+| `shadcn`                           | Hub layout, forms, dialogs     |
+| `ui-ux-pro-max`                    | Dark dashboard design system   |
+| `vercel-react-best-practices`      | Server actions, forms          |
+| `web-design-guidelines`            | Master–detail UX, a11y         |
 | `merchant-ui` (cursor rule)        | Ongoing merchant UI guardrails |
 
 ---
@@ -288,4 +288,4 @@ packages/ui/src/components/ui/dialog.tsx                        # added for bran
 
 ---
 
-_Previous: [`Day2_Checklist.md`](Day2_Checklist.md) · Next: Day 4 — stamp queue + redemption_
+_Previous: [`Day2_Checklist.md`](Day2_Checklist.md) · Next: [`Day4_Checklist.md`](Day4_Checklist.md) — stamp queue + redemption + analytics_

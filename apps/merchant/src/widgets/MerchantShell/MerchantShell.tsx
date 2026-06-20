@@ -6,10 +6,13 @@ import { useTranslations } from "next-intl";
 import {
   Building2,
   CreditCard,
+  Gift,
   LayoutDashboard,
   LogOut,
   Menu,
   Settings,
+  BarChart3,
+  Users,
   X,
 } from "lucide-react";
 import { useId, useState } from "react";
@@ -27,6 +30,9 @@ type MerchantShellProps = {
 
 const navItems = [
   { href: "/merchant/dashboard", icon: LayoutDashboard, labelKey: "dashboard" as const },
+  { href: "/merchant/redeem", icon: Gift, labelKey: "redeem" as const },
+  { href: "/merchant/analytics", icon: BarChart3, labelKey: "analytics" as const },
+  { href: "/merchant/customers", icon: Users, labelKey: "customers" as const },
   { href: "/merchant/business", icon: Building2, labelKey: "business" as const },
   { href: "/merchant/loyalty-card", icon: CreditCard, labelKey: "loyaltyCard" as const },
   { href: "/merchant/settings", icon: Settings, labelKey: "settings" as const },

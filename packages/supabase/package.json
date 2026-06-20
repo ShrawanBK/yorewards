@@ -12,7 +12,11 @@
     "./queries/merchants": "./src/queries/merchants.ts",
     "./queries/customers": "./src/queries/customers.ts",
     "./queries/locations": "./src/queries/locations.ts",
-    "./queries/loyalty-cards": "./src/queries/loyalty-cards.ts"
+    "./queries/loyalty-cards": "./src/queries/loyalty-cards.ts",
+    "./queries/stamps": "./src/queries/stamps.ts",
+    "./queries/redemptions": "./src/queries/redemptions.ts",
+    "./queries/analytics": "./src/queries/analytics.ts",
+    "./queries/merchant-customers": "./src/queries/merchant-customers.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

@@ -469,6 +469,10 @@ export type Database = {
         Args: { p_redemption_id: string };
         Returns: undefined;
       };
+      approve_stamp_session: {
+        Args: { p_session_id: string };
+        Returns: undefined;
+      };
       current_customer_id: { Args: never; Returns: string };
       current_merchant_id: { Args: never; Returns: string };
       current_merchant_ids: { Args: never; Returns: string[] };

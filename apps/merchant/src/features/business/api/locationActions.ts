@@ -9,7 +9,8 @@ import {
   setPrimaryLocation,
   updateMerchantLocation,
 } from "@repo/supabase/queries/locations";
-import type { ActionResult } from "@/shared/types/action-result";
+import { fail, logActionFailure } from "@repo/utils/action-error";
+import type { ActionFailure, ActionResult } from "@/shared/types/action-result";
 
 const REVALIDATE_PATHS = [
   "/merchant/business",
@@ -26,10 +27,10 @@ function revalidateMerchantPaths() {
 async function assertOwnsMerchant(
   userId: string,
   merchantId: string,
-): Promise<ActionResult | null> {
+): Promise<ActionFailure | null> {
   const merchants = await getMerchantsByUserId(userId);
   if (!merchants.some((m) => m.id === merchantId)) {
-    return { error: "Business not found" };
+    return fail("BUSINESS_NOT_FOUND");
   }
   return null;
 }
@@ -42,13 +43,13 @@ export async function addBranchAction(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const denied = await assertOwnsMerchant(user.id, merchantId);
   if (denied) return denied;
 
   const name = String(formData.get("name") ?? "").trim();
-  if (!name) return { error: "Branch name is required" };
+  if (!name) return fail("BRANCH_NAME_REQUIRED");
 
   try {
     await createMerchantLocation({
@@ -62,7 +63,8 @@ export async function addBranchAction(
     revalidateMerchantPaths();
     return {};
   } catch (e) {
-    return { error: e instanceof Error ? e.message : "Failed to add branch" };
+    logActionFailure("addBranch", e);
+    return fail("ADD_BRANCH_FAILED");
   }
 }
 
@@ -75,13 +77,13 @@ export async function updateBranchAction(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const denied = await assertOwnsMerchant(user.id, merchantId);
   if (denied) return denied;
 
   const name = String(formData.get("name") ?? "").trim();
-  if (!name) return { error: "Branch name is required" };
+  if (!name) return fail("BRANCH_NAME_REQUIRED");
 
   try {
     await updateMerchantLocation(locationId, merchantId, {
@@ -92,9 +94,8 @@ export async function updateBranchAction(
     revalidateMerchantPaths();
     return {};
   } catch (e) {
-    return {
-      error: e instanceof Error ? e.message : "Failed to update branch",
-    };
+    logActionFailure("updateBranch", e);
+    return fail("UPDATE_BRANCH_FAILED");
   }
 }
 
@@ -106,7 +107,7 @@ export async function setPrimaryBranchAction(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const denied = await assertOwnsMerchant(user.id, merchantId);
   if (denied) return denied;
@@ -116,9 +117,8 @@ export async function setPrimaryBranchAction(
     revalidateMerchantPaths();
     return {};
   } catch (e) {
-    return {
-      error: e instanceof Error ? e.message : "Failed to set primary branch",
-    };
+    logActionFailure("setPrimaryBranch", e);
+    return fail("SET_PRIMARY_BRANCH_FAILED");
   }
 }
 
@@ -130,7 +130,7 @@ export async function deactivateBranchAction(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const denied = await assertOwnsMerchant(user.id, merchantId);
   if (denied) return denied;
@@ -140,8 +140,7 @@ export async function deactivateBranchAction(
     revalidateMerchantPaths();
     return {};
   } catch (e) {
-    return {
-      error: e instanceof Error ? e.message : "Failed to deactivate branch",
-    };
+    logActionFailure("deactivateBranch", e);
+    return fail("DEACTIVATE_BRANCH_FAILED");
   }
 }

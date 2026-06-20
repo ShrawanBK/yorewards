@@ -19,6 +19,7 @@ import {
   addBranchAction,
   updateBranchAction,
 } from "@/features/business/api/locationActions";
+import { resolveActionError } from "@/shared/utils/resolve-action-error";
 
 type BranchFormDialogProps = {
   merchantId: string;
@@ -34,6 +35,7 @@ export function BranchFormDialog({
   branch,
 }: BranchFormDialogProps) {
   const t = useTranslations("branches");
+  const tErrors = useTranslations("errors.actions");
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -51,7 +53,7 @@ export function BranchFormDialog({
         : await addBranchAction(merchantId, formData);
 
       if (result.error) {
-        setError(result.error);
+        setError(resolveActionError(tErrors, result.error));
         return;
       }
       onOpenChange(false);

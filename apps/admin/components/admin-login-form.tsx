@@ -10,9 +10,11 @@ import { Input } from "@repo/ui/input";
 import { PasswordInput } from "@repo/ui/password-input";
 import { Field } from "@repo/ui/field";
 import { loginAction } from "@/app/admin/actions";
+import { resolveActionError } from "@/lib/resolve-action-error";
 
 export function AdminLoginForm() {
   const t = useTranslations("auth");
+  const tErrors = useTranslations("errors.actions");
   const [error, setError] = useState<string | null>(null);
 
   const schema = z.object({
@@ -35,7 +37,7 @@ export function AdminLoginForm() {
         fd.set("email", values.email);
         fd.set("password", values.password);
         const result = await loginAction(fd);
-        if (result?.error) setError(result.error);
+        if (result?.error) setError(resolveActionError(tErrors, result.error));
       })}
     >
       <Field

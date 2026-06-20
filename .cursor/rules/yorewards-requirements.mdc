@@ -38,6 +38,7 @@ When the user asks to build a feature, start a build day, design schema, or choo
 - **Reusable first** — build shared form primitives in `@repo/ui` (e.g. `Field`, `PasswordInput`, `Input`, `Button`) and compose them; don't re-implement per app.
 - **Password inputs** always use `@repo/ui/password-input` (built-in show/hide toggle); pass translated `showLabel`/`hideLabel`.
 - **Minimalist forms** — clean layout, avoid redundant titles; group related fields into 2-col grids so multi-step/tabbed flows (e.g. sign in vs sign up) stay close in height.
+- **Server action errors** — return UPPER_SNAKE_CASE codes only (`fail("UNAUTHORIZED")` from `@repo/utils/action-error`); never English strings or raw DB messages. Copy lives in `errors.actions.*` in `messages/en.json`. Client resolves with `resolveActionError`. See `.cursor/rules/server-action-errors.mdc`.
 - **Merchant dashboard UI** — follow `design-system/merchant/MASTER.md` and `.cursor/rules/merchant-ui.mdc`: dark theme, Plus Jakarta Sans, sidebar shell, `PageHeader`, `merchant-glass-card` surfaces. Run ui-ux-pro-max design-system step before large merchant UI changes.
 - **Accessibility is mandatory** — follow `.cursor/rules/accessibility.mdc` on every app (`customer`, `merchant`, `admin`). Keyboard navigable, screen-reader labels, visible focus, semantic HTML, `prefers-reduced-motion`, and translated `aria-*` strings. Audit with `web-design-guidelines` skill before merging large UI work.
 

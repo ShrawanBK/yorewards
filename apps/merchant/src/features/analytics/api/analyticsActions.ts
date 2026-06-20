@@ -6,15 +6,19 @@ import {
   getMerchantActivityFeed,
   getMerchantAnalyticsSummary,
 } from "@repo/supabase/queries/analytics";
-import type { ActionResult } from "@/shared/types/action-result";
+import { fail, logActionFailure } from "@repo/utils/action-error";
+import type { ActionFailure, ActionResult } from "@/shared/types/action-result";
 import type { MerchantAnalyticsPayload } from "@/features/analytics/types/analytics.types";
 
-async function assertOwnsMerchant(userId: string, merchantId: string) {
+async function assertOwnsMerchant(
+  userId: string,
+  merchantId: string,
+): Promise<ActionFailure | null> {
   const merchants = await getMerchantsByUserId(userId);
   if (!merchants.some((m) => m.id === merchantId)) {
-    return { error: "Business not found" as const };
+    return fail("BUSINESS_NOT_FOUND");
   }
-  return { error: null as null };
+  return null;
 }
 
 export async function getMerchantAnalyticsAction(
@@ -24,10 +28,10 @@ export async function getMerchantAnalyticsAction(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const denied = await assertOwnsMerchant(user.id, merchantId);
-  if (denied.error) return denied;
+  if (denied) return denied;
 
   try {
     const [summary, activity] = await Promise.all([
@@ -35,7 +39,8 @@ export async function getMerchantAnalyticsAction(
       getMerchantActivityFeed(merchantId),
     ]);
     return { data: { summary, activity } };
-  } catch {
-    return { error: "Could not load analytics." };
+  } catch (err) {
+    logActionFailure("getMerchantAnalytics", err);
+    return fail("ANALYTICS_LOAD_FAILED");
   }
 }

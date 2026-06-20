@@ -6,13 +6,22 @@ import { createServiceRoleClient } from "@repo/supabase/service-role";
 import { getAllMerchants } from "@repo/supabase/queries/merchants";
 import type { MerchantStatus } from "@repo/supabase/types";
 import { revalidatePath } from "next/cache";
+import {
+  fail,
+  logActionFailure,
+  mapAuthErrorCode,
+} from "@repo/utils/action-error";
+import type { ActionResult } from "@repo/utils/action-error";
 
 export async function loginAction(formData: FormData) {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { error: error.message };
+  if (error) {
+    logActionFailure("adminLogin", error);
+    return fail(mapAuthErrorCode(error.message));
+  }
   redirect("/admin/merchants");
 }
 
@@ -26,7 +35,7 @@ export async function getAllMerchantsAction() {
   return getAllMerchants();
 }
 
-export type MerchantActionResult = { error?: string };
+export type MerchantActionResult = ActionResult;
 
 /**
  * Move a merchant to `active`. Covers both approving a pending registration
@@ -39,7 +48,7 @@ export async function approveMerchantAction(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const admin = createServiceRoleClient();
   const { error: updateError } = await admin
@@ -52,7 +61,10 @@ export async function approveMerchantAction(
     })
     .eq("id", merchantId)
     .neq("status", "active" satisfies MerchantStatus);
-  if (updateError) return { error: updateError.message };
+  if (updateError) {
+    logActionFailure("approveMerchant", updateError);
+    return fail("MERCHANT_UPDATE_FAILED");
+  }
 
   await admin.from("audit_log").insert({
     action: "approve_merchant",
@@ -73,7 +85,7 @@ export async function suspendMerchantAction(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const admin = createServiceRoleClient();
   const { error: updateError } = await admin
@@ -81,7 +93,10 @@ export async function suspendMerchantAction(
     .update({ status: "suspended" satisfies MerchantStatus })
     .eq("id", merchantId)
     .eq("status", "active" satisfies MerchantStatus);
-  if (updateError) return { error: updateError.message };
+  if (updateError) {
+    logActionFailure("suspendMerchant", updateError);
+    return fail("MERCHANT_UPDATE_FAILED");
+  }
 
   await admin.from("audit_log").insert({
     action: "suspend_merchant",
@@ -99,13 +114,13 @@ export async function rejectMerchantAction(
   reason: string,
 ): Promise<MerchantActionResult> {
   const trimmedReason = reason.trim();
-  if (!trimmedReason) return { error: "Missing rejection reason" };
+  if (!trimmedReason) return fail("REJECTION_REASON_REQUIRED");
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const admin = createServiceRoleClient();
   const { error: updateError } = await admin
@@ -116,7 +131,10 @@ export async function rejectMerchantAction(
     })
     .eq("id", merchantId)
     .eq("status", "pending" satisfies MerchantStatus);
-  if (updateError) return { error: updateError.message };
+  if (updateError) {
+    logActionFailure("rejectMerchant", updateError);
+    return fail("MERCHANT_UPDATE_FAILED");
+  }
 
   await admin.from("audit_log").insert({
     action: "reject_merchant",

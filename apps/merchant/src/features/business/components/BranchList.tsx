@@ -22,6 +22,7 @@ import {
   deactivateBranchAction,
   setPrimaryBranchAction,
 } from "@/features/business/api/locationActions";
+import { resolveActionError } from "@/shared/utils/resolve-action-error";
 
 export function BranchList({
   merchantId,
@@ -31,6 +32,7 @@ export function BranchList({
   locations: MerchantLocationRow[];
 }) {
   const t = useTranslations("branches");
+  const tErrors = useTranslations("errors.actions");
   const router = useRouter();
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<MerchantLocationRow | null>(null);
@@ -55,7 +57,7 @@ export function BranchList({
   function setPrimary(locationId: string) {
     startTransition(async () => {
       const result = await setPrimaryBranchAction(merchantId, locationId);
-      if (result.error) setError(result.error);
+      if (result.error) setError(resolveActionError(tErrors, result.error));
       else {
         setError(null);
         router.refresh();
@@ -70,7 +72,7 @@ export function BranchList({
         merchantId,
         deactivating.id,
       );
-      if (result.error) setError(result.error);
+      if (result.error) setError(resolveActionError(tErrors, result.error));
       else {
         setError(null);
         setDeactivating(null);

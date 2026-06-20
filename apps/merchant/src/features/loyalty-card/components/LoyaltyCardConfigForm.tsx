@@ -17,6 +17,7 @@ import {
   uploadLoyaltyCardLogoAction,
 } from "@/features/loyalty-card/api/loyaltyCardActions";
 import { LoyaltyCardPreviewV2 } from "@/features/loyalty-card/components/LoyaltyCardPreviewV2";
+import { resolveActionError } from "@/shared/utils/resolve-action-error";
 
 const PRESET_COLORS = [
   "#7C3AED",
@@ -46,6 +47,7 @@ export function LoyaltyCardConfigForm({
   readOnly,
 }: LoyaltyCardConfigFormProps) {
   const t = useTranslations("loyaltyCard");
+  const tErrors = useTranslations("errors.actions");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -101,7 +103,7 @@ export function LoyaltyCardConfigForm({
       formData.set("logo", compressed);
       startTransition(async () => {
         const result = await uploadLoyaltyCardLogoAction(merchant.id, formData);
-        if (result.error) setError(result.error);
+        if (result.error) setError(resolveActionError(tErrors, result.error));
         else if (result.logoUrl) {
           setLogoUrl(result.logoUrl);
           router.refresh();
@@ -127,7 +129,7 @@ export function LoyaltyCardConfigForm({
 
     startTransition(async () => {
       const result = await saveLoyaltyCardConfigAction(merchant.id, formData);
-      if (result.error) setError(result.error);
+      if (result.error) setError(resolveActionError(tErrors, result.error));
       else router.refresh();
     });
   }

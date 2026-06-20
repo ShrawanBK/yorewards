@@ -7,6 +7,11 @@ import {
   clearActiveMerchantForUser,
   getMerchantsByUserId,
 } from "@repo/supabase/queries/merchants";
+import {
+  fail,
+  logActionFailure,
+  mapAuthErrorCode,
+} from "@repo/utils/action-error";
 import type { ActionResult } from "@/shared/types/action-result";
 
 export async function logoutAction() {
@@ -24,12 +29,15 @@ export async function signInMerchantAction(
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { error: error.message };
+  if (error) {
+    logActionFailure("signInMerchant", error);
+    return fail(mapAuthErrorCode(error.message));
+  }
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Sign in failed" };
+  if (!user) return fail("SIGN_IN_FAILED");
 
   const merchants = await getMerchantsByUserId(user.id);
 
@@ -54,22 +62,21 @@ export async function signUpMerchantAction(
     });
 
   if (authError) {
-    if (authError.message.toLowerCase().includes("already")) {
-      return {
-        error: "An account with this email already exists. Sign in instead.",
-      };
-    }
-    return { error: authError.message };
+    logActionFailure("signUpMerchant.createUser", authError);
+    return fail(mapAuthErrorCode(authError.message));
   }
 
-  if (!authData.user) return { error: "Sign up failed" };
+  if (!authData.user) return fail("SIGN_UP_FAILED");
 
   const supabase = await createClient();
   const { error: signInError } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
-  if (signInError) return { error: signInError.message };
+  if (signInError) {
+    logActionFailure("signUpMerchant.signIn", signInError);
+    return fail(mapAuthErrorCode(signInError.message));
+  }
 
   redirect("/merchant/add-business");
 }

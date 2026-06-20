@@ -31,3 +31,7 @@ pnpm install                          # from repo root
 pnpm exec turbo dev --filter=customer # single app
 pnpm build | pnpm lint | pnpm check-types  # all apps
 ```
+
+## Server action errors
+
+Server actions return **UPPER_SNAKE_CASE error codes** only — never user-facing English strings. See `.cursor/rules/server-action-errors.mdc` and `packages/utils/src/action-error.ts`.

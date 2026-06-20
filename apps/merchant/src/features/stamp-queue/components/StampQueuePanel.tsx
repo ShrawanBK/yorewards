@@ -17,6 +17,10 @@ import {
 } from "@/features/stamp-queue/api/stampQueueActions";
 import { useStampQueueStore } from "@/features/stamp-queue/store/stampQueueStore";
 import { isDevEnvironment } from "@/shared/utils/env";
+import {
+  resolveActionError,
+  resolveActionWarning,
+} from "@/shared/utils/resolve-action-error";
 
 export function StampQueuePanel({
   merchantId,
@@ -28,6 +32,7 @@ export function StampQueuePanel({
   initialItems: PendingStampQueueItem[];
 }) {
   const t = useTranslations("stampQueue");
+  const tErrors = useTranslations("errors.actions");
   const { items } = useStampQueue(merchantId, initialItems);
   const setItems = useStampQueueStore((s) => s.setItems);
   const [isSeeding, startSeed] = useTransition();
@@ -40,11 +45,11 @@ export function StampQueuePanel({
     startSeed(async () => {
       const result = await seedDemoStampQueueAction(merchantId);
       if (result.error) {
-        setSeedMessage(result.error);
+        setSeedMessage(resolveActionError(tErrors, result.error));
         return;
       }
       if (result.warning) {
-        setSeedMessage(result.warning);
+        setSeedMessage(resolveActionWarning(tErrors, result.warning));
       } else {
         setSeedMessage(
           result.code

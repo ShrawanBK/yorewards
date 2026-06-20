@@ -5,7 +5,8 @@
   "exports": {
     "./phone": "./src/phone.ts",
     "./currency": "./src/currency.ts",
-    "./otp": "./src/otp.ts"
+    "./otp": "./src/otp.ts",
+    "./action-error": "./src/action-error.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

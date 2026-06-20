@@ -10,7 +10,8 @@ import {
   upsertLoyaltyCardForMerchant,
 } from "@repo/supabase/queries/loyalty-cards";
 import type { CurrencyCode, RewardType } from "@repo/supabase/types";
-import type { ActionResult } from "@/shared/types/action-result";
+import { fail, logActionFailure } from "@repo/utils/action-error";
+import type { ActionFailure, ActionResult } from "@/shared/types/action-result";
 
 const LOGO_BUCKET = "merchant-logos";
 const MAX_UPLOAD_BYTES = 2 * 1024 * 1024;
@@ -21,11 +22,16 @@ function revalidateLoyaltyCardPaths() {
   revalidatePath("/merchant/business");
 }
 
-async function assertOwnsMerchant(userId: string, merchantId: string) {
+async function assertOwnsMerchant(
+  userId: string,
+  merchantId: string,
+): Promise<
+  | { error: ActionFailure["error"]; merchant: null }
+  | { error: null; merchant: NonNullable<Awaited<ReturnType<typeof getMerchantsByUserId>>[number]> }
+> {
   const merchants = await getMerchantsByUserId(userId);
   const merchant = merchants.find((m) => m.id === merchantId);
-  if (!merchant)
-    return { error: "Business not found" as const, merchant: null };
+  if (!merchant) return { error: fail("BUSINESS_NOT_FOUND").error, merchant: null };
   return { error: null, merchant };
 }
 
@@ -37,19 +43,16 @@ export async function saveLoyaltyCardConfigAction(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const { error: denied, merchant } = await assertOwnsMerchant(
     user.id,
     merchantId,
   );
-  if (denied || !merchant) return { error: denied ?? "Business not found" };
+  if (denied || !merchant) return fail("BUSINESS_NOT_FOUND");
 
   if (merchant.status !== "active") {
-    return {
-      error:
-        "Your business must be approved before saving loyalty card settings.",
-    };
+    return fail("BUSINESS_NOT_ACTIVE");
   }
 
   const cardName = String(formData.get("card_name") ?? "").trim();
@@ -68,30 +71,30 @@ export async function saveLoyaltyCardConfigAction(
   ).trim();
 
   if (!cardName || cardName.length > 40) {
-    return { error: "Card name is required (max 40 characters)." };
+    return fail("LOYALTY_CARD_NAME_INVALID");
   }
   if (!description || description.length > 120) {
-    return { error: "Description is required (max 120 characters)." };
+    return fail("LOYALTY_CARD_DESCRIPTION_INVALID");
   }
   if (!/^#[0-9A-Fa-f]{6}$/.test(primaryColor)) {
-    return { error: "Pick a valid brand color." };
+    return fail("LOYALTY_CARD_COLOR_INVALID");
   }
   if (!Number.isInteger(stampTarget) || stampTarget < 5 || stampTarget > 50) {
-    return { error: "Stamp target must be between 5 and 50." };
+    return fail("LOYALTY_CARD_STAMP_TARGET_INVALID");
   }
   if (Number.isNaN(minSpend) || minSpend < 0) {
-    return { error: "Minimum spend must be 0 or greater." };
+    return fail("LOYALTY_CARD_MIN_SPEND_INVALID");
   }
   if (!["NPR", "EUR"].includes(minSpendCurrency)) {
-    return { error: "Select a valid currency." };
+    return fail("LOYALTY_CARD_CURRENCY_INVALID");
   }
   if (
     !["free_item", "percent_discount", "fixed_discount"].includes(rewardType)
   ) {
-    return { error: "Select a reward type." };
+    return fail("LOYALTY_CARD_REWARD_TYPE_INVALID");
   }
-  if (!rewardValue) return { error: "Reward value is required." };
-  if (!rewardDescription) return { error: "Reward description is required." };
+  if (!rewardValue) return fail("LOYALTY_CARD_REWARD_VALUE_REQUIRED");
+  if (!rewardDescription) return fail("LOYALTY_CARD_REWARD_DESCRIPTION_REQUIRED");
 
   try {
     await updateMerchantBranding(merchantId, {
@@ -113,10 +116,8 @@ export async function saveLoyaltyCardConfigAction(
     revalidateLoyaltyCardPaths();
     return {};
   } catch (e) {
-    return {
-      error:
-        e instanceof Error ? e.message : "Failed to save loyalty card settings",
-    };
+    logActionFailure("saveLoyaltyCardConfig", e);
+    return fail("LOYALTY_CARD_SAVE_FAILED");
   }
 }
 
@@ -128,23 +129,23 @@ export async function uploadLoyaltyCardLogoAction(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const { error: denied, merchant } = await assertOwnsMerchant(
     user.id,
     merchantId,
   );
-  if (denied || !merchant) return { error: denied ?? "Business not found" };
+  if (denied || !merchant) return fail("BUSINESS_NOT_FOUND");
 
   const file = formData.get("logo");
   if (!(file instanceof File) || file.size === 0) {
-    return { error: "Choose an image to upload." };
+    return fail("LOGO_FILE_REQUIRED");
   }
   if (file.size > MAX_UPLOAD_BYTES) {
-    return { error: "Image must be 2MB or smaller." };
+    return fail("LOGO_FILE_TOO_LARGE");
   }
   if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-    return { error: "Use JPG, PNG, or WebP." };
+    return fail("LOGO_FILE_TYPE_INVALID");
   }
 
   const ext =
@@ -165,7 +166,10 @@ export async function uploadLoyaltyCardLogoAction(
       upsert: true,
     });
 
-  if (uploadError) return { error: uploadError.message };
+  if (uploadError) {
+    logActionFailure("uploadLoyaltyCardLogo", uploadError);
+    return fail("LOGO_UPLOAD_FAILED");
+  }
 
   const {
     data: { publicUrl },

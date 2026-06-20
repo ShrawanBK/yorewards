@@ -14,7 +14,9 @@ import {
   rejectStampSession,
 } from "@repo/supabase/queries/stamps";
 import { createPendingRedemption } from "@repo/supabase/queries/redemptions";
-import type { ActionResult } from "@/shared/types/action-result";
+import type { ActionError } from "@repo/utils/action-error";
+import { fail, logActionFailure } from "@repo/utils/action-error";
+import type { ActionFailure, ActionResult } from "@/shared/types/action-result";
 import { isDevEnvironment } from "@/shared/utils/env";
 
 const REVALIDATE_PATHS = [
@@ -36,16 +38,14 @@ function revalidateMerchantOpsPaths() {
 async function assertActiveMerchantOwner(
   userId: string,
   merchantId: string,
-): Promise<ActionResult & { merchant?: null }> {
+): Promise<ActionFailure | null> {
   const merchants = await getMerchantsByUserId(userId);
   const merchant = merchants.find((m) => m.id === merchantId);
-  if (!merchant) return { error: "Business not found" };
+  if (!merchant) return fail("BUSINESS_NOT_FOUND");
   if (merchant.status !== "active") {
-    return {
-      error: "Your business must be approved before using the stamp queue.",
-    };
+    return fail("BUSINESS_NOT_ACTIVE");
   }
-  return { error: undefined };
+  return null;
 }
 
 export async function fetchPendingStampQueueAction(merchantId: string): Promise<
@@ -57,16 +57,17 @@ export async function fetchPendingStampQueueAction(merchantId: string): Promise<
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const denied = await assertActiveMerchantOwner(user.id, merchantId);
-  if (denied.error) return denied;
+  if (denied) return denied;
 
   try {
     const items = await getPendingStampSessions(merchantId);
     return { items };
-  } catch {
-    return { error: "Could not load stamp queue." };
+  } catch (err) {
+    logActionFailure("fetchPendingStampQueue", err);
+    return fail("STAMP_QUEUE_LOAD_FAILED");
   }
 }
 
@@ -78,10 +79,10 @@ export async function approveStampAction(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const denied = await assertActiveMerchantOwner(user.id, merchantId);
-  if (denied.error) return denied;
+  if (denied) return denied;
 
   try {
     const session = await createServiceRoleClient()
@@ -92,23 +93,23 @@ export async function approveStampAction(
 
     if (session.error) throw session.error;
     if (!session.data || session.data.merchant_id !== merchantId) {
-      return { error: "Stamp request not found." };
+      return fail("STAMP_NOT_FOUND");
     }
 
     await approveStampSession(sessionId);
     revalidateMerchantOpsPaths();
     return {};
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Could not approve stamp.";
+    logActionFailure("approveStamp", err);
+    const message = err instanceof Error ? err.message : "";
     if (message.includes("expired")) {
       await expireStalePendingSessions(merchantId);
-      return { error: "This stamp request has expired." };
+      return fail("STAMP_EXPIRED");
     }
     if (message.includes("not pending")) {
-      return { error: "This stamp request is no longer pending." };
+      return fail("STAMP_NOT_PENDING");
     }
-    return { error: "Could not approve stamp." };
+    return fail("STAMP_APPROVE_FAILED");
   }
 }
 
@@ -121,13 +122,13 @@ export async function rejectStampAction(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const denied = await assertActiveMerchantOwner(user.id, merchantId);
-  if (denied.error) return denied;
+  if (denied) return denied;
 
   if (reason && reason.trim().length > 120) {
-    return { error: "Rejection reason is too long (max 120 characters)." };
+    return fail("STAMP_REJECT_REASON_TOO_LONG");
   }
 
   try {
@@ -139,19 +140,19 @@ export async function rejectStampAction(
 
     if (session.error) throw session.error;
     if (!session.data || session.data.merchant_id !== merchantId) {
-      return { error: "Stamp request not found." };
+      return fail("STAMP_NOT_FOUND");
     }
 
     await rejectStampSession(sessionId, reason);
     revalidateMerchantOpsPaths();
     return {};
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Could not reject stamp.";
+    logActionFailure("rejectStamp", err);
+    const message = err instanceof Error ? err.message : "";
     if (message.includes("expired")) {
-      return { error: "This stamp request has expired." };
+      return fail("STAMP_EXPIRED");
     }
-    return { error: "Could not reject stamp." };
+    return fail("STAMP_REJECT_FAILED");
   }
 }
 
@@ -230,23 +231,23 @@ async function getDemoCustomerCardId(
 
 export async function seedDemoStampQueueAction(
   merchantId: string,
-): Promise<ActionResult & { code?: string | null; warning?: string }> {
+): Promise<ActionResult & { code?: string | null }> {
   if (!isDevEnvironment) {
-    return { error: "Demo data is only available in development." };
+    return fail("DEMO_DEV_ONLY");
   }
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized" };
+  if (!user) return fail("UNAUTHORIZED");
 
   const denied = await assertActiveMerchantOwner(user.id, merchantId);
-  if (denied.error) return denied;
+  if (denied) return denied;
 
   const loyaltyCard = await getLoyaltyCardByMerchantId(merchantId);
   if (!loyaltyCard) {
-    return { error: "Configure your loyalty card before loading demo data." };
+    return fail("DEMO_LOYALTY_CARD_REQUIRED");
   }
 
   const locations = await getLocationsByMerchantId(merchantId);
@@ -262,7 +263,7 @@ export async function seedDemoStampQueueAction(
   ];
 
   let redemptionCode: string | null = null;
-  let redemptionWarning: string | undefined;
+  let redemptionWarning: ActionError | undefined;
 
   try {
     for (const profile of demoProfiles) {
@@ -359,18 +360,16 @@ export async function seedDemoStampQueueAction(
           locationId,
         );
         if (!redemptionCode) {
-          redemptionWarning =
-            "Stamp queue loaded, but no demo redemption code is available (DEMO01–DEMO99 all used).";
+          redemptionWarning = fail("DEMO_NO_REDEMPTION_CODE").error;
         }
-      } catch {
-        redemptionWarning =
-          "Stamp queue loaded, but the demo redemption code could not be created.";
+      } catch (err) {
+        logActionFailure("seedDemoStampQueue.redemption", err);
+        redemptionWarning = fail("DEMO_REDEMPTION_CREATE_FAILED").error;
       }
     }
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Could not create demo data.";
-    return { error: message };
+    logActionFailure("seedDemoStampQueue", err);
+    return fail("DEMO_SEED_FAILED");
   }
 
   revalidateMerchantOpsPaths();

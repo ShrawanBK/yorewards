@@ -73,5 +73,15 @@
       "reactivated": "{name} reactivated",
       "error": "Something went wrong. Please try again."
     }
+  },
+  "errors": {
+    "actions": {
+      "UNAUTHORIZED": "You must be signed in to continue.",
+      "UNKNOWN": "Something went wrong. Please try again.",
+      "AUTH_FAILED": "Authentication failed. Please try again.",
+      "INVALID_CREDENTIALS": "Invalid email or password.",
+      "MERCHANT_UPDATE_FAILED": "Could not update merchant. Please try again.",
+      "REJECTION_REASON_REQUIRED": "Add a reason before rejecting."
+    }
   }
 }

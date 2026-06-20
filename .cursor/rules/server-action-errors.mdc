@@ -1,0 +1,52 @@
+---
+description: Server actions return UPPER_SNAKE_CASE error codes — never English strings
+globs: "**/*Actions.ts,**/actions.ts,**/*actions.ts"
+alwaysApply: true
+---
+
+# Server action errors
+
+## Rule
+
+Server actions and route handlers that return errors to the client **must not** return user-facing English strings. Return a **code only**:
+
+```ts
+import { fail, logActionFailure } from "@repo/utils/action-error";
+
+if (!user) return fail("UNAUTHORIZED");
+
+try {
+  // ...
+} catch (err) {
+  logActionFailure("saveLoyaltyCard", err);
+  return fail("LOYALTY_CARD_SAVE_FAILED");
+}
+```
+
+## Error codes
+
+- Use **UPPER_SNAKE_CASE** (e.g. `BUSINESS_NOT_FOUND`, `STAMP_EXPIRED`).
+- Add the code to `ActionErrorCode` in `packages/utils/src/action-error.ts`.
+- Add translated copy under `errors.actions.<CODE>` in `apps/<app>/messages/en.json`.
+- Never expose Supabase/Postgres raw messages to the UI — log server-side with `logActionFailure`.
+
+## Client display
+
+In client components, resolve codes with `resolveActionError`:
+
+```tsx
+const tErrors = useTranslations("errors.actions");
+// ...
+if (result.error) setError(resolveActionError(tErrors, result.error));
+```
+
+For React Query / thrown errors, resolve inside the hook with the same helper.
+
+## Warnings (non-fatal)
+
+Partial success may return `{ warning: { code: "DEMO_NO_REDEMPTION_CODE" } }`. Resolve with `resolveActionWarning` (merchant) or the same `errors.actions` namespace.
+
+## Types
+
+- Use `ActionResult<T>` from `@/shared/types/action-result` (merchant) or import from `@repo/utils/action-error` (admin).
+- Do not use `{ error?: string }`.

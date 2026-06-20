@@ -12,9 +12,11 @@ import {
   confirmRedemptionAction,
   lookupRedemptionAction,
 } from "@/features/redemption/api/redemptionActions";
+import { resolveActionError } from "@/shared/utils/resolve-action-error";
 
 export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
   const t = useTranslations("redemption");
+  const tErrors = useTranslations("errors.actions");
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [redemption, setRedemption] = useState<RedemptionLookup | null>(null);
@@ -28,7 +30,7 @@ export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
     startTransition(async () => {
       const result = await lookupRedemptionAction(merchantId, code);
       if (result.error) {
-        setError(result.error);
+        setError(resolveActionError(tErrors, result.error));
         setRedemption(null);
         return;
       }
@@ -42,7 +44,7 @@ export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
     startTransition(async () => {
       const result = await confirmRedemptionAction(merchantId, redemption.id);
       if (result.error) {
-        setError(result.error);
+        setError(resolveActionError(tErrors, result.error));
         return;
       }
       setSuccess(true);

@@ -10,9 +10,11 @@ import { Input } from "@repo/ui/input";
 import { Field } from "@repo/ui/field";
 import { addBusinessAction } from "@/features/business/api/businessActions";
 import { isValidMerchantPhone } from "@/features/business/utils/phoneSchema";
+import { resolveActionError } from "@/shared/utils/resolve-action-error";
 
 export function AddBusinessForm({ ownerEmail }: { ownerEmail: string }) {
   const t = useTranslations("business");
+  const tErrors = useTranslations("errors.actions");
   const [error, setError] = useState<string | null>(null);
 
   const schema = useMemo(
@@ -52,7 +54,7 @@ export function AddBusinessForm({ ownerEmail }: { ownerEmail: string }) {
         fd.set("email", ownerEmail);
         Object.entries(values).forEach(([k, v]) => fd.set(k, v ?? ""));
         const result = await addBusinessAction(fd);
-        if (result?.error) setError(result.error);
+        if (result?.error) setError(resolveActionError(tErrors, result.error));
       })}
     >
       <Field

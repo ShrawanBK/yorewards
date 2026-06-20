@@ -14,6 +14,7 @@ import {
   signInMerchantAction,
   signUpMerchantAction,
 } from "@/features/auth/api/authActions";
+import { resolveActionError } from "@/shared/utils/resolve-action-error";
 
 type Tab = "signin" | "signup";
 
@@ -23,6 +24,7 @@ export function MerchantAuthForm({
   defaultTab?: Tab;
 }) {
   const t = useTranslations("auth");
+  const tErrors = useTranslations("errors.actions");
   const [error, setError] = useState<string | null>(null);
 
   const signInSchema = z.object({
@@ -57,7 +59,7 @@ export function MerchantAuthForm({
             fd.set("email", values.email);
             fd.set("password", values.password);
             const result = await signInMerchantAction(fd);
-            if (result?.error) setError(result.error);
+            if (result?.error) setError(resolveActionError(tErrors, result.error));
           })}
         >
           <Field
@@ -105,7 +107,7 @@ export function MerchantAuthForm({
             fd.set("email", values.email);
             fd.set("password", values.password);
             const result = await signUpMerchantAction(fd);
-            if (result?.error) setError(result.error);
+            if (result?.error) setError(resolveActionError(tErrors, result.error));
           })}
         >
           <Field

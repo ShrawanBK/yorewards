@@ -2,6 +2,7 @@
 
 import { createServiceRoleClient } from "@repo/supabase/service-role";
 import { getAllMerchants } from "@repo/supabase/queries/merchants";
+import { getMerchantDetailForAdmin } from "@repo/supabase/queries/admin-merchants";
 import type { MerchantStatus } from "@repo/supabase/types";
 import { revalidatePath } from "next/cache";
 import { fail, logActionFailure } from "@repo/utils/action-error";
@@ -13,6 +14,13 @@ export async function getAllMerchantsAction() {
   if (!guard.ok) return [];
 
   return getAllMerchants();
+}
+
+export async function getMerchantDetailAction(merchantId: string) {
+  const guard = await requireAdminForAction();
+  if (!guard.ok) return null;
+
+  return getMerchantDetailForAdmin(merchantId);
 }
 
 export type MerchantActionResult = ActionResult;
@@ -51,6 +59,7 @@ export async function approveMerchantAction(
   });
 
   revalidatePath("/admin/merchants");
+  revalidatePath(`/admin/merchants/${merchantId}`);
   return {};
 }
 
@@ -80,6 +89,7 @@ export async function suspendMerchantAction(
   });
 
   revalidatePath("/admin/merchants");
+  revalidatePath(`/admin/merchants/${merchantId}`);
   return {};
 }
 
@@ -116,5 +126,6 @@ export async function rejectMerchantAction(
   });
 
   revalidatePath("/admin/merchants");
+  revalidatePath(`/admin/merchants/${merchantId}`);
   return {};
 }

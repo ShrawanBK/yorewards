@@ -18,6 +18,8 @@
     "./queries/redemptions": "./src/queries/redemptions.ts",
     "./queries/analytics": "./src/queries/analytics.ts",
     "./queries/platform": "./src/queries/platform.ts",
+    "./queries/admin-merchants": "./src/queries/admin-merchants.ts",
+    "./queries/admin-customers": "./src/queries/admin-customers.ts",
     "./queries/merchant-customers": "./src/queries/merchant-customers.ts"
   },
   "scripts": {

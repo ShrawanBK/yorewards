@@ -35,7 +35,7 @@
 | Customer auth + wallet + scan + OTP                                       | ⏳ Day 7 — [`Day7_Checklist.md`](../resources/Day7_Checklist.md) |
 | PWA, privacy, production deploy                                           | ⏳ Day 8 — [`Day8_Checklist.md`](../resources/Day8_Checklist.md) |
 
-**Next up (Day 6):** Phase D — merchant detail + polish — see [`Day6_Checklist.md`](../resources/Day6_Checklist.md).
+**Next up (Day 6):** Phase F — manual stamp tool — see [`Day6_Checklist.md`](../resources/Day6_Checklist.md).
 
 ---
 

@@ -59,16 +59,13 @@
       "actions": {
         "approve_merchant": "Merchant approved",
         "reject_merchant": "Merchant rejected",
-        "suspend_merchant": "Merchant suspended"
+        "suspend_merchant": "Merchant suspended",
+        "suspend_customer": "Customer suspended",
+        "reactivate_customer": "Customer reactivated"
       }
     }
   },
   "placeholders": {
-    "customers": {
-      "title": "Customers",
-      "subtitle": "View and manage customer accounts.",
-      "comingSoon": "Customer management is coming in the next build phase."
-    },
     "stamps": {
       "title": "Manual stamps",
       "subtitle": "Issue or void stamps manually.",
@@ -111,7 +108,11 @@
       "pending": "Pending",
       "active": "Active",
       "suspended": "Suspended",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "country": "Country",
+      "category": "Category",
+      "allCountries": "All countries",
+      "allCategories": "All categories"
     },
     "status": {
       "pending": "Pending",
@@ -145,6 +146,80 @@
       "rejected": "{name} rejected",
       "suspended": "{name} suspended",
       "reactivated": "{name} reactivated"
+    },
+    "detail": {
+      "view": "View details",
+      "back": "Back to merchants",
+      "actionsTitle": "Manage access",
+      "branchesTitle": "Branches",
+      "branchesSummary": "{total, plural, one {# branch} other {# branches}} · {active, plural, one {# active} other {# active}}",
+      "loyaltyCardTitle": "Loyalty card",
+      "cardName": "Card name",
+      "stampTarget": "Stamp target",
+      "rewardType": "Reward type",
+      "noLoyaltyCard": "No loyalty card configured yet.",
+      "auditTitle": "Recent admin actions",
+      "auditEmpty": "No admin actions for this merchant yet.",
+      "rewardTypes": {
+        "free_item": "Free item",
+        "percent_discount": "Percent discount",
+        "fixed_discount": "Fixed discount"
+      }
+    }
+  },
+  "customers": {
+    "title": "Customers",
+    "subtitle": "View customer accounts and manage access.",
+    "unnamed": "Unnamed customer",
+    "searchPlaceholder": "Search by name or phone",
+    "empty": {
+      "title": "No customers yet",
+      "description": "Customers appear here when they sign up and collect stamps."
+    },
+    "table": {
+      "name": "Name",
+      "phone": "Phone",
+      "cards": "Cards",
+      "status": "Status",
+      "joined": "Joined",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "suspended": "Suspended"
+    },
+    "rewardStatus": {
+      "collecting": "Collecting",
+      "pending_otp": "Pending OTP",
+      "unlocked": "Reward unlocked"
+    },
+    "actions": {
+      "suspend": "Suspend",
+      "reactivate": "Reactivate",
+      "view": "View"
+    },
+    "confirm": {
+      "suspendTitle": "Suspend customer?",
+      "suspendDescription": "{name} will not be able to collect stamps until reactivated.",
+      "reactivateTitle": "Reactivate customer?",
+      "reactivateDescription": "Restore stamp collection for {name}.",
+      "cancel": "Cancel"
+    },
+    "success": {
+      "suspended": "{name} suspended",
+      "reactivated": "{name} reactivated"
+    },
+    "detail": {
+      "back": "Back to customers",
+      "joined": "Joined {date}",
+      "lastActive": "Last active {date}",
+      "cardsTitle": "Active loyalty cards",
+      "cardsEmpty": "No loyalty cards yet.",
+      "merchant": "Merchant",
+      "card": "Card",
+      "progress": "Progress",
+      "rewardStatus": "Reward",
+      "stamps": "{current} / {target} stamps"
     }
   },
   "errors": {
@@ -155,6 +230,9 @@
       "AUTH_FAILED": "Authentication failed. Please try again.",
       "INVALID_CREDENTIALS": "Invalid email or password.",
       "MERCHANT_UPDATE_FAILED": "Could not update merchant. Please try again.",
+      "MERCHANT_NOT_FOUND": "Merchant not found.",
+      "CUSTOMER_NOT_FOUND": "Customer not found.",
+      "CUSTOMER_UPDATE_FAILED": "Could not update customer. Please try again.",
       "REJECTION_REASON_REQUIRED": "Add a reason before rejecting."
     }
   }

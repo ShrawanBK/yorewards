@@ -14,8 +14,8 @@
 | Phase A — Admin guard + FDA scaffold           | ✅ Done |
 | Phase B — Admin shell + navigation             | ✅ Done |
 | Phase C — Platform dashboard                   | ✅ Done |
-| Phase D — Merchants (detail + polish)          | ⏳ Planned |
-| Phase E — Customer management                  | ⏳ Planned |
+| Phase D — Merchants (detail + polish)          | ✅ Done |
+| Phase E — Customer management                  | ✅ Done |
 | Phase F — Manual stamp tool                      | ⏳ Planned |
 | Phase G — Audit log UI                         | ⏳ Planned |
 | Phase H — Hardening + sign-off                 | ⏳ Planned |
@@ -52,9 +52,9 @@ Customer PWA is **Day 7** — not in scope here.
       ↓
 2. Platform stats queries + /admin/dashboard                            ✅
       ↓
-3. /admin/merchants/[id] detail + per-merchant audit slice              ⏳
+3. /admin/merchants/[id] detail + per-merchant audit slice              ✅
       ↓
-4. /admin/customers — list, suspend, detail (optional)                  ⏳
+4. /admin/customers — list, suspend, detail                           ✅
       ↓
 5. /admin/stamps — issue_stamp_manual + void_stamp + audit              ⏳
       ↓
@@ -130,22 +130,22 @@ Customer PWA is **Day 7** — not in scope here.
 
 ### D1. Existing queue (migrate + polish)
 
-- [ ] Move `MerchantQueue` → `features/merchants/components/`
-- [ ] Move merchant actions → `features/merchants/api/merchantActions.ts`
-- [ ] Personalized success toasts (`{name}`) via `showActionSuccess`
-- [ ] Optional filters: country, category (PRD)
+- [x] Move `MerchantQueue` → `features/merchants/components/`
+- [x] Move merchant actions → `features/merchants/api/merchantActions.ts`
+- [x] Personalized success toasts (`{name}`) via `showActionSuccess`
+- [x] Optional filters: country, category (PRD)
 
 ### D2. Merchant detail (`/admin/merchants/[id]`)
 
-- [ ] Query: merchant row + branches count + loyalty card summary + recent audit for this merchant
-- [ ] `MerchantDetailView` — status badge, contact, rejection reason, approve/suspend actions
-- [ ] Link from queue cards → detail
-- [ ] i18n: `merchants.detail.*`
+- [x] Query: merchant row + branches count + loyalty card summary + recent audit for this merchant
+- [x] `MerchantDetailView` — status badge, contact, rejection reason, approve/suspend actions
+- [x] Link from queue cards → detail
+- [x] i18n: `merchants.detail.*`
 
 ### D3. Routes
 
-- [ ] `app/admin/(protected)/merchants/page.tsx` — list (existing)
-- [ ] `app/admin/(protected)/merchants/[id]/page.tsx` — detail
+- [x] `app/admin/(protected)/merchants/page.tsx` — list (existing)
+- [x] `app/admin/(protected)/merchants/[id]/page.tsx` — detail
 
 ---
 
@@ -153,21 +153,21 @@ Customer PWA is **Day 7** — not in scope here.
 
 ### E1. Query layer
 
-- [ ] `getAllCustomers()` or paginated list — name, phone, status, card count, created_at
-- [ ] `getCustomerDetail(customerId)` — profile + `customer_cards` with merchant/card names
-- [ ] `suspendCustomerAction` / `reactivateCustomerAction` — update `customers.status` + audit log
+- [x] `getAllCustomers()` or paginated list — name, phone, status, card count, created_at
+- [x] `getCustomerDetail(customerId)` — profile + `customer_cards` with merchant/card names
+- [x] `suspendCustomerAction` / `reactivateCustomerAction` — update `customers.status` + audit log
 
 ### E2. UI
 
-- [ ] `features/customers/components/AdminCustomersView.tsx` — searchable table
-- [ ] Status badges (active / suspended)
-- [ ] Suspend / reactivate with confirm dialog
-- [ ] Optional: `/admin/customers/[id]` detail page
-- [ ] i18n: `customers.*`
+- [x] `features/customers/components/AdminCustomersView.tsx` — searchable table
+- [x] Status badges (active / suspended)
+- [x] Suspend / reactivate with confirm dialog
+- [x] Optional: `/admin/customers/[id]` detail page
+- [x] i18n: `customers.*`
 
 ### E3. Server actions
 
-- [ ] Error codes only; audit entries: `suspend_customer`, `reactivate_customer`
+- [x] Error codes only; audit entries: `suspend_customer`, `reactivate_customer`
 
 ---
 

@@ -1,21 +1,18 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
-import { Button } from "@repo/ui/button";
+import { ArrowRight } from "lucide-react";
 import { Badge } from "@repo/ui/badge";
+import { Button } from "@repo/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
-import { Input } from "@repo/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@repo/ui/tabs";
-import {
-  approveMerchantAction,
-  rejectMerchantAction,
-  suspendMerchantAction,
-  type MerchantActionResult,
-} from "@/features/merchants/api/merchantActions";
-import { resolveActionError } from "@/shared/utils/resolve-action-error";
-import { showActionError, showActionSuccess } from "@/shared/utils/action-feedback";
 import type { Database, MerchantStatus } from "@repo/supabase/types";
+import {
+  MERCHANT_STATUS_BADGE,
+  MerchantAdminActions,
+} from "@/features/merchants/components/MerchantAdminActions";
 
 type Merchant = Database["public"]["Tables"]["merchants"]["Row"];
 
@@ -30,19 +27,20 @@ const STATUS_ORDER: MerchantStatus[] = [
 
 const FILTERS: FilterValue[] = ["all", ...STATUS_ORDER];
 
-const STATUS_BADGE: Record<
-  MerchantStatus,
-  { variant: "default" | "secondary" | "outline" | "destructive"; className?: string }
-> = {
-  pending: { variant: "secondary" },
-  active: { variant: "default", className: "bg-brand-green text-white" },
-  suspended: { variant: "outline" },
-  rejected: { variant: "destructive" },
-};
-
 export function MerchantQueue({ merchants }: { merchants: Merchant[] }) {
   const t = useTranslations("merchants");
   const [filter, setFilter] = useState<FilterValue>("all");
+  const [countryFilter, setCountryFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+
+  const countries = useMemo(
+    () => [...new Set(merchants.map((m) => m.country))].sort(),
+    [merchants],
+  );
+  const categories = useMemo(
+    () => [...new Set(merchants.map((m) => m.category))].sort(),
+    [merchants],
+  );
 
   const counts = useMemo(() => {
     const base: Record<FilterValue, number> = {
@@ -57,16 +55,27 @@ export function MerchantQueue({ merchants }: { merchants: Merchant[] }) {
   }, [merchants]);
 
   const filtered = useMemo(() => {
-    const rows =
-      filter === "all"
-        ? merchants
-        : merchants.filter((merchant) => merchant.status === filter);
-    if (filter !== "all") return rows;
-    return [...rows].sort(
-      (a, b) =>
-        STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status),
-    );
-  }, [merchants, filter]);
+    let rows = merchants;
+
+    if (filter !== "all") {
+      rows = rows.filter((merchant) => merchant.status === filter);
+    }
+    if (countryFilter !== "all") {
+      rows = rows.filter((merchant) => merchant.country === countryFilter);
+    }
+    if (categoryFilter !== "all") {
+      rows = rows.filter((merchant) => merchant.category === categoryFilter);
+    }
+
+    if (filter === "all" && countryFilter === "all" && categoryFilter === "all") {
+      return [...rows].sort(
+        (a, b) =>
+          STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status),
+      );
+    }
+
+    return rows;
+  }, [merchants, filter, countryFilter, categoryFilter]);
 
   return (
     <div className="space-y-4">
@@ -80,8 +89,41 @@ export function MerchantQueue({ merchants }: { merchants: Merchant[] }) {
         </TabsList>
       </Tabs>
 
+      <div className="flex flex-wrap items-center gap-3">
+        <label className="flex items-center gap-2 text-sm">
+          <span className="text-muted-foreground">{t("filters.country")}</span>
+          <select
+            value={countryFilter}
+            onChange={(event) => setCountryFilter(event.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+          >
+            <option value="all">{t("filters.allCountries")}</option>
+            {countries.map((country) => (
+              <option key={country} value={country}>
+                {country}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <span className="text-muted-foreground">{t("filters.category")}</span>
+          <select
+            value={categoryFilter}
+            onChange={(event) => setCategoryFilter(event.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+          >
+            <option value="all">{t("filters.allCategories")}</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
       {filtered.length === 0 ? (
-        <Card className="items-center py-12 text-center">
+        <Card className="admin-card items-center py-12 text-center">
           <CardContent className="space-y-1">
             <p className="font-medium">{t("empty.title")}</p>
             <p className="text-sm text-muted-foreground">
@@ -102,47 +144,20 @@ export function MerchantQueue({ merchants }: { merchants: Merchant[] }) {
 
 function MerchantCard({ merchant }: { merchant: Merchant }) {
   const t = useTranslations("merchants");
-  const tErrors = useTranslations("errors.actions");
   const format = useFormatter();
-  const [reason, setReason] = useState("");
-  const [reasonError, setReasonError] = useState(false);
-  const [isPending, startTransition] = useTransition();
-
   const name = merchant.business_name;
-  const badge = STATUS_BADGE[merchant.status];
-
-  function runAction(
-    action: () => Promise<MerchantActionResult>,
-    successKey: string,
-  ) {
-    startTransition(async () => {
-      const result = await action();
-      if (result?.error) {
-        showActionError(resolveActionError(tErrors, result.error));
-        return;
-      }
-      showActionSuccess(t, successKey, { name });
-    });
-  }
-
-  function handleReject() {
-    const trimmed = reason.trim();
-    if (!trimmed) {
-      setReasonError(true);
-      return;
-    }
-    setReasonError(false);
-    runAction(
-      () => rejectMerchantAction(merchant.id, trimmed),
-      "success.rejected",
-    );
-  }
+  const badge = MERCHANT_STATUS_BADGE[merchant.status];
 
   return (
-    <Card>
+    <Card className="admin-card">
       <CardHeader>
         <CardTitle className="flex flex-wrap items-center gap-2">
-          {name}
+          <Link
+            href={`/admin/merchants/${merchant.id}`}
+            className="hover:text-primary hover:underline"
+          >
+            {name}
+          </Link>
           <Badge variant="secondary">{merchant.country}</Badge>
           <Badge variant={badge.variant} className={badge.className}>
             {t(`status.${merchant.status}`)}
@@ -158,13 +173,6 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
               dateStyle: "medium",
             }),
           })}
-          {merchant.status === "active" && merchant.approved_at
-            ? ` · ${t("approvedOn", {
-                date: format.dateTime(new Date(merchant.approved_at), {
-                  dateStyle: "medium",
-                }),
-              })}`
-            : ""}
         </p>
         {merchant.status === "rejected" && merchant.rejection_reason ? (
           <p className="text-xs text-destructive">
@@ -172,76 +180,14 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
           </p>
         ) : null}
       </CardHeader>
-      <CardContent>
-        {merchant.status === "pending" ? (
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
-            <div className="flex-1 space-y-1">
-              <Input
-                aria-label={t("reject.label", { name })}
-                aria-invalid={reasonError}
-                placeholder={t("reject.placeholder")}
-                value={reason}
-                disabled={isPending}
-                onChange={(event) => {
-                  setReason(event.target.value);
-                  if (reasonError) setReasonError(false);
-                }}
-              />
-              {reasonError ? (
-                <p className="text-xs text-destructive">
-                  {t("reject.required")}
-                </p>
-              ) : null}
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="destructive"
-                disabled={isPending}
-                onClick={handleReject}
-              >
-                {t("actions.reject")}
-              </Button>
-              <Button
-                className="bg-brand-green hover:bg-brand-green/90"
-                disabled={isPending}
-                onClick={() =>
-                  runAction(
-                    () => approveMerchantAction(merchant.id),
-                    "success.approved",
-                  )
-                }
-              >
-                {t("actions.approve")}
-              </Button>
-            </div>
-          </div>
-        ) : merchant.status === "active" ? (
-          <Button
-            variant="destructive"
-            disabled={isPending}
-            onClick={() =>
-              runAction(
-                () => suspendMerchantAction(merchant.id),
-                "success.suspended",
-              )
-            }
-          >
-            {t("actions.suspend")}
-          </Button>
-        ) : (
-          <Button
-            className="bg-brand-green hover:bg-brand-green/90"
-            disabled={isPending}
-            onClick={() =>
-              runAction(
-                () => approveMerchantAction(merchant.id),
-                "success.reactivated",
-              )
-            }
-          >
-            {t("actions.reactivate")}
-          </Button>
-        )}
+      <CardContent className="space-y-3">
+        <MerchantAdminActions merchant={merchant} />
+        <Button asChild variant="outline" size="sm" className="gap-1">
+          <Link href={`/admin/merchants/${merchant.id}`}>
+            {t("detail.view")}
+            <ArrowRight className="size-4" aria-hidden />
+          </Link>
+        </Button>
       </CardContent>
     </Card>
   );

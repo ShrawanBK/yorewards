@@ -31,11 +31,11 @@
 | Loyalty card config (PRD §6.1)                                            | ✅ Done — `/merchant/loyalty-card` + live preview + branch QR PNG          |
 | Merchant stamp queue + redeem + analytics (PRD §6.3)                      | ✅ Done (Day 4) — Realtime queue, `/merchant/redeem`, `/merchant/analytics`, customers list |
 | Merchant settings + status UX + branch context + success feedback         | ✅ Done (Day 5) — [`Day5_Checklist.md`](../resources/Day5_Checklist.md) |
-| Super Admin — full platform (dashboard, customers, stamps, audit)         | ⏳ Day 6 — [`Day6_Checklist.md`](../resources/Day6_Checklist.md) |
+| Super Admin — full platform (dashboard, customers, stamps, audit)         | ⏳ Day 6 — stamps tool done; audit UI next — [`Day6_Checklist.md`](../resources/Day6_Checklist.md) |
 | Customer auth + wallet + scan + OTP                                       | ⏳ Day 7 — [`Day7_Checklist.md`](../resources/Day7_Checklist.md) |
 | PWA, privacy, production deploy                                           | ⏳ Day 8 — [`Day8_Checklist.md`](../resources/Day8_Checklist.md) |
 
-**Next up (Day 6):** Phase F — manual stamp tool — see [`Day6_Checklist.md`](../resources/Day6_Checklist.md).
+**Next up (Day 6):** Phase G — audit log UI — see [`Day6_Checklist.md`](../resources/Day6_Checklist.md).
 
 ---
 

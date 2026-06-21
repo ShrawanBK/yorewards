@@ -61,16 +61,13 @@
         "reject_merchant": "Merchant rejected",
         "suspend_merchant": "Merchant suspended",
         "suspend_customer": "Customer suspended",
-        "reactivate_customer": "Customer reactivated"
+        "reactivate_customer": "Customer reactivated",
+        "issue_stamp_manual": "Stamp issued manually",
+        "void_stamp": "Stamp voided"
       }
     }
   },
   "placeholders": {
-    "stamps": {
-      "title": "Manual stamps",
-      "subtitle": "Issue or void stamps manually.",
-      "comingSoon": "The manual stamp tool is coming in the next build phase."
-    },
     "audit": {
       "title": "Audit log",
       "subtitle": "Full history of admin actions.",
@@ -222,6 +219,66 @@
       "stamps": "{current} / {target} stamps"
     }
   },
+  "stamps": {
+    "title": "Manual stamps",
+    "subtitle": "Look up a customer card, issue a stamp, or void an approved session.",
+    "search": {
+      "title": "Look up card",
+      "placeholder": "Customer phone or card ID",
+      "submit": "Search"
+    },
+    "empty": {
+      "title": "No card found",
+      "description": "Check the phone number or card ID and try again."
+    },
+    "picker": {
+      "title": "Multiple cards found — select one"
+    },
+    "card": {
+      "title": "Card details",
+      "customer": "Customer",
+      "unnamed": "Unnamed customer",
+      "phone": "Phone",
+      "merchant": "Merchant",
+      "loyaltyCard": "Loyalty card",
+      "progress": "Stamp progress",
+      "rewardStatus": "Reward status",
+      "cardId": "Card ID"
+    },
+    "progress": "{current} / {target} stamps",
+    "rewardStatus": {
+      "collecting": "Collecting",
+      "pending_otp": "Pending OTP",
+      "unlocked": "Reward unlocked"
+    },
+    "notes": {
+      "label": "Audit notes (optional)",
+      "placeholder": "Reason or context for this action"
+    },
+    "sessions": {
+      "title": "Recent approved stamps",
+      "empty": "No approved stamps on this card yet.",
+      "date": "Date",
+      "source": "Source",
+      "sourceAdmin": "Admin manual",
+      "sourceQr": "QR scan",
+      "actions": "Actions"
+    },
+    "actions": {
+      "issue": "Issue stamp",
+      "void": "Void",
+      "voidConfirm": "Void stamp"
+    },
+    "confirm": {
+      "voidTitle": "Void this stamp?",
+      "voidDescription": "This cannot be undone. The stamp count will decrease and the session will be marked voided.",
+      "cancel": "Cancel"
+    },
+    "success": {
+      "issued": "Stamp issued for {name} at {merchant}",
+      "voided": "Stamp voided for {name}"
+    }
+  },
   "errors": {
     "actions": {
       "UNAUTHORIZED": "You must be signed in to continue.",
@@ -233,6 +290,11 @@
       "MERCHANT_NOT_FOUND": "Merchant not found.",
       "CUSTOMER_NOT_FOUND": "Customer not found.",
       "CUSTOMER_UPDATE_FAILED": "Could not update customer. Please try again.",
+      "STAMP_SEARCH_REQUIRED": "Enter a phone number or card ID to search.",
+      "CUSTOMER_CARD_NOT_FOUND": "Customer card not found.",
+      "STAMP_SESSION_NOT_FOUND": "Stamp session not found.",
+      "STAMP_ISSUE_FAILED": "Could not issue stamp. Please try again.",
+      "STAMP_VOID_FAILED": "Could not void stamp. Only approved sessions can be voided.",
       "REJECTION_REASON_REQUIRED": "Add a reason before rejecting."
     }
   }

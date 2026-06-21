@@ -20,6 +20,7 @@
     "./queries/platform": "./src/queries/platform.ts",
     "./queries/admin-merchants": "./src/queries/admin-merchants.ts",
     "./queries/admin-customers": "./src/queries/admin-customers.ts",
+    "./queries/admin-stamps": "./src/queries/admin-stamps.ts",
     "./queries/merchant-customers": "./src/queries/merchant-customers.ts"
   },
   "scripts": {

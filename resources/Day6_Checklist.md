@@ -16,7 +16,7 @@
 | Phase C — Platform dashboard                   | ✅ Done |
 | Phase D — Merchants (detail + polish)          | ✅ Done |
 | Phase E — Customer management                  | ✅ Done |
-| Phase F — Manual stamp tool                      | ⏳ Planned |
+| Phase F — Manual stamp tool                      | ✅ Done |
 | Phase G — Audit log UI                         | ⏳ Planned |
 | Phase H — Hardening + sign-off                 | ⏳ Planned |
 | Day 6 git commit                               | ⏳ When you ask |
@@ -175,27 +175,27 @@ Customer PWA is **Day 7** — not in scope here.
 
 ### F1. Lookup
 
-- [ ] Search by customer phone or `customer_cards.id`
-- [ ] Show card: merchant name, stamp progress, recent approved sessions
+- [x] Search by customer phone or `customer_cards.id`
+- [x] Show card: merchant name, stamp progress, recent approved sessions
 
 ### F2. Issue stamp
 
-- [ ] Server action calls `issue_stamp_manual(p_card_id)` RPC (service role)
-- [ ] `audit_log`: action `issue_stamp_manual`, target_type `customer_card`, notes optional
-- [ ] Success toast with customer/card context
+- [x] Server action calls `issue_stamp_manual(p_card_id)` RPC (service role)
+- [x] `audit_log`: action `issue_stamp_manual`, target_type `stamp` (session id), notes optional
+- [x] Success toast with customer/card context
 
 ### F3. Void stamp
 
-- [ ] Select an approved `stamp_sessions` row for the card
-- [ ] Server action calls `void_stamp` RPC (verify exact RPC name in migrations)
-- [ ] `audit_log`: action `void_stamp`, target_id = session id
-- [ ] Confirm dialog — irreversible warning (i18n)
+- [x] Select an approved `stamp_sessions` row for the card
+- [x] Server action calls `void_stamp` RPC (verify exact RPC name in migrations)
+- [x] `audit_log`: action `void_stamp`, target_id = session id
+- [x] Confirm dialog — irreversible warning (i18n)
 
 ### F4. UI
 
-- [ ] `features/stamps/components/AdminStampToolView.tsx`
-- [ ] i18n: `stamps.*`
-- [ ] Route: `app/admin/(protected)/stamps/page.tsx`
+- [x] `features/stamps/components/AdminStampToolView.tsx`
+- [x] i18n: `stamps.*`
+- [x] Route: `app/admin/(protected)/stamps/page.tsx`
 
 ---
 

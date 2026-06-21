@@ -12,8 +12,8 @@
 | Area                                           | Status     |
 | ---------------------------------------------- | ---------- |
 | Phase A — Admin guard + FDA scaffold           | ✅ Done |
-| Phase B — Admin shell + navigation             | ⏳ Planned |
-| Phase C — Platform dashboard                   | ⏳ Planned |
+| Phase B — Admin shell + navigation             | ✅ Done |
+| Phase C — Platform dashboard                   | ✅ Done |
 | Phase D — Merchants (detail + polish)          | ⏳ Planned |
 | Phase E — Customer management                  | ⏳ Planned |
 | Phase F — Manual stamp tool                      | ⏳ Planned |
@@ -48,9 +48,9 @@ Customer PWA is **Day 7** — not in scope here.
 ```text
 0. Admin role guard + FDA scaffold (features/*)                         ✅
       ↓
-1. AdminShell — nav: Dashboard, Merchants, Customers, Stamps, Audit     ⏳
+1. AdminShell — nav: Dashboard, Merchants, Customers, Stamps, Audit     ✅
       ↓
-2. Platform stats queries + /admin/dashboard                            ⏳
+2. Platform stats queries + /admin/dashboard                            ✅
       ↓
 3. /admin/merchants/[id] detail + per-merchant audit slice              ⏳
       ↓
@@ -96,11 +96,11 @@ Customer PWA is **Day 7** — not in scope here.
 
 ## Phase B — Admin shell + navigation
 
-- [ ] `AdminShell` — desktop sidebar: Dashboard, Merchants, Customers, Stamps, Audit, Log out
-- [ ] Post-login redirect → `/admin/dashboard` (not only `/admin/merchants`)
-- [ ] Active route highlighting
-- [ ] i18n: `nav.dashboard`, `nav.merchants`, `nav.customers`, `nav.stamps`, `nav.audit`, `nav.logout`
-- [ ] `(protected)/layout.tsx` wraps children with `AdminShell`
+- [x] `AdminShell` — desktop sidebar: Dashboard, Merchants, Customers, Stamps, Audit, Log out
+- [x] Post-login redirect → `/admin/dashboard` (not only `/admin/merchants`)
+- [x] Active route highlighting
+- [x] i18n: `nav.dashboard`, `nav.merchants`, `nav.customers`, `nav.stamps`, `nav.audit`, `nav.logout`
+- [x] `(protected)/layout.tsx` wraps children with `AdminShell`
 
 ---
 
@@ -108,21 +108,21 @@ Customer PWA is **Day 7** — not in scope here.
 
 ### C1. Query layer (`@repo/supabase`)
 
-- [ ] `getPlatformStats()` — merchants by status, total customers, stamps issued, redemptions (all-time + today/week/month)
-- [ ] Optional: `getPlatformRecentActivity(limit)` — last N audit or stamp/redemption events
-- [ ] Service role or admin-scoped RLS — document choice
+- [x] `getPlatformStats()` — merchants by status, total customers, stamps issued, redemptions (all-time + today/week/month)
+- [x] Optional: `getPlatformRecentActivity(limit)` — last N audit or stamp/redemption events
+- [x] Service role or admin-scoped RLS — document choice
 
 ### C2. UI
 
-- [ ] `features/dashboard/components/AdminDashboardView.tsx`
-- [ ] Stat cards + period toggle (today / week / month) where applicable
-- [ ] Link cards → Merchants (pending count), Customers, Audit
-- [ ] i18n: `dashboard.*`
-- [ ] Empty/zero state when platform is new
+- [x] `features/dashboard/components/AdminDashboardView.tsx`
+- [x] Stat cards + period toggle (today / week / month) where applicable
+- [x] Link cards → Merchants (pending count), Customers, Audit
+- [x] i18n: `dashboard.*`
+- [x] Empty/zero state when platform is new
 
 ### C3. Page
 
-- [ ] `app/admin/(protected)/dashboard/page.tsx` — thin compose
+- [x] `app/admin/(protected)/dashboard/page.tsx` — thin compose
 
 ---
 

@@ -17,6 +17,7 @@
     "./queries/stamps": "./src/queries/stamps.ts",
     "./queries/redemptions": "./src/queries/redemptions.ts",
     "./queries/analytics": "./src/queries/analytics.ts",
+    "./queries/platform": "./src/queries/platform.ts",
     "./queries/merchant-customers": "./src/queries/merchant-customers.ts"
   },
   "scripts": {

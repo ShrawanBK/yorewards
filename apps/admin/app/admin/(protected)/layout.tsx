@@ -1,4 +1,5 @@
 import { requireAdminSession } from "@/features/auth";
+import { AdminProtectedShell } from "@/widgets/AdminShell";
 
 export default async function AdminProtectedLayout({
   children,
@@ -6,5 +7,5 @@ export default async function AdminProtectedLayout({
   children: React.ReactNode;
 }) {
   await requireAdminSession();
-  return children;
+  return <AdminProtectedShell>{children}</AdminProtectedShell>;
 }

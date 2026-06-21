@@ -5,8 +5,80 @@
     "cta": "Sign in"
   },
   "nav": {
+    "main": "Admin navigation",
+    "adminLabel": "Super Admin",
+    "dashboard": "Dashboard",
     "merchants": "Merchants",
-    "audit": "Audit log"
+    "customers": "Customers",
+    "stamps": "Stamps",
+    "audit": "Audit log",
+    "logout": "Log out"
+  },
+  "dashboard": {
+    "title": "Platform overview",
+    "subtitle": "Monitor merchants, customers, and activity across YORewards.",
+    "empty": {
+      "title": "Your platform is just getting started",
+      "description": "When merchants register and customers collect stamps, stats will show up here.",
+      "cta": "Review merchants"
+    },
+    "stats": {
+      "regionLabel": "Platform statistics",
+      "merchants": "Merchants",
+      "merchantsHint": "{active, plural, =0 {None active yet} one {# active} other {# active}}",
+      "customers": "Customers",
+      "customersHint": "{active, plural, =0 {No active customers} one {# active} other {# active}}",
+      "stamps": "Stamps issued",
+      "redemptions": "Rewards redeemed",
+      "period": {
+        "today": "Today",
+        "week": "Last 7 days",
+        "month": "Last 30 days"
+      }
+    },
+    "links": {
+      "regionLabel": "Quick links",
+      "open": "Open",
+      "merchants": {
+        "title": "Merchant queue",
+        "description": "Approve registrations and manage access.",
+        "pending": "{count, plural, one {# pending} other {# pending}}"
+      },
+      "customers": {
+        "title": "Customers",
+        "description": "View accounts and manage suspensions."
+      },
+      "audit": {
+        "title": "Audit log",
+        "description": "Review every admin action on the platform."
+      }
+    },
+    "activity": {
+      "title": "Recent admin activity",
+      "empty": "No admin actions recorded yet.",
+      "actions": {
+        "approve_merchant": "Merchant approved",
+        "reject_merchant": "Merchant rejected",
+        "suspend_merchant": "Merchant suspended"
+      }
+    }
+  },
+  "placeholders": {
+    "customers": {
+      "title": "Customers",
+      "subtitle": "View and manage customer accounts.",
+      "comingSoon": "Customer management is coming in the next build phase."
+    },
+    "stamps": {
+      "title": "Manual stamps",
+      "subtitle": "Issue or void stamps manually.",
+      "comingSoon": "The manual stamp tool is coming in the next build phase."
+    },
+    "audit": {
+      "title": "Audit log",
+      "subtitle": "Full history of admin actions.",
+      "comingSoon": "The full audit log view is coming in the next build phase."
+    }
   },
   "auth": {
     "title": "Admin sign in",
@@ -34,7 +106,6 @@
   "merchants": {
     "title": "Merchants",
     "subtitle": "Review registrations and manage merchant access.",
-    "logout": "Logout",
     "filters": {
       "all": "All",
       "pending": "Pending",

@@ -32,7 +32,7 @@ export async function loginAction(
     return fail("FORBIDDEN");
   }
 
-  redirect("/admin/merchants");
+  redirect("/admin/dashboard");
 }
 
 export async function logoutAction() {

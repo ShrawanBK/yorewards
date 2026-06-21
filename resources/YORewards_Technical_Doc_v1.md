@@ -35,7 +35,7 @@
 | Customer auth + wallet + scan + OTP                                       | ⏳ Day 7 — [`Day7_Checklist.md`](../resources/Day7_Checklist.md) |
 | PWA, privacy, production deploy                                           | ⏳ Day 8 — [`Day8_Checklist.md`](../resources/Day8_Checklist.md) |
 
-**Next up (Day 6):** Phase B — AdminShell + navigation — see [`Day6_Checklist.md`](../resources/Day6_Checklist.md).
+**Next up (Day 6):** Phase D — merchant detail + polish — see [`Day6_Checklist.md`](../resources/Day6_Checklist.md).
 
 ---
 
@@ -953,6 +953,7 @@ ADMIN_EMAIL=your-admin-email@yorewards.com       # Single super admin account
 - Admin check: `user.app_metadata.role === 'admin'` **or** signed-in email matches `ADMIN_EMAIL` (case-insensitive).
 - Login rejects non-admin credentials with `FORBIDDEN` after sign-out.
 - FDA layout under `apps/admin/src/features/*` (auth, merchants, dashboard, customers, stamps, audit) + `widgets/AdminShell`.
+- Platform stats: `@repo/supabase/queries/platform` (`getPlatformStats`, `getPlatformRecentActivity`) via **service role** — admin app enforces access with `requireAdminSession()` before calling.
 
 ---
 

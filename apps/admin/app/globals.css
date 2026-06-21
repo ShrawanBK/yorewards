@@ -2,8 +2,40 @@
 @import "@repo/ui/globals.css";
 
 @source "../../../packages/ui/src/**/*.{js,ts,jsx,tsx}";
+@source "../src/**/*.{js,ts,jsx,tsx}";
 
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+:root:not(.dark) {
+  --sidebar: oklch(0.926 0.014 218);
+  --sidebar-accent: oklch(0.892 0.016 218);
+  --sidebar-accent-foreground: oklch(0.24 0.03 224);
+  --sidebar-primary: oklch(0.45 0.105 223);
+  --sidebar-border: oklch(0.862 0.014 215);
+}
+
+@layer utilities {
+  .admin-app-bg {
+    @apply bg-background;
+  }
+
+  .admin-card {
+    @apply rounded-xl border border-border bg-card shadow-sm;
+  }
+
+  .admin-nav-link {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50;
+  }
+
+  .admin-nav-active {
+    @apply bg-sidebar-accent font-semibold text-sidebar-primary;
+    box-shadow: inset 3px 0 0 0 var(--sidebar-primary);
+  }
+
+  .admin-stat-label {
+    @apply text-sm font-semibold tracking-wide text-muted-foreground uppercase;
+  }
 }

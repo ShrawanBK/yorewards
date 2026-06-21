@@ -48,7 +48,7 @@
   }
 
   .admin-btn-outline {
-    @apply cursor-pointer border border-border bg-background shadow-sm transition-all duration-150 ease-out hover:border-primary/40 hover:bg-muted hover:shadow-md active:scale-[0.98] active:bg-muted/80;
+    @apply cursor-pointer border border-foreground/25 bg-background text-foreground shadow-sm transition-all duration-150 ease-out hover:border-primary/45 hover:bg-muted hover:text-foreground hover:shadow-md focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:scale-[0.98] active:bg-muted/80;
   }
 
   .admin-btn-danger-soft {

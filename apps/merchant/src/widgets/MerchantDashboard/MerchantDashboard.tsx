@@ -146,6 +146,7 @@ export async function MerchantDashboard({
         businessName={merchant.business_name}
         status={merchant.status}
         rejectionReason={merchant.rejection_reason}
+        statusReason={merchant.status_reason}
       />
 
       <section className="space-y-4" aria-labelledby="dashboard-quick-actions">

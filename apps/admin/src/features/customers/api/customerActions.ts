@@ -29,7 +29,11 @@ export async function getCustomerDetailAction(customerId: string) {
 
 export async function suspendCustomerAction(
   customerId: string,
+  reason: string,
 ): Promise<CustomerActionResult> {
+  const trimmedReason = reason.trim();
+  if (!trimmedReason) return fail("ACTION_REASON_REQUIRED");
+
   const guard = await requireAdminForAction();
   if (!guard.ok) return guard.result;
 
@@ -50,7 +54,10 @@ export async function suspendCustomerAction(
 
   const { error: updateError } = await admin
     .from("customers")
-    .update({ status: "suspended" satisfies CustomerStatus })
+    .update({
+      status: "suspended" satisfies CustomerStatus,
+      status_reason: trimmedReason,
+    })
     .eq("id", customerId)
     .eq("status", "active" satisfies CustomerStatus);
 
@@ -64,17 +71,23 @@ export async function suspendCustomerAction(
     admin_id: guard.user.id,
     target_type: "customer",
     target_id: customerId,
-    notes: customer.name ?? customer.phone,
+    notes: trimmedReason,
   });
 
   revalidatePath("/admin/customers");
   revalidatePath(`/admin/customers/${customerId}`);
+  revalidatePath("/admin/audit");
+  revalidatePath("/admin/dashboard");
   return {};
 }
 
 export async function reactivateCustomerAction(
   customerId: string,
+  reason: string,
 ): Promise<CustomerActionResult> {
+  const trimmedReason = reason.trim();
+  if (!trimmedReason) return fail("ACTION_REASON_REQUIRED");
+
   const guard = await requireAdminForAction();
   if (!guard.ok) return guard.result;
 
@@ -95,7 +108,10 @@ export async function reactivateCustomerAction(
 
   const { error: updateError } = await admin
     .from("customers")
-    .update({ status: "active" satisfies CustomerStatus })
+    .update({
+      status: "active" satisfies CustomerStatus,
+      status_reason: null,
+    })
     .eq("id", customerId)
     .eq("status", "suspended" satisfies CustomerStatus);
 
@@ -109,10 +125,12 @@ export async function reactivateCustomerAction(
     admin_id: guard.user.id,
     target_type: "customer",
     target_id: customerId,
-    notes: customer.name ?? customer.phone,
+    notes: trimmedReason,
   });
 
   revalidatePath("/admin/customers");
   revalidatePath(`/admin/customers/${customerId}`);
+  revalidatePath("/admin/audit");
+  revalidatePath("/admin/dashboard");
   return {};
 }

@@ -102,7 +102,10 @@ export function MerchantQueue({ merchants }: { merchants: Merchant[] }) {
 
   return (
     <div className="space-y-4">
-      <Tabs value={filter} onValueChange={(value) => setFilter(value as FilterValue)}>
+      <Tabs
+        value={filter}
+        onValueChange={(value) => setFilter(value as FilterValue)}
+      >
         <TabsList className="flex-wrap">
           {FILTERS.map((value) => (
             <TabsTrigger key={value} value={value}>
@@ -217,15 +220,27 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
             {t("rejectedReason", { reason: merchant.rejection_reason })}
           </p>
         ) : null}
+        {merchant.status === "suspended" && merchant.status_reason ? (
+          <p className="text-xs text-destructive">
+            {t("suspendedReason", { reason: merchant.status_reason })}
+          </p>
+        ) : null}
       </CardHeader>
-      <CardContent className="space-y-3">
-        <MerchantAdminActions merchant={merchant} />
-        <Button asChild variant="outline" size="sm" className="admin-btn-outline gap-1">
-          <Link href={`/admin/merchants/${merchant.id}`}>
-            {t("detail.view")}
-            <ArrowRight className="size-4" aria-hidden />
-          </Link>
-        </Button>
+      <CardContent>
+        <div className="flex flex-wrap items-center gap-3">
+          <MerchantAdminActions merchant={merchant} />
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="admin-btn-outline gap-1"
+          >
+            <Link href={`/admin/merchants/${merchant.id}`}>
+              {t("detail.view")}
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

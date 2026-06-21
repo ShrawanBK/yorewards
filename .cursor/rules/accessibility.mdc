@@ -5,7 +5,19 @@ alwaysApply: true
 
 # Accessibility (required)
 
-All user-facing UI must be usable with keyboard, screen readers, and reduced motion. Review with `web-design-guidelines` skill before shipping large UI changes.
+All user-facing UI must be usable with keyboard, screen readers, and reduced motion. Target **WCAG 2.2 Level AA** (success criteria below). Review with `web-design-guidelines` skill before shipping large UI changes.
+
+## WCAG 2.2 AA — minimum bar
+
+| Criterion | Requirement |
+| --------- | ----------- |
+| **1.4.3 Contrast (Minimum)** | Body and button labels ≥ **4.5:1** against background (large text ≥ 3:1). |
+| **1.4.11 Non-text Contrast** | Borders, focus rings, and control outlines ≥ **3:1** against adjacent colors. |
+| **2.4.7 Focus Visible** | Keyboard focus clearly visible — use `focus-visible:ring-[3px] focus-visible:ring-ring/50` (or equivalent), never remove focus without replacement. |
+| **2.5.8 Target Size (Minimum)** | Interactive targets ≥ **24×24 CSS px**; prefer **44×44** for primary mobile actions when practical. |
+| **4.1.2 Name, Role, Value** | Native controls or correct ARIA; icon-only buttons get translated names. |
+
+WCAG 3.0 is still draft — implement **2.2 AA** now; do not wait for 3.0.
 
 ## Semantic structure
 
@@ -53,6 +65,12 @@ All user-facing UI must be usable with keyboard, screen readers, and reduced mot
 - Use `<Link>` / `<a href>` for navigation — not `<div onClick>`.
 - Destructive actions: confirm dialog or explicit undo; never silent delete.
 
+## Secondary & outline controls
+
+- **Never** rely on hover-only borders or ghost-grey text for required actions (Cancel, View details, Back).
+- Outline/secondary buttons: explicit **`text-foreground`**, border ≥ **3:1** non-text contrast (e.g. admin `admin-btn-outline`, merchant semantic tokens).
+- **Dialog footers:** keep **`gap-3`** (or default `DialogFooter` spacing) at **all** breakpoints — do not use `sm:gap-0`.
+
 ## i18n & a11y
 
 - All `aria-label`, `aria-labelledby`, and live-region text go through `next-intl` (`a11y.*` keys in `messages/en.json`).
@@ -65,6 +83,7 @@ All user-facing UI must be usable with keyboard, screen readers, and reduced mot
 - Form fields without labels
 - Hover-only information required to complete a task
 - Hardcoded English in `aria-*` attributes
+- `sm:gap-0` (or equivalent) on dialog action rows — collapses Cancel/Confirm together
 
 ## References
 

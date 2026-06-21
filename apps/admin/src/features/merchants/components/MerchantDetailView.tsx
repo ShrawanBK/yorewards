@@ -65,6 +65,11 @@ export function MerchantDetailView({ detail }: { detail: AdminMerchantDetail }) 
             {t("rejectedReason", { reason: merchant.rejection_reason })}
           </p>
         ) : null}
+        {merchant.status === "suspended" && merchant.status_reason ? (
+          <p className="text-sm text-destructive">
+            {t("suspendedReason", { reason: merchant.status_reason })}
+          </p>
+        ) : null}
       </header>
 
       <Card className="admin-card">

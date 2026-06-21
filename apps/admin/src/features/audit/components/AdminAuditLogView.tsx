@@ -178,6 +178,7 @@ export function AdminAuditLogView({
               <Button
                 type="button"
                 variant="outline"
+                className="admin-btn-outline"
                 onClick={handleLoadMore}
                 disabled={isPending}
               >

@@ -1,0 +1,43 @@
+---
+description: Super Admin UI — light theme, button patterns, dialog layout, WCAG contrast
+globs:
+  - apps/admin/**
+---
+
+# Super Admin UI
+
+Light theme (`apps/admin/app/globals.css`). **Accessibility:** `.cursor/rules/accessibility.mdc` (always applies).
+
+## Buttons
+
+- **Primary actions** — `admin-btn-success` (approve, reactivate, issue stamp).
+- **Destructive actions** — `admin-btn-destructive` (suspend, reject, remove stamp).
+- **Secondary / cancel / navigation** — `variant="outline"` + `admin-btn-outline` (never bare `variant="outline"` alone on admin).
+- Do **not** combine `variant="destructive"` with `admin-btn-destructive` — tailwind-merge drops hover styles.
+
+`admin-btn-outline` must keep **readable label contrast** (`text-foreground`) and a **visible border** (`border-foreground/25` minimum). Do not weaken to `border-border` only.
+
+## Dialogs
+
+- Use `@repo/ui/dialog` — focus trap and Escape are built in.
+- **Footer spacing:** use default `<DialogFooter>` — **never** `sm:gap-0` or other classes that remove gap between Cancel and confirm on desktop.
+- **Action rows:** use `flex flex-wrap items-center gap-3` when mixing primary actions with outline links/buttons — `space-y-*` alone does not gap **inline-flex** buttons on one line.
+- Destructive confirms: Cancel = `admin-btn-outline`, confirm = `admin-btn-destructive` or `admin-btn-success`.
+- Reason fields: visible `<Label htmlFor="…">`, **`Textarea`** (not single-line `Input`), `aria-invalid` on error, inline `role="alert"` for validation message.
+
+## Layout
+
+- Shell: `AdminShell` sidebar + `#main-content` skip target.
+- Surfaces: `admin-card`, `admin-nav-link` / `admin-nav-active`.
+- Stat labels: `admin-stat-label`.
+
+## i18n
+
+- All copy including dialog titles, button labels, and `aria-label` → `apps/admin/messages/en.json`.
+
+## Before merging large admin UI
+
+- [ ] Outline/secondary buttons visible at rest (border + text contrast)
+- [ ] Dialog footer buttons have spacing at all breakpoints
+- [ ] Keyboard: Tab order, Escape closes modal, focus ring visible
+- [ ] Run `web-design-guidelines` skill on changed files

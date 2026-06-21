@@ -170,6 +170,7 @@
     "logout": "Log out",
     "accountStatus": "Account status",
     "rejectionReason": "Rejection reason",
+    "suspensionReason": "Suspension reason",
     "activeHint": "Approve stamp requests in real time and confirm reward redemptions.",
     "stats": {
       "regionLabel": "Program statistics",

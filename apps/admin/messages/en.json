@@ -109,6 +109,7 @@
     "registered": "Registered {date}",
     "approvedOn": "Approved {date}",
     "rejectedReason": "Reason: {reason}",
+    "suspendedReason": "Suspension reason: {reason}",
     "actions": {
       "approve": "Approve",
       "reject": "Reject",
@@ -195,8 +196,13 @@
     "confirm": {
       "suspendTitle": "Suspend customer?",
       "suspendDescription": "{name} will not be able to collect stamps until reactivated.",
+      "suspendReasonLabel": "Why are you suspending this customer?",
+      "suspendReasonPlaceholder": "e.g. Abuse, duplicate account…",
       "reactivateTitle": "Reactivate customer?",
       "reactivateDescription": "Restore stamp collection for {name}.",
+      "reactivateReasonLabel": "Why are you reactivating this customer?",
+      "reactivateReasonPlaceholder": "e.g. Issue resolved, appeal approved…",
+      "reasonRequired": "Add a reason to continue.",
       "cancel": "Cancel"
     },
     "success": {
@@ -207,6 +213,7 @@
       "back": "Back to customers",
       "joined": "Joined {date}",
       "lastActive": "Last active {date}",
+      "suspendedReason": "Suspension reason: {reason}",
       "cardsTitle": "Active loyalty cards",
       "cardsEmpty": "No loyalty cards yet.",
       "merchant": "Merchant",

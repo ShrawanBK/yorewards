@@ -43,6 +43,7 @@ export async function approveMerchantAction(
       approved_at: new Date().toISOString(),
       approved_by: guard.user.id,
       rejection_reason: null,
+      status_reason: null,
     })
     .eq("id", merchantId)
     .neq("status", "active" satisfies MerchantStatus);
@@ -77,7 +78,10 @@ export async function suspendMerchantAction(
   const admin = createServiceRoleClient();
   const { error: updateError } = await admin
     .from("merchants")
-    .update({ status: "suspended" satisfies MerchantStatus })
+    .update({
+      status: "suspended" satisfies MerchantStatus,
+      status_reason: trimmedReason,
+    })
     .eq("id", merchantId)
     .eq("status", "active" satisfies MerchantStatus);
   if (updateError) {
@@ -119,6 +123,7 @@ export async function reactivateMerchantAction(
       approved_at: new Date().toISOString(),
       approved_by: guard.user.id,
       rejection_reason: null,
+      status_reason: null,
     })
     .eq("id", merchantId)
     .eq("status", "suspended" satisfies MerchantStatus);

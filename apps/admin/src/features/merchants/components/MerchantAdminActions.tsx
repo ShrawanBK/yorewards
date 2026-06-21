@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@repo/ui/button";
-import { Input } from "@repo/ui/input";
+import { Textarea } from "@repo/ui/textarea";
 import { Label } from "@repo/ui/label";
 import {
   Dialog,
@@ -21,7 +21,10 @@ import {
   type MerchantActionResult,
 } from "@/features/merchants/api/merchantActions";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
-import { showActionError, showActionSuccess } from "@/shared/utils/action-feedback";
+import {
+  showActionError,
+  showActionSuccess,
+} from "@/shared/utils/action-feedback";
 import type { Database, MerchantStatus } from "@repo/supabase/types";
 
 type Merchant = Database["public"]["Tables"]["merchants"]["Row"];
@@ -87,8 +90,9 @@ function MerchantReasonDialog({
               ? t("confirm.suspendReasonLabel")
               : t("confirm.reactivateReasonLabel")}
           </Label>
-          <Input
+          <Textarea
             id="merchant-action-reason"
+            rows={3}
             value={reason}
             onChange={(event) => {
               setReason(event.target.value);
@@ -103,10 +107,12 @@ function MerchantReasonDialog({
             disabled={isPending}
           />
           {reasonError ? (
-            <p className="text-xs text-destructive">{t("confirm.reasonRequired")}</p>
+            <p className="text-xs text-destructive" role="alert">
+              {t("confirm.reasonRequired")}
+            </p>
           ) : null}
         </div>
-        <DialogFooter className="gap-2 sm:gap-0">
+        <DialogFooter>
           <Button
             type="button"
             variant="outline"
@@ -132,7 +138,9 @@ function MerchantReasonDialog({
               )
             }
           >
-            {action === "suspend" ? t("actions.suspend") : t("actions.reactivate")}
+            {action === "suspend"
+              ? t("actions.suspend")
+              : t("actions.reactivate")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -145,7 +153,9 @@ export function MerchantAdminActions({ merchant }: { merchant: Merchant }) {
   const tErrors = useTranslations("errors.actions");
   const [rejectReason, setRejectReason] = useState("");
   const [rejectReasonError, setRejectReasonError] = useState(false);
-  const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(
+    null,
+  );
   const [isPending, startTransition] = useTransition();
 
   const name = merchant.business_name;
@@ -180,11 +190,12 @@ export function MerchantAdminActions({ merchant }: { merchant: Merchant }) {
   if (merchant.status === "pending") {
     return (
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
-        <div className="flex-1 space-y-1">
-          <Input
+        <div className="min-w-0 flex-1 space-y-1">
+          <Textarea
             aria-label={t("reject.label", { name })}
             aria-invalid={rejectReasonError}
             placeholder={t("reject.placeholder")}
+            rows={2}
             value={rejectReason}
             disabled={isPending}
             onChange={(event) => {
@@ -193,7 +204,9 @@ export function MerchantAdminActions({ merchant }: { merchant: Merchant }) {
             }}
           />
           {rejectReasonError ? (
-            <p className="text-xs text-destructive">{t("reject.required")}</p>
+            <p className="text-xs text-destructive" role="alert">
+              {t("reject.required")}
+            </p>
           ) : null}
         </div>
         <div className="flex gap-2">
@@ -284,7 +297,10 @@ export function MerchantAdminActions({ merchant }: { merchant: Merchant }) {
 
 export const MERCHANT_STATUS_BADGE: Record<
   MerchantStatus,
-  { variant: "default" | "secondary" | "outline" | "destructive"; className?: string }
+  {
+    variant: "default" | "secondary" | "outline" | "destructive";
+    className?: string;
+  }
 > = {
   pending: { variant: "secondary" },
   active: { variant: "default", className: "bg-brand-green text-white" },

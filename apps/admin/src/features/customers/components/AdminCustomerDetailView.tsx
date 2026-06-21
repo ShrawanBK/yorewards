@@ -1,27 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import { ArrowLeft } from "lucide-react";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import { Card, CardContent } from "@repo/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@repo/ui/dialog";
 import type { AdminCustomerDetail } from "@repo/supabase/queries/admin-customers";
 import type { CustomerStatus } from "@repo/supabase/types";
 import {
   reactivateCustomerAction,
   suspendCustomerAction,
-  type CustomerActionResult,
 } from "@/features/customers/api/customerActions";
+import { AdminReasonConfirmDialog } from "@/shared/components/AdminReasonConfirmDialog";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
 import { showActionError, showActionSuccess } from "@/shared/utils/action-feedback";
 
@@ -75,6 +67,11 @@ export function AdminCustomerDetailView({ detail }: { detail: AdminCustomerDetai
             }),
           })}
         </p>
+        {customer.status === "suspended" && customer.status_reason ? (
+          <p className="text-sm text-destructive">
+            {tDetail("suspendedReason", { reason: customer.status_reason })}
+          </p>
+        ) : null}
       </header>
 
       <div className="flex flex-wrap gap-2">
@@ -167,61 +164,48 @@ function CustomerDetailConfirmDialog({
 }) {
   const t = useTranslations("customers");
   const tErrors = useTranslations("errors.actions");
-  const [isPending, startTransition] = useTransition();
-
-  function runAction(actionFn: () => Promise<CustomerActionResult>) {
-    startTransition(async () => {
-      const result = await actionFn();
-      if (result?.error) {
-        showActionError(resolveActionError(tErrors, result.error));
-        return;
-      }
-      showActionSuccess(
-        t,
-        action === "suspend" ? "success.suspended" : "success.reactivated",
-        { name: displayName },
-      );
-      onClose();
-    });
-  }
+  const isSuspend = action === "suspend";
 
   return (
-    <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            {action === "suspend"
-              ? t("confirm.suspendTitle")
-              : t("confirm.reactivateTitle")}
-          </DialogTitle>
-          <DialogDescription>
-            {action === "suspend"
-              ? t("confirm.suspendDescription", { name: displayName })
-              : t("confirm.reactivateDescription", { name: displayName })}
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button type="button" variant="outline" className="admin-btn-outline" disabled={isPending} onClick={onClose}>
-            {t("confirm.cancel")}
-          </Button>
-          <Button
-            type="button"
-            className={
-              action === "reactivate" ? "admin-btn-success" : "admin-btn-destructive"
-            }
-            disabled={isPending}
-            onClick={() =>
-              runAction(() =>
-                action === "suspend"
-                  ? suspendCustomerAction(customerId)
-                  : reactivateCustomerAction(customerId),
-              )
-            }
-          >
-            {action === "suspend" ? t("actions.suspend") : t("actions.reactivate")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <AdminReasonConfirmDialog
+      title={
+        isSuspend ? t("confirm.suspendTitle") : t("confirm.reactivateTitle")
+      }
+      description={
+        isSuspend
+          ? t("confirm.suspendDescription", { name: displayName })
+          : t("confirm.reactivateDescription", { name: displayName })
+      }
+      reasonLabel={
+        isSuspend
+          ? t("confirm.suspendReasonLabel")
+          : t("confirm.reactivateReasonLabel")
+      }
+      reasonPlaceholder={
+        isSuspend
+          ? t("confirm.suspendReasonPlaceholder")
+          : t("confirm.reactivateReasonPlaceholder")
+      }
+      reasonRequiredMessage={t("confirm.reasonRequired")}
+      cancelLabel={t("confirm.cancel")}
+      confirmLabel={isSuspend ? t("actions.suspend") : t("actions.reactivate")}
+      confirmClassName={
+        isSuspend ? "admin-btn-destructive" : "admin-btn-success"
+      }
+      onClose={onClose}
+      onConfirm={(reason) =>
+        isSuspend
+          ? suspendCustomerAction(customerId, reason)
+          : reactivateCustomerAction(customerId, reason)
+      }
+      onSuccess={() =>
+        showActionSuccess(
+          t,
+          isSuspend ? "success.suspended" : "success.reactivated",
+          { name: displayName },
+        )
+      }
+      onError={(error) => showActionError(resolveActionError(tErrors, error))}
+    />
   );
 }

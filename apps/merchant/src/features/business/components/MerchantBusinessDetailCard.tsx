@@ -92,6 +92,14 @@ export function MerchantBusinessDetailCard({
             </p>
           </div>
         ) : null}
+        {merchant.status === "suspended" && merchant.status_reason ? (
+          <div className="rounded-lg border border-destructive/50 bg-destructive/15 p-3 text-sm">
+            <p className="font-medium text-destructive">
+              {tDash("suspensionReason")}
+            </p>
+            <p className="mt-1 merchant-body-muted">{merchant.status_reason}</p>
+          </div>
+        ) : null}
       </CardContent>
     </Card>
   );

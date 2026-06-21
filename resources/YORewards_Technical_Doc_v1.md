@@ -16,7 +16,7 @@
 | Turborepo + pnpm workspace                                                | ✅ Done                                                                  |
 | Customer PWA — `apps/customer`                                            | ✅ Scaffolded — local `localhost:3000` · prod `app.yorewards.com`        |
 | Merchant Dashboard — `apps/merchant`                                      | ✅ Scaffolded — local `localhost:3001` · prod `merchant.yorewards.com`   |
-| Super Admin — `apps/admin`                                                | ✅ FDA scaffold + admin guard (Day 6 Phase A) · `localhost:3002` |
+| Super Admin — `apps/admin`                                                | ✅ Day 6 MVP complete — all §8.3 routes · FDA · `localhost:3002` |
 | `@repo/eslint-config`, `@repo/typescript-config`, `@repo/tailwind-config` | ✅ Done — brand colors live in `tailwind-config`                         |
 | `@repo/ui`                                                                | ✅ Done — shadcn (`button`, `input`, `label`, `card`, `badge`, `sonner`) |
 | `@repo/supabase`, `@repo/utils`                                           | ✅ Done                                                                  |
@@ -31,11 +31,11 @@
 | Loyalty card config (PRD §6.1)                                            | ✅ Done — `/merchant/loyalty-card` + live preview + branch QR PNG          |
 | Merchant stamp queue + redeem + analytics (PRD §6.3)                      | ✅ Done (Day 4) — Realtime queue, `/merchant/redeem`, `/merchant/analytics`, customers list |
 | Merchant settings + status UX + branch context + success feedback         | ✅ Done (Day 5) — [`Day5_Checklist.md`](../resources/Day5_Checklist.md) |
-| Super Admin — full platform (dashboard, customers, stamps, audit)         | ✅ Day 6 MVP — Phase H hardening remaining — [`Day6_Checklist.md`](../resources/Day6_Checklist.md) |
+| Super Admin — full platform (dashboard, customers, stamps, audit)         | ✅ Done (Day 6) — [`Day6_Checklist.md`](../resources/Day6_Checklist.md) |
 | Customer auth + wallet + scan + OTP                                       | ⏳ Day 7 — [`Day7_Checklist.md`](../resources/Day7_Checklist.md) |
 | PWA, privacy, production deploy                                           | ⏳ Day 8 — [`Day8_Checklist.md`](../resources/Day8_Checklist.md) |
 
-**Next up (Day 6):** Phase H — hardening + sign-off — see [`Day6_Checklist.md`](../resources/Day6_Checklist.md).
+**Next up (Day 7):** Customer PWA — auth, wallet, scan, OTP — see [`Day7_Checklist.md`](../resources/Day7_Checklist.md).
 
 ---
 
@@ -324,6 +324,7 @@ packages/utils/             → @repo/utils
 | `name`           | `text`        | Customer's first name. Set at onboarding.                                    |
 | `country_code`   | `text`        | `'NP'` or `'FI'`. Determines SMS provider for OTP.                           |
 | `status`         | `text`        | `'active'` \| `'suspended'`. Default: `active`. v2-ready — no table rewrite. |
+| `status_reason`  | `text`        | Nullable. Admin note when suspended; cleared on reactivate.                  |
 | `created_at`     | `timestamptz` | Auto-set on insert.                                                          |
 | `last_active_at` | `timestamptz` | Updated on each login.                                                       |
 | `deleted_at`     | `timestamptz` | Nullable. Soft-delete for GDPR. Null = active record.                        |
@@ -346,6 +347,7 @@ packages/utils/             → @repo/utils
 | `approved_at`      | `timestamptz` | Set when Super Admin approves.                                                                                     |
 | `approved_by`      | `uuid`        | Super Admin user ID.                                                                                               |
 | `rejection_reason` | `text`        | Nullable. Set when Super Admin rejects registration.                                                               |
+| `status_reason`    | `text`        | Nullable. Admin note when suspended; cleared on reactivate.                                                        |
 
 #### `merchant_locations` (branches / outlets)
 
@@ -954,6 +956,9 @@ ADMIN_EMAIL=your-admin-email@yorewards.com       # Single super admin account
 - Login rejects non-admin credentials with `FORBIDDEN` after sign-out.
 - FDA layout under `apps/admin/src/features/*` (auth, merchants, dashboard, customers, stamps, audit) + `widgets/AdminShell`.
 - Platform stats: `@repo/supabase/queries/platform` (`getPlatformStats`, `getPlatformRecentActivity`) via **service role** — admin app enforces access with `requireAdminSession()` before calling.
+- **Routes (PRD §8.3):** `/admin/login`, `/admin/dashboard`, `/admin/merchants`, `/admin/merchants/[id]`, `/admin/customers`, `/admin/customers/[id]`, `/admin/stamps`, `/admin/audit`.
+- **Manual stamps:** `@repo/supabase/queries/admin-stamps` — typed lookup (phone, customer name, merchant, loyalty card name, full card UUID) → `issue_stamp_manual` / `void_stamp` RPCs + `audit_log`.
+- **Audit log:** `@repo/supabase/queries/admin-audit` — paginated log with action/target filters; all merchant, customer, and stamp mutations write `audit_log` rows.
 
 ---
 

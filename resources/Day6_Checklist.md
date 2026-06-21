@@ -18,7 +18,7 @@
 | Phase E — Customer management                  | ✅ Done |
 | Phase F — Manual stamp tool                      | ✅ Done |
 | Phase G — Audit log UI                         | ✅ Done |
-| Phase H — Hardening + sign-off                 | ⏳ Planned |
+| Phase H — Hardening + sign-off                 | ✅ Automated checks done · manual E2E pending |
 | Day 6 git commit                               | ⏳ When you ask |
 
 **Already done (Day 2 baseline):** admin login/logout, `/admin/merchants` queue, approve/reject/suspend/reactivate, `audit_log` on merchant actions, error codes + i18n toasts.
@@ -56,11 +56,11 @@ Customer PWA is **Day 7** — not in scope here.
       ↓
 4. /admin/customers — list, suspend, detail                           ✅
       ↓
-5. /admin/stamps — issue_stamp_manual + void_stamp + audit              ⏳
+5. /admin/stamps — issue_stamp_manual + void_stamp + audit              ✅
       ↓
-6. /admin/audit — paginated full log                                    ⏳
+6. /admin/audit — paginated full log                                    ✅
       ↓
-7. Lint / types / build / manual E2E / docs                             ⏳
+7. Lint / types / build / manual E2E / docs                             ⏳ E2E + commit
 ```
 
 ---
@@ -175,7 +175,7 @@ Customer PWA is **Day 7** — not in scope here.
 
 ### F1. Lookup
 
-- [x] Search by customer phone or `customer_cards.id`
+- [x] Typed search: phone (default), customer name, merchant, loyalty card name, full card UUID
 - [x] Show card: merchant name, stamp progress, recent approved sessions
 
 ### F2. Issue stamp
@@ -224,9 +224,9 @@ Customer PWA is **Day 7** — not in scope here.
 
 ### H1. Automated
 
-- [ ] `pnpm exec turbo lint --filter=admin`
-- [ ] `pnpm exec turbo check-types --filter=admin`
-- [ ] `pnpm exec turbo build --filter=admin`
+- [x] `pnpm exec turbo lint --filter=admin`
+- [x] `pnpm exec turbo check-types --filter=admin`
+- [x] `pnpm exec turbo build --filter=admin`
 
 ### H2. Manual E2E
 
@@ -243,8 +243,8 @@ Customer PWA is **Day 7** — not in scope here.
 
 ### H3. Docs + commit
 
-- [ ] Update Technical Doc — Admin MVP ✅
-- [ ] Mark this checklist implementation table ✅
+- [x] Update Technical Doc — Admin MVP ✅
+- [x] Mark this checklist implementation table ✅
 - [ ] Day 6 git commit (when you ask)
 
 ---
@@ -289,12 +289,12 @@ Customer PWA is **Day 7** — not in scope here.
 
 ## Done when
 
-- [ ] All §8.3 admin routes implemented (not stubs)
-- [ ] Admin role guard enforced on UI + server actions
-- [ ] Every mutation writes `audit_log`
-- [ ] Lint, types, build pass for `admin`
+- [x] All §8.3 admin routes implemented (not stubs)
+- [x] Admin role guard enforced on UI + server actions
+- [x] Every mutation writes `audit_log`
+- [x] Lint, types, build pass for `admin`
 - [ ] Manual E2E (H2) passes
-- [ ] Technical Doc updated; ready for Day 7 customer PWA
+- [x] Technical Doc updated; ready for Day 7 customer PWA
 
 ---
 

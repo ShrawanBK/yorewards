@@ -143,6 +143,7 @@ export type Database = {
           name: string | null;
           phone: string;
           status: CustomerStatus;
+          status_reason: string | null;
         };
         Insert: {
           country_code: CountryCode;
@@ -153,6 +154,7 @@ export type Database = {
           name?: string | null;
           phone: string;
           status?: CustomerStatus;
+          status_reason?: string | null;
         };
         Update: {
           country_code?: CountryCode;
@@ -163,6 +165,7 @@ export type Database = {
           name?: string | null;
           phone?: string;
           status?: CustomerStatus;
+          status_reason?: string | null;
         };
         Relationships: [];
       };
@@ -234,6 +237,7 @@ export type Database = {
           primary_color: string;
           rejection_reason: string | null;
           status: MerchantStatus;
+          status_reason: string | null;
           user_id: string;
         };
         Insert: {
@@ -250,6 +254,7 @@ export type Database = {
           primary_color?: string;
           rejection_reason?: string | null;
           status?: MerchantStatus;
+          status_reason?: string | null;
           user_id: string;
         };
         Update: {
@@ -266,6 +271,7 @@ export type Database = {
           primary_color?: string;
           rejection_reason?: string | null;
           status?: MerchantStatus;
+          status_reason?: string | null;
           user_id?: string;
         };
         Relationships: [];

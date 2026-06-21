@@ -25,10 +25,12 @@ export async function MerchantStatusPanel({
   businessName,
   status,
   rejectionReason,
+  statusReason,
 }: {
   businessName: string;
   status: MerchantStatus;
   rejectionReason: string | null;
+  statusReason?: string | null;
 }) {
   const t = await getTranslations("dashboard");
   const badge = MERCHANT_STATUS_BADGE[status];
@@ -73,6 +75,14 @@ export async function MerchantStatusPanel({
               {t("rejectionReason")}
             </p>
             <p className="mt-1 merchant-body-muted">{rejectionReason}</p>
+          </div>
+        ) : null}
+        {status === "suspended" && statusReason ? (
+          <div className="rounded-lg border border-destructive/50 bg-destructive/15 p-4 text-sm">
+            <p className="font-medium text-destructive">
+              {t("suspensionReason")}
+            </p>
+            <p className="mt-1 merchant-body-muted">{statusReason}</p>
           </div>
         ) : null}
         {showConfigureCard || showSettingsLink ? (

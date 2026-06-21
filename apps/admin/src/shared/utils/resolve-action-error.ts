@@ -16,3 +16,10 @@ export function resolveActionError(
     return t("UNKNOWN");
   }
 }
+
+export function resolveActionWarning(
+  t: TranslateFn,
+  warning: ActionError | undefined | null,
+): string {
+  return resolveActionError(t, warning);
+}

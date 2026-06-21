@@ -7,13 +7,14 @@ import { Badge } from "@repo/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
 import { Input } from "@repo/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@repo/ui/tabs";
-import { toast } from "@repo/ui/sonner";
 import {
   approveMerchantAction,
   rejectMerchantAction,
   suspendMerchantAction,
   type MerchantActionResult,
-} from "@/app/admin/actions";
+} from "@/features/merchants/api/merchantActions";
+import { resolveActionError } from "@/shared/utils/resolve-action-error";
+import { showActionError, showActionSuccess } from "@/shared/utils/action-feedback";
 import type { Database, MerchantStatus } from "@repo/supabase/types";
 
 type Merchant = Database["public"]["Tables"]["merchants"]["Row"];
@@ -101,6 +102,7 @@ export function MerchantQueue({ merchants }: { merchants: Merchant[] }) {
 
 function MerchantCard({ merchant }: { merchant: Merchant }) {
   const t = useTranslations("merchants");
+  const tErrors = useTranslations("errors.actions");
   const format = useFormatter();
   const [reason, setReason] = useState("");
   const [reasonError, setReasonError] = useState(false);
@@ -111,15 +113,15 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
 
   function runAction(
     action: () => Promise<MerchantActionResult>,
-    successMessage: string,
+    successKey: string,
   ) {
     startTransition(async () => {
       const result = await action();
       if (result?.error) {
-        toast.error(t("toast.error"));
+        showActionError(resolveActionError(tErrors, result.error));
         return;
       }
-      toast.success(successMessage);
+      showActionSuccess(t, successKey, { name });
     });
   }
 
@@ -132,7 +134,7 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
     setReasonError(false);
     runAction(
       () => rejectMerchantAction(merchant.id, trimmed),
-      t("toast.rejected", { name }),
+      "success.rejected",
     );
   }
 
@@ -205,7 +207,7 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
                 onClick={() =>
                   runAction(
                     () => approveMerchantAction(merchant.id),
-                    t("toast.approved", { name }),
+                    "success.approved",
                   )
                 }
               >
@@ -220,7 +222,7 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
             onClick={() =>
               runAction(
                 () => suspendMerchantAction(merchant.id),
-                t("toast.suspended", { name }),
+                "success.suspended",
               )
             }
           >
@@ -233,7 +235,7 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
             onClick={() =>
               runAction(
                 () => approveMerchantAction(merchant.id),
-                t("toast.reactivated", { name }),
+                "success.reactivated",
               )
             }
           >

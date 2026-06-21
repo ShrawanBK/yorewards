@@ -11,7 +11,7 @@
 
 | Area                                           | Status     |
 | ---------------------------------------------- | ---------- |
-| Phase A — Admin guard + FDA scaffold           | ⏳ Planned |
+| Phase A — Admin guard + FDA scaffold           | ✅ Done |
 | Phase B — Admin shell + navigation             | ⏳ Planned |
 | Phase C — Platform dashboard                   | ⏳ Planned |
 | Phase D — Merchants (detail + polish)          | ⏳ Planned |
@@ -46,7 +46,7 @@ Customer PWA is **Day 7** — not in scope here.
 ## Build order (dependency chain)
 
 ```text
-0. Admin role guard + FDA scaffold (features/*)                         ⏳
+0. Admin role guard + FDA scaffold (features/*)                         ✅
       ↓
 1. AdminShell — nav: Dashboard, Merchants, Customers, Stamps, Audit     ⏳
       ↓
@@ -69,14 +69,14 @@ Customer PWA is **Day 7** — not in scope here.
 
 ### A1. Admin authorization
 
-- [ ] `requireAdminSession()` — session + verify `ADMIN_EMAIL` env or `user.app_metadata.role === 'admin'`
-- [ ] Apply to `(protected)/layout.tsx` and every server action
-- [ ] Return `fail("UNAUTHORIZED")` / `fail("FORBIDDEN")` — add codes to `@repo/utils/action-error` + `apps/admin/messages/en.json`
-- [ ] Document in Technical Doc §8.4
+- [x] `requireAdminSession()` — session + verify `ADMIN_EMAIL` env or `user.app_metadata.role === 'admin'`
+- [x] Apply to `(protected)/layout.tsx` and every server action
+- [x] Return `fail("UNAUTHORIZED")` / `fail("FORBIDDEN")` — add codes to `@repo/utils/action-error` + `apps/admin/messages/en.json`
+- [x] Document in Technical Doc §8.4
 
 ### A2. Feature-driven layout (`apps/admin/src/`)
 
-- [ ] Migrate from flat `components/` + `app/admin/actions.ts` toward FDA (match merchant pattern):
+- [x] Migrate from flat `components/` + `app/admin/actions.ts` toward FDA (match merchant pattern):
   - `features/auth/` — login form, guards
   - `features/merchants/` — queue, detail, actions
   - `features/dashboard/` — platform stats view
@@ -84,13 +84,13 @@ Customer PWA is **Day 7** — not in scope here.
   - `features/stamps/` — manual issue/void tool
   - `features/audit/` — audit log view
   - `widgets/AdminShell/` — sidebar nav + layout
-- [ ] Each feature: `index.ts` public API; thin pages in `app/admin/(protected)/`
+- [x] Each feature: `index.ts` public API; thin pages in `app/admin/(protected)/`
 
 ### A3. Shared admin utilities
 
-- [ ] `shared/utils/resolve-action-error.ts` — already exists; keep in sync with merchant
-- [ ] `shared/utils/action-feedback.ts` — success toasts (Sonner + i18n placeholders)
-- [ ] Root layout: confirm `Toaster` from `@repo/ui/sonner`
+- [x] `shared/utils/resolve-action-error.ts` — already exists; keep in sync with merchant
+- [x] `shared/utils/action-feedback.ts` — success toasts (Sonner + i18n placeholders)
+- [x] Root layout: confirm `Toaster` from `@repo/ui/sonner`
 
 ---
 

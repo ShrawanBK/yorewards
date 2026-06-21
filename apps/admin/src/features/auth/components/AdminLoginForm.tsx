@@ -9,8 +9,8 @@ import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { PasswordInput } from "@repo/ui/password-input";
 import { Field } from "@repo/ui/field";
-import { loginAction } from "@/app/admin/actions";
-import { resolveActionError } from "@/lib/resolve-action-error";
+import { loginAction } from "@/features/auth/api/authActions";
+import { resolveActionError } from "@/shared/utils/resolve-action-error";
 
 export function AdminLoginForm() {
   const t = useTranslations("auth");

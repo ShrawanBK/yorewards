@@ -67,16 +67,19 @@
       "required": "Add a reason before rejecting."
     },
     "toast": {
+      "error": "Something went wrong. Please try again."
+    },
+    "success": {
       "approved": "{name} approved",
       "rejected": "{name} rejected",
       "suspended": "{name} suspended",
-      "reactivated": "{name} reactivated",
-      "error": "Something went wrong. Please try again."
+      "reactivated": "{name} reactivated"
     }
   },
   "errors": {
     "actions": {
       "UNAUTHORIZED": "You must be signed in to continue.",
+      "FORBIDDEN": "This account does not have admin access.",
       "UNKNOWN": "Something went wrong. Please try again.",
       "AUTH_FAILED": "Authentication failed. Please try again.",
       "INVALID_CREDENTIALS": "Invalid email or password.",

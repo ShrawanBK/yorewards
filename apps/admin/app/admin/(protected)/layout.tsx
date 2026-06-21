@@ -1,15 +1,10 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@repo/supabase/server";
+import { requireAdminSession } from "@/features/auth";
 
 export default async function AdminProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/admin/login");
+  await requireAdminSession();
   return children;
 }

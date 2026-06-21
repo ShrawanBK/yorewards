@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
-import { getAllMerchantsAction, logoutAction } from "@/app/admin/actions";
-import { MerchantQueue } from "@/components/merchant-queue";
+import { logoutAction } from "@/features/auth";
+import { getAllMerchantsAction, MerchantQueue } from "@/features/merchants";
 import { Button } from "@repo/ui/button";
 
 export default async function AdminMerchantsPage() {

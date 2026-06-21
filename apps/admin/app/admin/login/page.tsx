@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui/card";
-import { AdminLoginForm } from "@/components/admin-login-form";
+import { AdminLoginForm } from "@/features/auth";
 
 export default function AdminLoginPage() {
   const t = useTranslations("auth");

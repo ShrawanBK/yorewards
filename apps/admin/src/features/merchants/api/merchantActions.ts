@@ -1,37 +1,17 @@
 "use server";
 
-import { redirect } from "next/navigation";
-import { createClient } from "@repo/supabase/server";
 import { createServiceRoleClient } from "@repo/supabase/service-role";
 import { getAllMerchants } from "@repo/supabase/queries/merchants";
 import type { MerchantStatus } from "@repo/supabase/types";
 import { revalidatePath } from "next/cache";
-import {
-  fail,
-  logActionFailure,
-  mapAuthErrorCode,
-} from "@repo/utils/action-error";
-import type { ActionResult } from "@repo/utils/action-error";
-
-export async function loginAction(formData: FormData) {
-  const email = String(formData.get("email") ?? "");
-  const password = String(formData.get("password") ?? "");
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) {
-    logActionFailure("adminLogin", error);
-    return fail(mapAuthErrorCode(error.message));
-  }
-  redirect("/admin/merchants");
-}
-
-export async function logoutAction() {
-  const supabase = await createClient();
-  await supabase.auth.signOut();
-  redirect("/admin/login");
-}
+import { fail, logActionFailure } from "@repo/utils/action-error";
+import type { ActionResult } from "@/shared/types/action-result";
+import { requireAdminForAction } from "@/features/auth/utils/requireAdminAuth";
 
 export async function getAllMerchantsAction() {
+  const guard = await requireAdminForAction();
+  if (!guard.ok) return [];
+
   return getAllMerchants();
 }
 
@@ -44,11 +24,8 @@ export type MerchantActionResult = ActionResult;
 export async function approveMerchantAction(
   merchantId: string,
 ): Promise<MerchantActionResult> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return fail("UNAUTHORIZED");
+  const guard = await requireAdminForAction();
+  if (!guard.ok) return guard.result;
 
   const admin = createServiceRoleClient();
   const { error: updateError } = await admin
@@ -56,7 +33,7 @@ export async function approveMerchantAction(
     .update({
       status: "active" satisfies MerchantStatus,
       approved_at: new Date().toISOString(),
-      approved_by: user.id,
+      approved_by: guard.user.id,
       rejection_reason: null,
     })
     .eq("id", merchantId)
@@ -68,7 +45,7 @@ export async function approveMerchantAction(
 
   await admin.from("audit_log").insert({
     action: "approve_merchant",
-    admin_id: user.id,
+    admin_id: guard.user.id,
     target_type: "merchant",
     target_id: merchantId,
   });
@@ -81,11 +58,8 @@ export async function approveMerchantAction(
 export async function suspendMerchantAction(
   merchantId: string,
 ): Promise<MerchantActionResult> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return fail("UNAUTHORIZED");
+  const guard = await requireAdminForAction();
+  if (!guard.ok) return guard.result;
 
   const admin = createServiceRoleClient();
   const { error: updateError } = await admin
@@ -100,7 +74,7 @@ export async function suspendMerchantAction(
 
   await admin.from("audit_log").insert({
     action: "suspend_merchant",
-    admin_id: user.id,
+    admin_id: guard.user.id,
     target_type: "merchant",
     target_id: merchantId,
   });
@@ -116,11 +90,8 @@ export async function rejectMerchantAction(
   const trimmedReason = reason.trim();
   if (!trimmedReason) return fail("REJECTION_REASON_REQUIRED");
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return fail("UNAUTHORIZED");
+  const guard = await requireAdminForAction();
+  if (!guard.ok) return guard.result;
 
   const admin = createServiceRoleClient();
   const { error: updateError } = await admin
@@ -138,7 +109,7 @@ export async function rejectMerchantAction(
 
   await admin.from("audit_log").insert({
     action: "reject_merchant",
-    admin_id: user.id,
+    admin_id: guard.user.id,
     target_type: "merchant",
     target_id: merchantId,
     notes: trimmedReason,

@@ -3,7 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@repo/ui/sonner";
-import { AuthProvider } from "@/stores/auth-store";
+import { AuthProvider } from "@/features/auth";
 import "./globals.css";
 
 const geistSans = Geist({

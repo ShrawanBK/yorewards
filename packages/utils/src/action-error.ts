@@ -5,6 +5,7 @@
 
 export type ActionErrorCode =
   | "UNAUTHORIZED"
+  | "FORBIDDEN"
   | "UNKNOWN"
   | "AUTH_FAILED"
   | "INVALID_CREDENTIALS"

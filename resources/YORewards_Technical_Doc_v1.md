@@ -16,7 +16,7 @@
 | Turborepo + pnpm workspace                                                | ✅ Done                                                                  |
 | Customer PWA — `apps/customer`                                            | ✅ Scaffolded — local `localhost:3000` · prod `app.yorewards.com`        |
 | Merchant Dashboard — `apps/merchant`                                      | ✅ Scaffolded — local `localhost:3001` · prod `merchant.yorewards.com`   |
-| Super Admin — `apps/admin`                                                | ✅ Scaffolded — local `localhost:3002` · prod `admin.yorewards.com`      |
+| Super Admin — `apps/admin`                                                | ✅ FDA scaffold + admin guard (Day 6 Phase A) · `localhost:3002` |
 | `@repo/eslint-config`, `@repo/typescript-config`, `@repo/tailwind-config` | ✅ Done — brand colors live in `tailwind-config`                         |
 | `@repo/ui`                                                                | ✅ Done — shadcn (`button`, `input`, `label`, `card`, `badge`, `sonner`) |
 | `@repo/supabase`, `@repo/utils`                                           | ✅ Done                                                                  |
@@ -35,7 +35,7 @@
 | Customer auth + wallet + scan + OTP                                       | ⏳ Day 7 — [`Day7_Checklist.md`](../resources/Day7_Checklist.md) |
 | PWA, privacy, production deploy                                           | ⏳ Day 8 — [`Day8_Checklist.md`](../resources/Day8_Checklist.md) |
 
-**Next up (Day 6):** Super Admin MVP — see [`Day6_Checklist.md`](../resources/Day6_Checklist.md). Optional: merchant manual E2E [`Day5_Checklist.md`](../resources/Day5_Checklist.md) §F2. V2: [`V2_Backlog.md`](../resources/V2_Backlog.md).
+**Next up (Day 6):** Phase B — AdminShell + navigation — see [`Day6_Checklist.md`](../resources/Day6_Checklist.md).
 
 ---
 
@@ -262,22 +262,24 @@ apps/merchant/
 ### 3.3 Super Admin (`apps/admin` · `localhost:3002` · `admin.yorewards.com`)
 
 ```
-apps/admin/
-├── app/
-│   ├── login/page.tsx                  → Email + password
-│   ├── dashboard/page.tsx              → Platform overview stats
-│   ├── merchants/page.tsx              → Merchant list + approval queue
-│   ├── merchants/[id]/page.tsx         → Merchant detail + action log
-│   ├── customers/page.tsx              → Customer list + suspend
-│   ├── stamps/page.tsx                 → Manual stamp issue/void
-│   └── audit/page.tsx                  → Full audit log
-├── components/
-│   ├── merchant-table/
-│   ├── customer-table/
-│   └── audit-log/
-└── lib/
-    ├── store/
-    └── hooks/
+apps/admin/src/
+├── features/
+│   ├── auth/           → login, guards (requireAdminSession)
+│   ├── merchants/      → queue + merchant actions ✅
+│   ├── dashboard/      → Phase C
+│   ├── customers/      → Phase E
+│   ├── stamps/         → Phase F
+│   └── audit/          → Phase G
+├── widgets/
+│   └── AdminShell/     → sidebar nav (Phase B)
+└── shared/
+    └── utils/          → resolve-action-error, action-feedback
+
+apps/admin/app/admin/
+├── login/page.tsx
+└── (protected)/
+    ├── layout.tsx      → requireAdminSession
+    └── merchants/page.tsx
 ```
 
 ### 3.4 Shared Packages Structure
@@ -943,6 +945,14 @@ NEXT_PUBLIC_APP_URL=https://app.yorewards.com
 NEXT_PUBLIC_ADMIN_URL=https://admin.yorewards.com
 ADMIN_EMAIL=your-admin-email@yorewards.com       # Single super admin account
 ```
+
+**Authorization (Day 6 Phase A):**
+
+- `requireAdminSession()` in `apps/admin/src/features/auth/utils/requireAdminAuth.ts` — used by `(protected)/layout.tsx`; redirects unauthenticated users to `/admin/login` and signs out non-admins.
+- `requireAdminForAction()` — used by every admin server action; returns `fail("UNAUTHORIZED")` or `fail("FORBIDDEN")`.
+- Admin check: `user.app_metadata.role === 'admin'` **or** signed-in email matches `ADMIN_EMAIL` (case-insensitive).
+- Login rejects non-admin credentials with `FORBIDDEN` after sign-out.
+- FDA layout under `apps/admin/src/features/*` (auth, merchants, dashboard, customers, stamps, audit) + `widgets/AdminShell`.
 
 ---
 

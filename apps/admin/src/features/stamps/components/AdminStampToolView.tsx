@@ -16,7 +16,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@repo/ui/dialog";
-import type { AdminStampCardLookup } from "@repo/supabase/queries/admin-stamps";
+import {
+  ADMIN_STAMP_SEARCH_TYPES,
+  type AdminStampCardLookup,
+  type AdminStampSearchType,
+} from "@repo/supabase/queries/admin-stamps";
 import type { RewardStatus } from "@repo/supabase/types";
 import {
   issueStampManualAction,
@@ -49,6 +53,7 @@ export function AdminStampToolView() {
   const format = useFormatter();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchType, setSearchType] = useState<AdminStampSearchType>("phone");
   const [notes, setNotes] = useState("");
   const [cards, setCards] = useState<AdminStampCardLookup[]>([]);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
@@ -84,7 +89,7 @@ export function AdminStampToolView() {
   function handleSearch(event: React.FormEvent) {
     event.preventDefault();
     startTransition(async () => {
-      const result = await lookupStampCardsAction(searchQuery);
+      const result = await lookupStampCardsAction(searchQuery, searchType);
       if ("error" in result) {
         showActionError(resolveActionError(tErrors, result.error));
         return;
@@ -108,7 +113,7 @@ export function AdminStampToolView() {
     startTransition(async () => {
       const result = await voidStampAction(sessionId, notes);
       setVoidTarget(null);
-      handleActionResult(result, "success.voided");
+      handleActionResult(result, "success.removed");
     });
   }
 
@@ -122,27 +127,52 @@ export function AdminStampToolView() {
       <Card className="admin-card">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">{t("search.title")}</CardTitle>
+          <p className="text-sm text-muted-foreground">{t("search.description")}</p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSearch} className="flex flex-col gap-4 sm:flex-row">
-            <div className="relative flex-1">
-              <Search
-                className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
-                aria-hidden
-              />
-              <Input
-                type="search"
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder={t("search.placeholder")}
-                className="pl-9"
-                aria-label={t("search.placeholder")}
-                disabled={isPending}
-              />
+          <form onSubmit={handleSearch} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+              <label className="flex w-full flex-col gap-1.5 sm:w-44 sm:shrink-0">
+                <span className="text-sm text-muted-foreground">{t("search.typeLabel")}</span>
+                <select
+                  value={searchType}
+                  onChange={(event) =>
+                    setSearchType(event.target.value as AdminStampSearchType)
+                  }
+                  className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
+                  aria-label={t("search.typeLabel")}
+                  disabled={isPending}
+                >
+                  {ADMIN_STAMP_SEARCH_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {t(`search.types.${type}.label`)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className="relative min-w-0 flex-1">
+                <Search
+                  className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+                  aria-hidden
+                />
+                <Input
+                  type={searchType === "phone" ? "tel" : "search"}
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder={t(`search.types.${searchType}.placeholder`)}
+                  className="pl-9"
+                  aria-label={t(`search.types.${searchType}.placeholder`)}
+                  disabled={isPending}
+                />
+              </div>
+              <Button
+                type="submit"
+                className="admin-btn-success w-full sm:w-auto sm:min-w-[6rem]"
+                disabled={isPending || !searchQuery.trim()}
+              >
+                {t("search.submit")}
+              </Button>
             </div>
-            <Button type="submit" disabled={isPending || !searchQuery.trim()}>
-              {t("search.submit")}
-            </Button>
           </form>
         </CardContent>
       </Card>
@@ -175,14 +205,17 @@ export function AdminStampToolView() {
                 className={`flex w-full items-center justify-between rounded-lg border px-4 py-3 text-left text-sm transition-colors ${
                   selectedCard?.customerCardId === card.customerCardId
                     ? "border-brand-green bg-brand-green/5"
-                    : "border-border hover:bg-muted/50"
+                    : "border-border hover:border-primary/30 hover:bg-muted/50"
                 }`}
               >
                 <span>
                   <span className="font-medium">{card.merchantName}</span>
                   <span className="text-muted-foreground"> · {card.cardName}</span>
+                  <span className="mt-0.5 block text-xs text-muted-foreground">
+                    {card.customerName ?? card.phone}
+                  </span>
                 </span>
-                <span className="text-muted-foreground">
+                <span className="shrink-0 text-muted-foreground">
                   {t("progress", {
                     current: card.currentStamps,
                     target: card.stampTarget,
@@ -259,6 +292,7 @@ export function AdminStampToolView() {
             <div className="flex flex-wrap gap-2">
               <Button
                 type="button"
+                className="admin-btn-success"
                 onClick={() => handleIssue(selectedCard.customerCardId)}
                 disabled={isPending}
               >
@@ -281,36 +315,40 @@ export function AdminStampToolView() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
-                      {selectedCard.recentApprovedSessions.map((session) => (
-                        <tr key={session.id}>
-                          <td className="px-4 py-2 text-muted-foreground">
-                            {format.dateTime(new Date(session.createdAt), {
-                              dateStyle: "medium",
-                              timeStyle: "short",
-                            })}
-                          </td>
-                          <td className="px-4 py-2">
-                            {formatSource(t, session.source)}
-                          </td>
-                          <td className="px-4 py-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              className="text-destructive hover:text-destructive"
-                              disabled={isPending}
-                              onClick={() =>
-                                setVoidTarget({
-                                  sessionId: session.id,
-                                  card: selectedCard,
-                                })
-                              }
-                            >
-                              {t("actions.void")}
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
+                      {selectedCard.recentApprovedSessions.map((session) => {
+                        const sessionDate = format.dateTime(
+                          new Date(session.createdAt),
+                          { dateStyle: "medium", timeStyle: "short" },
+                        );
+                        return (
+                          <tr key={session.id}>
+                            <td className="px-4 py-2 text-muted-foreground">
+                              <time dateTime={session.createdAt}>{sessionDate}</time>
+                            </td>
+                            <td className="px-4 py-2">
+                              {formatSource(t, session.source)}
+                            </td>
+                            <td className="px-4 py-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="admin-btn-danger-soft min-w-[5.5rem]"
+                                disabled={isPending}
+                                aria-label={t("actions.removeAria", { date: sessionDate })}
+                                onClick={() =>
+                                  setVoidTarget({
+                                    sessionId: session.id,
+                                    card: selectedCard,
+                                  })
+                                }
+                              >
+                                {t("actions.remove")}
+                              </Button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -325,14 +363,15 @@ export function AdminStampToolView() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <TriangleAlert className="size-5 text-destructive" aria-hidden />
-              {t("confirm.voidTitle")}
+              {t("confirm.removeTitle")}
             </DialogTitle>
-            <DialogDescription>{t("confirm.voidDescription")}</DialogDescription>
+            <DialogDescription>{t("confirm.removeDescription")}</DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:gap-0">
             <Button
               type="button"
               variant="outline"
+              className="admin-btn-outline"
               onClick={() => setVoidTarget(null)}
               disabled={isPending}
             >
@@ -340,11 +379,11 @@ export function AdminStampToolView() {
             </Button>
             <Button
               type="button"
-              variant="destructive"
+              className="admin-btn-destructive"
               onClick={handleVoidConfirm}
               disabled={isPending}
             >
-              {t("actions.voidConfirm")}
+              {t("actions.removeConfirm")}
             </Button>
           </DialogFooter>
         </DialogContent>

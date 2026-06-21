@@ -6,5 +6,6 @@ export {
   getMerchantDetailAction,
   rejectMerchantAction,
   suspendMerchantAction,
+  reactivateMerchantAction,
   type MerchantActionResult,
 } from "@/features/merchants/api/merchantActions";

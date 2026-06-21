@@ -1,2 +1,2 @@
-/** Audit log UI — Day 6 Phase G. */
-export {};
+export { AdminAuditLogView } from "./components/AdminAuditLogView";
+export { getAuditLogAction } from "./api/auditActions";

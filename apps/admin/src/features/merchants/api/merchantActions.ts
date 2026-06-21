@@ -66,7 +66,11 @@ export async function approveMerchantAction(
 /** Move an active merchant to `suspended`. */
 export async function suspendMerchantAction(
   merchantId: string,
+  reason: string,
 ): Promise<MerchantActionResult> {
+  const trimmedReason = reason.trim();
+  if (!trimmedReason) return fail("ACTION_REASON_REQUIRED");
+
   const guard = await requireAdminForAction();
   if (!guard.ok) return guard.result;
 
@@ -86,10 +90,55 @@ export async function suspendMerchantAction(
     admin_id: guard.user.id,
     target_type: "merchant",
     target_id: merchantId,
+    notes: trimmedReason,
   });
 
   revalidatePath("/admin/merchants");
   revalidatePath(`/admin/merchants/${merchantId}`);
+  revalidatePath("/admin/audit");
+  revalidatePath("/admin/dashboard");
+  return {};
+}
+
+/** Reactivate a suspended merchant (does not apply to pending/rejected). */
+export async function reactivateMerchantAction(
+  merchantId: string,
+  reason: string,
+): Promise<MerchantActionResult> {
+  const trimmedReason = reason.trim();
+  if (!trimmedReason) return fail("ACTION_REASON_REQUIRED");
+
+  const guard = await requireAdminForAction();
+  if (!guard.ok) return guard.result;
+
+  const admin = createServiceRoleClient();
+  const { error: updateError } = await admin
+    .from("merchants")
+    .update({
+      status: "active" satisfies MerchantStatus,
+      approved_at: new Date().toISOString(),
+      approved_by: guard.user.id,
+      rejection_reason: null,
+    })
+    .eq("id", merchantId)
+    .eq("status", "suspended" satisfies MerchantStatus);
+  if (updateError) {
+    logActionFailure("reactivateMerchant", updateError);
+    return fail("MERCHANT_UPDATE_FAILED");
+  }
+
+  await admin.from("audit_log").insert({
+    action: "reactivate_merchant",
+    admin_id: guard.user.id,
+    target_type: "merchant",
+    target_id: merchantId,
+    notes: trimmedReason,
+  });
+
+  revalidatePath("/admin/merchants");
+  revalidatePath(`/admin/merchants/${merchantId}`);
+  revalidatePath("/admin/audit");
+  revalidatePath("/admin/dashboard");
   return {};
 }
 

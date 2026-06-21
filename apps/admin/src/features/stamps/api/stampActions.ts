@@ -2,9 +2,12 @@
 
 import { createServiceRoleClient } from "@repo/supabase/service-role";
 import {
+  isAdminStampSearchType,
+  isValidAdminStampCardId,
   lookupAdminStampCards,
   refreshAdminStampCardLookup,
   type AdminStampCardLookup,
+  type AdminStampSearchType,
 } from "@repo/supabase/queries/admin-stamps";
 import { revalidatePath } from "next/cache";
 import { fail, logActionFailure } from "@repo/utils/action-error";
@@ -15,21 +18,30 @@ export type StampActionResult = ActionResult<{ card?: AdminStampCardLookup }>;
 
 export async function lookupStampCardsAction(
   query: string,
+  searchType: AdminStampSearchType,
 ): Promise<{ cards: AdminStampCardLookup[] } | { error: StampActionResult["error"] }> {
   const guard = await requireAdminForAction();
   if (!guard.ok) return { error: guard.result.error };
+
+  if (!isAdminStampSearchType(searchType)) {
+    return { error: fail("STAMP_INVALID_SEARCH_TYPE").error };
+  }
 
   const trimmed = query.trim();
   if (!trimmed) {
     return { error: fail("STAMP_SEARCH_REQUIRED").error };
   }
 
+  if (searchType === "card_id" && !isValidAdminStampCardId(trimmed)) {
+    return { error: fail("STAMP_INVALID_CARD_ID").error };
+  }
+
   try {
-    const cards = await lookupAdminStampCards(trimmed);
+    const cards = await lookupAdminStampCards(trimmed, searchType);
     return { cards };
   } catch (err) {
     logActionFailure("lookupStampCards", err);
-    return { error: fail("UNKNOWN").error };
+    return { error: fail("STAMP_LOOKUP_FAILED").error };
   }
 }
 

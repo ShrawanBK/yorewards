@@ -21,7 +21,7 @@ import type { PlatformActivityItem, PlatformStatsPeriod } from "@repo/supabase/q
 const PERIODS: PlatformStatsPeriod[] = ["today", "week", "month"];
 
 function ActivityRow({ item }: { item: PlatformActivityItem }) {
-  const tActions = useTranslations("dashboard.activity.actions");
+  const tActions = useTranslations("audit.actions");
   const format = useFormatter();
 
   let label = item.action;

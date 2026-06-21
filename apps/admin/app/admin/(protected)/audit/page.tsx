@@ -1,20 +1,6 @@
-import { getTranslations } from "next-intl/server";
-import { Card, CardContent } from "@repo/ui/card";
+import { AdminAuditLogView, getAuditLogAction } from "@/features/audit";
 
-export default async function AdminAuditPlaceholderPage() {
-  const t = await getTranslations("placeholders.audit");
-
-  return (
-    <div className="flex flex-col gap-6">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
-      </header>
-      <Card className="admin-card">
-        <CardContent className="py-10 text-center text-sm text-muted-foreground">
-          {t("comingSoon")}
-        </CardContent>
-      </Card>
-    </div>
-  );
+export default async function AdminAuditPage() {
+  const initialPage = await getAuditLogAction({ limit: 25, offset: 0, filter: "all" });
+  return <AdminAuditLogView initialPage={initialPage} />;
 }

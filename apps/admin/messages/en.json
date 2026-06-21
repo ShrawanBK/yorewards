@@ -55,23 +55,7 @@
     },
     "activity": {
       "title": "Recent admin activity",
-      "empty": "No admin actions recorded yet.",
-      "actions": {
-        "approve_merchant": "Merchant approved",
-        "reject_merchant": "Merchant rejected",
-        "suspend_merchant": "Merchant suspended",
-        "suspend_customer": "Customer suspended",
-        "reactivate_customer": "Customer reactivated",
-        "issue_stamp_manual": "Stamp issued manually",
-        "void_stamp": "Stamp voided"
-      }
-    }
-  },
-  "placeholders": {
-    "audit": {
-      "title": "Audit log",
-      "subtitle": "Full history of admin actions.",
-      "comingSoon": "The full audit log view is coming in the next build phase."
+      "empty": "No admin actions recorded yet."
     }
   },
   "auth": {
@@ -100,6 +84,7 @@
   "merchants": {
     "title": "Merchants",
     "subtitle": "Review registrations and manage merchant access.",
+    "searchPlaceholder": "Search by business name, email, or phone",
     "filters": {
       "all": "All",
       "pending": "Pending",
@@ -134,6 +119,18 @@
       "placeholder": "Reason for rejection",
       "label": "Rejection reason for {name}",
       "required": "Add a reason before rejecting."
+    },
+    "confirm": {
+      "cancel": "Cancel",
+      "reasonRequired": "Add a reason to continue.",
+      "suspendTitle": "Suspend {name}?",
+      "suspendDescription": "This merchant will lose access to the dashboard and stamp tools until reactivated.",
+      "suspendReasonLabel": "Why are you suspending this merchant?",
+      "suspendReasonPlaceholder": "e.g. Policy violation, duplicate account…",
+      "reactivateTitle": "Reactivate {name}?",
+      "reactivateDescription": "This merchant will regain full dashboard access.",
+      "reactivateReasonLabel": "Why are you reactivating this merchant?",
+      "reactivateReasonPlaceholder": "e.g. Issue resolved, appeal approved…"
     },
     "toast": {
       "error": "Something went wrong. Please try again."
@@ -221,15 +218,38 @@
   },
   "stamps": {
     "title": "Manual stamps",
-    "subtitle": "Look up a customer card, issue a stamp, or void an approved session.",
+    "subtitle": "Find a loyalty card, then issue or remove stamps when the normal QR flow is not enough.",
     "search": {
       "title": "Look up card",
-      "placeholder": "Customer phone or card ID",
-      "submit": "Search"
+      "description": "Choose what to search by, then enter the value.",
+      "typeLabel": "Search by",
+      "submit": "Search",
+      "types": {
+        "phone": {
+          "label": "Phone",
+          "placeholder": "Customer phone number…"
+        },
+        "customer_name": {
+          "label": "Customer name",
+          "placeholder": "Customer name…"
+        },
+        "merchant_name": {
+          "label": "Merchant",
+          "placeholder": "Merchant business name…"
+        },
+        "loyalty_card_name": {
+          "label": "Loyalty card",
+          "placeholder": "Loyalty card name…"
+        },
+        "card_id": {
+          "label": "Card ID",
+          "placeholder": "Full card UUID…"
+        }
+      }
     },
     "empty": {
       "title": "No card found",
-      "description": "Check the phone number or card ID and try again."
+      "description": "No loyalty card matched that search. Try another value or search type."
     },
     "picker": {
       "title": "Multiple cards found — select one"
@@ -266,17 +286,60 @@
     },
     "actions": {
       "issue": "Issue stamp",
-      "void": "Void",
-      "voidConfirm": "Void stamp"
+      "remove": "Remove",
+      "removeConfirm": "Remove stamp",
+      "removeAria": "Remove stamp from {date}"
     },
     "confirm": {
-      "voidTitle": "Void this stamp?",
-      "voidDescription": "This cannot be undone. The stamp count will decrease and the session will be marked voided.",
+      "removeTitle": "Remove this stamp?",
+      "removeDescription": "This cannot be undone. The customer's stamp count will go down by one.",
       "cancel": "Cancel"
     },
     "success": {
       "issued": "Stamp issued for {name} at {merchant}",
-      "voided": "Stamp voided for {name}"
+      "removed": "Stamp removed for {name}"
+    }
+  },
+  "audit": {
+    "title": "Audit log",
+    "subtitle": "Full history of admin actions on the platform.",
+    "filters": {
+      "label": "Filter by target",
+      "all": "All",
+      "merchant": "Merchants",
+      "customer": "Customers",
+      "stamp": "Stamps"
+    },
+    "table": {
+      "time": "Time",
+      "action": "Action",
+      "admin": "Admin",
+      "target": "Target",
+      "notes": "Notes"
+    },
+    "targetTypes": {
+      "merchant": "Merchant",
+      "customer": "Customer",
+      "stamp": "Stamp",
+      "redemption": "Redemption"
+    },
+    "actions": {
+      "approve_merchant": "Merchant approved",
+      "reject_merchant": "Merchant rejected",
+      "suspend_merchant": "Merchant suspended",
+      "reactivate_merchant": "Merchant reactivated",
+      "suspend_customer": "Customer suspended",
+      "reactivate_customer": "Customer reactivated",
+      "issue_stamp_manual": "Stamp issued manually",
+      "void_stamp": "Stamp removed"
+    },
+    "empty": {
+      "title": "No actions yet",
+      "description": "Admin actions will appear here as you manage merchants, customers, and stamps."
+    },
+    "loadMore": {
+      "label": "Load more",
+      "pending": "Loading…"
     }
   },
   "errors": {
@@ -290,12 +353,16 @@
       "MERCHANT_NOT_FOUND": "Merchant not found.",
       "CUSTOMER_NOT_FOUND": "Customer not found.",
       "CUSTOMER_UPDATE_FAILED": "Could not update customer. Please try again.",
-      "STAMP_SEARCH_REQUIRED": "Enter a phone number or card ID to search.",
+      "STAMP_SEARCH_REQUIRED": "Enter a value to search.",
+      "STAMP_INVALID_SEARCH_TYPE": "Invalid search type. Please refresh and try again.",
+      "STAMP_INVALID_CARD_ID": "Enter a full card UUID (e.g. a1b2c3d4-e5f6-7890-abcd-ef1234567890).",
+      "STAMP_LOOKUP_FAILED": "Card search failed. Check your connection and try again.",
       "CUSTOMER_CARD_NOT_FOUND": "Customer card not found.",
       "STAMP_SESSION_NOT_FOUND": "Stamp session not found.",
       "STAMP_ISSUE_FAILED": "Could not issue stamp. Please try again.",
-      "STAMP_VOID_FAILED": "Could not void stamp. Only approved sessions can be voided.",
-      "REJECTION_REASON_REQUIRED": "Add a reason before rejecting."
+      "STAMP_VOID_FAILED": "Could not remove stamp. Only approved stamps can be removed.",
+      "REJECTION_REASON_REQUIRED": "Add a reason before rejecting.",
+      "ACTION_REASON_REQUIRED": "Add a reason before continuing."
     }
   }
 }

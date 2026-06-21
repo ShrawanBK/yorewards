@@ -17,7 +17,7 @@
 | Phase D — Merchants (detail + polish)          | ✅ Done |
 | Phase E — Customer management                  | ✅ Done |
 | Phase F — Manual stamp tool                      | ✅ Done |
-| Phase G — Audit log UI                         | ⏳ Planned |
+| Phase G — Audit log UI                         | ✅ Done |
 | Phase H — Hardening + sign-off                 | ⏳ Planned |
 | Day 6 git commit                               | ⏳ When you ask |
 
@@ -203,20 +203,20 @@ Customer PWA is **Day 7** — not in scope here.
 
 ### G1. Query layer
 
-- [ ] `getAuditLog({ limit, offset, action?, targetType? })`
-- [ ] Join admin user email if available (optional MVP: show admin_id short)
+- [x] `getAuditLog({ limit, offset, action?, targetType? })`
+- [x] Join admin user email if available (optional MVP: show admin_id short)
 
 ### G2. UI
 
-- [ ] `features/audit/components/AdminAuditLogView.tsx`
-- [ ] Table: timestamp, action (translated label), target, notes
-- [ ] Filter tabs: All | Merchants | Customers | Stamps
-- [ ] Pagination or “load more”
-- [ ] i18n: `audit.actions.*`, `audit.*`
+- [x] `features/audit/components/AdminAuditLogView.tsx`
+- [x] Table: timestamp, action (translated label), target, notes
+- [x] Filter tabs: All | Merchants | Customers | Stamps
+- [x] Pagination or “load more”
+- [x] i18n: `audit.actions.*`, `audit.*`
 
 ### G3. Route
 
-- [ ] `app/admin/(protected)/audit/page.tsx`
+- [x] `app/admin/(protected)/audit/page.tsx`
 
 ---
 

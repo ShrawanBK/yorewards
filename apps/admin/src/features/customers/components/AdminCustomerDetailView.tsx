@@ -81,7 +81,7 @@ export function AdminCustomerDetailView({ detail }: { detail: AdminCustomerDetai
         {customer.status === "active" ? (
           <Button
             type="button"
-            variant="destructive"
+            className="admin-btn-destructive"
             onClick={() => setConfirmAction("suspend")}
           >
             {t("actions.suspend")}
@@ -89,7 +89,7 @@ export function AdminCustomerDetailView({ detail }: { detail: AdminCustomerDetai
         ) : (
           <Button
             type="button"
-            className="bg-brand-green hover:bg-brand-green/90"
+            className="admin-btn-success"
             onClick={() => setConfirmAction("reactivate")}
           >
             {t("actions.reactivate")}
@@ -201,14 +201,13 @@ function CustomerDetailConfirmDialog({
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button type="button" variant="outline" disabled={isPending} onClick={onClose}>
+          <Button type="button" variant="outline" className="admin-btn-outline" disabled={isPending} onClick={onClose}>
             {t("confirm.cancel")}
           </Button>
           <Button
             type="button"
-            variant={action === "suspend" ? "destructive" : "default"}
             className={
-              action === "reactivate" ? "bg-brand-green hover:bg-brand-green/90" : undefined
+              action === "reactivate" ? "admin-btn-success" : "admin-btn-destructive"
             }
             disabled={isPending}
             onClick={() =>

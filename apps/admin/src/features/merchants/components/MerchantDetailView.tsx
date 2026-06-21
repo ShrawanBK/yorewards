@@ -15,7 +15,7 @@ import {
 export function MerchantDetailView({ detail }: { detail: AdminMerchantDetail }) {
   const t = useTranslations("merchants");
   const tDetail = useTranslations("merchants.detail");
-  const tAudit = useTranslations("dashboard.activity.actions");
+  const tAudit = useTranslations("audit.actions");
   const format = useFormatter();
   const { merchant, loyaltyCard, branchesCount, activeBranchesCount, recentAudit } =
     detail;

@@ -1,5 +1,4 @@
 import { createServiceRoleClient } from "../service-role";
-import { findCustomerByPhone } from "./customers";
 import type { RewardStatus } from "../types";
 
 export type AdminStampSessionRow = {
@@ -23,6 +22,20 @@ export type AdminStampCardLookup = {
   recentApprovedSessions: AdminStampSessionRow[];
 };
 
+export const ADMIN_STAMP_SEARCH_TYPES = [
+  "phone",
+  "customer_name",
+  "merchant_name",
+  "loyalty_card_name",
+  "card_id",
+] as const;
+
+export type AdminStampSearchType = (typeof ADMIN_STAMP_SEARCH_TYPES)[number];
+
+export function isAdminStampSearchType(value: string): value is AdminStampSearchType {
+  return (ADMIN_STAMP_SEARCH_TYPES as readonly string[]).includes(value);
+}
+
 type CustomerCardQueryRow = {
   id: string;
   customer_id: string;
@@ -36,6 +49,18 @@ type CustomerCardQueryRow = {
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const LOOKUP_LIMIT = 50;
+
+function escapeIlikePattern(value: string): string {
+  return value.replace(/[%_\\]/g, "\\$&");
+}
+
+function phoneIlikePattern(query: string): string {
+  const digits = query.replace(/\D/g, "");
+  const term = digits.length > 0 ? digits : query.trim();
+  return `%${escapeIlikePattern(term)}%`;
+}
 
 async function getApprovedSessionsForCard(
   cardId: string,
@@ -102,32 +127,119 @@ async function getAdminStampCardLookup(
   };
 }
 
-/** Search by customer phone or customer_cards.id (UUID). */
+async function findCardIdsByCustomerIds(customerIds: string[]): Promise<string[]> {
+  if (customerIds.length === 0) return [];
+
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("customer_cards")
+    .select("id")
+    .in("customer_id", customerIds)
+    .limit(LOOKUP_LIMIT);
+
+  if (error) throw error;
+  return (data ?? []).map((row) => row.id);
+}
+
+async function findCardIdsByMerchantIds(merchantIds: string[]): Promise<string[]> {
+  if (merchantIds.length === 0) return [];
+
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("customer_cards")
+    .select("id")
+    .in("merchant_id", merchantIds)
+    .limit(LOOKUP_LIMIT);
+
+  if (error) throw error;
+  return (data ?? []).map((row) => row.id);
+}
+
+async function findCardIdsByLoyaltyCardIds(loyaltyCardIds: string[]): Promise<string[]> {
+  if (loyaltyCardIds.length === 0) return [];
+
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("customer_cards")
+    .select("id")
+    .in("loyalty_card_id", loyaltyCardIds)
+    .limit(LOOKUP_LIMIT);
+
+  if (error) throw error;
+  return (data ?? []).map((row) => row.id);
+}
+
+async function findCardIdsForLookup(
+  query: string,
+  searchType: AdminStampSearchType,
+): Promise<string[]> {
+  const supabase = createServiceRoleClient();
+
+  if (searchType === "card_id") {
+    return UUID_RE.test(query) ? [query] : [];
+  }
+
+  if (searchType === "phone") {
+    const { data, error } = await supabase
+      .from("customers")
+      .select("id")
+      .is("deleted_at", null)
+      .ilike("phone", phoneIlikePattern(query))
+      .limit(LOOKUP_LIMIT);
+
+    if (error) throw error;
+    const customerIds = (data ?? []).map((row) => row.id);
+    return findCardIdsByCustomerIds(customerIds);
+  }
+
+  if (searchType === "customer_name") {
+    const ilikePattern = `%${escapeIlikePattern(query)}%`;
+    const { data, error } = await supabase
+      .from("customers")
+      .select("id")
+      .is("deleted_at", null)
+      .ilike("name", ilikePattern)
+      .limit(LOOKUP_LIMIT);
+
+    if (error) throw error;
+    const customerIds = (data ?? []).map((row) => row.id);
+    return findCardIdsByCustomerIds(customerIds);
+  }
+
+  if (searchType === "merchant_name") {
+    const ilikePattern = `%${escapeIlikePattern(query)}%`;
+    const { data, error } = await supabase
+      .from("merchants")
+      .select("id")
+      .ilike("business_name", ilikePattern)
+      .limit(LOOKUP_LIMIT);
+
+    if (error) throw error;
+    const merchantIds = (data ?? []).map((row) => row.id);
+    return findCardIdsByMerchantIds(merchantIds);
+  }
+
+  const ilikePattern = `%${escapeIlikePattern(query)}%`;
+  const { data, error } = await supabase
+    .from("loyalty_cards")
+    .select("id")
+    .ilike("card_name", ilikePattern)
+    .limit(LOOKUP_LIMIT);
+
+  if (error) throw error;
+  const loyaltyCardIds = (data ?? []).map((row) => row.id);
+  return findCardIdsByLoyaltyCardIds(loyaltyCardIds);
+}
+
+/** Search loyalty cards by the selected field (phone, name, merchant, card name, or card UUID). */
 export async function lookupAdminStampCards(
   query: string,
+  searchType: AdminStampSearchType,
 ): Promise<AdminStampCardLookup[]> {
   const trimmed = query.trim();
   if (!trimmed) return [];
 
-  let cardIds: string[] = [];
-
-  if (UUID_RE.test(trimmed)) {
-    cardIds = [trimmed];
-  } else {
-    const customer = await findCustomerByPhone(trimmed);
-    if (!customer) return [];
-
-    const supabase = createServiceRoleClient();
-    const { data, error } = await supabase
-      .from("customer_cards")
-      .select("id")
-      .eq("customer_id", customer.id)
-      .order("last_stamped_at", { ascending: false, nullsFirst: false });
-
-    if (error) throw error;
-    cardIds = (data ?? []).map((row) => row.id);
-  }
-
+  const cardIds = (await findCardIdsForLookup(trimmed, searchType)).slice(0, 20);
   if (cardIds.length === 0) return [];
 
   const lookups = await Promise.all(
@@ -141,4 +253,8 @@ export async function refreshAdminStampCardLookup(
   cardId: string,
 ): Promise<AdminStampCardLookup | null> {
   return getAdminStampCardLookup(cardId);
+}
+
+export function isValidAdminStampCardId(value: string): boolean {
+  return UUID_RE.test(value.trim());
 }

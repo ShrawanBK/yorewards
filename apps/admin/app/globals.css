@@ -38,4 +38,20 @@
   .admin-stat-label {
     @apply text-sm font-semibold tracking-wide text-muted-foreground uppercase;
   }
+
+  .admin-btn-destructive {
+    @apply cursor-pointer border border-destructive/80 bg-destructive text-white shadow-sm transition-all duration-150 ease-out hover:border-destructive hover:bg-destructive hover:brightness-110 hover:shadow-md active:scale-[0.98] active:brightness-95 active:shadow-sm;
+  }
+
+  .admin-btn-success {
+    @apply cursor-pointer border border-brand-green/80 bg-brand-green text-white shadow-sm transition-all duration-150 ease-out hover:border-brand-green hover:bg-brand-green hover:brightness-110 hover:shadow-md active:scale-[0.98] active:brightness-95 active:shadow-sm;
+  }
+
+  .admin-btn-outline {
+    @apply cursor-pointer border border-border bg-background shadow-sm transition-all duration-150 ease-out hover:border-primary/40 hover:bg-muted hover:shadow-md active:scale-[0.98] active:bg-muted/80;
+  }
+
+  .admin-btn-danger-soft {
+    @apply cursor-pointer border border-destructive/40 bg-destructive/5 text-destructive shadow-sm transition-all duration-150 ease-out hover:border-destructive hover:bg-destructive/15 hover:text-destructive hover:shadow-md active:scale-[0.98] active:bg-destructive/20;
+  }
 }

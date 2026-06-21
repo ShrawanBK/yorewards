@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
+import { Input } from "@repo/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@repo/ui/tabs";
 import type { Database, MerchantStatus } from "@repo/supabase/types";
 import {
@@ -30,6 +31,7 @@ const FILTERS: FilterValue[] = ["all", ...STATUS_ORDER];
 export function MerchantQueue({ merchants }: { merchants: Merchant[] }) {
   const t = useTranslations("merchants");
   const [filter, setFilter] = useState<FilterValue>("all");
+  const [query, setQuery] = useState("");
   const [countryFilter, setCountryFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
@@ -67,7 +69,28 @@ export function MerchantQueue({ merchants }: { merchants: Merchant[] }) {
       rows = rows.filter((merchant) => merchant.category === categoryFilter);
     }
 
-    if (filter === "all" && countryFilter === "all" && categoryFilter === "all") {
+    const q = query.trim().toLowerCase();
+    if (q) {
+      rows = rows.filter((merchant) => {
+        const name = merchant.business_name.toLowerCase();
+        const email = merchant.email.toLowerCase();
+        const phone = merchant.phone?.toLowerCase() ?? "";
+        const category = merchant.category.toLowerCase();
+        return (
+          name.includes(q) ||
+          email.includes(q) ||
+          phone.includes(q) ||
+          category.includes(q)
+        );
+      });
+    }
+
+    if (
+      filter === "all" &&
+      countryFilter === "all" &&
+      categoryFilter === "all" &&
+      !q
+    ) {
       return [...rows].sort(
         (a, b) =>
           STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status),
@@ -75,7 +98,7 @@ export function MerchantQueue({ merchants }: { merchants: Merchant[] }) {
     }
 
     return rows;
-  }, [merchants, filter, countryFilter, categoryFilter]);
+  }, [merchants, filter, countryFilter, categoryFilter, query]);
 
   return (
     <div className="space-y-4">
@@ -88,6 +111,21 @@ export function MerchantQueue({ merchants }: { merchants: Merchant[] }) {
           ))}
         </TabsList>
       </Tabs>
+
+      <div className="relative max-w-md">
+        <Search
+          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+          aria-hidden
+        />
+        <Input
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder={t("searchPlaceholder")}
+          className="pl-9"
+          aria-label={t("searchPlaceholder")}
+        />
+      </div>
 
       <div className="flex flex-wrap items-center gap-3">
         <label className="flex items-center gap-2 text-sm">
@@ -182,7 +220,7 @@ function MerchantCard({ merchant }: { merchant: Merchant }) {
       </CardHeader>
       <CardContent className="space-y-3">
         <MerchantAdminActions merchant={merchant} />
-        <Button asChild variant="outline" size="sm" className="gap-1">
+        <Button asChild variant="outline" size="sm" className="admin-btn-outline gap-1">
           <Link href={`/admin/merchants/${merchant.id}`}>
             {t("detail.view")}
             <ArrowRight className="size-4" aria-hidden />

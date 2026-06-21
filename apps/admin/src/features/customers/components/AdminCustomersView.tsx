@@ -169,8 +169,8 @@ function CustomerRow({
           {customer.status === "active" ? (
             <Button
               type="button"
-              variant="destructive"
               size="sm"
+              className="admin-btn-destructive"
               onClick={() => onConfirm("suspend")}
             >
               {t("actions.suspend")}
@@ -179,13 +179,13 @@ function CustomerRow({
             <Button
               type="button"
               size="sm"
-              className="bg-brand-green hover:bg-brand-green/90"
+              className="admin-btn-success"
               onClick={() => onConfirm("reactivate")}
             >
               {t("actions.reactivate")}
             </Button>
           )}
-          <Button asChild variant="outline" size="sm" className="gap-1">
+          <Button asChild variant="outline" size="sm" className="admin-btn-outline gap-1">
             <Link href={`/admin/customers/${customer.id}`}>
               {t("actions.view")}
               <ArrowRight className="size-4" aria-hidden />
@@ -243,14 +243,13 @@ function CustomerConfirmDialog({
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button type="button" variant="outline" disabled={isPending} onClick={onClose}>
+          <Button type="button" variant="outline" className="admin-btn-outline" disabled={isPending} onClick={onClose}>
             {t("confirm.cancel")}
           </Button>
           <Button
             type="button"
-            variant={action === "suspend" ? "destructive" : "default"}
             className={
-              action === "reactivate" ? "bg-brand-green hover:bg-brand-green/90" : undefined
+              action === "reactivate" ? "admin-btn-success" : "admin-btn-destructive"
             }
             disabled={isPending}
             onClick={() =>

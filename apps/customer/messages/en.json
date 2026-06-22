@@ -56,6 +56,26 @@
     "phone": "Phone",
     "logout": "Log out"
   },
+  "wallet": {
+    "title": "Wallet",
+    "stamps": "Stamps",
+    "stampProgress": "{current} / {target}",
+    "stampProgressAria": "{current} of {target} stamps collected",
+    "rewardReady": "Reward ready",
+    "loadError": "We couldn't load your wallet — pull to refresh or try again.",
+    "backToWallet": "Back to wallet",
+    "detailComingSoon": "Card details coming soon",
+    "detailComingSoonHint": "Full stamp grid and reward info arrive in the next update.",
+    "banner": {
+      "title": "You have a reward ready to claim",
+      "description": "Open a card below to verify your phone and get your redemption code."
+    },
+    "empty": {
+      "title": "No cards yet",
+      "description": "Scan a QR code at a participating business to collect your first stamp.",
+      "cta": "Scan QR code"
+    }
+  },
   "errors": {
     "actions": {
       "UNKNOWN": "Something went wrong — please try again.",
@@ -65,7 +85,8 @@
       "CUSTOMER_LOGIN_FAILED": "We couldn't sign you in — please try again.",
       "CUSTOMER_ONBOARDING_FAILED": "We couldn't finish setup — please try again.",
       "CUSTOMER_ALREADY_EXISTS": "This phone is already registered — try signing in instead.",
-      "CUSTOMER_SUSPENDED": "Your account is suspended. Contact support if you think this is a mistake."
+      "CUSTOMER_SUSPENDED": "Your account is suspended. Contact support if you think this is a mistake.",
+      "WALLET_LOAD_FAILED": "We couldn't load your wallet — please try again."
     }
   }
 }

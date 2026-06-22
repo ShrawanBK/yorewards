@@ -11,9 +11,9 @@
 
 | Area                                              | Status     |
 | ------------------------------------------------- | ---------- |
-| Phase 0 — Prerequisites + FDA scaffold            | ⏳ In progress (tsconfig `@/src`, auth FDA) |
+| Phase 0 — Prerequisites + FDA scaffold            | ⏳ Partial (QueryProvider, wallet FDA; scan deps pending) |
 | Phase A — Customer auth + onboarding              | ✅ Done |
-| Phase B — Wallet home + card grid                 | ⏳ Planned |
+| Phase B — Wallet home + card grid                 | ✅ Done |
 | Phase C — QR scan + stamp session                 | ⏳ Planned |
 | Phase D — Pending / success / rejected screens    | ⏳ Planned |
 | Phase E — Card detail + stamp animations          | ⏳ Planned |
@@ -75,11 +75,11 @@ A customer can:
 ## Build order (dependency chain)
 
 ```text
-0. Phase 0 — FDA scaffold, QueryProvider, deps, env vars                    ⏳
+0. Phase 0 — FDA scaffold, QueryProvider, deps (partial)                 ⏳
       ↓
-1. Phase A — Finish auth + onboarding (error codes, redirects)               ⏳ partial
+1. Phase A — Finish auth + onboarding (error codes, redirects)               ✅
       ↓
-2. Phase B + H1 — getCustomerWalletCards + useCustomerWallet                ⏳
+2. Phase B + H1 — getCustomerWalletCards + useCustomerWallet                ✅
       ↓
 3. Phase G1 — CustomerShell + bottom nav (Wallet / Scan / Profile)           ⏳
       ↓
@@ -111,11 +111,11 @@ A customer can:
 
 Add only PRD / Technical Doc §2 packages (no substitutes):
 
-- [ ] `@tanstack/react-query` — wallet + card detail server state
+- [x] `@tanstack/react-query` — wallet + card detail server state
 - [ ] `html5-qrcode` — camera scanner
-- [ ] `framer-motion` — stamp pop-in, card float, page motion (PRD §1.4)
+- [x] `framer-motion` — stamp pop-in, card float, page motion (PRD §1.4)
 - [ ] `canvas-confetti` — reward unlock celebration
-- [ ] `lucide-react` — nav + UI icons (via `@repo/ui` patterns)
+- [x] `lucide-react` — nav + UI icons (via `@repo/ui` patterns)
 
 ### 0.3 Environment variables (customer + server actions)
 
@@ -132,16 +132,16 @@ Dev fallback: document console-log OTP when SMS env missing (dev only — never 
 
 ### 0.4 FDA layout (`apps/customer/src/` — match merchant/admin)
 
-- [ ] `src/features/auth/` — login, onboarding, guards, store
-- [ ] `src/features/wallet/` — wallet home, card detail hooks/components
+- [x] `src/features/auth/` — login, onboarding, guards, store
+- [x] `src/features/wallet/` — wallet home, card detail hooks/components (detail UI → Phase E)
 - [ ] `src/features/scan/` — scanner UI + scan server action
 - [ ] `src/features/stamp/` — pending/success/rejected views + Realtime hook
 - [ ] `src/features/reward/` — OTP send/verify + code display
-- [ ] `src/features/profile/` — profile view + logout action
+- [x] `src/features/profile/` — profile view + logout action
 - [ ] `src/widgets/CustomerShell/` — mobile layout + bottom nav
-- [ ] `src/widgets/CustomerProtectedShell/` — session guard wrapper
-- [ ] `src/shared/providers/` — `QueryProvider`, app providers (mirror merchant)
-- [ ] `src/shared/utils/` — `resolve-action-error`, `action-feedback`
+- [x] `src/widgets/CustomerProtectedShell/` — session guard wrapper
+- [x] `src/shared/providers/` — `QueryProvider`, `CustomerProviders`
+- [x] `src/shared/utils/` — `resolve-action-error`, `action-feedback`
 - [ ] Thin `app/` routes only — compose from `@/features/*` / `@/widgets/*`
 - [ ] Remove or migrate legacy `apps/customer/components/`, `stores/` at repo root of app
 
@@ -198,19 +198,19 @@ apps/customer/app/
 
 ### B1. Data (`@repo/supabase` — Phase H1)
 
-- [ ] `getCustomerWalletCards(customerId)` — join `merchants`, `loyalty_cards`, stamp progress, `reward_status`, branding fields
-- [ ] TanStack Query: `useCustomerWallet(customerId)` — key `['wallet', customerId]`, stale 30s (Technical Doc §5.2)
-- [ ] Invalidate wallet query after stamp success + after redemption completes
+- [x] `getCustomerWalletCards(customerId)` — join `merchants`, `loyalty_cards`, stamp progress, `reward_status`, branding fields
+- [x] TanStack Query: `useCustomerWallet(customerId)` — key `['wallet', customerId]`, stale 30s (Technical Doc §5.2)
+- [x] `invalidateCustomerWallet` helper (for stamp success / redemption — wire in Phases D & F)
 
 ### B2. UI
 
-- [ ] `features/wallet/components/WalletHomeView.tsx` — branded card grid
-- [ ] Responsive grid: 1 col mobile → 2 col `@640px` → 3 col `@1024px` (PRD §1.5)
-- [ ] Card float animation on load — stagger 80ms (PRD §1.4)
-- [ ] “Reward ready” banner when `reward_status` is `pending_otp` or `unlocked`
-- [ ] Empty state — “Scan a QR at a participating business” + CTA to `/scan`
-- [ ] Route: `/wallet`; `/` redirects per PRD §8.1
-- [ ] i18n: `wallet.*`
+- [x] `features/wallet/components/WalletHomeView.tsx` — branded card grid
+- [x] Responsive grid: 1 col mobile → 2 col `@640px` → 3 col `@1024px` (PRD §1.5)
+- [x] Card float animation on load — stagger 80ms (PRD §1.4)
+- [x] “Reward ready” banner when `reward_status` is `pending_otp` or `unlocked`
+- [x] Empty state — “Scan a QR at a participating business” + CTA to `/scan`
+- [x] Route: `/wallet`; `/` redirects per PRD §8.1
+- [x] i18n: `wallet.*`
 
 ---
 

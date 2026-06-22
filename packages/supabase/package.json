@@ -12,6 +12,7 @@
     "./types": "./src/types.ts",
     "./queries/merchants": "./src/queries/merchants.ts",
     "./queries/customers": "./src/queries/customers.ts",
+    "./queries/customer-wallet": "./src/queries/customer-wallet.ts",
     "./queries/locations": "./src/queries/locations.ts",
     "./queries/loyalty-cards": "./src/queries/loyalty-cards.ts",
     "./queries/stamps": "./src/queries/stamps.ts",

@@ -72,7 +72,8 @@ export type ActionErrorCode =
   | "DEMO_SEED_FAILED"
   | "DEMO_NO_REDEMPTION_CODE"
   | "DEMO_REDEMPTION_CREATE_FAILED"
-  | "ANALYTICS_LOAD_FAILED";
+  | "ANALYTICS_LOAD_FAILED"
+  | "WALLET_LOAD_FAILED";
 
 export type ActionError = {
   code: ActionErrorCode;

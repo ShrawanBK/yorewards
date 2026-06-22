@@ -98,3 +98,34 @@ export async function getCustomerWalletCards(
     };
   });
 }
+
+export async function getOrCreateCustomerCard(
+  customerId: string,
+  loyaltyCardId: string,
+  merchantId: string,
+): Promise<string> {
+  const supabase = createServiceRoleClient();
+
+  const { data: existing, error: existingError } = await supabase
+    .from("customer_cards")
+    .select("id")
+    .eq("customer_id", customerId)
+    .eq("loyalty_card_id", loyaltyCardId)
+    .maybeSingle();
+
+  if (existingError) throw existingError;
+  if (existing) return existing.id;
+
+  const { data: created, error: createError } = await supabase
+    .from("customer_cards")
+    .insert({
+      customer_id: customerId,
+      loyalty_card_id: loyaltyCardId,
+      merchant_id: merchantId,
+    })
+    .select("id")
+    .single();
+
+  if (createError) throw createError;
+  return created.id;
+}

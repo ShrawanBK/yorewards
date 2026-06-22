@@ -7,7 +7,8 @@
   "nav": {
     "wallet": "Wallet",
     "scan": "Scan",
-    "profile": "Profile"
+    "profile": "Profile",
+    "aria": "Main navigation"
   },
   "auth": {
     "login": {
@@ -76,6 +77,41 @@
       "cta": "Scan QR code"
     }
   },
+  "scan": {
+    "title": "Scan QR code",
+    "subtitle": "Point your camera at the loyalty QR at the counter.",
+    "processing": "Sending stamp request…",
+    "invalidQr": "That doesn't look like a YORewards QR code — try again.",
+    "cameraDenied": "Camera access is required to scan — allow it in your browser settings.",
+    "cameraPrompt": "Allow camera access to scan loyalty QR codes.",
+    "retryCamera": "Allow camera",
+    "requestingCamera": "Requesting access…"
+  },
+  "stamp": {
+    "pending": {
+      "title": "Waiting for approval",
+      "subtitle": "The merchant will confirm your stamp shortly.",
+      "loadingAria": "Waiting for merchant approval"
+    },
+    "success": {
+      "title": "Stamp added!",
+      "subtitle": "Your loyalty card has been updated.",
+      "backToWallet": "Back to wallet"
+    },
+    "rejected": {
+      "title": "Stamp not added",
+      "subtitle": "The merchant declined this stamp request.",
+      "tryAgain": "Scan again",
+      "backToWallet": "Back to wallet"
+    }
+  },
+  "reward": {
+    "comingSoon": {
+      "title": "Reward verification",
+      "subtitle": "Phone verification and your redemption code arrive in the next update.",
+      "backToWallet": "Back to wallet"
+    }
+  },
   "errors": {
     "actions": {
       "UNKNOWN": "Something went wrong — please try again.",
@@ -86,7 +122,14 @@
       "CUSTOMER_ONBOARDING_FAILED": "We couldn't finish setup — please try again.",
       "CUSTOMER_ALREADY_EXISTS": "This phone is already registered — try signing in instead.",
       "CUSTOMER_SUSPENDED": "Your account is suspended. Contact support if you think this is a mistake.",
-      "WALLET_LOAD_FAILED": "We couldn't load your wallet — please try again."
+      "WALLET_LOAD_FAILED": "We couldn't load your wallet — please try again.",
+      "SCAN_INVALID_QR": "That doesn't look like a valid loyalty QR code.",
+      "SCAN_MERCHANT_NOT_ACTIVE": "This business isn't accepting stamps right now.",
+      "SCAN_LOYALTY_CARD_INACTIVE": "This loyalty card isn't active.",
+      "SCAN_LOCATION_INVALID": "This branch isn't valid for scanning.",
+      "SCAN_SESSION_FAILED": "We couldn't start your stamp request — please try again.",
+      "SCAN_CAMERA_DENIED": "Camera access is required to scan.",
+      "STAMP_SESSION_NOT_FOUND": "Stamp request not found."
     }
   }
 }

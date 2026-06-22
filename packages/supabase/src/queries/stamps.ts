@@ -120,6 +120,49 @@ export async function getStampSessionById(sessionId: string) {
   return data;
 }
 
+export async function findActivePendingSessionForCard(
+  customerCardId: string,
+): Promise<string | null> {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("stamp_sessions")
+    .select("id, created_at")
+    .eq("customer_card_id", customerCardId)
+    .eq("status", "pending")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data || !isWithinPendingWindow(data.created_at)) return null;
+  return data.id;
+}
+
+export async function getStampSessionForCustomer(
+  sessionId: string,
+  customerId: string,
+) {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("stamp_sessions")
+    .select(
+      `
+      id,
+      status,
+      rejection_reason,
+      created_at,
+      customer_card_id,
+      customer_cards!inner ( customer_id )
+    `,
+    )
+    .eq("id", sessionId)
+    .eq("customer_cards.customer_id", customerId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
+
 export async function approveStampSession(sessionId: string): Promise<void> {
   const supabase = createServiceRoleClient();
   const { error } = await supabase.rpc("approve_stamp_session", {

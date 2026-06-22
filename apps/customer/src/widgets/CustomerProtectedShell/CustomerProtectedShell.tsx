@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCustomerIdFromSession } from "@repo/supabase/queries/customers";
+import { CustomerShell } from "@/widgets/CustomerShell";
 
 export async function CustomerProtectedShell({
   children,
@@ -8,5 +9,5 @@ export async function CustomerProtectedShell({
 }) {
   const customerId = await getCustomerIdFromSession();
   if (!customerId) redirect("/login");
-  return children;
+  return <CustomerShell>{children}</CustomerShell>;
 }

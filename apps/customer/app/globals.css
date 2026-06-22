@@ -7,3 +7,36 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
+
+@keyframes scan-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.scan-pulse-ring::after {
+  content: "";
+  position: absolute;
+  inset: 18%;
+  border: 2px solid rgb(124 58 237);
+  border-radius: 1rem;
+  animation: scan-pulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+::view-transition-group(customer-bottom-nav) {
+  animation: none;
+  z-index: 100;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan-pulse-ring::after {
+    animation: none;
+  }
+}

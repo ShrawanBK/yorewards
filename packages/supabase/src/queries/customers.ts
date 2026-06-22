@@ -109,6 +109,12 @@ export async function getCustomerIdFromSession() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const customerId = user?.app_metadata?.customer_id;
-  return typeof customerId === "string" ? customerId : null;
+  if (!user) return null;
+
+  const customerId = user.app_metadata?.customer_id;
+  if (typeof customerId === "string") return customerId;
+
+  const email = user.email ?? "";
+  const match = email.match(/^customer\+([^@]+)@auth\.yorewards\.internal$/);
+  return match?.[1] ?? null;
 }

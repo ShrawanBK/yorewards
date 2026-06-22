@@ -1,7 +1,12 @@
 import { redirect } from "next/navigation";
 import { getCustomerIdFromSession } from "@repo/supabase/queries/customers";
 
-export default async function Home() {
+export default async function AuthRouteLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const customerId = await getCustomerIdFromSession();
-  redirect(customerId ? "/wallet" : "/login");
+  if (customerId) redirect("/wallet");
+  return children;
 }

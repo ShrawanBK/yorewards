@@ -1,7 +1,12 @@
 import { redirect } from "next/navigation";
 import { getCustomerIdFromSession } from "@repo/supabase/queries/customers";
 
-export default async function Home() {
+export async function CustomerProtectedShell({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const customerId = await getCustomerIdFromSession();
-  redirect(customerId ? "/wallet" : "/login");
+  if (!customerId) redirect("/login");
+  return children;
 }

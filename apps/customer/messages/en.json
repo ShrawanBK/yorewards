@@ -6,7 +6,8 @@
   },
   "nav": {
     "wallet": "Wallet",
-    "scan": "Scan"
+    "scan": "Scan",
+    "profile": "Profile"
   },
   "auth": {
     "login": {
@@ -15,26 +16,56 @@
     },
     "onboarding": {
       "title": "Almost there",
-      "subtitle": "Tell us your name to finish setting up your wallet."
+      "subtitle": "Tell us your name to finish setting up your wallet.",
+      "phoneLabel": "Phone"
     },
     "fields": {
-      "phone": "Phone (+977 / +358)",
+      "phone": "Phone number",
+      "country": "Country code",
       "name": "Your name"
     },
+    "dialCodes": {
+      "NP": "+977",
+      "FI": "+358"
+    },
+    "countries": {
+      "NP": "Nepal",
+      "FI": "Finland"
+    },
     "placeholders": {
-      "phone": "+97798…",
+      "phoneNP": "98XXXXXXXX",
+      "phoneFI": "4XXXXXXXX",
       "name": "e.g. Sita Sharma"
     },
     "actions": {
       "continue": "Continue",
-      "start": "Get started"
+      "start": "Get started",
+      "backToLogin": "Back to login"
     },
     "errors": {
-      "phone": "Enter a valid phone number",
+      "phoneRequired": "Enter your phone number",
+      "phoneNP": "Enter a valid Nepal mobile (e.g. 98XXXXXXXX)",
+      "phoneFI": "Enter a valid Finland mobile (e.g. 4XXXXXXXX or 04XXXXXXXX)",
       "name": "Name is required",
-      "login": "Login failed",
-      "onboarding": "Something went wrong",
       "missingPhone": "Missing phone. Go back to login."
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "name": "Name",
+    "phone": "Phone",
+    "logout": "Log out"
+  },
+  "errors": {
+    "actions": {
+      "UNKNOWN": "Something went wrong — please try again.",
+      "INVALID_PHONE": "Enter a valid phone number for the selected country.",
+      "CUSTOMER_PHONE_REQUIRED": "Enter your phone number to continue.",
+      "CUSTOMER_NAME_REQUIRED": "Enter your name — at least 2 characters.",
+      "CUSTOMER_LOGIN_FAILED": "We couldn't sign you in — please try again.",
+      "CUSTOMER_ONBOARDING_FAILED": "We couldn't finish setup — please try again.",
+      "CUSTOMER_ALREADY_EXISTS": "This phone is already registered — try signing in instead.",
+      "CUSTOMER_SUSPENDED": "Your account is suspended. Contact support if you think this is a mistake."
     }
   }
 }

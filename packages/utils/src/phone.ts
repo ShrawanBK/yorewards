@@ -38,3 +38,38 @@ export function detectCountry(phone: string): CountryCode {
   }
   return "NP";
 }
+
+/** Build E.164 from country + local digits (no country prefix in local). */
+export function buildPhoneFromLocal(
+  country: CountryCode,
+  local: string,
+): string {
+  const digits = local.replace(/\D/g, "");
+  if (!digits) return "";
+
+  if (digits.startsWith("977") && country === "NP") {
+    return `+${digits}`;
+  }
+  if (digits.startsWith("358") && country === "FI") {
+    return `+${digits}`;
+  }
+
+  const national = digits.startsWith("0") ? digits.slice(1) : digits;
+  return country === "FI" ? `${FI_PREFIX}${national}` : `${NP_PREFIX}${national}`;
+}
+
+export function isValidCustomerPhoneLocal(
+  country: CountryCode,
+  local: string,
+): boolean {
+  const raw = local.trim();
+  if (!raw) return false;
+
+  const digits = raw.replace(/\D/g, "");
+
+  if (country === "NP") {
+    return /^(977)?9[6-9]\d{8}$/.test(digits);
+  }
+
+  return /^(358)?[4-5]\d{7,9}$/.test(digits) || /^0[4-5]\d{7,9}$/.test(digits);
+}

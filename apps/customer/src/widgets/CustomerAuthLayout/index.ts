@@ -1,0 +1,1 @@
+export { CustomerAuthLayout } from "./CustomerAuthLayout";

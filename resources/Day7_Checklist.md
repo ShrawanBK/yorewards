@@ -1,7 +1,7 @@
 # YORewards — Day 7 Checklist (Customer PWA — Auth, Wallet, Scan & Rewards)
 
 > **Goal:** Ship the **customer PWA** (`apps/customer`) so a user can log in by phone, collect stamps via QR scan, wait for merchant approval in real time, unlock rewards via OTP, and show a redemption code to the merchant — completing the **full three-app loop**.  
-> **Reference:** PRD §6.2, §8.1, §10 · Technical Doc §3.2, §4, §5, §7.2  
+> **Reference:** PRD §1.4 (animations), §6.2, §8.1, §10 · Technical Doc §3.1, §5, §6, §7.1–7.2  
 > **Prerequisite:** Day 6 admin MVP ([`Day6_Checklist.md`](Day6_Checklist.md)) · Day 5 merchant MVP ([`Day5_Checklist.md`](Day5_Checklist.md))  
 > **Resequenced:** Original PRD Day 5/6 customer work lands here after merchant + admin are ready.
 
@@ -11,20 +11,21 @@
 
 | Area                                              | Status     |
 | ------------------------------------------------- | ---------- |
-| Phase A — Customer auth + onboarding              | ⏳ Planned |
+| Phase 0 — Prerequisites + FDA scaffold            | ⏳ In progress (tsconfig `@/src`, auth FDA) |
+| Phase A — Customer auth + onboarding              | ✅ Done |
 | Phase B — Wallet home + card grid                 | ⏳ Planned |
 | Phase C — QR scan + stamp session                 | ⏳ Planned |
 | Phase D — Pending / success / rejected screens    | ⏳ Planned |
 | Phase E — Card detail + stamp animations          | ⏳ Planned |
 | Phase F — Reward unlock + OTP + redemption code   | ⏳ Planned |
-| Phase G — Profile + Realtime subscriptions        | ⏳ Planned |
-| Phase H — Customer FDA + i18n + polish            | ⏳ Planned |
-| Phase I — E2E + sign-off                          | ⏳ Planned |
+| Phase G — Profile + shell + bottom nav            | ⏳ Planned |
+| Phase H — Query layer + error codes + i18n audit  | ⏳ Planned |
+| Phase I — Hardening + E2E + docs                  | ⏳ Planned |
 | Day 7 git commit                                  | ⏳ When you ask |
 
-**Scaffold note:** `apps/customer` has partial auth/onboarding from early work — audit against this checklist and migrate to FDA.
-
 **Target:** Real iPhone test: scan merchant branch QR → merchant approves → stamp on wallet → reach target → OTP → redeem at merchant.
+
+PWA install manifest + production deploy → [`Day8_Checklist.md`](Day8_Checklist.md).
 
 ---
 
@@ -32,38 +33,137 @@
 
 A customer can:
 
-1. **Log in** with phone number (no OTP at login — PRD MVP).
+1. **Log in** with phone number (no OTP at login — PRD MVP / V2 defers signup OTP).
 2. **Onboard** with name (first visit only).
-3. Open **wallet** — grid of loyalty cards (TanStack Query).
-4. **Scan** merchant branch QR → create pending `stamp_sessions` row.
-5. See **pending** screen (Realtime) → **success** or **rejected** with reason.
-6. View **card detail** — stamp grid, progress, reward info.
+3. Open **wallet** — branded card grid (TanStack Query, PRD responsive grid).
+4. **Scan** merchant branch QR → create pending `stamp_sessions` row with `location_id` attribution.
+5. See **pending** screen (Supabase Realtime only here) → **success** or **rejected** with reason.
+6. View **card detail** — stamp grid, progress, reward info, scan CTA.
 7. When target reached: **Claim reward** → SMS OTP (Sparrow NP / Twilio FI) → **6-char redemption code**.
-8. Merchant confirms code (Day 4 redeem UI) → card resets to new cycle.
-9. **Profile** — phone, name, logout.
+8. Merchant confirms code (Day 4 `/merchant/redeem`) → card resets to new cycle via `complete_redemption`.
+9. **Profile** — phone, name (read-only MVP), logout.
+10. **Mobile shell** — bottom nav: Wallet / Scan / Profile (PRD §1.5); 44px tap targets on primary CTAs.
 
-PWA install manifest + production deploy → [`Day8_Checklist.md`](Day8_Checklist.md).
+**Suspended customer (Day 6):** scan and stamp creation blocked; show admin `status_reason` when present.
+
+---
+
+## Already in repo (do not rebuild)
+
+| Item | Location | Day 7 task |
+| ---- | -------- | ---------- |
+| Phone login API (lookup + session) | `apps/customer/app/api/auth/customer/login/route.ts` | Migrate to server actions + error codes; wire FDA |
+| Onboarding API | `apps/customer/app/api/auth/customer/onboarding/route.ts` | Same |
+| `findCustomerByPhone`, `establishCustomerSession`, `getCustomerIdFromSession` | `@repo/supabase/queries/customers` | Use as-is; add missing helpers below |
+| `createPendingStampSession` | `@repo/supabase/queries/stamps` | Call from scan action |
+| `createPendingRedemption`, `getRedemptionByCode` | `@repo/supabase/queries/redemptions` | Use after OTP verify |
+| `generateSixDigitOTP` | `@repo/utils/otp` | Reward SMS only |
+| Branch QR URL format | `buildLoyaltyCardQrUrl` — `/scan?m=&c=&l=` | Parse in scanner + deep-link handler |
+| Merchant Realtime queue + approve/reject | Day 4 merchant app | E2E verify |
+| Merchant redeem (6-char code) | Day 4 `/merchant/redeem` | E2E verify |
+| Admin customer suspend + `status_reason` | Day 6 admin | Block scan when `status = suspended` |
+| Session proxy | `apps/customer/proxy.ts` | Keep aligned with `@repo/supabase/proxy` |
+| Partial login/onboarding forms | `apps/customer/components/*` | Move to `src/features/auth/` |
+| Auth Zustand stub | `apps/customer/stores/auth-store.ts` | Move to `features/auth/store/` |
+| i18n scaffold | `apps/customer/messages/en.json` (`auth.*`, partial `nav.*`) | Expand all namespaces |
+| `(main)` session guard | `apps/customer/app/(main)/layout.tsx` | Extend via `CustomerProtectedShell` |
+
+**Stub / replace:** `apps/customer/app/(main)/wallet/page.tsx` (“coming Day 4”) → full `WalletHomeView`.
 
 ---
 
 ## Build order (dependency chain)
 
 ```text
-1. Customer auth (phone lookup/create) + onboarding + auth store           ⏳
+0. Phase 0 — FDA scaffold, QueryProvider, deps, env vars                    ⏳
       ↓
-2. Wallet home — customer_cards query + card grid UI                     ⏳
+1. Phase A — Finish auth + onboarding (error codes, redirects)               ⏳ partial
       ↓
-3. QR scanner (html5-qrcode) → createPendingStampSession                 ⏳
+2. Phase B + H1 — getCustomerWalletCards + useCustomerWallet                ⏳
       ↓
-4. Realtime pending / success / rejected routes                          ⏳
+3. Phase G1 — CustomerShell + bottom nav (Wallet / Scan / Profile)           ⏳
       ↓
-5. Card detail page + Framer Motion stamp animations                     ⏳
+4. Phase C + H1 — getOrCreateCustomerCard + scan action + html5-qrcode         ⏳
       ↓
-6. Reward unlock detection → OTP send/verify → redemption row + code     ⏳
+5. Phase D — Realtime pending / success / rejected                           ⏳
       ↓
-7. Profile + route guards + i18n audit                                   ⏳
+6. Phase E — Card detail + Framer Motion                                     ⏳
       ↓
-8. Full E2E with merchant queue + admin (optional manual stamp)          ⏳
+7. Phase F + H1 — OTP send/verify + redemption code + confetti               ⏳
+      ↓
+8. Phase G2 — Profile + logout                                               ⏳
+      ↓
+9. Phase I — lint / types / build / manual E2E / Technical Doc               ⏳
+```
+
+---
+
+## Phase 0 — Prerequisites + FDA scaffold
+
+### 0.1 Prerequisites
+
+- [ ] Day 6 admin code-complete (merchant + admin apps runnable locally)
+- [ ] Supabase migrations applied (`pnpm exec supabase db push` if needed — incl. Day 6 `status_reason`)
+- [ ] Demo merchant: active, loyalty card configured, branch QR downloaded (Day 3–5)
+- [ ] Local ports: customer `3000`, merchant `3001`, admin `3002`
+
+### 0.2 Locked-stack dependencies (`apps/customer/package.json`)
+
+Add only PRD / Technical Doc §2 packages (no substitutes):
+
+- [ ] `@tanstack/react-query` — wallet + card detail server state
+- [ ] `html5-qrcode` — camera scanner
+- [ ] `framer-motion` — stamp pop-in, card float, page motion (PRD §1.4)
+- [ ] `canvas-confetti` — reward unlock celebration
+- [ ] `lucide-react` — nav + UI icons (via `@repo/ui` patterns)
+
+### 0.3 Environment variables (customer + server actions)
+
+| Variable | Purpose |
+| -------- | ------- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase client |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase client |
+| `SUPABASE_SERVICE_ROLE_KEY` | Phone lookup, OTP, scan validation (server only) |
+| `NEXT_PUBLIC_CUSTOMER_APP_URL` | QR deep links (`http://localhost:3000` local) |
+| `SPARROW_SMS_TOKEN` | Nepal (+977) redemption OTP |
+| `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_PHONE_NUMBER` | Finland (+358) redemption OTP |
+
+Dev fallback: document console-log OTP when SMS env missing (dev only — never in production).
+
+### 0.4 FDA layout (`apps/customer/src/` — match merchant/admin)
+
+- [ ] `src/features/auth/` — login, onboarding, guards, store
+- [ ] `src/features/wallet/` — wallet home, card detail hooks/components
+- [ ] `src/features/scan/` — scanner UI + scan server action
+- [ ] `src/features/stamp/` — pending/success/rejected views + Realtime hook
+- [ ] `src/features/reward/` — OTP send/verify + code display
+- [ ] `src/features/profile/` — profile view + logout action
+- [ ] `src/widgets/CustomerShell/` — mobile layout + bottom nav
+- [ ] `src/widgets/CustomerProtectedShell/` — session guard wrapper
+- [ ] `src/shared/providers/` — `QueryProvider`, app providers (mirror merchant)
+- [ ] `src/shared/utils/` — `resolve-action-error`, `action-feedback`
+- [ ] Thin `app/` routes only — compose from `@/features/*` / `@/widgets/*`
+- [ ] Remove or migrate legacy `apps/customer/components/`, `stores/` at repo root of app
+
+### 0.5 App routes (target tree — Technical Doc §3.1)
+
+```
+apps/customer/app/
+├── (auth)/
+│   ├── login/page.tsx
+│   └── onboarding/page.tsx
+├── (main)/
+│   ├── layout.tsx              → CustomerProtectedShell
+│   ├── wallet/page.tsx
+│   ├── wallet/[cardId]/page.tsx
+│   ├── scan/page.tsx
+│   ├── stamp/pending/[sessionId]/page.tsx
+│   ├── stamp/success/page.tsx
+│   ├── stamp/rejected/page.tsx
+│   ├── reward/[cardId]/page.tsx
+│   └── profile/page.tsx
+├── layout.tsx
+└── page.tsx                    → /wallet if session else /login
 ```
 
 ---
@@ -72,38 +172,44 @@ PWA install manifest + production deploy → [`Day8_Checklist.md`](Day8_Checklis
 
 ### A1. Auth flow
 
-- [ ] Phone entry `/login` — react-hook-form + zod, i18n
-- [ ] `findCustomerByPhone` / create customer row + Supabase auth user (`ensureCustomerAuthUser`)
-- [ ] Session via httpOnly cookies (`@repo/supabase` server client)
-- [ ] `features/auth/` — login form, `authStore` (Zustand, client only)
-- [ ] Route guard: unauthenticated → `/login`
+- [x] Phone entry `/login` — `react-hook-form` + zod, i18n (`auth.*`)
+- [x] Returning user: `findCustomerByPhone` → `establishCustomerSession` → redirect `/wallet`
+- [x] New user: return `isNew` → redirect `/onboarding?phone=…` (no session until name saved)
+- [x] Session via httpOnly cookies (`@repo/supabase` server client + `proxy.ts`)
+- [x] `features/auth/store/authStore.ts` — client UI state only (`'use client'`)
+- [x] Route guard: unauthenticated → `/login`; authed on `/login` → `/wallet`
 
 ### A2. Onboarding
 
-- [ ] `/onboarding` — name entry for new customers
-- [ ] Redirect logic: new user → onboarding; returning → `/wallet`
-- [ ] i18n: `auth.*`, `onboarding.*`
+- [x] `/onboarding` — name entry; create `customers` row + `ensureCustomerAuthUser` + session
+- [x] Validate phone query param; missing → back to `/login`
+- [x] Redirect: new user completes onboarding → `/wallet`
+- [x] i18n: `onboarding.*`
 
-### A3. API routes / actions
+### A3. Server mutations
 
-- [ ] Server actions or route handlers with error codes + `errors.actions.*`
-- [ ] No hardcoded English error strings
+- [x] Replace raw JSON error strings with server actions + `fail("CODE")` pattern
+- [x] Add customer auth codes to `@repo/utils/action-error` + `apps/customer/messages/en.json` → `errors.actions.*`
+- [x] No hardcoded English in components (incl. zod messages inside components with `useTranslations`)
 
 ---
 
 ## Phase B — Wallet home — PRD §6.2, §8.1
 
-### B1. Data
+### B1. Data (`@repo/supabase` — Phase H1)
 
-- [ ] `@repo/supabase` query: `getCustomerWalletCards(customerId)` — join merchants, loyalty_cards, stamp progress, `reward_status`
-- [ ] TanStack Query hook: `useCustomerWallet` with stable query keys
+- [ ] `getCustomerWalletCards(customerId)` — join `merchants`, `loyalty_cards`, stamp progress, `reward_status`, branding fields
+- [ ] TanStack Query: `useCustomerWallet(customerId)` — key `['wallet', customerId]`, stale 30s (Technical Doc §5.2)
+- [ ] Invalidate wallet query after stamp success + after redemption completes
 
 ### B2. UI
 
 - [ ] `features/wallet/components/WalletHomeView.tsx` — branded card grid
+- [ ] Responsive grid: 1 col mobile → 2 col `@640px` → 3 col `@1024px` (PRD §1.5)
+- [ ] Card float animation on load — stagger 80ms (PRD §1.4)
 - [ ] “Reward ready” banner when `reward_status` is `pending_otp` or `unlocked`
-- [ ] Empty state — “Scan a QR at a participating business”
-- [ ] Route: `/wallet` (and `/` redirect)
+- [ ] Empty state — “Scan a QR at a participating business” + CTA to `/scan`
+- [ ] Route: `/wallet`; `/` redirects per PRD §8.1
 - [ ] i18n: `wallet.*`
 
 ---
@@ -112,54 +218,76 @@ PWA install manifest + production deploy → [`Day8_Checklist.md`](Day8_Checklis
 
 ### C1. Scanner
 
-- [ ] `/scan` — `html5-qrcode` camera view
-- [ ] Parse branch QR payload (location id / session token format per Technical Doc)
-- [ ] Validate: merchant active, loyalty card configured, customer not suspended
+- [ ] `/scan` — `html5-qrcode` camera view + QR pulse ring animation (PRD §1.4)
+- [ ] **Deep link:** handle `/scan?m={merchantId}&c={loyaltyCardId}&l={locationId}` from printed branch QR (merchant `buildLoyaltyCardQrUrl`)
+- [ ] **Camera scan:** parse same query params from scanned URL
+- [ ] Camera permission denied → i18n error + link back to wallet
+- [ ] Invalid / malformed QR → i18n error (not generic 500)
 
-### C2. Session creation
+### C2. Validation (server action)
 
-- [ ] Server action: `createPendingStampSession(locationId, customerId)`
-- [ ] Enforce: min spend rules display-only; session expiry ~5 min
+- [ ] Customer session required (`getCustomerIdFromSession`)
+- [ ] Customer `status = active` (not suspended); if suspended → show `status_reason` (Day 6)
+- [ ] Merchant `status = active`
+- [ ] Loyalty card exists, `is_active = true`
+- [ ] Location belongs to merchant and `is_active = true` (when `l` present)
+- [ ] No duplicate pending session for same card (optional guard — reject or reuse per product rule)
+- [ ] Block scan when `reward_status = pending_otp` — direct to `/reward/[cardId]` instead
+
+### C3. Session creation
+
+- [ ] `getOrCreateCustomerCard(customerId, loyaltyCardId, merchantId)` — wallet row on first scan
+- [ ] `createPendingStampSession({ merchantId, customerCardId, locationId })` — `@repo/supabase/queries/stamps`
+- [ ] Min spend: display-only on card UI (merchant rule text — no server block MVP)
+- [ ] Session expiry ~5 min (existing `isWithinPendingWindow` on merchant side)
 - [ ] Redirect → `/stamp/pending/[sessionId]`
 - [ ] i18n: `scan.*`
 
-### C3. Merchant integration
+### C4. Merchant integration (E2E)
 
-- [ ] Verify pending row appears in merchant Realtime queue (Day 4)
-- [ ] `location_id` attribution from scanned branch QR
+- [ ] Pending row appears in merchant Realtime queue with correct customer name + branch
+- [ ] `location_id` stored on `stamp_sessions` for analytics
 
 ---
 
 ## Phase D — Stamp result screens — PRD §8.1
 
-### D1. Pending (Realtime)
+### D1. Pending (Realtime — only Realtime subscription in customer app)
 
-- [ ] `/stamp/pending/[sessionId]` — Supabase Realtime subscription on `stamp_sessions`
-- [ ] Animated spinner (PRD pending spinner spec)
-- [ ] On `approved` → navigate to success; on `rejected` → rejected screen with reason
-- [ ] Timeout / expired handling
+- [ ] `/stamp/pending/[sessionId]` — subscribe to `stamp_sessions` UPDATE for `id=eq.{sessionId}`
+- [ ] Pending spinner — rotating dashed ring + pulsing center dot (PRD §1.4)
+- [ ] On `approved` → `/stamp/success?sessionId=…` (or store in query/state)
+- [ ] On `rejected` → `/stamp/rejected?sessionId=…` with `rejection_reason`
+- [ ] On `expired` or timeout → expired UX + CTA scan again
+- [ ] Unsubscribe on unmount; no Realtime on wallet/list views
 
 ### D2. Success
 
-- [ ] `/stamp/success` — “Stamp added!” + pop-in animation (Framer Motion)
-- [ ] Show updated progress toward reward
+- [ ] `/stamp/success` — “Stamp added!” + stamp pop-in (`scale 0 → 1.15 → 1`, 300ms spring)
+- [ ] Show progress toward reward (current / target)
+- [ ] If `reward_status` now `pending_otp` → prominent “Claim reward” CTA
+- [ ] CTA: wallet or scan again
 
 ### D3. Rejected
 
-- [ ] `/stamp/rejected` — reason from merchant (optional)
-- [ ] CTA back to wallet or scan again
+- [ ] `/stamp/rejected` — merchant reason when present
+- [ ] CTA back to wallet or `/scan`
 
 ### D4. i18n
 
-- [ ] `stampQueue.*` or `stamp.*` namespace in `apps/customer/messages/en.json`
+- [ ] `stamp.*` namespace in `apps/customer/messages/en.json`
 
 ---
 
 ## Phase E — Card detail — PRD §8.1
 
-- [ ] `/wallet/[cardId]` — stamp grid, reward text, min spend, scan CTA
-- [ ] Framer Motion stamp fill animations
-- [ ] Shared visual language with merchant `LoyaltyCardPreviewV2` where sensible
+- [ ] `/wallet/[cardId]` — stamp grid, reward description, min spend text, merchant branding
+- [ ] TanStack Query: `useCustomerCard(cardId)` — key `['card', cardId]`
+- [ ] Framer Motion stamp fill / progress shimmer (PRD §1.4)
+- [ ] Reuse shared visuals from `@repo/ui` / merchant `LoyaltyCardPreviewV2` where sensible (no cross-app feature imports)
+- [ ] Scan CTA → `/scan` (or deep link if merchant known)
+- [ ] Claim reward CTA when `pending_otp` → `/reward/[cardId]`
+- [ ] Show existing redemption code when `reward_status = unlocked` and pending redemption exists
 - [ ] i18n: `card.*`
 
 ---
@@ -168,116 +296,194 @@ PWA install manifest + production deploy → [`Day8_Checklist.md`](Day8_Checklis
 
 ### F1. Unlock detection
 
-- [ ] When stamps reach target → `customer_cards.reward_status = pending_otp`
-- [ ] “Claim reward” CTA on card detail + wallet banner
+- [ ] Stamp approval at target sets `reward_status = pending_otp` (already in `approve_stamp_session` / `increment_stamps`)
+- [ ] Wallet banner + card detail “Claim reward” when `pending_otp`
 
-### F2. OTP send
+### F2. OTP send (`@repo/supabase` or `features/reward/api`)
 
-- [ ] `/reward/[cardId]` — phone confirm + send OTP
-- [ ] Sparrow SMS (+977) / Twilio (+358) — env vars, server-only
-- [ ] Store hashed OTP in `otp_tokens` with expiry
+- [ ] `/reward/[cardId]` — confirm phone (read-only display), send OTP button
+- [ ] Generate OTP via `generateSixDigitOTP`; hash with bcrypt; insert `otp_tokens` (`purpose: redemption`, 5 min expiry)
+- [ ] Route by `customers.country_code`: Sparrow (+977) / Twilio (+358) — server-only (Technical Doc §6.2)
+- [ ] Rate limit: max sends per phone/card window (basic MVP guard)
 
 ### F3. OTP verify + redemption
 
-- [ ] Verify OTP → create `redemptions` row with 6-char code
-- [ ] Display code to customer (large, copy-friendly)
-- [ ] `canvas-confetti` on success (locked stack)
-- [ ] Merchant redeem flow (Day 4) completes cycle
+- [ ] Verify hash → on success:
+  - [ ] Set `customer_cards.reward_status = unlocked`
+  - [ ] Generate unique **6-character** alphanumeric redemption code (match merchant `REDEMPTION_CODE_INVALID` length check)
+  - [ ] `createPendingRedemption({ merchantId, customerCardId, redemptionCode, cycleNumber, locationId })`
+  - [ ] Delete or invalidate spent `otp_tokens` row
+- [ ] Display code large, monospace, copy-to-clipboard
+- [ ] `canvas-confetti` burst on success (brand colors, ~3s)
+- [ ] Instructions: show code to merchant at counter
+- [ ] Merchant redeem (Day 4) → `complete_redemption` RPC resets card
 
-### F4. i18n
+### F4. i18n + errors
 
-- [ ] `reward.*`, OTP error messages in `errors.actions.*`
-
----
-
-## Phase G — Profile + Realtime hygiene
-
-- [ ] `/profile` — phone, name (read-only MVP), logout
-- [ ] Realtime **only** on stamp pending screen (not wallet — TanStack elsewhere)
-- [ ] `proxy.ts` / middleware route protection aligned with merchant app patterns
+- [ ] `reward.*` strings
+- [ ] Error codes: `OTP_SEND_FAILED`, `OTP_INVALID`, `OTP_EXPIRED`, `OTP_RATE_LIMITED`, `REWARD_NOT_READY`, `REDEMPTION_CREATE_FAILED` → `errors.actions.*`
 
 ---
 
-## Phase H — Customer FDA + quality
+## Phase G — Profile + mobile shell
 
-- [ ] Migrate pages to `apps/customer/src/features/*` (if not already)
-- [ ] Thin `app/` routes only
-- [ ] All user-facing strings via `next-intl`
-- [ ] 44px tap targets on scan / claim CTAs
-- [ ] `pnpm exec turbo lint check-types build --filter=customer`
+### G1. CustomerShell + bottom nav (PRD §1.5)
+
+- [ ] `widgets/CustomerShell` — main content + fixed bottom nav on mobile
+- [ ] Nav items: **Wallet** (`/wallet`), **Scan** (`/scan`), **Profile** (`/profile`)
+- [ ] Active route indicator; 44×44px min tap targets
+- [ ] `viewTransitionName` or shell isolation if using view transitions (optional — skill `vercel-react-view-transitions`)
+- [ ] i18n: `nav.wallet`, `nav.scan`, `nav.profile`
+
+### G2. Profile + logout
+
+- [ ] `/profile` — phone, name (read-only MVP), logout button
+- [ ] Logout: clear Supabase session + redirect `/login`
+- [ ] i18n: `profile.*`
+
+### G3. Route protection
+
+- [ ] `(main)/layout.tsx` — `getCustomerIdFromSession`; redirect `/login` if missing
+- [ ] `(auth)/*` — redirect `/wallet` if already authed
+- [ ] `proxy.ts` matcher unchanged; session refresh via `@repo/supabase/proxy`
 
 ---
 
-## Phase I — E2E + sign-off
+## Phase H — Shared query layer + cross-cutting quality
 
-### I1. Full loop (manual)
+### H1. `@repo/supabase` queries to add or complete
 
-- [ ] Customer signs up → scans QR at active merchant branch
-- [ ] Merchant approves → customer sees success → wallet updates
-- [ ] Repeat until stamp target → claim reward → OTP → code
-- [ ] Merchant redeems → customer card resets
-- [ ] Admin audit log shows relevant events (Day 6)
+| Function | Used by |
+| -------- | ------- |
+| `getCustomerWalletCards(customerId)` | Wallet home |
+| `getCustomerCardById(customerId, cardId)` | Card detail |
+| `getOrCreateCustomerCard(customerId, loyaltyCardId, merchantId)` | Scan |
+| `getStampSessionForCustomer(sessionId, customerId)` | Pending screen guard |
+| `sendRedemptionOtp(customerId, cardId)` | Reward flow (server) |
+| `verifyRedemptionOtp(customerId, cardId, otp)` | Reward flow (server) |
 
-### I2. Device testing
+Export from `@repo/supabase/queries/*`; keep SMS/Twilio calls in server actions (not client).
 
-- [ ] Test QR scan on **real iPhone** (PRD requirement)
-- [ ] Test on Android Chrome
+### H2. Error codes (`@repo/utils/action-error`)
 
-### I3. Docs
+- [ ] Customer-specific codes listed in phases A, C, F
+- [ ] Mirror messages in `apps/customer/messages/en.json`
 
-- [ ] Technical Doc — Customer MVP ✅
+### H3. i18n audit
+
+- [ ] Every user-facing string via `next-intl` (labels, placeholders, buttons, headings, validation, `aria-label`s)
+- [ ] Namespaces: `app`, `nav`, `auth`, `onboarding`, `wallet`, `scan`, `stamp`, `card`, `reward`, `profile`, `errors`
+
+### H4. Accessibility + motion
+
+- [ ] 44px tap targets on scan, claim, copy-code CTAs
+- [ ] `@media (prefers-reduced-motion: reduce)` for Framer / view transitions (project skill)
+- [ ] Focus visible on nav + primary buttons
+
+---
+
+## Phase I — Hardening + E2E + sign-off
+
+### I1. Automated
+
+- [ ] `pnpm exec turbo lint --filter=customer`
+- [ ] `pnpm exec turbo check-types --filter=customer`
+- [ ] `pnpm exec turbo build --filter=customer`
+
+### I2. Full loop (manual)
+
+- [ ] New customer: phone → onboarding → wallet empty state
+- [ ] Scan branch QR at active merchant (or open deep link)
+- [ ] Merchant approves → customer pending → success → wallet shows card + stamp count
+- [ ] Repeat until stamp target → `pending_otp` banner
+- [ ] Claim reward → SMS OTP (or dev console) → 6-char code displayed
+- [ ] Merchant `/merchant/redeem` confirms → customer card resets (`collecting`, stamps 0, cycle +1)
+- [ ] Admin suspend customer → scan blocked with reason
+- [ ] Admin audit log shows stamp/redemption-related events where applicable
+
+### I3. Device testing
+
+- [ ] QR scan on **real iPhone** (Safari — PRD requirement; test early in Phase C)
+- [ ] Android Chrome smoke test
+
+### I4. Docs + commit
+
+- [ ] Update Technical Doc — Customer MVP ✅ + Implementation Status table
+- [ ] Mark this checklist implementation table ✅
 - [ ] Day 7 git commit (when you ask)
 
 ---
 
 ## PRD routes checklist (§8.1)
 
-| Route                        | Phase   |
-| ---------------------------- | ------- |
-| `/`                          | B       |
-| `/login`                     | A       |
-| `/onboarding`                | A       |
-| `/wallet`                    | B       |
-| `/wallet/[cardId]`           | E       |
-| `/scan`                      | C       |
-| `/stamp/pending/[sessionId]` | D       |
-| `/stamp/success`             | D       |
-| `/stamp/rejected`            | D       |
-| `/reward/[cardId]`           | F       |
-| `/profile`                   | G       |
+| Route                        | Phase   | Notes |
+| ---------------------------- | ------- | ----- |
+| `/`                          | B       | → `/wallet` or `/login` |
+| `/login`                     | A       | |
+| `/onboarding`                | A       | |
+| `/wallet`                    | B       | |
+| `/wallet/[cardId]`           | E       | |
+| `/scan`                      | C       | + query deep link `?m=&c=&l=` |
+| `/stamp/pending/[sessionId]` | D       | Realtime |
+| `/stamp/success`             | D       | |
+| `/stamp/rejected`            | D       | |
+| `/reward/[cardId]`           | F       | OTP + code |
+| `/profile`                   | G       | |
+
+---
+
+## PRD animations checklist (§1.4)
+
+| Animation        | Where              | Phase |
+| ---------------- | ------------------ | ----- |
+| Stamp pop-in     | Success screen     | D     |
+| Card float       | Wallet load        | B     |
+| Progress shimmer | Card detail        | E     |
+| Page slide-in    | Route changes      | H/I optional (view transitions) |
+| QR pulse ring    | Scanner open       | C     |
+| Reward confetti  | OTP success        | F     |
+| Pending spinner  | Pending screen     | D     |
 
 ---
 
 ## Agent skills (Day 7)
 
-| Skill                              | Purpose                    |
-| ---------------------------------- | -------------------------- |
-| `supabase`                         | RLS, Realtime, RPCs        |
-| `vercel-react-view-transitions`    | Stamp/screen transitions   |
-| `server-action-errors.mdc`         | Customer mutations         |
-| PRD §6.2 animations               | Pending spinner, success   |
+| Skill                              | Purpose                              |
+| ---------------------------------- | ------------------------------------ |
+| `supabase`                         | RLS, Realtime, RPCs, customer session |
+| `vercel-react-view-transitions`    | Optional stamp/screen transitions    |
+| `server-action-errors.mdc`         | Customer mutations                   |
+| `vercel-react-best-practices`      | Query boundaries, client/server split |
+| PRD §1.4 animations                | Pending spinner, success pop-in      |
 
 ---
 
-## Out of scope (Day 8+)
+## Out of scope (Day 8+ / V2)
 
-| Item                    | When                          |
-| ----------------------- | ----------------------------- |
-| PWA manifest + next-pwa | [`Day8_Checklist.md`](Day8_Checklist.md) |
-| Privacy policy page     | Day 8                         |
-| Production Vercel deploy | Day 8                        |
-| Browser push notifications | Day 8 stub or V2          |
-| Phone OTP at login      | V2 (PRD §12)                  |
+| Item                         | When |
+| ---------------------------- | ---- |
+| PWA manifest + `next-pwa`    | [`Day8_Checklist.md`](Day8_Checklist.md) |
+| Privacy policy `/privacy`    | Day 8 |
+| Production Vercel deploy     | Day 8 |
+| Empty/error polish (offline, invalid QR copy) | Day 8 Phase C |
+| Browser push notifications   | Day 8 stub or V2 |
+| Phone OTP at login           | V2 (PRD §12) |
+| Profile data deletion flow   | Day 8 GDPR stub |
+| `@repo/ui` shared stamp-grid package extraction | Optional — can live in customer feature first |
 
 ---
 
 ## Done when
 
 - [ ] All §8.1 customer routes functional (not stubs)
+- [ ] FDA: thin `app/`, features under `apps/customer/src/features/*`
 - [ ] Real scan → approve → wallet update works against live merchant app
-- [ ] OTP → redemption code → merchant redeem completes cycle
+- [ ] OTP → 6-char code → merchant redeem completes cycle
+- [ ] Suspended customer cannot scan; reason shown when available
+- [ ] Bottom nav works on 375px viewport
+- [ ] Realtime used **only** on stamp pending screen
 - [ ] Lint, types, build pass for `customer`
-- [ ] Real device QR test documented
+- [ ] Real device QR test documented in Phase I2
 - [ ] Ready for Day 8 polish + launch
 
 ---

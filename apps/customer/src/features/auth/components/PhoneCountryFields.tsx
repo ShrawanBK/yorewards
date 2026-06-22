@@ -1,0 +1,58 @@
+"use client";
+
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { useTranslations } from "next-intl";
+import { Input } from "@repo/ui/input";
+import { Field } from "@repo/ui/field";
+
+type PhoneFormValues = {
+  country: "NP" | "FI";
+  phoneLocal: string;
+};
+
+type PhoneCountryFieldsProps = {
+  register: UseFormRegister<PhoneFormValues>;
+  errors: FieldErrors<PhoneFormValues>;
+  country: "NP" | "FI";
+};
+
+export function PhoneCountryFields({
+  register,
+  errors,
+  country,
+}: PhoneCountryFieldsProps) {
+  const t = useTranslations("auth");
+
+  return (
+    <Field
+      label={t("fields.phone")}
+      htmlFor="phoneLocal"
+      error={errors.phoneLocal?.message}
+    >
+      <div className="flex gap-2">
+        <select
+          id="country"
+          aria-label={t("fields.country")}
+          className="h-9 w-[6.75rem] shrink-0 rounded-md border border-input bg-transparent px-2 text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          {...register("country")}
+        >
+          <option value="NP">{t("dialCodes.NP")}</option>
+          <option value="FI">{t("dialCodes.FI")}</option>
+        </select>
+        <Input
+          id="phoneLocal"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel-national"
+          className="min-w-0 flex-1"
+          placeholder={
+            country === "FI"
+              ? t("placeholders.phoneFI")
+              : t("placeholders.phoneNP")
+          }
+          {...register("phoneLocal")}
+        />
+      </div>
+    </Field>
+  );
+}

@@ -17,7 +17,7 @@ import type { ActionResult } from "@/shared/types/action-result";
 
 export async function logoutAction() {
   const supabase = await createClient();
-  await supabase.auth.signOut();
+  await supabase.auth.signOut({ scope: "local" });
   await clearActiveMerchantForUser();
   await clearActiveLocationForMerchant();
   redirect("/merchant/login");

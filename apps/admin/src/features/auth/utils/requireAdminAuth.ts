@@ -27,7 +27,7 @@ export async function requireAdminSession(): Promise<{ user: AdminAuthUser }> {
   if (!user) redirect("/admin/login");
 
   if (!isAdminUser(user)) {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope: "local" });
     redirect("/admin/login");
   }
 

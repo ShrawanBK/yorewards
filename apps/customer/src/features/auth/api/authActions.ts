@@ -38,15 +38,11 @@ function parsePhoneFromForm(formData: FormData) {
 
 export async function customerLoginAction(
   formData: FormData,
-): Promise<
-  ActionResult<{ isNew: true; phone: string } | { loggedIn: true }>
-> {
+): Promise<ActionResult<{ isNew: true; phone: string } | { loggedIn: true }>> {
   const parsed = parsePhoneFromForm(formData);
   if (!parsed.ok) {
     return fail(
-      parsed.reason === "missing"
-        ? "CUSTOMER_PHONE_REQUIRED"
-        : "INVALID_PHONE",
+      parsed.reason === "missing" ? "CUSTOMER_PHONE_REQUIRED" : "INVALID_PHONE",
     );
   }
 
@@ -85,9 +81,7 @@ export async function customerOnboardingAction(
 
   if (!parsed.ok) {
     return fail(
-      parsed.reason === "missing"
-        ? "CUSTOMER_PHONE_REQUIRED"
-        : "INVALID_PHONE",
+      parsed.reason === "missing" ? "CUSTOMER_PHONE_REQUIRED" : "INVALID_PHONE",
     );
   }
   if (name.length < 2) return fail("CUSTOMER_NAME_REQUIRED");
@@ -131,7 +125,7 @@ export async function customerOnboardingAction(
 
 export async function customerLogoutAction(): Promise<void> {
   const supabase = await createClient();
-  await supabase.auth.signOut();
+  await supabase.auth.signOut({ scope: "local" });
   redirect("/login");
 }
 

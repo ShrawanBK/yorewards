@@ -1,5 +1,10 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import {
+  createServerClient,
+  type CookieMethodsServer,
+  type CookieOptions,
+} from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { getSupabaseAuthCookieOptions } from "./auth-cookie";
 
 /** Refresh Supabase Auth session — use from app `proxy.ts` (Next.js 16). */
 export async function updateSession(request: NextRequest) {
@@ -12,23 +17,26 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
-  const supabase = createServerClient(url, anonKey, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll();
-      },
-      setAll(
-        cookiesToSet: { name: string; value: string; options: CookieOptions }[],
-      ) {
-        cookiesToSet.forEach(({ name, value }) => {
-          request.cookies.set(name, value);
-        });
-        supabaseResponse = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) => {
-          supabaseResponse.cookies.set(name, value, options);
-        });
-      },
+  const cookieMethods: CookieMethodsServer = {
+    getAll() {
+      return request.cookies.getAll();
     },
+    setAll(
+      cookiesToSet: { name: string; value: string; options: CookieOptions }[],
+    ) {
+      cookiesToSet.forEach(({ name, value }) => {
+        request.cookies.set(name, value);
+      });
+      supabaseResponse = NextResponse.next({ request });
+      cookiesToSet.forEach(({ name, value, options }) => {
+        supabaseResponse.cookies.set(name, value, options);
+      });
+    },
+  };
+
+  const supabase = createServerClient(url, anonKey, {
+    cookieOptions: getSupabaseAuthCookieOptions(),
+    cookies: cookieMethods,
   });
 
   await supabase.auth.getUser();

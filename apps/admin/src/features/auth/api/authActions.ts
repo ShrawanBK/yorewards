@@ -28,7 +28,7 @@ export async function loginAction(
   } = await supabase.auth.getUser();
 
   if (!user || !isAdminUser(user)) {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope: "local" });
     return fail("FORBIDDEN");
   }
 
@@ -37,6 +37,6 @@ export async function loginAction(
 
 export async function logoutAction() {
   const supabase = await createClient();
-  await supabase.auth.signOut();
+  await supabase.auth.signOut({ scope: "local" });
   redirect("/admin/login");
 }

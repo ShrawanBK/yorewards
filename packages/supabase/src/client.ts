@@ -1,5 +1,6 @@
 import { createBrowserClient } from "@supabase/ssr";
 
+import { getSupabaseAuthCookieOptions } from "./auth-cookie";
 import type { Database } from "./types";
 
 export function createClient() {
@@ -12,5 +13,7 @@ export function createClient() {
     );
   }
 
-  return createBrowserClient<Database>(url, anonKey);
+  return createBrowserClient<Database>(url, anonKey, {
+    cookieOptions: getSupabaseAuthCookieOptions(),
+  });
 }

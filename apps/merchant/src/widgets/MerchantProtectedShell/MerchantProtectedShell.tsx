@@ -1,4 +1,4 @@
-import { getMerchantSessionData } from "@/features/dashboard/api/getMerchantSessionData";
+import { getMerchantSessionForShell } from "@/features/dashboard/api/getMerchantSessionData";
 import { MerchantShell } from "@/widgets/MerchantShell";
 
 export async function MerchantProtectedShell({
@@ -6,8 +6,13 @@ export async function MerchantProtectedShell({
 }: {
   children: React.ReactNode;
 }) {
-  const { merchants, merchant, branches, activeBranch } =
-    await getMerchantSessionData();
+  const session = await getMerchantSessionForShell();
+
+  if (!session.merchant) {
+    return <>{children}</>;
+  }
+
+  const { merchants, merchant, branches, activeBranch } = session;
 
   return (
     <MerchantShell

@@ -97,12 +97,22 @@
     "success": {
       "title": "Stamp added!",
       "subtitle": "Your loyalty card has been updated.",
-      "backToWallet": "Back to wallet"
+      "progress": "{current} / {target} stamps",
+      "rewardReady": "You've reached your reward — claim it now.",
+      "claimReward": "Claim reward",
+      "backToWallet": "Back to wallet",
+      "scanAgain": "Scan again"
     },
     "rejected": {
       "title": "Stamp not added",
       "subtitle": "The merchant declined this stamp request.",
       "tryAgain": "Scan again",
+      "backToWallet": "Back to wallet"
+    },
+    "expired": {
+      "title": "Request expired",
+      "subtitle": "The merchant didn't approve in time. Scan the QR code again to request a new stamp.",
+      "scanAgain": "Scan again",
       "backToWallet": "Back to wallet"
     }
   },

@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
 import { getCustomerIdFromSession } from "@repo/supabase/queries/customers";
 import { getStampSessionForCustomer } from "@repo/supabase/queries/stamps";
 import { StampRejectedView } from "@/features/stamp";
@@ -19,8 +18,6 @@ export default async function StampRejectedPage({
   if (!session || session.status !== "rejected") redirect("/wallet");
 
   return (
-    <Suspense>
-      <StampRejectedView />
-    </Suspense>
+    <StampRejectedView rejectionReason={session.rejection_reason} />
   );
 }

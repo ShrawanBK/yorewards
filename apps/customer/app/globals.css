@@ -39,4 +39,53 @@
   .scan-pulse-ring::after {
     animation: none;
   }
+
+  .stamp-pending-spinner__ring,
+  .stamp-pending-spinner__dot {
+    animation: none !important;
+  }
+}
+
+@keyframes stamp-pending-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes stamp-pending-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.65;
+  }
+}
+
+.stamp-pending-spinner {
+  position: relative;
+  display: flex;
+  width: 5rem;
+  height: 5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.stamp-pending-spinner__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 3px dashed rgb(124 58 237 / 0.35);
+  border-top-color: rgb(124 58 237);
+  animation: stamp-pending-spin 1.2s linear infinite;
+}
+
+.stamp-pending-spinner__dot {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 9999px;
+  background-color: rgb(124 58 237);
+  animation: stamp-pending-pulse 1.4s ease-in-out infinite;
 }

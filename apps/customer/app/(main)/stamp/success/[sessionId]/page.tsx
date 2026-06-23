@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCustomerIdFromSession } from "@repo/supabase/queries/customers";
-import { getStampSessionForCustomer } from "@repo/supabase/queries/stamps";
+import { getStampSuccessContextForCustomer } from "@repo/supabase/queries/stamps";
 import { StampSuccessView } from "@/features/stamp";
 
 type StampSuccessPageProps = {
@@ -14,8 +14,11 @@ export default async function StampSuccessPage({
   const customerId = await getCustomerIdFromSession();
   if (!customerId) redirect("/login");
 
-  const session = await getStampSessionForCustomer(sessionId, customerId);
-  if (!session || session.status !== "approved") redirect("/wallet");
+  const context = await getStampSuccessContextForCustomer(
+    sessionId,
+    customerId,
+  );
+  if (!context) redirect("/wallet");
 
-  return <StampSuccessView />;
+  return <StampSuccessView {...context} />;
 }

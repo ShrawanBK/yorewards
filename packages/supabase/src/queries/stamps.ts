@@ -1,8 +1,10 @@
 import { randomUUID } from "node:crypto";
 import { createServiceRoleClient } from "../service-role";
-import type { StampSessionStatus } from "../types";
+import type { StampSessionStatus, RewardStatus } from "../types";
 
-const PENDING_TTL_MS = 5 * 60 * 1000;
+export const STAMP_PENDING_TTL_MS = 5 * 60 * 1000;
+
+const PENDING_TTL_MS = STAMP_PENDING_TTL_MS;
 
 export type PendingStampQueueItem = {
   id: string;
@@ -51,6 +53,19 @@ function mapPendingRow(row: StampSessionRow): PendingStampQueueItem {
 function isWithinPendingWindow(createdAt: string): boolean {
   return Date.now() - new Date(createdAt).getTime() < PENDING_TTL_MS;
 }
+
+export function isStampSessionWithinPendingWindow(createdAt: string): boolean {
+  return isWithinPendingWindow(createdAt);
+}
+
+export type StampSessionSuccessContext = {
+  customerCardId: string;
+  currentStamps: number;
+  stampTarget: number;
+  rewardStatus: RewardStatus;
+  cardName: string;
+  businessName: string;
+};
 
 export async function expireStalePendingSessions(
   merchantId?: string,
@@ -161,6 +176,59 @@ export async function getStampSessionForCustomer(
 
   if (error) throw error;
   return data;
+}
+
+type StampSuccessRow = {
+  customer_card_id: string;
+  customer_cards: {
+    current_stamps: number;
+    reward_status: RewardStatus;
+    merchants: { business_name: string } | null;
+    loyalty_cards: { card_name: string; stamp_target: number } | null;
+  } | null;
+};
+
+export async function getStampSuccessContextForCustomer(
+  sessionId: string,
+  customerId: string,
+): Promise<StampSessionSuccessContext | null> {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("stamp_sessions")
+    .select(
+      `
+      id,
+      status,
+      customer_card_id,
+      customer_cards!inner (
+        customer_id,
+        current_stamps,
+        reward_status,
+        merchants ( business_name ),
+        loyalty_cards ( card_name, stamp_target )
+      )
+    `,
+    )
+    .eq("id", sessionId)
+    .eq("customer_cards.customer_id", customerId)
+    .eq("status", "approved")
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) return null;
+
+  const row = data as StampSuccessRow;
+  const card = row.customer_cards;
+  if (!card) return null;
+
+  return {
+    customerCardId: row.customer_card_id,
+    currentStamps: card.current_stamps,
+    stampTarget: card.loyalty_cards?.stamp_target ?? 0,
+    rewardStatus: card.reward_status,
+    cardName: card.loyalty_cards?.card_name ?? "Loyalty card",
+    businessName: card.merchants?.business_name ?? "Business",
+  };
 }
 
 export async function approveStampSession(sessionId: string): Promise<void> {

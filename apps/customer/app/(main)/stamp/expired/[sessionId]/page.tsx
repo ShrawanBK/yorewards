@@ -4,15 +4,15 @@ import {
   getStampSessionForCustomer,
   isStampSessionWithinPendingWindow,
 } from "@repo/supabase/queries/stamps";
-import { StampPendingView } from "@/features/stamp";
+import { StampExpiredView } from "@/features/stamp";
 
-type StampPendingPageProps = {
+type StampExpiredPageProps = {
   params: Promise<{ sessionId: string }>;
 };
 
-export default async function StampPendingPage({
+export default async function StampExpiredPage({
   params,
-}: StampPendingPageProps) {
+}: StampExpiredPageProps) {
   const { sessionId } = await params;
   const customerId = await getCustomerIdFromSession();
   if (!customerId) redirect("/login");
@@ -20,21 +20,23 @@ export default async function StampPendingPage({
   const session = await getStampSessionForCustomer(sessionId, customerId);
   if (!session) redirect("/wallet");
 
-  if (session.status === "approved") {
-    redirect(`/stamp/success/${sessionId}`);
-  }
-  if (session.status === "rejected") {
-    redirect(`/stamp/rejected/${sessionId}`);
-  }
-  if (
+  const isExpired =
     session.status === "expired" ||
     (session.status === "pending" &&
-      !isStampSessionWithinPendingWindow(session.created_at))
-  ) {
-    redirect(`/stamp/expired/${sessionId}`);
+      !isStampSessionWithinPendingWindow(session.created_at));
+
+  if (!isExpired) {
+    if (session.status === "approved") {
+      redirect(`/stamp/success/${sessionId}`);
+    }
+    if (session.status === "rejected") {
+      redirect(`/stamp/rejected/${sessionId}`);
+    }
+    if (session.status === "pending") {
+      redirect(`/stamp/pending/${sessionId}`);
+    }
+    redirect("/wallet");
   }
 
-  return (
-    <StampPendingView sessionId={sessionId} createdAt={session.created_at} />
-  );
+  return <StampExpiredView />;
 }

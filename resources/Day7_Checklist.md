@@ -15,7 +15,7 @@
 | Phase A — Customer auth + onboarding             | ✅ Done                                                     |
 | Phase B — Wallet home + card grid                | ✅ Done                                                     |
 | Phase C — QR scan + stamp session                | ✅ Done                                                     |
-| Phase D — Pending / success / rejected screens   | ⏳ Partial (minimal flow for scan redirect; polish pending) |
+| Phase D — Pending / success / rejected screens   | ✅ Done                                                     |
 | Phase E — Card detail + stamp animations         | ⏳ Planned                                                  |
 | Phase F — Reward unlock + OTP + redemption code  | ⏳ Planned                                                  |
 | Phase G — Profile + shell + bottom nav           | ⏳ Partial (G1 shell + nav ✅; G2 profile ✅)               |
@@ -85,7 +85,7 @@ A customer can:
       ↓
 4. Phase C + H1 — getOrCreateCustomerCard + scan action + html5-qrcode         ✅
       ↓
-5. Phase D — Realtime pending / success / rejected                           ⏳ Partial
+5. Phase D — Realtime pending / success / rejected                           ✅
       ↓
 6. Phase E — Card detail + Framer Motion                                     ⏳
       ↓
@@ -135,7 +135,7 @@ Dev fallback: document console-log OTP when SMS env missing (dev only — never 
 - [x] `src/features/auth/` — login, onboarding, guards, store
 - [x] `src/features/wallet/` — wallet home, card detail hooks/components (detail UI → Phase E)
 - [x] `src/features/scan/` — scanner UI + scan server action
-- [ ] `src/features/stamp/` — pending/success/rejected views + Realtime hook (minimal stub for scan E2E)
+- [x] `src/features/stamp/` — pending/success/rejected/expired views + Realtime hook
 - [ ] `src/features/reward/` — OTP send/verify + code display
 - [x] `src/features/profile/` — profile view + logout action
 - [x] `src/widgets/CustomerShell/` — mobile layout + bottom nav
@@ -160,6 +160,7 @@ apps/customer/app/
 │   ├── stamp/pending/[sessionId]/page.tsx
 │   ├── stamp/success/[sessionId]/page.tsx
 │   ├── stamp/rejected/[sessionId]/page.tsx
+│   ├── stamp/expired/[sessionId]/page.tsx
 │   ├── reward/[cardId]/page.tsx              → OTP stub (Phase F)
 │   └── profile/page.tsx
 ├── layout.tsx
@@ -256,28 +257,30 @@ apps/customer/app/
 
 ### D1. Pending (Realtime — only Realtime subscription in customer app)
 
-- [ ] `/stamp/pending/[sessionId]` — subscribe to `stamp_sessions` UPDATE for `id=eq.{sessionId}`
-- [ ] Pending spinner — rotating dashed ring + pulsing center dot (PRD §1.4)
-- [ ] On `approved` → `/stamp/success?sessionId=…` (or store in query/state)
-- [ ] On `rejected` → `/stamp/rejected?sessionId=…` with `rejection_reason`
-- [ ] On `expired` or timeout → expired UX + CTA scan again
-- [ ] Unsubscribe on unmount; no Realtime on wallet/list views
+- [x] `/stamp/pending/[sessionId]` — subscribe to `stamp_sessions` UPDATE for `id=eq.{sessionId}`
+- [x] Pending spinner — rotating dashed ring + pulsing center dot (PRD §1.4)
+- [x] On `approved` → `/stamp/success/[sessionId]`
+- [x] On `rejected` → `/stamp/rejected/[sessionId]` with `rejection_reason` from server
+- [x] On `expired` or timeout → `/stamp/expired/[sessionId]` + CTA scan again
+- [x] Unsubscribe on unmount; no Realtime on wallet/list views
 
 ### D2. Success
 
-- [ ] `/stamp/success` — “Stamp added!” + stamp pop-in (`scale 0 → 1.15 → 1`, 300ms spring)
-- [ ] Show progress toward reward (current / target)
-- [ ] If `reward_status` now `pending_otp` → prominent “Claim reward” CTA
-- [ ] CTA: wallet or scan again
+- [x] `/stamp/success/[sessionId]` — “Stamp added!” + stamp pop-in (`scale 0 → 1.15 → 1`, 300ms spring)
+- [x] Show progress toward reward (current / target)
+- [x] If `reward_status` now `pending_otp` → prominent “Claim reward” CTA
+- [x] CTA: wallet or scan again
 
 ### D3. Rejected
 
-- [ ] `/stamp/rejected` — merchant reason when present
-- [ ] CTA back to wallet or `/scan`
+- [x] `/stamp/rejected/[sessionId]` — merchant reason when present
+- [x] CTA back to wallet or `/scan`
 
 ### D4. i18n
 
-- [ ] `stamp.*` namespace in `apps/customer/messages/en.json`
+- [x] `stamp.*` namespace in `apps/customer/messages/en.json` (incl. `stamp.expired`)
+
+**Implementation:** `features/stamp/` · `getStampSuccessContextForCustomer` · routes under `app/(main)/stamp/*`
 
 ---
 
@@ -360,7 +363,8 @@ apps/customer/app/
 | `getCustomerWalletCards(customerId)`                             | Wallet home          |
 | `getCustomerCardById(customerId, cardId)`                        | Card detail          |
 | `getOrCreateCustomerCard(customerId, loyaltyCardId, merchantId)` | Scan                 |
-| `getStampSessionForCustomer(sessionId, customerId)`              | Pending screen guard |
+| `getStampSessionForCustomer(sessionId, customerId)`              | Pending/rejected/expired guard |
+| `getStampSuccessContextForCustomer(sessionId, customerId)`       | Success screen                 |
 | `findActivePendingSessionForCard(customerCardId)`                | Scan duplicate guard |
 | `sendRedemptionOtp(customerId, cardId)`                          | Reward flow (server) |
 | `verifyRedemptionOtp(customerId, cardId, otp)`                   | Reward flow (server) |
@@ -427,9 +431,10 @@ Export from `@repo/supabase/queries/*`; keep SMS/Twilio calls in server actions 
 | `/wallet`                    | B     |                                  |
 | `/wallet/[cardId]`           | E     |                                  |
 | `/scan`                      | C     | ✅ + query deep link `?m=&c=&l=` |
-| `/stamp/pending/[sessionId]` | D     | Realtime                         |
-| `/stamp/success`             | D     |                                  |
-| `/stamp/rejected`            | D     |                                  |
+| `/stamp/pending/[sessionId]` | D     | ✅ Realtime                      |
+| `/stamp/success/[sessionId]` | D     | ✅                               |
+| `/stamp/rejected/[sessionId]` | D    | ✅                               |
+| `/stamp/expired/[sessionId]` | D     | ✅                               |
 | `/reward/[cardId]`           | F     | OTP + code                       |
 | `/profile`                   | G     |                                  |
 
@@ -439,13 +444,13 @@ Export from `@repo/supabase/queries/*`; keep SMS/Twilio calls in server actions 
 
 | Animation        | Where          | Phase                           |
 | ---------------- | -------------- | ------------------------------- | --- |
-| Stamp pop-in     | Success screen | D                               |
-| Card float       | Wallet load    | B                               |
-| Progress shimmer | Card detail    | E                               |
-| Page slide-in    | Route changes  | H/I optional (view transitions) |
+| Stamp pop-in     | Success screen | D                               | ✅  |
+| Card float       | Wallet load    | B                               |     |
+| Progress shimmer | Card detail    | E                               |     |
+| Page slide-in    | Route changes  | H/I optional (view transitions) |     |
 | QR pulse ring    | Scanner open   | C                               | ✅  |
-| Reward confetti  | OTP success    | F                               |
-| Pending spinner  | Pending screen | D                               |
+| Reward confetti  | OTP success    | F                               |     |
+| Pending spinner  | Pending screen | D                               | ✅  |
 
 ---
 

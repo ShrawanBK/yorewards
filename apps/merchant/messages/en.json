@@ -439,12 +439,15 @@
     "allTimeVisits": "All-time approved visits",
     "approvedCount": "{count, plural, one {# visit} other {# visits}}",
     "cycle": "Cycle",
-    "confirmHint": "Confirm only after you have given the customer their reward. Their card will reset to 0 stamps and start a new cycle.",
+    "confirmHintNoCarryover": "Confirm only after you have given the customer their reward. Their card will reset to 0 stamps and start cycle {nextCycle}.",
+    "confirmHintWithCarryover": "Confirm only after you have given the customer their reward. They will start cycle {nextCycle} with {carryover, plural, one {# stamp} other {# stamps}} already collected.",
     "confirm": "Confirm redemption",
     "successTitle": "Reward delivered to {customer}!",
-    "successDescription": "Their card is reset to zero stamps — they're ready to start collecting again.",
+    "successDescriptionNoCarryover": "Their card is reset to 0 stamps — they're ready to start collecting again.",
+    "successDescriptionWithCarryover": "Cycle {nextCycle} has started with {carryover, plural, one {# stamp} other {# stamps}} already on their card.",
     "success": {
-      "confirmed": "Reward confirmed for {customer}! Their new stamp cycle has started."
+      "confirmedNoCarryover": "Reward confirmed for {customer}! Their new stamp cycle has started.",
+      "confirmedWithCarryover": "Reward confirmed for {customer}! Cycle {nextCycle} started with {carryover, plural, one {# stamp} other {# stamps}} carried over."
     }
   },
   "analytics": {

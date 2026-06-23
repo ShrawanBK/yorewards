@@ -12,6 +12,7 @@ type CardStampGridProps = {
   layout: StampGridLayout;
   stampsAriaLabel: string;
   stampSlotLabel: (index: number, filled: boolean) => string;
+  overflowLabel?: string;
 };
 
 function StampSlot({
@@ -59,9 +60,7 @@ function StampSlot({
           ? "border-white bg-white shadow-[0_0_10px_rgba(255,255,255,0.35)]"
           : "border-white/50 bg-white/5",
       )}
-      initial={
-        animate && filled && !shouldReduceMotion ? { scale: 0 } : false
-      }
+      initial={animate && filled && !shouldReduceMotion ? { scale: 0 } : false}
       animate={{ scale: 1 }}
       transition={
         shouldReduceMotion
@@ -86,29 +85,36 @@ export function CardStampGrid({
   layout,
   stampsAriaLabel,
   stampSlotLabel,
+  overflowLabel,
 }: CardStampGridProps) {
-  const filled = Math.min(currentStamps, stampTarget);
+  const filledSlots = Math.min(currentStamps, stampTarget);
+  const overflow = Math.max(0, currentStamps - stampTarget);
 
   return (
-    <div
-      className="grid justify-center"
-      style={{
-        gridTemplateColumns: `repeat(${layout.cols}, ${layout.sizePx}px)`,
-        gap: layout.gap,
-      }}
-      aria-label={stampsAriaLabel}
-    >
-      {Array.from({ length: stampTarget }, (_, index) => (
-        <StampSlot
-          key={index}
-          index={index}
-          filled={index < filled}
-          primaryColor={primaryColor}
-          sizePx={layout.sizePx}
-          stampLabel={stampSlotLabel(index + 1, index < filled)}
-          animate
-        />
-      ))}
+    <div className="flex flex-col items-center gap-2">
+      <div
+        className="grid justify-center"
+        style={{
+          gridTemplateColumns: `repeat(${layout.cols}, ${layout.sizePx}px)`,
+          gap: layout.gap,
+        }}
+        aria-label={stampsAriaLabel}
+      >
+        {Array.from({ length: stampTarget }, (_, index) => (
+          <StampSlot
+            key={index}
+            index={index}
+            filled={index < filledSlots}
+            primaryColor={primaryColor}
+            sizePx={layout.sizePx}
+            stampLabel={stampSlotLabel(index + 1, index < filledSlots)}
+            animate
+          />
+        ))}
+      </div>
+      {overflow > 0 && overflowLabel ? (
+        <p className="text-xs font-medium text-white/80">{overflowLabel}</p>
+      ) : null}
     </div>
   );
 }

@@ -124,6 +124,7 @@
     "stampSlot": "Stamp {index}, {state}",
     "stampFilled": "collected",
     "stampEmpty": "not collected",
+    "stampOverflow": "+{count} toward next reward",
     "minSpend": "Min. spend {amount} per visit",
     "scanCta": "Scan for a stamp",
     "claimPrompt": "You've unlocked a reward — verify your phone to get your code.",

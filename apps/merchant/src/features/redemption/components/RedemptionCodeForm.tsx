@@ -25,6 +25,10 @@ export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
   const [confirmedCustomer, setConfirmedCustomer] = useState<string | null>(
     null,
   );
+  const [confirmOutcome, setConfirmOutcome] = useState<{
+    carryover: number;
+    nextCycle: number;
+  } | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function handleLookup(event: React.FormEvent) {
@@ -32,6 +36,7 @@ export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
     setError(null);
     setSuccess(false);
     setConfirmedCustomer(null);
+    setConfirmOutcome(null);
     startTransition(async () => {
       const result = await lookupRedemptionAction(merchantId, code);
       if (result.error) {
@@ -47,6 +52,11 @@ export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
     if (!redemption) return;
     const customer =
       redemption.customerName?.split(" ")[0] ?? t("unknownCustomer");
+    const carryover = Math.max(
+      0,
+      redemption.currentStamps - redemption.stampTarget,
+    );
+    const nextCycle = redemption.cycleNumber + 1;
     setError(null);
     startTransition(async () => {
       const result = await confirmRedemptionAction(merchantId, redemption.id);
@@ -55,8 +65,15 @@ export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
         return;
       }
       setConfirmedCustomer(customer);
+      setConfirmOutcome({ carryover, nextCycle });
       setSuccess(true);
-      showActionSuccess(t, "success.confirmed", { customer });
+      showActionSuccess(
+        t,
+        carryover > 0
+          ? "success.confirmedWithCarryover"
+          : "success.confirmedNoCarryover",
+        { customer, carryover, nextCycle },
+      );
       setRedemption(null);
       setCode("");
     });
@@ -64,6 +81,11 @@ export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
 
   const displayName =
     redemption?.customerName?.split(" ")[0] ?? t("unknownCustomer");
+
+  const redemptionCarryover = redemption
+    ? Math.max(0, redemption.currentStamps - redemption.stampTarget)
+    : 0;
+  const redemptionNextCycle = redemption ? redemption.cycleNumber + 1 : 0;
 
   return (
     <div className="mx-auto flex w-full max-w-lg flex-col gap-6">
@@ -101,7 +123,12 @@ export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
           </CardHeader>
           <CardContent>
             <p className="merchant-body-muted text-sm">
-              {t("successDescription")}
+              {confirmOutcome && confirmOutcome.carryover > 0
+                ? t("successDescriptionWithCarryover", {
+                    carryover: confirmOutcome.carryover,
+                    nextCycle: confirmOutcome.nextCycle,
+                  })
+                : t("successDescriptionNoCarryover")}
             </p>
           </CardContent>
         </Card>
@@ -163,7 +190,16 @@ export function RedemptionCodeForm({ merchantId }: { merchantId: string }) {
                 </dd>
               </div>
             </dl>
-            <p className="merchant-body-muted text-xs">{t("confirmHint")}</p>
+            <p className="merchant-body-muted text-xs">
+              {redemptionCarryover > 0
+                ? t("confirmHintWithCarryover", {
+                    carryover: redemptionCarryover,
+                    nextCycle: redemptionNextCycle,
+                  })
+                : t("confirmHintNoCarryover", {
+                    nextCycle: redemptionNextCycle,
+                  })}
+            </p>
             <Button
               type="button"
               className="w-full"

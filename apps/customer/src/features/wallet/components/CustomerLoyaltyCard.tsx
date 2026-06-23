@@ -31,7 +31,9 @@ export function CustomerLoyaltyCard({ card }: CustomerLoyaltyCardProps) {
     if (!element) return;
 
     const updateWidth = () => {
-      setInnerWidth(Math.max(200, element.clientWidth - CARD_HORIZONTAL_PADDING));
+      setInnerWidth(
+        Math.max(200, element.clientWidth - CARD_HORIZONTAL_PADDING),
+      );
     };
 
     updateWidth();
@@ -40,10 +42,9 @@ export function CustomerLoyaltyCard({ card }: CustomerLoyaltyCardProps) {
     return () => observer.disconnect();
   }, []);
 
-  const filled = Math.min(card.currentStamps, card.stampTarget);
   const progressPct =
     card.stampTarget > 0
-      ? Math.min(100, Math.round((filled / card.stampTarget) * 100))
+      ? Math.min(100, Math.round((card.currentStamps / card.stampTarget) * 100))
       : 0;
   const minSpendLabel = formatMinSpend(card.minSpend, card.minSpendCurrency);
 
@@ -91,17 +92,17 @@ export function CustomerLoyaltyCard({ card }: CustomerLoyaltyCardProps) {
           <div className="flex items-center justify-between gap-2 text-xs font-medium text-white/80">
             <span>
               {t("progress", {
-                current: filled,
+                current: card.currentStamps,
                 target: card.stampTarget,
               })}
             </span>
             <span>{progressPct}%</span>
           </div>
           <CardProgressBar
-            current={filled}
+            current={card.currentStamps}
             target={card.stampTarget}
             ariaLabel={t("progressAria", {
-              current: filled,
+              current: card.currentStamps,
               target: card.stampTarget,
             })}
           />
@@ -120,6 +121,13 @@ export function CustomerLoyaltyCard({ card }: CustomerLoyaltyCardProps) {
                 state: isFilled ? t("stampFilled") : t("stampEmpty"),
               })
             }
+            overflowLabel={
+              card.currentStamps > card.stampTarget
+                ? t("stampOverflow", {
+                    count: card.currentStamps - card.stampTarget,
+                  })
+                : undefined
+            }
           />
         </div>
 
@@ -130,7 +138,10 @@ export function CustomerLoyaltyCard({ card }: CustomerLoyaltyCardProps) {
             </p>
           ) : null}
           <div className="flex items-start gap-2 rounded-xl bg-black/15 px-3 py-2.5 backdrop-blur-sm">
-            <Gift className="mt-0.5 size-4 shrink-0 text-white/80" aria-hidden />
+            <Gift
+              className="mt-0.5 size-4 shrink-0 text-white/80"
+              aria-hidden
+            />
             <p className="text-sm font-medium leading-snug">
               {card.rewardDescription}
             </p>

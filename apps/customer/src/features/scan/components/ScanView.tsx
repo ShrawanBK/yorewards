@@ -1,20 +1,24 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { Button } from "@repo/ui/button";
 import { submitStampScanAction } from "@/features/scan/api/scanActions";
 import { QrScanner } from "@/features/scan/components/QrScanner";
-import type { LoyaltyQrPayload } from "@/features/scan/utils/parseLoyaltyQr";
-import { parseLoyaltyQrText } from "@/features/scan/utils/parseLoyaltyQr";
+import {
+  parseLoyaltyQrParams,
+  parseLoyaltyQrText,
+} from "@/features/scan/utils/parseLoyaltyQr";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
 import { isActionFailure } from "@/shared/types/action-result";
 
 type ScanViewProps = {
-  deepLink?: LoyaltyQrPayload;
+  searchParams?: { m?: string; c?: string; l?: string };
 };
 
-export function ScanView({ deepLink }: ScanViewProps) {
+export function ScanView({ searchParams }: ScanViewProps) {
   const t = useTranslations("scan");
   const tErrors = useTranslations("errors.actions");
   const router = useRouter();
@@ -23,13 +27,27 @@ export function ScanView({ deepLink }: ScanViewProps) {
   const [scannerKey, setScannerKey] = useState(0);
   const processedDeepLink = useRef(false);
 
+  const hasDeepLinkParams = Boolean(
+    searchParams?.m || searchParams?.c || searchParams?.l,
+  );
+  const deepLink = parseLoyaltyQrParams(
+    searchParams?.m,
+    searchParams?.c,
+    searchParams?.l,
+  );
+  const invalidDeepLink = hasDeepLinkParams && !deepLink;
+
   const resetScanner = useCallback(() => {
     setBusy(false);
     setScannerKey((key) => key + 1);
   }, []);
 
   const handlePayload = useCallback(
-    async (payload: LoyaltyQrPayload) => {
+    async (payload: {
+      merchantId: string;
+      loyaltyCardId: string;
+      locationId: string;
+    }) => {
       if (busy) return;
       setBusy(true);
       setError(null);
@@ -67,10 +85,14 @@ export function ScanView({ deepLink }: ScanViewProps) {
   );
 
   useEffect(() => {
+    if (invalidDeepLink) {
+      setError(t("invalidQr"));
+      return;
+    }
     if (!deepLink || processedDeepLink.current) return;
     processedDeepLink.current = true;
     void handlePayload(deepLink);
-  }, [deepLink, handlePayload]);
+  }, [deepLink, handlePayload, invalidDeepLink, t]);
 
   return (
     <div className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-6 p-6">
@@ -88,9 +110,14 @@ export function ScanView({ deepLink }: ScanViewProps) {
       ) : null}
 
       {error ? (
-        <p className="text-center text-sm text-destructive" role="alert">
-          {error}
-        </p>
+        <div className="flex flex-col items-center gap-3 text-center">
+          <p className="text-sm text-destructive" role="alert">
+            {error}
+          </p>
+          <Button asChild variant="outline" className="min-h-11">
+            <Link href="/wallet">{t("backToWallet")}</Link>
+          </Button>
+        </div>
       ) : null}
     </div>
   );

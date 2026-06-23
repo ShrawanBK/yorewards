@@ -9,19 +9,19 @@
 
 ## Implementation status
 
-| Area                                              | Status     |
-| ------------------------------------------------- | ---------- |
-| Phase 0 — Prerequisites + FDA scaffold            | ⏳ Partial (QueryProvider, wallet FDA; scan deps pending) |
-| Phase A — Customer auth + onboarding              | ✅ Done |
-| Phase B — Wallet home + card grid                 | ✅ Done |
-| Phase C — QR scan + stamp session                 | ⏳ Planned |
-| Phase D — Pending / success / rejected screens    | ⏳ Planned |
-| Phase E — Card detail + stamp animations          | ⏳ Planned |
-| Phase F — Reward unlock + OTP + redemption code   | ⏳ Planned |
-| Phase G — Profile + shell + bottom nav            | ⏳ Planned |
-| Phase H — Query layer + error codes + i18n audit  | ⏳ Planned |
-| Phase I — Hardening + E2E + docs                  | ⏳ Planned |
-| Day 7 git commit                                  | ⏳ When you ask |
+| Area                                             | Status                                                      |
+| ------------------------------------------------ | ----------------------------------------------------------- |
+| Phase 0 — Prerequisites + FDA scaffold           | ⏳ Partial (`canvas-confetti` pending; legacy cleanup done) |
+| Phase A — Customer auth + onboarding             | ✅ Done                                                     |
+| Phase B — Wallet home + card grid                | ✅ Done                                                     |
+| Phase C — QR scan + stamp session                | ✅ Done                                                     |
+| Phase D — Pending / success / rejected screens   | ⏳ Partial (minimal flow for scan redirect; polish pending) |
+| Phase E — Card detail + stamp animations         | ⏳ Planned                                                  |
+| Phase F — Reward unlock + OTP + redemption code  | ⏳ Planned                                                  |
+| Phase G — Profile + shell + bottom nav           | ⏳ Partial (G1 shell + nav ✅; G2 profile ✅)               |
+| Phase H — Query layer + error codes + i18n audit | ⏳ Planned                                                  |
+| Phase I — Hardening + E2E + docs                 | ⏳ Planned                                                  |
+| Day 7 git commit                                 | ⏳ When you ask                                             |
 
 **Target:** Real iPhone test: scan merchant branch QR → merchant approves → stamp on wallet → reach target → OTP → redeem at merchant.
 
@@ -50,23 +50,23 @@ A customer can:
 
 ## Already in repo (do not rebuild)
 
-| Item | Location | Day 7 task |
-| ---- | -------- | ---------- |
-| Phone login API (lookup + session) | `apps/customer/app/api/auth/customer/login/route.ts` | Migrate to server actions + error codes; wire FDA |
-| Onboarding API | `apps/customer/app/api/auth/customer/onboarding/route.ts` | Same |
-| `findCustomerByPhone`, `establishCustomerSession`, `getCustomerIdFromSession` | `@repo/supabase/queries/customers` | Use as-is; add missing helpers below |
-| `createPendingStampSession` | `@repo/supabase/queries/stamps` | Call from scan action |
-| `createPendingRedemption`, `getRedemptionByCode` | `@repo/supabase/queries/redemptions` | Use after OTP verify |
-| `generateSixDigitOTP` | `@repo/utils/otp` | Reward SMS only |
-| Branch QR URL format | `buildLoyaltyCardQrUrl` — `/scan?m=&c=&l=` | Parse in scanner + deep-link handler |
-| Merchant Realtime queue + approve/reject | Day 4 merchant app | E2E verify |
-| Merchant redeem (6-char code) | Day 4 `/merchant/redeem` | E2E verify |
-| Admin customer suspend + `status_reason` | Day 6 admin | Block scan when `status = suspended` |
-| Session proxy | `apps/customer/proxy.ts` | Keep aligned with `@repo/supabase/proxy` |
-| Partial login/onboarding forms | `apps/customer/components/*` | Move to `src/features/auth/` |
-| Auth Zustand stub | `apps/customer/stores/auth-store.ts` | Move to `features/auth/store/` |
-| i18n scaffold | `apps/customer/messages/en.json` (`auth.*`, partial `nav.*`) | Expand all namespaces |
-| `(main)` session guard | `apps/customer/app/(main)/layout.tsx` | Extend via `CustomerProtectedShell` |
+| Item                                                                          | Location                                                     | Day 7 task                                        |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
+| Phone login API (lookup + session)                                            | `apps/customer/app/api/auth/customer/login/route.ts`         | Migrate to server actions + error codes; wire FDA |
+| Onboarding API                                                                | `apps/customer/app/api/auth/customer/onboarding/route.ts`    | Same                                              |
+| `findCustomerByPhone`, `establishCustomerSession`, `getCustomerIdFromSession` | `@repo/supabase/queries/customers`                           | Use as-is; add missing helpers below              |
+| `createPendingStampSession`                                                   | `@repo/supabase/queries/stamps`                              | Call from scan action                             |
+| `createPendingRedemption`, `getRedemptionByCode`                              | `@repo/supabase/queries/redemptions`                         | Use after OTP verify                              |
+| `generateSixDigitOTP`                                                         | `@repo/utils/otp`                                            | Reward SMS only                                   |
+| Branch QR URL format                                                          | `buildLoyaltyCardQrUrl` — `/scan?m=&c=&l=`                   | Parse in scanner + deep-link handler              |
+| Merchant Realtime queue + approve/reject                                      | Day 4 merchant app                                           | E2E verify                                        |
+| Merchant redeem (6-char code)                                                 | Day 4 `/merchant/redeem`                                     | E2E verify                                        |
+| Admin customer suspend + `status_reason`                                      | Day 6 admin                                                  | Block scan when `status = suspended`              |
+| Session proxy                                                                 | `apps/customer/proxy.ts`                                     | Keep aligned with `@repo/supabase/proxy`          |
+| Partial login/onboarding forms                                                | `apps/customer/components/*`                                 | Move to `src/features/auth/`                      |
+| Auth Zustand stub                                                             | `apps/customer/stores/auth-store.ts`                         | Move to `features/auth/store/`                    |
+| i18n scaffold                                                                 | `apps/customer/messages/en.json` (`auth.*`, partial `nav.*`) | Expand all namespaces                             |
+| `(main)` session guard                                                        | `apps/customer/app/(main)/layout.tsx`                        | Extend via `CustomerProtectedShell`               |
 
 **Stub / replace:** `apps/customer/app/(main)/wallet/page.tsx` (“coming Day 4”) → full `WalletHomeView`.
 
@@ -81,11 +81,11 @@ A customer can:
       ↓
 2. Phase B + H1 — getCustomerWalletCards + useCustomerWallet                ✅
       ↓
-3. Phase G1 — CustomerShell + bottom nav (Wallet / Scan / Profile)           ⏳
+3. Phase G1 — CustomerShell + bottom nav (Wallet / Scan / Profile)           ✅
       ↓
-4. Phase C + H1 — getOrCreateCustomerCard + scan action + html5-qrcode         ⏳
+4. Phase C + H1 — getOrCreateCustomerCard + scan action + html5-qrcode         ✅
       ↓
-5. Phase D — Realtime pending / success / rejected                           ⏳
+5. Phase D — Realtime pending / success / rejected                           ⏳ Partial
       ↓
 6. Phase E — Card detail + Framer Motion                                     ⏳
       ↓
@@ -112,21 +112,21 @@ A customer can:
 Add only PRD / Technical Doc §2 packages (no substitutes):
 
 - [x] `@tanstack/react-query` — wallet + card detail server state
-- [ ] `html5-qrcode` — camera scanner
+- [x] `html5-qrcode` — camera scanner
 - [x] `framer-motion` — stamp pop-in, card float, page motion (PRD §1.4)
 - [ ] `canvas-confetti` — reward unlock celebration
 - [x] `lucide-react` — nav + UI icons (via `@repo/ui` patterns)
 
 ### 0.3 Environment variables (customer + server actions)
 
-| Variable | Purpose |
-| -------- | ------- |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase client |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase client |
-| `SUPABASE_SERVICE_ROLE_KEY` | Phone lookup, OTP, scan validation (server only) |
-| `NEXT_PUBLIC_CUSTOMER_APP_URL` | QR deep links (`http://localhost:3000` local) |
-| `SPARROW_SMS_TOKEN` | Nepal (+977) redemption OTP |
-| `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_PHONE_NUMBER` | Finland (+358) redemption OTP |
+| Variable                                                           | Purpose                                          |
+| ------------------------------------------------------------------ | ------------------------------------------------ |
+| `NEXT_PUBLIC_SUPABASE_URL`                                         | Supabase client                                  |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY`                                    | Supabase client                                  |
+| `SUPABASE_SERVICE_ROLE_KEY`                                        | Phone lookup, OTP, scan validation (server only) |
+| `NEXT_PUBLIC_CUSTOMER_APP_URL`                                     | QR deep links (`http://localhost:3000` local)    |
+| `SPARROW_SMS_TOKEN`                                                | Nepal (+977) redemption OTP                      |
+| `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_PHONE_NUMBER` | Finland (+358) redemption OTP                    |
 
 Dev fallback: document console-log OTP when SMS env missing (dev only — never in production).
 
@@ -134,11 +134,11 @@ Dev fallback: document console-log OTP when SMS env missing (dev only — never 
 
 - [x] `src/features/auth/` — login, onboarding, guards, store
 - [x] `src/features/wallet/` — wallet home, card detail hooks/components (detail UI → Phase E)
-- [ ] `src/features/scan/` — scanner UI + scan server action
-- [ ] `src/features/stamp/` — pending/success/rejected views + Realtime hook
+- [x] `src/features/scan/` — scanner UI + scan server action
+- [ ] `src/features/stamp/` — pending/success/rejected views + Realtime hook (minimal stub for scan E2E)
 - [ ] `src/features/reward/` — OTP send/verify + code display
 - [x] `src/features/profile/` — profile view + logout action
-- [ ] `src/widgets/CustomerShell/` — mobile layout + bottom nav
+- [x] `src/widgets/CustomerShell/` — mobile layout + bottom nav
 - [x] `src/widgets/CustomerProtectedShell/` — session guard wrapper
 - [x] `src/shared/providers/` — `QueryProvider`, `CustomerProviders`
 - [x] `src/shared/utils/` — `resolve-action-error`, `action-feedback`
@@ -158,9 +158,9 @@ apps/customer/app/
 │   ├── wallet/[cardId]/page.tsx
 │   ├── scan/page.tsx
 │   ├── stamp/pending/[sessionId]/page.tsx
-│   ├── stamp/success/page.tsx
-│   ├── stamp/rejected/page.tsx
-│   ├── reward/[cardId]/page.tsx
+│   ├── stamp/success/[sessionId]/page.tsx
+│   ├── stamp/rejected/[sessionId]/page.tsx
+│   ├── reward/[cardId]/page.tsx              → OTP stub (Phase F)
 │   └── profile/page.tsx
 ├── layout.tsx
 └── page.tsx                    → /wallet if session else /login
@@ -218,35 +218,37 @@ apps/customer/app/
 
 ### C1. Scanner
 
-- [ ] `/scan` — `html5-qrcode` camera view + QR pulse ring animation (PRD §1.4)
-- [ ] **Deep link:** handle `/scan?m={merchantId}&c={loyaltyCardId}&l={locationId}` from printed branch QR (merchant `buildLoyaltyCardQrUrl`)
-- [ ] **Camera scan:** parse same query params from scanned URL
-- [ ] Camera permission denied → i18n error + link back to wallet
-- [ ] Invalid / malformed QR → i18n error (not generic 500)
+- [x] `/scan` — `html5-qrcode` camera view + QR pulse ring animation (PRD §1.4)
+- [x] **Deep link:** handle `/scan?m={merchantId}&c={loyaltyCardId}&l={locationId}` from printed branch QR (merchant `buildLoyaltyCardQrUrl`)
+- [x] **Camera scan:** parse same query params from scanned URL (`parseLoyaltyQrText`)
+- [x] Camera permission denied → i18n error + **Allow camera** (user-gesture re-request) + link back to wallet
+- [x] Invalid / malformed QR → i18n error (`scan.invalidQr` / `SCAN_INVALID_QR`) — not generic 500
 
 ### C2. Validation (server action)
 
-- [ ] Customer session required (`getCustomerIdFromSession`)
-- [ ] Customer `status = active` (not suspended); if suspended → show `status_reason` (Day 6)
-- [ ] Merchant `status = active`
-- [ ] Loyalty card exists, `is_active = true`
-- [ ] Location belongs to merchant and `is_active = true` (when `l` present)
-- [ ] No duplicate pending session for same card (optional guard — reject or reuse per product rule)
-- [ ] Block scan when `reward_status = pending_otp` — direct to `/reward/[cardId]` instead
+- [x] Customer session required (`getCustomerIdFromSession`)
+- [x] Customer `status = active` (not suspended); if suspended → `CUSTOMER_SUSPENDED_REASON` with `status_reason` when present (Day 6)
+- [x] Merchant `status = active`
+- [x] Loyalty card exists, `is_active = true`
+- [x] Location belongs to merchant and `is_active = true` (when `l` present)
+- [x] No duplicate pending session for same card — reuse existing pending session within 5 min window
+- [x] Block scan when `reward_status = pending_otp` or `unlocked` — direct to `/reward/[cardId]` instead
 
 ### C3. Session creation
 
-- [ ] `getOrCreateCustomerCard(customerId, loyaltyCardId, merchantId)` — wallet row on first scan
-- [ ] `createPendingStampSession({ merchantId, customerCardId, locationId })` — `@repo/supabase/queries/stamps`
-- [ ] Min spend: display-only on card UI (merchant rule text — no server block MVP)
-- [ ] Session expiry ~5 min (existing `isWithinPendingWindow` on merchant side)
-- [ ] Redirect → `/stamp/pending/[sessionId]`
-- [ ] i18n: `scan.*`
+- [x] `getOrCreateCustomerCard(customerId, loyaltyCardId, merchantId)` — `@repo/supabase/queries/customer-wallet`
+- [x] `createPendingStampSession({ merchantId, customerCardId, locationId })` — `@repo/supabase/queries/stamps`
+- [x] Min spend: display-only on card UI (merchant rule text — no server block MVP)
+- [x] Session expiry ~5 min (existing `isWithinPendingWindow` on merchant side)
+- [x] Redirect → `/stamp/pending/[sessionId]`
+- [x] i18n: `scan.*`
 
 ### C4. Merchant integration (E2E)
 
-- [ ] Pending row appears in merchant Realtime queue with correct customer name + branch
-- [ ] `location_id` stored on `stamp_sessions` for analytics
+- [ ] Pending row appears in merchant Realtime queue with correct customer name + branch _(verify in Phase I2)_
+- [x] `location_id` stored on `stamp_sessions` for analytics (via `createPendingStampSession`)
+
+**Implementation:** `features/scan/` (`ScanView`, `QrScanner`, `submitStampScanAction`, `parseLoyaltyQr*`) · route `app/(main)/scan/page.tsx`
 
 ---
 
@@ -329,23 +331,23 @@ apps/customer/app/
 
 ### G1. CustomerShell + bottom nav (PRD §1.5)
 
-- [ ] `widgets/CustomerShell` — main content + fixed bottom nav on mobile
-- [ ] Nav items: **Wallet** (`/wallet`), **Scan** (`/scan`), **Profile** (`/profile`)
-- [ ] Active route indicator; 44×44px min tap targets
-- [ ] `viewTransitionName` or shell isolation if using view transitions (optional — skill `vercel-react-view-transitions`)
-- [ ] i18n: `nav.wallet`, `nav.scan`, `nav.profile`
+- [x] `widgets/CustomerShell` — main content + fixed bottom nav on mobile
+- [x] Nav items: **Wallet** (`/wallet`), **Scan** (`/scan`), **Profile** (`/profile`)
+- [x] Active route indicator; 44×44px min tap targets
+- [x] `viewTransitionName` isolation on bottom nav (`customer-bottom-nav`)
+- [x] i18n: `nav.wallet`, `nav.scan`, `nav.profile`, `nav.aria`
 
 ### G2. Profile + logout
 
-- [ ] `/profile` — phone, name (read-only MVP), logout button
-- [ ] Logout: clear Supabase session + redirect `/login`
-- [ ] i18n: `profile.*`
+- [x] `/profile` — phone, name (read-only MVP), logout button
+- [x] Logout: clear Supabase session + redirect `/login`
+- [x] i18n: `profile.*`
 
 ### G3. Route protection
 
-- [ ] `(main)/layout.tsx` — `getCustomerIdFromSession`; redirect `/login` if missing
-- [ ] `(auth)/*` — redirect `/wallet` if already authed
-- [ ] `proxy.ts` matcher unchanged; session refresh via `@repo/supabase/proxy`
+- [x] `(main)/layout.tsx` — `getCustomerIdFromSession`; redirect `/login` if missing
+- [x] `(auth)/*` — redirect `/wallet` if already authed
+- [x] `proxy.ts` matcher unchanged; session refresh via `@repo/supabase/proxy`
 
 ---
 
@@ -353,14 +355,15 @@ apps/customer/app/
 
 ### H1. `@repo/supabase` queries to add or complete
 
-| Function | Used by |
-| -------- | ------- |
-| `getCustomerWalletCards(customerId)` | Wallet home |
-| `getCustomerCardById(customerId, cardId)` | Card detail |
-| `getOrCreateCustomerCard(customerId, loyaltyCardId, merchantId)` | Scan |
-| `getStampSessionForCustomer(sessionId, customerId)` | Pending screen guard |
-| `sendRedemptionOtp(customerId, cardId)` | Reward flow (server) |
-| `verifyRedemptionOtp(customerId, cardId, otp)` | Reward flow (server) |
+| Function                                                         | Used by              |
+| ---------------------------------------------------------------- | -------------------- |
+| `getCustomerWalletCards(customerId)`                             | Wallet home          |
+| `getCustomerCardById(customerId, cardId)`                        | Card detail          |
+| `getOrCreateCustomerCard(customerId, loyaltyCardId, merchantId)` | Scan                 |
+| `getStampSessionForCustomer(sessionId, customerId)`              | Pending screen guard |
+| `findActivePendingSessionForCard(customerCardId)`                | Scan duplicate guard |
+| `sendRedemptionOtp(customerId, cardId)`                          | Reward flow (server) |
+| `verifyRedemptionOtp(customerId, cardId, otp)`                   | Reward flow (server) |
 
 Export from `@repo/supabase/queries/*`; keep SMS/Twilio calls in server actions (not client).
 
@@ -416,59 +419,59 @@ Export from `@repo/supabase/queries/*`; keep SMS/Twilio calls in server actions 
 
 ## PRD routes checklist (§8.1)
 
-| Route                        | Phase   | Notes |
-| ---------------------------- | ------- | ----- |
-| `/`                          | B       | → `/wallet` or `/login` |
-| `/login`                     | A       | |
-| `/onboarding`                | A       | |
-| `/wallet`                    | B       | |
-| `/wallet/[cardId]`           | E       | |
-| `/scan`                      | C       | + query deep link `?m=&c=&l=` |
-| `/stamp/pending/[sessionId]` | D       | Realtime |
-| `/stamp/success`             | D       | |
-| `/stamp/rejected`            | D       | |
-| `/reward/[cardId]`           | F       | OTP + code |
-| `/profile`                   | G       | |
+| Route                        | Phase | Notes                            |
+| ---------------------------- | ----- | -------------------------------- |
+| `/`                          | B     | → `/wallet` or `/login`          |
+| `/login`                     | A     |                                  |
+| `/onboarding`                | A     |                                  |
+| `/wallet`                    | B     |                                  |
+| `/wallet/[cardId]`           | E     |                                  |
+| `/scan`                      | C     | ✅ + query deep link `?m=&c=&l=` |
+| `/stamp/pending/[sessionId]` | D     | Realtime                         |
+| `/stamp/success`             | D     |                                  |
+| `/stamp/rejected`            | D     |                                  |
+| `/reward/[cardId]`           | F     | OTP + code                       |
+| `/profile`                   | G     |                                  |
 
 ---
 
 ## PRD animations checklist (§1.4)
 
-| Animation        | Where              | Phase |
-| ---------------- | ------------------ | ----- |
-| Stamp pop-in     | Success screen     | D     |
-| Card float       | Wallet load        | B     |
-| Progress shimmer | Card detail        | E     |
-| Page slide-in    | Route changes      | H/I optional (view transitions) |
-| QR pulse ring    | Scanner open       | C     |
-| Reward confetti  | OTP success        | F     |
-| Pending spinner  | Pending screen     | D     |
+| Animation        | Where          | Phase                           |
+| ---------------- | -------------- | ------------------------------- | --- |
+| Stamp pop-in     | Success screen | D                               |
+| Card float       | Wallet load    | B                               |
+| Progress shimmer | Card detail    | E                               |
+| Page slide-in    | Route changes  | H/I optional (view transitions) |
+| QR pulse ring    | Scanner open   | C                               | ✅  |
+| Reward confetti  | OTP success    | F                               |
+| Pending spinner  | Pending screen | D                               |
 
 ---
 
 ## Agent skills (Day 7)
 
-| Skill                              | Purpose                              |
-| ---------------------------------- | ------------------------------------ |
-| `supabase`                         | RLS, Realtime, RPCs, customer session |
-| `vercel-react-view-transitions`    | Optional stamp/screen transitions    |
-| `server-action-errors.mdc`         | Customer mutations                   |
-| `vercel-react-best-practices`      | Query boundaries, client/server split |
-| PRD §1.4 animations                | Pending spinner, success pop-in      |
+| Skill                           | Purpose                               |
+| ------------------------------- | ------------------------------------- |
+| `supabase`                      | RLS, Realtime, RPCs, customer session |
+| `vercel-react-view-transitions` | Optional stamp/screen transitions     |
+| `server-action-errors.mdc`      | Customer mutations                    |
+| `vercel-react-best-practices`   | Query boundaries, client/server split |
+| PRD §1.4 animations             | Pending spinner, success pop-in       |
 
 ---
 
 ## Out of scope (Day 8+ / V2)
 
-| Item                         | When |
-| ---------------------------- | ---- |
-| PWA manifest + `next-pwa`    | [`Day8_Checklist.md`](Day8_Checklist.md) |
-| Privacy policy `/privacy`    | Day 8 |
-| Production Vercel deploy     | Day 8 |
-| Empty/error polish (offline, invalid QR copy) | Day 8 Phase C |
-| Browser push notifications   | Day 8 stub or V2 |
-| Phone OTP at login           | V2 (PRD §12) |
-| Profile data deletion flow   | Day 8 GDPR stub |
+| Item                                            | When                                          |
+| ----------------------------------------------- | --------------------------------------------- |
+| PWA manifest + `next-pwa`                       | [`Day8_Checklist.md`](Day8_Checklist.md)      |
+| Privacy policy `/privacy`                       | Day 8                                         |
+| Production Vercel deploy                        | Day 8                                         |
+| Empty/error polish (offline, invalid QR copy)   | Day 8 Phase C                                 |
+| Browser push notifications                      | Day 8 stub or V2                              |
+| Phone OTP at login                              | V2 (PRD §12)                                  |
+| Profile data deletion flow                      | Day 8 GDPR stub                               |
 | `@repo/ui` shared stamp-grid package extraction | Optional — can live in customer feature first |
 
 ---

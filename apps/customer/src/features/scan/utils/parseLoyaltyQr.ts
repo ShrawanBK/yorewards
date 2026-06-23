@@ -11,6 +11,24 @@ function isUuid(value: string): boolean {
   return UUID_RE.test(value);
 }
 
+export function parseLoyaltyQrParams(
+  merchantId?: string,
+  loyaltyCardId?: string,
+  locationId?: string,
+): LoyaltyQrPayload | null {
+  if (
+    merchantId &&
+    loyaltyCardId &&
+    locationId &&
+    isUuid(merchantId) &&
+    isUuid(loyaltyCardId) &&
+    isUuid(locationId)
+  ) {
+    return { merchantId, loyaltyCardId, locationId };
+  }
+  return null;
+}
+
 export function parseLoyaltyQrText(text: string): LoyaltyQrPayload | null {
   const trimmed = text.trim();
 

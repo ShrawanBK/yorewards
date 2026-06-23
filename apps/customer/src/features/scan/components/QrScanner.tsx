@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@repo/ui/button";
@@ -156,6 +157,16 @@ export function QrScanner({ onScan, paused }: QrScannerProps) {
           >
             {isRequesting ? t("requestingCamera") : t("retryCamera")}
           </Button>
+          {cameraError ? (
+            <Button
+              asChild
+              type="button"
+              variant="outline"
+              className="min-h-11 border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white"
+            >
+              <Link href="/wallet">{t("backToWallet")}</Link>
+            </Button>
+          ) : null}
         </div>
       ) : null}
     </div>

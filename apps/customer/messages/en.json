@@ -85,7 +85,8 @@
     "cameraDenied": "Camera access is required to scan — allow it in your browser settings.",
     "cameraPrompt": "Allow camera access to scan loyalty QR codes.",
     "retryCamera": "Allow camera",
-    "requestingCamera": "Requesting access…"
+    "requestingCamera": "Requesting access…",
+    "backToWallet": "Back to wallet"
   },
   "stamp": {
     "pending": {
@@ -122,6 +123,7 @@
       "CUSTOMER_ONBOARDING_FAILED": "We couldn't finish setup — please try again.",
       "CUSTOMER_ALREADY_EXISTS": "This phone is already registered — try signing in instead.",
       "CUSTOMER_SUSPENDED": "Your account is suspended. Contact support if you think this is a mistake.",
+      "CUSTOMER_SUSPENDED_REASON": "Your account is suspended: {reason}",
       "WALLET_LOAD_FAILED": "We couldn't load your wallet — please try again.",
       "SCAN_INVALID_QR": "That doesn't look like a valid loyalty QR code.",
       "SCAN_MERCHANT_NOT_ACTIVE": "This business isn't accepting stamps right now.",

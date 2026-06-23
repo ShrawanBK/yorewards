@@ -13,6 +13,15 @@ import { createServiceRoleClient } from "@repo/supabase/service-role";
 import { fail, logActionFailure } from "@repo/utils/action-error";
 import type { ActionResult } from "@/shared/types/action-result";
 import type { LoyaltyQrPayload } from "@/features/scan/utils/parseLoyaltyQr";
+import { parseLoyaltyQrParams } from "@/features/scan/utils/parseLoyaltyQr";
+
+function isValidPayload(payload: LoyaltyQrPayload): boolean {
+  return Boolean(parseLoyaltyQrParams(
+    payload.merchantId,
+    payload.loyaltyCardId,
+    payload.locationId,
+  ));
+}
 
 export async function submitStampScanAction(
   payload: LoyaltyQrPayload,
@@ -22,10 +31,20 @@ export async function submitStampScanAction(
   const customerId = await getCustomerIdFromSession();
   if (!customerId) return fail("UNAUTHORIZED");
 
+  if (!isValidPayload(payload)) {
+    return fail("SCAN_INVALID_QR");
+  }
+
   try {
     const customer = await getCustomerById(customerId);
     if (!customer) return fail("CUSTOMER_NOT_FOUND");
-    if (customer.status === "suspended") return fail("CUSTOMER_SUSPENDED");
+    if (customer.status === "suspended") {
+      const reason = customer.status_reason?.trim();
+      if (reason) {
+        return fail("CUSTOMER_SUSPENDED_REASON", { reason });
+      }
+      return fail("CUSTOMER_SUSPENDED");
+    }
 
     const supabase = createServiceRoleClient();
 

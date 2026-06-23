@@ -17,7 +17,7 @@
 | Phase C — QR scan + stamp session                | ✅ Done                                                     |
 | Phase D — Pending / success / rejected screens   | ✅ Done                                                     |
 | Phase E — Card detail + stamp animations         | ✅ Done                                                     |
-| Phase F — Reward unlock + OTP + redemption code  | ⏳ Planned                                                  |
+| Phase F — Reward unlock + OTP + redemption code  | ✅ Done                                                     |
 | Phase G — Profile + shell + bottom nav           | ⏳ Partial (G1 shell + nav ✅; G2 profile ✅)               |
 | Phase H — Query layer + error codes + i18n audit | ⏳ Planned                                                  |
 | Phase I — Hardening + E2E + docs                 | ⏳ Planned                                                  |
@@ -89,7 +89,7 @@ A customer can:
       ↓
 6. Phase E — Card detail + Framer Motion                                     ✅
       ↓
-7. Phase F + H1 — OTP send/verify + redemption code + confetti               ⏳
+7. Phase F + H1 — OTP send/verify + redemption code + confetti               ✅
       ↓
 8. Phase G2 — Profile + logout                                               ⏳
       ↓
@@ -114,7 +114,7 @@ Add only PRD / Technical Doc §2 packages (no substitutes):
 - [x] `@tanstack/react-query` — wallet + card detail server state
 - [x] `html5-qrcode` — camera scanner
 - [x] `framer-motion` — stamp pop-in, card float, page motion (PRD §1.4)
-- [ ] `canvas-confetti` — reward unlock celebration
+- [x] `canvas-confetti` — reward unlock celebration
 - [x] `lucide-react` — nav + UI icons (via `@repo/ui` patterns)
 
 ### 0.3 Environment variables (customer + server actions)
@@ -128,7 +128,13 @@ Add only PRD / Technical Doc §2 packages (no substitutes):
 | `SPARROW_SMS_TOKEN`                                                | Nepal (+977) redemption OTP                      |
 | `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_PHONE_NUMBER` | Finland (+358) redemption OTP                    |
 
-Dev fallback: document console-log OTP when SMS env missing (dev only — never in production).
+**Local dev — OTP without SMS:** Run `pnpm exec turbo dev --filter=customer` with SMS vars **empty** in `apps/customer/.env.local`. On **Send verification code** (`/reward/[cardId]`), the 6-digit OTP is printed in the customer dev server terminal:
+
+```text
+[dev:redemption-otp] +97798XXXXXXXX: 123456
+```
+
+Copy that code into the app. This only runs when `NODE_ENV=development` and the provider for the customer’s `country_code` is not configured. Production must use real Sparrow/Twilio credentials.
 
 ### 0.4 FDA layout (`apps/customer/src/` — match merchant/admin)
 
@@ -136,7 +142,7 @@ Dev fallback: document console-log OTP when SMS env missing (dev only — never 
 - [x] `src/features/wallet/` — wallet home, card detail hooks/components (detail UI → Phase E)
 - [x] `src/features/scan/` — scanner UI + scan server action
 - [x] `src/features/stamp/` — pending/success/rejected/expired views + Realtime hook
-- [ ] `src/features/reward/` — OTP send/verify + code display
+- [x] `src/features/reward/` — OTP send/verify + code display
 - [x] `src/features/profile/` — profile view + logout action
 - [x] `src/widgets/CustomerShell/` — mobile layout + bottom nav
 - [x] `src/widgets/CustomerProtectedShell/` — session guard wrapper
@@ -303,32 +309,35 @@ apps/customer/app/
 
 ### F1. Unlock detection
 
-- [ ] Stamp approval at target sets `reward_status = pending_otp` (already in `approve_stamp_session` / `increment_stamps`)
-- [ ] Wallet banner + card detail “Claim reward” when `pending_otp`
+- [x] Stamp approval at target sets `reward_status = pending_otp` (already in `approve_stamp_session` / `increment_stamps`)
+- [x] Wallet banner + card detail “Claim reward” when `pending_otp`
 
 ### F2. OTP send (`@repo/supabase` or `features/reward/api`)
 
-- [ ] `/reward/[cardId]` — confirm phone (read-only display), send OTP button
-- [ ] Generate OTP via `generateSixDigitOTP`; hash with bcrypt; insert `otp_tokens` (`purpose: redemption`, 5 min expiry)
-- [ ] Route by `customers.country_code`: Sparrow (+977) / Twilio (+358) — server-only (Technical Doc §6.2)
-- [ ] Rate limit: max sends per phone/card window (basic MVP guard)
+- [x] `/reward/[cardId]` — confirm phone (read-only display), send OTP button
+- [x] Generate OTP via `generateSixDigitOTP`; hash with bcrypt; insert `otp_tokens` (`purpose: redemption`, 5 min expiry)
+- [x] Route by `customers.country_code`: Sparrow (+977) / Twilio (+358) — server-only (Technical Doc §6.2)
+- [x] Rate limit: max sends per phone/card window (basic MVP guard)
+- [x] Dev fallback: console-log OTP when SMS env missing (development only)
 
 ### F3. OTP verify + redemption
 
-- [ ] Verify hash → on success:
-  - [ ] Set `customer_cards.reward_status = unlocked`
-  - [ ] Generate unique **6-character** alphanumeric redemption code (match merchant `REDEMPTION_CODE_INVALID` length check)
-  - [ ] `createPendingRedemption({ merchantId, customerCardId, redemptionCode, cycleNumber, locationId })`
-  - [ ] Delete or invalidate spent `otp_tokens` row
-- [ ] Display code large, monospace, copy-to-clipboard
-- [ ] `canvas-confetti` burst on success (brand colors, ~3s)
-- [ ] Instructions: show code to merchant at counter
-- [ ] Merchant redeem (Day 4) → `complete_redemption` RPC resets card
+- [x] Verify hash → on success:
+  - [x] Set `customer_cards.reward_status = unlocked`
+  - [x] Generate unique **6-character** alphanumeric redemption code (match merchant `REDEMPTION_CODE_INVALID` length check)
+  - [x] `createPendingRedemption({ merchantId, customerCardId, redemptionCode, cycleNumber, locationId })`
+  - [x] Delete or invalidate spent `otp_tokens` row
+- [x] Display code large, monospace, copy-to-clipboard
+- [x] `canvas-confetti` burst on success (brand colors, ~3s)
+- [x] Instructions: show code to merchant at counter
+- [x] Merchant redeem (Day 4) → `complete_redemption` RPC resets card
 
 ### F4. i18n + errors
 
-- [ ] `reward.*` strings
-- [ ] Error codes: `OTP_SEND_FAILED`, `OTP_INVALID`, `OTP_EXPIRED`, `OTP_RATE_LIMITED`, `REWARD_NOT_READY`, `REDEMPTION_CREATE_FAILED` → `errors.actions.*`
+- [x] `reward.*` strings
+- [x] Error codes: `OTP_SEND_FAILED`, `OTP_INVALID`, `OTP_EXPIRED`, `OTP_RATE_LIMITED`, `REWARD_NOT_READY`, `REDEMPTION_CREATE_FAILED` → `errors.actions.*`
+
+**Implementation:** `features/reward/` (`RewardClaimView`, `RewardOtpForm`, `RedemptionCodePanel`) · `@repo/supabase/queries/reward-otp` · `sms/send-redemption-otp` · route `app/(main)/reward/[cardId]/page.tsx`
 
 ---
 
@@ -360,16 +369,16 @@ apps/customer/app/
 
 ### H1. `@repo/supabase` queries to add or complete
 
-| Function                                                         | Used by              |
-| ---------------------------------------------------------------- | -------------------- |
-| `getCustomerWalletCards(customerId)`                             | Wallet home          |
-| `getCustomerCardById(customerId, cardId)`                        | Card detail          |
-| `getOrCreateCustomerCard(customerId, loyaltyCardId, merchantId)` | Scan                 |
+| Function                                                         | Used by                        |
+| ---------------------------------------------------------------- | ------------------------------ |
+| `getCustomerWalletCards(customerId)`                             | Wallet home                    |
+| `getCustomerCardById(customerId, cardId)`                        | Card detail                    |
+| `getOrCreateCustomerCard(customerId, loyaltyCardId, merchantId)` | Scan                           |
 | `getStampSessionForCustomer(sessionId, customerId)`              | Pending/rejected/expired guard |
 | `getStampSuccessContextForCustomer(sessionId, customerId)`       | Success screen                 |
-| `findActivePendingSessionForCard(customerCardId)`                | Scan duplicate guard |
-| `sendRedemptionOtp(customerId, cardId)`                          | Reward flow (server) |
-| `verifyRedemptionOtp(customerId, cardId, otp)`                   | Reward flow (server) |
+| `findActivePendingSessionForCard(customerCardId)`                | Scan duplicate guard           |
+| `sendRedemptionOtp(customerId, cardId)`                          | Reward flow (server)           |
+| `verifyRedemptionOtp(customerId, cardId, otp)`                   | Reward flow (server)           |
 
 Export from `@repo/supabase/queries/*`; keep SMS/Twilio calls in server actions (not client).
 
@@ -425,20 +434,20 @@ Export from `@repo/supabase/queries/*`; keep SMS/Twilio calls in server actions 
 
 ## PRD routes checklist (§8.1)
 
-| Route                        | Phase | Notes                            |
-| ---------------------------- | ----- | -------------------------------- |
-| `/`                          | B     | → `/wallet` or `/login`          |
-| `/login`                     | A     |                                  |
-| `/onboarding`                | A     |                                  |
-| `/wallet`                    | B     |                                  |
-| `/wallet/[cardId]`           | E     | ✅                               |
-| `/scan`                      | C     | ✅ + query deep link `?m=&c=&l=` |
-| `/stamp/pending/[sessionId]` | D     | ✅ Realtime                      |
-| `/stamp/success/[sessionId]` | D     | ✅                               |
-| `/stamp/rejected/[sessionId]` | D    | ✅                               |
-| `/stamp/expired/[sessionId]` | D     | ✅                               |
-| `/reward/[cardId]`           | F     | OTP + code                       |
-| `/profile`                   | G     |                                  |
+| Route                         | Phase | Notes                            |
+| ----------------------------- | ----- | -------------------------------- |
+| `/`                           | B     | → `/wallet` or `/login`          |
+| `/login`                      | A     |                                  |
+| `/onboarding`                 | A     |                                  |
+| `/wallet`                     | B     |                                  |
+| `/wallet/[cardId]`            | E     | ✅                               |
+| `/scan`                       | C     | ✅ + query deep link `?m=&c=&l=` |
+| `/stamp/pending/[sessionId]`  | D     | ✅ Realtime                      |
+| `/stamp/success/[sessionId]`  | D     | ✅                               |
+| `/stamp/rejected/[sessionId]` | D     | ✅                               |
+| `/stamp/expired/[sessionId]`  | D     | ✅                               |
+| `/reward/[cardId]`            | F     | ✅ OTP + code                    |
+| `/profile`                    | G     |                                  |
 
 ---
 
@@ -451,7 +460,7 @@ Export from `@repo/supabase/queries/*`; keep SMS/Twilio calls in server actions 
 | Progress shimmer | Card detail    | E                               | ✅  |
 | Page slide-in    | Route changes  | H/I optional (view transitions) |     |
 | QR pulse ring    | Scanner open   | C                               | ✅  |
-| Reward confetti  | OTP success    | F                               |     |
+| Reward confetti  | OTP success    | F                               | ✅  |
 | Pending spinner  | Pending screen | D                               | ✅  |
 
 ---

@@ -17,6 +17,7 @@
     "./queries/loyalty-cards": "./src/queries/loyalty-cards.ts",
     "./queries/stamps": "./src/queries/stamps.ts",
     "./queries/redemptions": "./src/queries/redemptions.ts",
+    "./queries/reward-otp": "./src/queries/reward-otp.ts",
     "./queries/analytics": "./src/queries/analytics.ts",
     "./queries/platform": "./src/queries/platform.ts",
     "./queries/admin-merchants": "./src/queries/admin-merchants.ts",
@@ -30,8 +31,10 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@repo/utils": "workspace:*",
     "@supabase/ssr": "^0.6.1",
-    "@supabase/supabase-js": "^2.49.8"
+    "@supabase/supabase-js": "^2.49.8",
+    "twilio": "^6.0.2"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

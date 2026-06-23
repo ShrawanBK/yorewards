@@ -73,3 +73,13 @@ export function isValidCustomerPhoneLocal(
 
   return /^(358)?[4-5]\d{7,9}$/.test(digits) || /^0[4-5]\d{7,9}$/.test(digits);
 }
+
+/** Mask E.164 phone for display — keeps prefix + last 4 digits. */
+export function maskPhone(phone: string): string {
+  const trimmed = phone.trim();
+  if (trimmed.length <= 4) return trimmed;
+
+  const lastFour = trimmed.slice(-4);
+  const prefix = trimmed.slice(0, Math.max(0, trimmed.length - 7));
+  return `${prefix} *** ${lastFour}`;
+}

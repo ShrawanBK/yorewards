@@ -80,7 +80,13 @@ export type ActionErrorCode =
   | "SCAN_LOYALTY_CARD_INACTIVE"
   | "SCAN_LOCATION_INVALID"
   | "SCAN_SESSION_FAILED"
-  | "SCAN_CAMERA_DENIED";
+  | "SCAN_CAMERA_DENIED"
+  | "OTP_SEND_FAILED"
+  | "OTP_INVALID"
+  | "OTP_EXPIRED"
+  | "OTP_RATE_LIMITED"
+  | "REWARD_NOT_READY"
+  | "REDEMPTION_CREATE_FAILED";
 
 export type ActionError = {
   code: ActionErrorCode;

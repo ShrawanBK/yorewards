@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Customer PWA (`apps/customer`)
 
-## Getting Started
+Local: [http://localhost:3000](http://localhost:3000)
 
-First, run the development server:
+## Run
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+From the repo root:
+
+```sh
+pnpm exec turbo dev --filter=customer
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Copy shared env from [`.env.example`](../../.env.example) into `apps/customer/.env.local`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Reward OTP — local dev (no SMS)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Redemption uses SMS OTP (Sparrow for Nepal, Twilio for Finland). You do **not** need SMS credentials for local testing.
 
-## Learn More
+1. Leave `SPARROW_SMS_TOKEN` and `TWILIO_*` **empty** in `apps/customer/.env.local`.
+2. Run the customer app in development (`pnpm exec turbo dev --filter=customer`).
+3. Reach stamp target so a card is `pending_otp`, then open **Claim reward** (`/reward/[cardId]`).
+4. Tap **Send verification code**.
+5. In the **terminal running the customer app**, find a line like:
 
-To learn more about Next.js, take a look at the following resources:
+   ```text
+   [dev:redemption-otp] +97798XXXXXXXX: 123456
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+6. Enter that 6-digit code in the app to get your redemption code.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The console fallback applies only when `NODE_ENV=development` and the SMS provider for the customer’s country is not configured. Production requires real Sparrow/Twilio credentials.

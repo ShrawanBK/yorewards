@@ -138,11 +138,35 @@
     }
   },
   "reward": {
-    "comingSoon": {
-      "title": "Reward verification",
-      "subtitle": "Phone verification and your redemption code arrive in the next update.",
-      "backToWallet": "Back to wallet"
-    }
+    "title": "Claim your reward",
+    "backToWallet": "Back to wallet",
+    "backToCard": "Back to card",
+    "loadError": "We couldn't load this reward — please try again.",
+    "send": {
+      "phoneLabel": "Verification code will be sent to",
+      "hint": "We'll text a 6-digit code to confirm it's you before showing your redemption code.",
+      "sentHint": "Enter the 6-digit code we sent to your phone.",
+      "cta": "Send verification code",
+      "sending": "Sending…",
+      "resend": "Resend code"
+    },
+    "verify": {
+      "otpLabel": "Verification code",
+      "otpPlaceholder": "000000",
+      "otpInvalid": "Enter the 6-digit code from your SMS",
+      "submit": "Verify and get code",
+      "verifying": "Verifying…"
+    },
+    "code": {
+      "title": "Your redemption code",
+      "subtitle": "Show this code to the merchant at the counter.",
+      "instructions": "The merchant will confirm it to complete your reward.",
+      "copy": "Copy code",
+      "copied": "Copied!",
+      "copyAria": "Copy redemption code to clipboard",
+      "codeAria": "Redemption code {code}"
+    },
+    "unavailable": "This reward isn't ready to claim yet — collect more stamps first."
   },
   "errors": {
     "actions": {
@@ -163,7 +187,13 @@
       "SCAN_LOCATION_INVALID": "This branch isn't valid for scanning.",
       "SCAN_SESSION_FAILED": "We couldn't start your stamp request — please try again.",
       "SCAN_CAMERA_DENIED": "Camera access is required to scan.",
-      "STAMP_SESSION_NOT_FOUND": "Stamp request not found."
+      "STAMP_SESSION_NOT_FOUND": "Stamp request not found.",
+      "OTP_SEND_FAILED": "We couldn't send the verification code — please try again.",
+      "OTP_INVALID": "That code isn't correct — check the SMS and try again.",
+      "OTP_EXPIRED": "That code has expired — request a new one.",
+      "OTP_RATE_LIMITED": "Too many code requests — wait a few minutes and try again.",
+      "REWARD_NOT_READY": "This reward isn't ready to claim yet.",
+      "REDEMPTION_CREATE_FAILED": "We couldn't create your redemption code — please try again."
     }
   }
 }

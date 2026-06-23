@@ -41,9 +41,33 @@
   }
 
   .stamp-pending-spinner__ring,
-  .stamp-pending-spinner__dot {
+  .stamp-pending-spinner__dot,
+  .card-progress-shimmer::after {
     animation: none !important;
   }
+}
+
+@keyframes progress-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.card-progress-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(255 255 255 / 0.45) 50%,
+    transparent 100%
+  );
+  animation: progress-shimmer 2s ease-in-out infinite;
+  pointer-events: none;
 }
 
 @keyframes stamp-pending-spin {

@@ -16,7 +16,7 @@
 | Phase B — Wallet home + card grid                | ✅ Done                                                     |
 | Phase C — QR scan + stamp session                | ✅ Done                                                     |
 | Phase D — Pending / success / rejected screens   | ✅ Done                                                     |
-| Phase E — Card detail + stamp animations         | ⏳ Planned                                                  |
+| Phase E — Card detail + stamp animations         | ✅ Done                                                     |
 | Phase F — Reward unlock + OTP + redemption code  | ⏳ Planned                                                  |
 | Phase G — Profile + shell + bottom nav           | ⏳ Partial (G1 shell + nav ✅; G2 profile ✅)               |
 | Phase H — Query layer + error codes + i18n audit | ⏳ Planned                                                  |
@@ -87,7 +87,7 @@ A customer can:
       ↓
 5. Phase D — Realtime pending / success / rejected                           ✅
       ↓
-6. Phase E — Card detail + Framer Motion                                     ⏳
+6. Phase E — Card detail + Framer Motion                                     ✅
       ↓
 7. Phase F + H1 — OTP send/verify + redemption code + confetti               ⏳
       ↓
@@ -286,14 +286,16 @@ apps/customer/app/
 
 ## Phase E — Card detail — PRD §8.1
 
-- [ ] `/wallet/[cardId]` — stamp grid, reward description, min spend text, merchant branding
-- [ ] TanStack Query: `useCustomerCard(cardId)` — key `['card', cardId]`
-- [ ] Framer Motion stamp fill / progress shimmer (PRD §1.4)
-- [ ] Reuse shared visuals from `@repo/ui` / merchant `LoyaltyCardPreviewV2` where sensible (no cross-app feature imports)
-- [ ] Scan CTA → `/scan` (or deep link if merchant known)
-- [ ] Claim reward CTA when `pending_otp` → `/reward/[cardId]`
-- [ ] Show existing redemption code when `reward_status = unlocked` and pending redemption exists
-- [ ] i18n: `card.*`
+- [x] `/wallet/[cardId]` — stamp grid, reward description, min spend text, merchant branding
+- [x] TanStack Query: `useCustomerCard(cardId)` — key `['card', cardId]`
+- [x] Framer Motion stamp fill / progress shimmer (PRD §1.4)
+- [x] Customer card visuals aligned with merchant preview patterns (no cross-app feature imports)
+- [x] Scan CTA → `/scan` (or deep link if merchant known)
+- [x] Claim reward CTA when `pending_otp` → `/reward/[cardId]`
+- [x] Show existing redemption code when `reward_status = unlocked` and pending redemption exists
+- [x] i18n: `card.*`
+
+**Implementation:** `features/wallet/` (`CardDetailView`, `CustomerLoyaltyCard`, `CardStampGrid`, `CardProgressBar`, `useCustomerCard`, `getCustomerCardById`, `getPendingRedemptionForCustomerCard`) · route `app/(main)/wallet/[cardId]/page.tsx`
 
 ---
 
@@ -429,7 +431,7 @@ Export from `@repo/supabase/queries/*`; keep SMS/Twilio calls in server actions 
 | `/login`                     | A     |                                  |
 | `/onboarding`                | A     |                                  |
 | `/wallet`                    | B     |                                  |
-| `/wallet/[cardId]`           | E     |                                  |
+| `/wallet/[cardId]`           | E     | ✅                               |
 | `/scan`                      | C     | ✅ + query deep link `?m=&c=&l=` |
 | `/stamp/pending/[sessionId]` | D     | ✅ Realtime                      |
 | `/stamp/success/[sessionId]` | D     | ✅                               |
@@ -446,7 +448,7 @@ Export from `@repo/supabase/queries/*`; keep SMS/Twilio calls in server actions 
 | ---------------- | -------------- | ------------------------------- | --- |
 | Stamp pop-in     | Success screen | D                               | ✅  |
 | Card float       | Wallet load    | B                               |     |
-| Progress shimmer | Card detail    | E                               |     |
+| Progress shimmer | Card detail    | E                               | ✅  |
 | Page slide-in    | Route changes  | H/I optional (view transitions) |     |
 | QR pulse ring    | Scanner open   | C                               | ✅  |
 | Reward confetti  | OTP success    | F                               |     |

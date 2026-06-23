@@ -66,7 +66,6 @@
     "loadError": "We couldn't load your wallet — pull to refresh or try again.",
     "backToWallet": "Back to wallet",
     "detailComingSoon": "Card details coming soon",
-    "detailComingSoonHint": "Full stamp grid and reward info arrive in the next update.",
     "banner": {
       "title": "You have a reward ready to claim",
       "description": "Open a card below to verify your phone and get your redemption code."
@@ -116,6 +115,28 @@
       "backToWallet": "Back to wallet"
     }
   },
+  "card": {
+    "backToWallet": "Back to wallet",
+    "loadError": "We couldn't load this card — please try again.",
+    "progress": "{current} / {target} stamps",
+    "progressAria": "{current} of {target} stamps collected",
+    "stampsAria": "Stamp collection grid",
+    "stampSlot": "Stamp {index}, {state}",
+    "stampFilled": "collected",
+    "stampEmpty": "not collected",
+    "minSpend": "Min. spend {amount} per visit",
+    "scanCta": "Scan for a stamp",
+    "claimPrompt": "You've unlocked a reward — verify your phone to get your code.",
+    "claimReward": "Claim reward",
+    "redemption": {
+      "title": "Your redemption code",
+      "subtitle": "Show this code to the merchant at the counter.",
+      "copy": "Copy code",
+      "copied": "Copied!",
+      "copyAria": "Copy redemption code to clipboard",
+      "codeAria": "Redemption code {code}"
+    }
+  },
   "reward": {
     "comingSoon": {
       "title": "Reward verification",
@@ -135,6 +156,7 @@
       "CUSTOMER_SUSPENDED": "Your account is suspended. Contact support if you think this is a mistake.",
       "CUSTOMER_SUSPENDED_REASON": "Your account is suspended: {reason}",
       "WALLET_LOAD_FAILED": "We couldn't load your wallet — please try again.",
+      "CUSTOMER_CARD_NOT_FOUND": "This loyalty card wasn't found in your wallet.",
       "SCAN_INVALID_QR": "That doesn't look like a valid loyalty QR code.",
       "SCAN_MERCHANT_NOT_ACTIVE": "This business isn't accepting stamps right now.",
       "SCAN_LOYALTY_CARD_INACTIVE": "This loyalty card isn't active.",

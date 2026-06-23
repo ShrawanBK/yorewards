@@ -198,3 +198,22 @@ export async function createPendingRedemption(input: {
   if (error) throw error;
   return data.id;
 }
+
+export async function getPendingRedemptionForCustomerCard(
+  customerCardId: string,
+): Promise<{ redemptionCode: string } | null> {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("redemptions")
+    .select("redemption_code")
+    .eq("customer_card_id", customerCardId)
+    .eq("status", "pending")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data?.redemption_code) return null;
+
+  return { redemptionCode: data.redemption_code };
+}

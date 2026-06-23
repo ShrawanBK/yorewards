@@ -2,7 +2,7 @@
 
 > **Goal:** Production-ready **all three apps** — PWA installability, GDPR privacy page, empty/error states, full cross-app E2E, and Vercel deploy.  
 > **Reference:** PRD §9, §10, §11 (original Day 7) · Technical Doc §8  
-> **Prerequisite:** Day 7 customer PWA complete ([`Day7_Checklist.md`](Day7_Checklist.md))
+> **Prerequisite:** Day 7 customer PWA complete ([`Day7_Checklist.md`](Day7_Checklist.md)) — ✅ code-complete; iPhone QR smoke test before production launch.
 
 ---
 

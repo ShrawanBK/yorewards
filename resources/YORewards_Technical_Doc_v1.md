@@ -14,7 +14,7 @@
 | Area                                                                      | Status                                                                   |
 | ------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | Turborepo + pnpm workspace                                                | ✅ Done                                                                  |
-| Customer PWA — `apps/customer`                                            | ✅ Scaffolded — local `localhost:3000` · prod `app.yorewards.com`        |
+| Customer PWA — `apps/customer`                                            | ✅ Day 7 MVP — auth, wallet, scan, OTP, redeem loop · `localhost:3000` |
 | Merchant Dashboard — `apps/merchant`                                      | ✅ Scaffolded — local `localhost:3001` · prod `merchant.yorewards.com`   |
 | Super Admin — `apps/admin`                                                | ✅ Day 6 MVP complete — all §8.3 routes · FDA · `localhost:3002` |
 | `@repo/eslint-config`, `@repo/typescript-config`, `@repo/tailwind-config` | ✅ Done — brand colors live in `tailwind-config`                         |
@@ -32,10 +32,10 @@
 | Merchant stamp queue + redeem + analytics (PRD §6.3)                      | ✅ Done (Day 4) — Realtime queue, `/merchant/redeem`, `/merchant/analytics`, customers list |
 | Merchant settings + status UX + branch context + success feedback         | ✅ Done (Day 5) — [`Day5_Checklist.md`](../resources/Day5_Checklist.md) |
 | Super Admin — full platform (dashboard, customers, stamps, audit)         | ✅ Done (Day 6) — [`Day6_Checklist.md`](../resources/Day6_Checklist.md) |
-| Customer auth + wallet + scan + OTP                                       | ⏳ Day 7 — [`Day7_Checklist.md`](../resources/Day7_Checklist.md) |
+| Customer auth + wallet + scan + OTP                                       | ✅ Done (Day 7) — [`Day7_Checklist.md`](../resources/Day7_Checklist.md) |
 | PWA, privacy, production deploy                                           | ⏳ Day 8 — [`Day8_Checklist.md`](../resources/Day8_Checklist.md) |
 
-**Next up (Day 7):** Customer PWA — auth, wallet, scan, OTP — see [`Day7_Checklist.md`](../resources/Day7_Checklist.md).
+**Next up (Day 8):** PWA manifest, privacy policy, production deploy — see [`Day8_Checklist.md`](../resources/Day8_Checklist.md).
 
 ---
 
@@ -197,35 +197,20 @@ PostCSS is shared the same way: `export { default } from "@repo/tailwind-config/
 
 ```
 apps/customer/
-├── app/
-│   ├── (auth)/
-│   │   ├── login/page.tsx              → Phone number entry
-│   │   └── onboarding/page.tsx         → Name entry (first time only)
-│   ├── (main)/
-│   │   ├── wallet/page.tsx             → Wallet home — card grid
-│   │   ├── wallet/[cardId]/page.tsx    → Card detail
-│   │   ├── scan/page.tsx               → QR scanner
-│   │   ├── stamp/
-│   │   │   ├── pending/[id]/page.tsx   → Awaiting approval (Realtime)
-│   │   │   ├── success/page.tsx        → Stamp confirmed
-│   │   │   └── rejected/page.tsx       → Stamp rejected + reason
-│   │   ├── reward/[cardId]/page.tsx    → Claim reward + OTP verification
-│   │   └── profile/page.tsx            → Phone, name, logout
-│   ├── layout.tsx                      → Root layout + providers
-│   └── page.tsx                        → Redirect logic
-├── components/
-│   ├── loyalty-card/                   → Card renderer (branded)
-│   ├── stamp-grid/                     → Stamp circle grid component
-│   ├── qr-scanner/                     → html5-qrcode wrapper
-│   └── wallet/                         → Wallet UI components
-├── lib/
-│   ├── store/                          → Zustand stores (authStore, walletStore)
-│   ├── hooks/                          → TanStack Query hooks
-│   └── api/                            → Supabase query functions
-├── messages/
-│   └── en.json                         → All UI strings — no hardcoded text in components
-└── public/
-    └── manifest.json                   → PWA manifest
+├── app/                                → Thin routes only (compose from features/widgets)
+├── src/
+│   ├── features/
+│   │   ├── auth/                       → Login, onboarding, guards, store
+│   │   ├── wallet/                     → Wallet home, card detail
+│   │   ├── scan/                       → QR scanner + scan action
+│   │   ├── stamp/                      → Pending/success/rejected/expired + Realtime
+│   │   ├── reward/                     → OTP send/verify + redemption code
+│   │   └── profile/                    → Profile + logout
+│   └── widgets/
+│       ├── CustomerShell/              → Bottom nav (Wallet / Scan / Profile)
+│       └── CustomerProtectedShell/     → Session guard
+├── messages/en.json                    → All UI strings (next-intl)
+└── public/                             → PWA manifest (Day 8)
 ```
 
 ### 3.2 Merchant Dashboard (`apps/merchant` · `localhost:3001` · `merchant.yorewards.com`)
@@ -520,7 +505,7 @@ Anyone cloning the repo runs `supabase db push` and their database matches produ
 ```
 collecting ──(target hit on approve)──► pending_otp
 pending_otp ──(OTP verified)──────────► unlocked
-unlocked ──(complete_redemption)──────► collecting  (+ current_stamps=0, cycle_number++)
+unlocked ──(complete_redemption)──────► collecting  (+ current_stamps = max(stamps − target, 0), cycle_number++)
 ```
 
 Redemption completion lives on `redemptions.status` (`pending` → `redeemed`), not as a card status.
@@ -542,7 +527,7 @@ Redemption completion lives on `redemptions.status` (`pending` → `redeemed`), 
 | `increment_stamps(card_id, new_status)` | Merchant approve     | +1 stamp; sets `pending_otp` + `targets_reached++` when target hit |
 | `void_stamp(session_id)`                | Admin (service role) | Void one approved session; decrement; recalc status                |
 | `issue_stamp_manual(card_id)`           | Admin (service role) | Insert `admin_manual` approved session + increment                 |
-| `complete_redemption(redemption_id)`    | Merchant confirm     | Mark redeemed; reset stamps; `cycle_number++`                      |
+| `complete_redemption(redemption_id)`    | Merchant confirm     | Mark redeemed; subtract `stamp_target`, carry overflow; `cycle_number++` |
 
 #### Analytics formulas (merchant dashboard)
 
@@ -992,7 +977,7 @@ ADMIN_EMAIL=your-admin-email@yorewards.com       # Single super admin account
 | **4** | Merchant counter | Realtime queue, approval flow, redeem, analytics, customers — [`Day4_Checklist.md`](Day4_Checklist.md) |
 | **5** | Merchant MVP     | Settings, preferences, status UX, branch context, sign-off — [`Day5_Checklist.md`](Day5_Checklist.md) |
 | **6** | Super Admin      | Platform dashboard, customers, manual stamps, audit log, FDA — [`Day6_Checklist.md`](Day6_Checklist.md) |
-| **7** | Customer PWA     | Auth, wallet, scan, Realtime stamp flow, OTP, redemption — [`Day7_Checklist.md`](Day7_Checklist.md) |
+| **7** | Customer PWA     | ✅ Auth, wallet, scan, Realtime stamp flow, OTP, redemption — [`Day7_Checklist.md`](Day7_Checklist.md) |
 | **8** | Launch           | PWA manifest, privacy policy, E2E, production deploy — [`Day8_Checklist.md`](Day8_Checklist.md) |
 
 > 📋 **Session starter:** _"Build YORewards per PRD + Technical Doc. Use only the locked stack. Check Implementation Status first."_

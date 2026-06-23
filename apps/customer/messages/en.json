@@ -65,7 +65,6 @@
     "rewardReady": "Reward ready",
     "loadError": "We couldn't load your wallet — pull to refresh or try again.",
     "backToWallet": "Back to wallet",
-    "detailComingSoon": "Card details coming soon",
     "banner": {
       "title": "You have a reward ready to claim",
       "description": "Open a card below to verify your phone and get your redemption code."

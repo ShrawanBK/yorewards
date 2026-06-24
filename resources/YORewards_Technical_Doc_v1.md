@@ -11,32 +11,34 @@
 
 ## Implementation Status
 
-| Area                                                                      | Status                                                                   |
-| ------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Turborepo + pnpm workspace                                                | ✅ Done                                                                  |
-| Customer PWA — `apps/customer`                                            | ✅ Day 7 MVP — auth, wallet, scan, OTP, redeem loop · `localhost:3000` |
-| Merchant Dashboard — `apps/merchant`                                      | ✅ Scaffolded — local `localhost:3001` · prod `merchant.yorewards.com`   |
-| Super Admin — `apps/admin`                                                | ✅ Day 6 MVP complete — all §8.3 routes · FDA · `localhost:3002` |
-| `@repo/eslint-config`, `@repo/typescript-config`, `@repo/tailwind-config` | ✅ Done — brand colors live in `tailwind-config`                         |
-| `@repo/ui`                                                                | ✅ Done — shadcn (`button`, `input`, `label`, `card`, `badge`, `sonner`) |
-| `@repo/supabase`, `@repo/utils`                                           | ✅ Done                                                                  |
-| `supabase/` folder (migrations + RLS)                                     | ✅ Done — pushed to cloud                                                |
-| next-intl scaffold (all 3 apps)                                           | ✅ Done — `messages/en.json`, middleware, provider                       |
-| Local `.env.local` (all 3 apps)                                           | ✅ Done — gitignored                                                     |
-| Vercel deployments                                                        | ⏳ Deferred                                                              |
-| Admin + merchant auth, approval queue                                     | ✅ Done — email + password (no magic link)                               |
-| Multi-business per owner (queries + switcher)                             | ✅ Done                                                                  |
-| Merchant business hub UI (list + detail)                                  | ✅ Done (Day 2) — Day 3 polish + branches panel                          |
-| Branches / outlets (`merchant_locations`)                                 | ✅ Done — migration + business hub CRUD                                  |
-| Loyalty card config (PRD §6.1)                                            | ✅ Done — `/merchant/loyalty-card` + live preview + branch QR PNG          |
-| Merchant stamp queue + redeem + analytics (PRD §6.3)                      | ✅ Done (Day 4) — Realtime queue, `/merchant/redeem`, `/merchant/analytics`, customers list |
-| Merchant settings + status UX + branch context + success feedback         | ✅ Done (Day 5) — [`Day5_Checklist.md`](../resources/Day5_Checklist.md) |
-| Super Admin — full platform (dashboard, customers, stamps, audit)         | ✅ Done (Day 6) — [`Day6_Checklist.md`](../resources/Day6_Checklist.md) |
-| Customer auth + wallet + scan + OTP                                       | ✅ Done (Day 7) — [`Day7_Checklist.md`](../resources/Day7_Checklist.md) |
+| Area                                                                      | Status                                                                                                              |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Turborepo + pnpm workspace                                                | ✅ Done                                                                                                             |
+| Customer PWA — `apps/customer`                                            | ✅ Day 7 MVP — auth, wallet, scan, OTP, redeem loop · `localhost:3000`                                              |
+| Merchant Dashboard — `apps/merchant`                                      | ✅ Scaffolded — local `localhost:3001` · prod `merchant.yorewards.com.np`                                           |
+| Super Admin — `apps/admin`                                                | ✅ Day 6 MVP complete — all §8.3 routes · FDA · `localhost:3002`                                                    |
+| `@repo/eslint-config`, `@repo/typescript-config`, `@repo/tailwind-config` | ✅ Done — brand colors live in `tailwind-config`                                                                    |
+| `@repo/ui`                                                                | ✅ Done — shadcn (`button`, `input`, `label`, `card`, `badge`, `sonner`)                                            |
+| `@repo/supabase`, `@repo/utils`                                           | ✅ Done                                                                                                             |
+| `supabase/` folder (migrations + RLS)                                     | ✅ Done — pushed to cloud                                                                                           |
+| next-intl scaffold (all 3 apps)                                           | ✅ Done — `messages/en.json`, middleware, provider                                                                  |
+| Local `.env.local` (all 3 apps)                                           | ✅ Done — gitignored                                                                                                |
+| Vercel deployments                                                        | ⏳ Deferred                                                                                                         |
+| Admin + merchant auth, approval queue                                     | ✅ Done — email + password (no magic link)                                                                          |
+| Multi-business per owner (queries + switcher)                             | ✅ Done                                                                                                             |
+| Merchant business hub UI (list + detail)                                  | ✅ Done (Day 2) — Day 3 polish + branches panel                                                                     |
+| Branches / outlets (`merchant_locations`)                                 | ✅ Done — migration + business hub CRUD                                                                             |
+| Loyalty card config (PRD §6.1)                                            | ✅ Done — `/merchant/loyalty-card` + live preview + branch QR PNG                                                   |
+| Merchant stamp queue + redeem + analytics (PRD §6.3)                      | ✅ Done (Day 4) — Realtime queue, `/merchant/redeem`, `/merchant/analytics`, customers list                         |
+| Merchant settings + status UX + branch context + success feedback         | ✅ Done (Day 5) — [`Day5_Checklist.md`](../resources/Day5_Checklist.md)                                             |
+| Super Admin — full platform (dashboard, customers, stamps, audit)         | ✅ Done (Day 6) — [`Day6_Checklist.md`](../resources/Day6_Checklist.md)                                             |
+| Customer auth + wallet + scan + OTP                                       | ✅ Done (Day 7) — [`Day7_Checklist.md`](../resources/Day7_Checklist.md)                                             |
 | Customer PWA installability (manifest, SW, icons)                         | ✅ Done (Day 8 Phase A) — `next-pwa`, `manifest.ts`, Profile install hint; login/onboarding use server `redirect()` |
-| Privacy policy, production deploy                                         | ⏳ Day 8 Phases B–F — [`Day8_Checklist.md`](../resources/Day8_Checklist.md) |
+| Privacy policy + GDPR deletion contact                                    | ✅ Done (Day 8 Phase B) — `/privacy`, profile mailto, merchant settings link                                        |
+| Empty/error states (customer offline, scan, wallet)                       | ✅ Done (Day 8 Phase C)                                                                                             |
+| Privacy policy, production deploy                                         | ⏳ Day 8 Phases D–F — [`Day8_Checklist.md`](../resources/Day8_Checklist.md)                                         |
 
-**Next up (Day 8):** Privacy policy (`/privacy`), empty/error states, E2E, production deploy — see [`Day8_Checklist.md`](../resources/Day8_Checklist.md).
+**Next up (Day 8):** Mobile responsiveness pass, E2E, production deploy — see [`Day8_Checklist.md`](../resources/Day8_Checklist.md).
 
 ---
 
@@ -70,9 +72,9 @@ yorewards/
 │   ├── migrations/
 │   └── seed.sql
 ├── apps/
-│   ├── customer/                → app.yorewards.com   (local: port 3000)
-│   ├── merchant/                → merchant.yorewards.com (local: port 3001)
-│   └── admin/                   → admin.yorewards.com (local: port 3002)
+│   ├── customer/                → app.yorewards.com.np   (local: port 3000)
+│   ├── merchant/                → merchant.yorewards.com.np (local: port 3001)
+│   └── admin/                   → admin.yorewards.com.np (local: port 3002)
 ├── packages/
 │   ├── ui/                      → @repo/ui — shared shadcn/ui components
 │   ├── eslint-config/           → @repo/eslint-config
@@ -89,11 +91,11 @@ yorewards/
 
 ### 1.2 App Responsibilities
 
-| App        | Domain                   | Primary Users   | Responsibilities                                                                 |
-| ---------- | ------------------------ | --------------- | -------------------------------------------------------------------------------- |
-| `customer` | `app.yorewards.com`      | End users       | Wallet, QR scan, stamp flow, reward redemption. PWA installable. Mobile-first.   |
-| `merchant` | `merchant.yorewards.com` | Business owners | Card setup, stamp approval queue, redemption, analytics. Tablet/desktop primary. |
-| `admin`    | `admin.yorewards.com`    | Founder (you)   | Merchant approval, user management, platform analytics, audit log. Desktop only. |
+| App        | Domain                      | Primary Users   | Responsibilities                                                                 |
+| ---------- | --------------------------- | --------------- | -------------------------------------------------------------------------------- |
+| `customer` | `app.yorewards.com.np`      | End users       | Wallet, QR scan, stamp flow, reward redemption. PWA installable. Mobile-first.   |
+| `merchant` | `merchant.yorewards.com.np` | Business owners | Card setup, stamp approval queue, redemption, analytics. Tablet/desktop primary. |
+| `admin`    | `admin.yorewards.com.np`    | Founder (you)   | Merchant approval, user management, platform analytics, audit log. Desktop only. |
 
 ### 1.3 Package Sharing Strategy
 
@@ -194,7 +196,7 @@ PostCSS is shared the same way: `export { default } from "@repo/tailwind-config/
 
 ## 3. Folder Structure — Per App
 
-### 3.1 Customer PWA (`apps/customer` · `localhost:3000` · `app.yorewards.com`)
+### 3.1 Customer PWA (`apps/customer` · `localhost:3000` · `app.yorewards.com.np`)
 
 ```
 apps/customer/
@@ -214,7 +216,7 @@ apps/customer/
 └── public/                             → PWA manifest (Day 8)
 ```
 
-### 3.2 Merchant Dashboard (`apps/merchant` · `localhost:3001` · `merchant.yorewards.com`)
+### 3.2 Merchant Dashboard (`apps/merchant` · `localhost:3001` · `merchant.yorewards.com.np`)
 
 ```
 apps/merchant/
@@ -245,7 +247,7 @@ apps/merchant/
     └── en.json
 ```
 
-### 3.3 Super Admin (`apps/admin` · `localhost:3002` · `admin.yorewards.com`)
+### 3.3 Super Admin (`apps/admin` · `localhost:3002` · `admin.yorewards.com.np`)
 
 ```
 apps/admin/src/
@@ -523,11 +525,11 @@ Redemption completion lives on `redemptions.status` (`pending` → `redeemed`), 
 
 #### Database RPCs
 
-| RPC                                     | Caller               | Purpose                                                            |
-| --------------------------------------- | -------------------- | ------------------------------------------------------------------ |
-| `increment_stamps(card_id, new_status)` | Merchant approve     | +1 stamp; sets `pending_otp` + `targets_reached++` when target hit |
-| `void_stamp(session_id)`                | Admin (service role) | Void one approved session; decrement; recalc status                |
-| `issue_stamp_manual(card_id)`           | Admin (service role) | Insert `admin_manual` approved session + increment                 |
+| RPC                                     | Caller               | Purpose                                                                  |
+| --------------------------------------- | -------------------- | ------------------------------------------------------------------------ |
+| `increment_stamps(card_id, new_status)` | Merchant approve     | +1 stamp; sets `pending_otp` + `targets_reached++` when target hit       |
+| `void_stamp(session_id)`                | Admin (service role) | Void one approved session; decrement; recalc status                      |
+| `issue_stamp_manual(card_id)`           | Admin (service role) | Insert `admin_manual` approved session + increment                       |
 | `complete_redemption(redemption_id)`    | Merchant confirm     | Mark redeemed; subtract `stamp_target`, carry overflow; `cycle_number++` |
 
 #### Analytics formulas (merchant dashboard)
@@ -755,7 +757,7 @@ export async function sendMagicLink(email: string) {
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: "https://merchant.yorewards.com/auth/callback",
+      emailRedirectTo: "https://merchant.yorewards.com.np/auth/callback",
     },
   });
   return { error };
@@ -790,7 +792,7 @@ import { QRCodeSVG } from "qrcode.react";
 
 // QR encodes a URL — customer scans and browser opens it
 // `l` = branch (merchant_locations.id) for attribution; same card balance across branches
-const qrValue = `https://app.yorewards.com/scan?m=${merchantId}&c=${cardId}&l=${locationId}`;
+const qrValue = `https://app.yorewards.com.np/scan?m=${merchantId}&c=${cardId}&l=${locationId}`;
 
 export function MerchantQR({ merchantId, cardId }: Props) {
   return (
@@ -904,12 +906,12 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key   # Server only — never expose to browser
 ```
 
-### 8.2 Customer App (Customer PWA — `localhost:3000` / `app.yorewards.com`)
+### 8.2 Customer App (Customer PWA — `localhost:3000` / `app.yorewards.com.np`)
 
 ```bash
-# Dev: http://localhost:3000 · Prod: https://app.yorewards.com
-NEXT_PUBLIC_APP_URL=https://app.yorewards.com
-NEXT_PUBLIC_MERCHANT_URL=https://merchant.yorewards.com
+# Dev: http://localhost:3000 · Prod: https://app.yorewards.com.np
+NEXT_PUBLIC_APP_URL=https://app.yorewards.com.np
+NEXT_PUBLIC_MERCHANT_URL=https://merchant.yorewards.com.np
 SPARROW_SMS_TOKEN=your-sparrow-token              # Nepal OTP
 SPARROW_SMS_FROM=YORewards
 TWILIO_ACCOUNT_SID=your-twilio-sid               # Finland OTP
@@ -918,20 +920,20 @@ TWILIO_PHONE_NUMBER=+1xxxxxxxxxx
 OTP_BCRYPT_ROUNDS=10                             # For hashing OTPs
 ```
 
-### 8.3 Merchant App (Merchant Dashboard — `localhost:3001` / `merchant.yorewards.com`)
+### 8.3 Merchant App (Merchant Dashboard — `localhost:3001` / `merchant.yorewards.com.np`)
 
 ```bash
-# Dev: http://localhost:3001 · Prod: https://merchant.yorewards.com
-NEXT_PUBLIC_MERCHANT_URL=https://merchant.yorewards.com
-NEXT_PUBLIC_APP_URL=https://app.yorewards.com
+# Dev: http://localhost:3001 · Prod: https://merchant.yorewards.com.np
+NEXT_PUBLIC_MERCHANT_URL=https://merchant.yorewards.com.np
+NEXT_PUBLIC_APP_URL=https://app.yorewards.com.np
 ```
 
-### 8.4 Admin App (Super Admin — `localhost:3002` / `admin.yorewards.com`)
+### 8.4 Admin App (Super Admin — `localhost:3002` / `admin.yorewards.com.np`)
 
 ```bash
-# Dev: http://localhost:3002 · Prod: https://admin.yorewards.com
-NEXT_PUBLIC_ADMIN_URL=https://admin.yorewards.com
-ADMIN_EMAIL=your-admin-email@yorewards.com       # Single super admin account
+# Dev: http://localhost:3002 · Prod: https://admin.yorewards.com.np
+NEXT_PUBLIC_ADMIN_URL=https://admin.yorewards.com.np
+ADMIN_EMAIL=your-admin-email@yorewards.com.np       # Single super admin account
 ```
 
 **Authorization (Day 6 Phase A):**
@@ -970,16 +972,16 @@ ADMIN_EMAIL=your-admin-email@yorewards.com       # Single super admin account
 
 > Full day-by-day deliverables are in **PRD Section 11**. Per-day checklists live in `resources/Day*_Checklist.md`.
 
-| Day   | Technical focus  | Key outputs                                                                                                                                           |
-| ----- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1** | Foundation       | ~~Turborepo + 3 apps~~ ✅ · Supabase + 8 tables + RLS · forward-compatible columns · `@repo/supabase` · shadcn/ui · next-intl · env vars · Vercel     |
-| **2** | Auth             | Merchant/admin email+password, route guards, multi-business switcher, admin approval queue                                                            |
+| Day   | Technical focus  | Key outputs                                                                                                                                       |
+| ----- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | Foundation       | ~~Turborepo + 3 apps~~ ✅ · Supabase + 8 tables + RLS · forward-compatible columns · `@repo/supabase` · shadcn/ui · next-intl · env vars · Vercel |
+| **2** | Auth             | Merchant/admin email+password, route guards, multi-business switcher, admin approval queue                                                        |
 | **3** | Cards + branches | `merchant_locations` migration, business hub UI, PRD §6.1 card config, live preview, per-branch QR PNG — [`Day3_Checklist.md`](Day3_Checklist.md) |
-| **4** | Merchant counter | Realtime queue, approval flow, redeem, analytics, customers — [`Day4_Checklist.md`](Day4_Checklist.md) |
-| **5** | Merchant MVP     | Settings, preferences, status UX, branch context, sign-off — [`Day5_Checklist.md`](Day5_Checklist.md) |
-| **6** | Super Admin      | Platform dashboard, customers, manual stamps, audit log, FDA — [`Day6_Checklist.md`](Day6_Checklist.md) |
-| **7** | Customer PWA     | ✅ Auth, wallet, scan, Realtime stamp flow, OTP, redemption — [`Day7_Checklist.md`](Day7_Checklist.md) |
-| **8** | Launch           | PWA manifest, privacy policy, E2E, production deploy — [`Day8_Checklist.md`](Day8_Checklist.md) |
+| **4** | Merchant counter | Realtime queue, approval flow, redeem, analytics, customers — [`Day4_Checklist.md`](Day4_Checklist.md)                                            |
+| **5** | Merchant MVP     | Settings, preferences, status UX, branch context, sign-off — [`Day5_Checklist.md`](Day5_Checklist.md)                                             |
+| **6** | Super Admin      | Platform dashboard, customers, manual stamps, audit log, FDA — [`Day6_Checklist.md`](Day6_Checklist.md)                                           |
+| **7** | Customer PWA     | ✅ Auth, wallet, scan, Realtime stamp flow, OTP, redemption — [`Day7_Checklist.md`](Day7_Checklist.md)                                            |
+| **8** | Launch           | PWA manifest, privacy policy, E2E, production deploy — [`Day8_Checklist.md`](Day8_Checklist.md)                                                   |
 
 > 📋 **Session starter:** _"Build YORewards per PRD + Technical Doc. Use only the locked stack. Check Implementation Status first."_
 

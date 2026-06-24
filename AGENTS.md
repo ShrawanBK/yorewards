@@ -19,11 +19,11 @@ All UI must meet `.cursor/rules/accessibility.mdc` — keyboard navigation, scre
 
 ## Apps
 
-| Folder | App | Local | Production |
-| ------ | --- | ----- | ---------- |
-| `apps/customer` | Customer PWA | `localhost:3000` | `app.yorewards.com` |
-| `apps/merchant` | Merchant Dashboard | `localhost:3001` | `merchant.yorewards.com` |
-| `apps/admin` | Super Admin | `localhost:3002` | `admin.yorewards.com` |
+| Folder          | App                | Local            | Production                  |
+| --------------- | ------------------ | ---------------- | --------------------------- |
+| `apps/customer` | Customer PWA       | `localhost:3000` | `app.yorewards.com.np`      |
+| `apps/merchant` | Merchant Dashboard | `localhost:3001` | `merchant.yorewards.com.np` |
+| `apps/admin`    | Super Admin        | `localhost:3002` | `admin.yorewards.com.np`    |
 
 ## Commands
 

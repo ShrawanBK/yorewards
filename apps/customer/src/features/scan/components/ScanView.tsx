@@ -23,6 +23,7 @@ export function ScanView({ searchParams }: ScanViewProps) {
   const tErrors = useTranslations("errors.actions");
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [scannerKey, setScannerKey] = useState(0);
   const processedDeepLink = useRef(false);
@@ -51,10 +52,12 @@ export function ScanView({ searchParams }: ScanViewProps) {
       if (busy) return;
       setBusy(true);
       setError(null);
+      setErrorCode(null);
 
       const result = await submitStampScanAction(payload);
       if (isActionFailure(result)) {
         setError(resolveActionError(tErrors, result.error));
+        setErrorCode(result.error.code);
         resetScanner();
         return;
       }
@@ -76,6 +79,7 @@ export function ScanView({ searchParams }: ScanViewProps) {
       const payload = parseLoyaltyQrText(text);
       if (!payload) {
         setError(t("invalidQr"));
+        setErrorCode("SCAN_INVALID_QR");
         resetScanner();
         return;
       }
@@ -87,6 +91,7 @@ export function ScanView({ searchParams }: ScanViewProps) {
   useEffect(() => {
     if (invalidDeepLink) {
       setError(t("invalidQr"));
+      setErrorCode("SCAN_INVALID_QR");
       return;
     }
     if (!deepLink || processedDeepLink.current) return;
@@ -115,7 +120,9 @@ export function ScanView({ searchParams }: ScanViewProps) {
             {error}
           </p>
           <Button asChild variant="outline" className="min-h-11">
-            <Link href="/wallet">{t("backToWallet")}</Link>
+            <Link href={errorCode === "UNAUTHORIZED" ? "/login" : "/wallet"}>
+              {errorCode === "UNAUTHORIZED" ? t("signInAgain") : t("backToWallet")}
+            </Link>
           </Button>
         </div>
       ) : null}

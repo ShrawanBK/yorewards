@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@repo/ui/button";
 import { useTranslations } from "next-intl";
 import { customerLogoutAction } from "@/features/auth";
 import { PwaInstallHint } from "@/features/pwa";
+import { PRIVACY_EMAIL } from "@/shared/constants/contact";
 import type { CustomerProfile } from "@/features/auth/types/auth.types";
 
 export function ProfileView({
@@ -12,6 +14,7 @@ export function ProfileView({
   customer: CustomerProfile | null;
 }) {
   const t = useTranslations("profile");
+  const deletionMailto = `mailto:${PRIVACY_EMAIL}?subject=${encodeURIComponent(t("deletionEmailSubject"))}`;
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 p-6">
@@ -27,8 +30,19 @@ export function ProfileView({
         </div>
       </dl>
       <PwaInstallHint />
+      <div className="space-y-3 border-t border-border pt-4">
+        <Button asChild variant="outline" className="min-h-11 w-full">
+          <Link href="/privacy">{t("privacyLink")}</Link>
+        </Button>
+        <div className="space-y-1">
+          <Button asChild variant="outline" className="min-h-11 w-full">
+            <a href={deletionMailto}>{t("requestDeletion")}</a>
+          </Button>
+          <p className="text-xs text-muted-foreground">{t("requestDeletionHint")}</p>
+        </div>
+      </div>
       <form action={customerLogoutAction}>
-        <Button type="submit" variant="outline" className="min-h-11">
+        <Button type="submit" variant="outline" className="min-h-11 w-full">
           {t("logout")}
         </Button>
       </form>

@@ -7,25 +7,25 @@ alwaysApply: true
 
 ## Source of truth (read before planning or implementing)
 
-| Document                                | Path                                                |
-| --------------------------------------- | --------------------------------------------------- |
-| Product requirements (what to build)    | `resources/YORewards_PRD_Final_v1.md`               |
-| Technical implementation (how to build) | `resources/YORewards_Technical_Doc_v1.md`           |
-| Turborepo / new app setup               | `resources/Turborepo_App_Setup_Guide.md`            |
-| **Current build day**                   | `resources/Day6_Checklist.md` (super admin) |
+| Document                                | Path                                                          |
+| --------------------------------------- | ------------------------------------------------------------- |
+| Product requirements (what to build)    | `resources/YORewards_PRD_Final_v1.md`                         |
+| Technical implementation (how to build) | `resources/YORewards_Technical_Doc_v1.md`                     |
+| Turborepo / new app setup               | `resources/Turborepo_App_Setup_Guide.md`                      |
+| **Current build day**                   | `resources/Day6_Checklist.md` (super admin)                   |
 | **Upcoming**                            | `Day7_Checklist.md` (customer) · `Day8_Checklist.md` (launch) |
-| **Completed**                           | `Day5_Checklist.md` (merchant MVP) · `Day4_Checklist.md` · … |
-| **Post-MVP / v2 ideas**                 | `resources/V2_Backlog.md`                           |
+| **Completed**                           | `Day5_Checklist.md` (merchant MVP) · `Day4_Checklist.md` · …  |
+| **Post-MVP / v2 ideas**                 | `resources/V2_Backlog.md`                                     |
 
 When the user asks to build a feature, start a build day, design schema, or choose libraries: **read the relevant sections** from the PRD and Technical Doc first. These files may be updated — always use the current version in `resources/`.
 
 ## Apps
 
-| Folder          | App                | Local            | Production               |
-| --------------- | ------------------ | ---------------- | ------------------------ |
-| `apps/customer` | Customer PWA       | `localhost:3000` | `app.yorewards.com`      |
-| `apps/merchant` | Merchant Dashboard | `localhost:3001` | `merchant.yorewards.com` |
-| `apps/admin`    | Super Admin        | `localhost:3002` | `admin.yorewards.com`    |
+| Folder          | App                | Local            | Production                  |
+| --------------- | ------------------ | ---------------- | --------------------------- |
+| `apps/customer` | Customer PWA       | `localhost:3000` | `app.yorewards.com.np`      |
+| `apps/merchant` | Merchant Dashboard | `localhost:3001` | `merchant.yorewards.com.np` |
+| `apps/admin`    | Super Admin        | `localhost:3002` | `admin.yorewards.com.np`    |
 
 ## Non-negotiables
 

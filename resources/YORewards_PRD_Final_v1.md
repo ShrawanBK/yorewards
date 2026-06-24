@@ -385,7 +385,7 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 
 ## 8. App Routes
 
-### 8.1 Customer PWA — `apps/customer` · `localhost:3000` · `app.yorewards.com`
+### 8.1 Customer PWA — `apps/customer` · `localhost:3000` · `app.yorewards.com.np`
 
 | Route                        | Description                                        |
 | ---------------------------- | -------------------------------------------------- |
@@ -401,21 +401,21 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 | `/reward/[cardId]`           | Reward claim — OTP entry → redemption code display |
 | `/profile`                   | Phone number, name, logout                         |
 
-### 8.2 Merchant Dashboard — `apps/merchant` · `localhost:3001` · `merchant.yorewards.com`
+### 8.2 Merchant Dashboard — `apps/merchant` · `localhost:3001` · `merchant.yorewards.com.np`
 
-| Route                    | Description                                   |
-| ------------------------ | --------------------------------------------- |
-| `/merchant/login`        | Email + password sign in / sign up            |
-| `/merchant/register`     | Redirects to sign-up tab on login             |
-| `/merchant/add-business` | First business or additional businesses       |
-| `/merchant/business`     | Business hub — list, detail, branches (Day 3) |
-| `/merchant/dashboard`    | Stamp queue + quick stats (Day 4+)            |
+| Route                    | Description                                    |
+| ------------------------ | ---------------------------------------------- |
+| `/merchant/login`        | Email + password sign in / sign up             |
+| `/merchant/register`     | Redirects to sign-up tab on login              |
+| `/merchant/add-business` | First business or additional businesses        |
+| `/merchant/business`     | Business hub — list, detail, branches (Day 3)  |
+| `/merchant/dashboard`    | Stamp queue + quick stats (Day 4+)             |
 | `/merchant/loyalty-card` | Loyalty card config + live preview + branch QR |
-| `/merchant/redeem`       | Redemption code entry + confirmation          |
-| `/merchant/analytics`    | Full analytics dashboard                      |
-| `/merchant/settings`     | Business profile + account settings           |
+| `/merchant/redeem`       | Redemption code entry + confirmation           |
+| `/merchant/analytics`    | Full analytics dashboard                       |
+| `/merchant/settings`     | Business profile + account settings            |
 
-### 8.3 Super Admin — `apps/admin` · `localhost:3002` · `admin.yorewards.com`
+### 8.3 Super Admin — `apps/admin` · `localhost:3002` · `admin.yorewards.com.np`
 
 | Route                   | Description                              |
 | ----------------------- | ---------------------------------------- |
@@ -493,16 +493,16 @@ After merchant confirms, status returns to `collecting` with `current_stamps = 0
 
 > 🏗️ **Sequencing rule:** Build the **merchant side first**, then **super admin**, then **customer PWA**. Customers need real cards, an approval queue, and admin oversight before live scans. Checklists: [`Day5_Checklist.md`](Day5_Checklist.md) · [`Day6_Checklist.md`](Day6_Checklist.md) · [`Day7_Checklist.md`](Day7_Checklist.md) · [`Day8_Checklist.md`](Day8_Checklist.md).
 
-| Day   | Focus                    | Deliverables                                                                                                                                                                                                                                                                                                                                                                                |
-| ----- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1** | Foundation               | Turborepo init. All 3 Next.js apps. Supabase project (EU West). All **8 tables** with RLS (incl. `otp_tokens`). Forward-compatible columns baked in (`customers.status`, `merchants.rejection_reason`). Migration-first setup in `supabase/migrations/`. Tailwind brand config. shadcn/ui. next-intl scaffold. `@repo/supabase` + `@repo/utils`. All env vars. GitHub + Vercel deployments. |
-| **2** | Auth (Admin + Merchant)  | Merchant email+password register/login. Admin email+password. Route guards. Dashboard stub + account status. **Minimal admin merchant approval queue** (list + approve/reject with reason). **No customer auth yet** — see Day 7.                                                                                                                                                            |
-| **3** | Merchant Card + Branches | **`merchant_locations` migration** + business hub UI (list, detail, add/edit branches). `/merchant/loyalty-card` — PRD §6.1 loyalty card config (logo, colors, name, description). **Stamp rules** (target 5–50, optional minimum spend). **All 3 reward types**. Live card preview. Logo compression. **Per-branch QR** generation + PNG download. See [`Day3_Checklist.md`](Day3_Checklist.md).   |
-| **4** | Merchant Dashboard       | Stamp approval queue (Supabase Realtime). Approve/reject with optional reason. Redemption code entry + `complete_redemption`. Basic merchant analytics. Browser tab badge on new requests. Merchant settings stub. See [`Day4_Checklist.md`](Day4_Checklist.md).                                                                                                                               |
-| **5** | Merchant MVP finish      | Settings & account preferences. Status UX (pending/suspended/rejected). Branch context + success feedback. Merchant sign-off. See [`Day5_Checklist.md`](Day5_Checklist.md).                                                                                                                                                                                                                  |
-| **6** | Super Admin              | Platform dashboard. Merchant detail + management polish. Customer list + suspend. Manual stamp issue/void. Full audit log UI. Admin FDA + role guard. See [`Day6_Checklist.md`](Day6_Checklist.md).                                                                                                                                                                                          |
-| **7** | Customer PWA             | Phone login + onboarding + wallet. QR scanner. Stamp session + Realtime pending/success/rejected. Card detail + Framer Motion. OTP (Sparrow + Twilio). Redemption code. Profile. Test on real iPhone. See [`Day7_Checklist.md`](Day7_Checklist.md).                                                                                                                                        |
-| **8** | Polish & Launch          | PWA manifest + icons + next-pwa. Browser push for reward unlock (stub OK). Privacy policy (GDPR). Empty + error states pass. Full E2E all 3 reward types. Production deploy all 3 Vercel apps. See [`Day8_Checklist.md`](Day8_Checklist.md).                                                                                                                                              |
+| Day   | Focus                    | Deliverables                                                                                                                                                                                                                                                                                                                                                                                      |
+| ----- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | Foundation               | Turborepo init. All 3 Next.js apps. Supabase project (EU West). All **8 tables** with RLS (incl. `otp_tokens`). Forward-compatible columns baked in (`customers.status`, `merchants.rejection_reason`). Migration-first setup in `supabase/migrations/`. Tailwind brand config. shadcn/ui. next-intl scaffold. `@repo/supabase` + `@repo/utils`. All env vars. GitHub + Vercel deployments.       |
+| **2** | Auth (Admin + Merchant)  | Merchant email+password register/login. Admin email+password. Route guards. Dashboard stub + account status. **Minimal admin merchant approval queue** (list + approve/reject with reason). **No customer auth yet** — see Day 7.                                                                                                                                                                 |
+| **3** | Merchant Card + Branches | **`merchant_locations` migration** + business hub UI (list, detail, add/edit branches). `/merchant/loyalty-card` — PRD §6.1 loyalty card config (logo, colors, name, description). **Stamp rules** (target 5–50, optional minimum spend). **All 3 reward types**. Live card preview. Logo compression. **Per-branch QR** generation + PNG download. See [`Day3_Checklist.md`](Day3_Checklist.md). |
+| **4** | Merchant Dashboard       | Stamp approval queue (Supabase Realtime). Approve/reject with optional reason. Redemption code entry + `complete_redemption`. Basic merchant analytics. Browser tab badge on new requests. Merchant settings stub. See [`Day4_Checklist.md`](Day4_Checklist.md).                                                                                                                                  |
+| **5** | Merchant MVP finish      | Settings & account preferences. Status UX (pending/suspended/rejected). Branch context + success feedback. Merchant sign-off. See [`Day5_Checklist.md`](Day5_Checklist.md).                                                                                                                                                                                                                       |
+| **6** | Super Admin              | Platform dashboard. Merchant detail + management polish. Customer list + suspend. Manual stamp issue/void. Full audit log UI. Admin FDA + role guard. See [`Day6_Checklist.md`](Day6_Checklist.md).                                                                                                                                                                                               |
+| **7** | Customer PWA             | Phone login + onboarding + wallet. QR scanner. Stamp session + Realtime pending/success/rejected. Card detail + Framer Motion. OTP (Sparrow + Twilio). Redemption code. Profile. Test on real iPhone. See [`Day7_Checklist.md`](Day7_Checklist.md).                                                                                                                                               |
+| **8** | Polish & Launch          | PWA manifest + icons + next-pwa. Browser push for reward unlock (stub OK). Privacy policy (GDPR). Empty + error states pass. Full E2E all 3 reward types. Production deploy all 3 Vercel apps. See [`Day8_Checklist.md`](Day8_Checklist.md).                                                                                                                                                      |
 
 ---
 

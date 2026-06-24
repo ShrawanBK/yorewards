@@ -35,7 +35,7 @@ export function parseLoyaltyQrText(text: string): LoyaltyQrPayload | null {
   try {
     const url = trimmed.startsWith("http")
       ? new URL(trimmed)
-      : new URL(trimmed, "https://app.yorewards.com");
+      : new URL(trimmed, "https://app.yorewards.com.np");
 
     const merchantId = url.searchParams.get("m");
     const loyaltyCardId = url.searchParams.get("c");

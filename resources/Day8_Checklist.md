@@ -8,22 +8,22 @@
 
 ## Implementation status
 
-| Area                                    | Status     |
-| --------------------------------------- | ---------- |
-| Phase A — Customer PWA (manifest, icons) | ✅ Done |
-| Phase B — Privacy & GDPR                | ⏳ Planned |
-| Phase C — Cross-app empty/error states  | ⏳ Planned |
-| Phase D — Mobile responsiveness pass    | ⏳ Planned |
-| Phase E — Full E2E (3 reward types)     | ⏳ Planned |
-| Phase F — Production deploy (Vercel)    | ⏳ Planned |
-| Phase G — Sign-off + docs               | ⏳ Planned |
+| Area                                     | Status     |
+| ---------------------------------------- | ---------- |
+| Phase A — Customer PWA (manifest, icons) | ✅ Done    |
+| Phase B — Privacy & GDPR                 | ✅ Done    |
+| Phase C — Cross-app empty/error states   | ✅ Done    |
+| Phase D — Mobile responsiveness pass     | ⏳ Planned |
+| Phase E — Full E2E (3 reward types)      | ⏳ Planned |
+| Phase F — Production deploy (Vercel)     | ⏳ Planned |
+| Phase G — Sign-off + docs                | ⏳ Planned |
 
 ---
 
 ## MVP launch definition
 
 - [ ] Customer app installable (PWA) on iOS/Android home screen
-- [ ] Privacy policy reachable from customer + merchant apps
+- [x] Privacy policy reachable from customer + merchant apps
 - [ ] All three apps deployed: `app.`, `merchant.`, `admin.` subdomains
 - [ ] End-to-end test: signup → approve → scan → stamp → OTP → redeem for **free_item**, **percent_discount**, **fixed_discount**
 - [ ] RLS smoke across merchant isolation (Day 4 §G3 optional but recommended)
@@ -43,19 +43,19 @@
 
 ## Phase B — Privacy & GDPR — PRD §9
 
-- [ ] `/privacy` route (customer app; link from profile + footer)
-- [ ] Cover: data collected, Supabase EU region, deletion request contact
-- [ ] Profile: “Request data deletion” stub or mailto (MVP acceptable)
-- [ ] Merchant terms link if required (optional MVP)
+- [x] `/privacy` route (customer app; link from profile + footer)
+- [x] Cover: data collected, Supabase EU region, deletion request contact
+- [x] Profile: “Request data deletion” mailto (`privacy@yorewards.com.np`)
+- [x] Merchant settings link to customer privacy policy (`NEXT_PUBLIC_APP_URL/privacy`)
 
 ---
 
 ## Phase C — Empty & error states (all apps)
 
-- [ ] Customer: offline / camera denied / invalid QR / session expired
-- [ ] Merchant: already strong from Day 4–5 — spot-check
-- [ ] Admin: empty audit, no customers, no pending merchants
-- [ ] Consistent error code → i18n mapping on all apps
+- [x] Customer: offline banner, camera denied, invalid QR, session expired (UNAUTHORIZED → sign in), wallet retry
+- [x] Merchant: Day 4–5 empty states — spot-check OK; privacy link in settings
+- [x] Admin: empty audit, customers, pending merchants — already implemented
+- [x] Customer: `UNAUTHORIZED`, `FORBIDDEN`, `CUSTOMER_NOT_FOUND` in `errors.actions`
 
 ---
 
@@ -69,13 +69,13 @@
 
 ## Phase E — Full E2E matrix
 
-| Flow | Apps involved |
-| ---- | ------------- |
-| Merchant onboarding | customer N/A · merchant · admin approve |
-| Stamp collect | customer scan · merchant queue |
-| Reward redeem | customer OTP · merchant redeem |
-| Admin manual stamp | admin tool · customer wallet |
-| Multi-branch | customer scan branch B · merchant branch filter |
+| Flow                | Apps involved                                   |
+| ------------------- | ----------------------------------------------- |
+| Merchant onboarding | customer N/A · merchant · admin approve         |
+| Stamp collect       | customer scan · merchant queue                  |
+| Reward redeem       | customer OTP · merchant redeem                  |
+| Admin manual stamp  | admin tool · customer wallet                    |
+| Multi-branch        | customer scan branch B · merchant branch filter |
 
 - [ ] All three reward types tested once
 - [ ] Document test accounts / demo data cleanup
@@ -105,7 +105,7 @@
 
 - [ ] Three production URLs live and healthy
 - [ ] PWA install works on at least one mobile device
-- [ ] Privacy page published
+- [x] Privacy page published
 - [ ] Founder sign-off on full loop demo
 
 ---

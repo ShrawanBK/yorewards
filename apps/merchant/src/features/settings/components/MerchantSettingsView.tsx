@@ -28,6 +28,7 @@ export async function MerchantSettingsView({
   const t = await getTranslations("settings");
   const tBusiness = await getTranslations("business");
   const statusBadge = MERCHANT_STATUS_BADGE[merchant.status];
+  const privacyUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/privacy`;
 
   return (
     <div className="space-y-6">
@@ -118,6 +119,21 @@ export async function MerchantSettingsView({
               </p>
             </div>
           ) : null}
+        </CardContent>
+      </Card>
+
+      <Card className="merchant-glass-card">
+        <CardHeader>
+          <CardTitle className="text-lg">{t("legal.title")}</CardTitle>
+          <CardDescription>{t("legal.subtitle")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button asChild variant="outline" size="sm">
+            <a href={privacyUrl} target="_blank" rel="noopener noreferrer">
+              {t("legal.privacy")}
+              <ArrowRight className="size-4" aria-hidden />
+            </a>
+          </Button>
         </CardContent>
       </Card>
     </div>

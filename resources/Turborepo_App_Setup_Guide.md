@@ -7,9 +7,9 @@ Add a new Next.js app to the YORewards monorepo.
 ```
 yorewards/
 ├── apps/
-│   ├── customer/     → Customer PWA        · localhost:3000 · app.yorewards.com
-│   ├── merchant/     → Merchant Dashboard  · localhost:3001 · merchant.yorewards.com
-│   └── admin/        → Super Admin         · localhost:3002 · admin.yorewards.com
+│   ├── customer/     → Customer PWA        · localhost:3000 · app.yorewards.com.np
+│   ├── merchant/     → Merchant Dashboard  · localhost:3001 · merchant.yorewards.com.np
+│   └── admin/        → Super Admin         · localhost:3002 · admin.yorewards.com.np
 ├── packages/
 │   ├── ui/
 │   ├── eslint-config/

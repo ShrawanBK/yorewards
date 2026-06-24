@@ -20,7 +20,7 @@ export function WalletHomeView() {
   const t = useTranslations("wallet");
   const customerId = useAuthStore((s) => s.customerId);
   const isAuthLoading = useAuthStore((s) => s.isLoading);
-  const { data: cards, isLoading, isError } = useCustomerWallet(customerId);
+  const { data: cards, isLoading, isError, refetch } = useCustomerWallet(customerId);
 
   const rewardReadyCards =
     cards?.filter((card) => isRewardReady(card.rewardStatus)) ?? [];
@@ -45,6 +45,14 @@ export function WalletHomeView() {
         <p className="text-sm text-destructive" role="alert">
           {t("loadError")}
         </p>
+        <Button
+          type="button"
+          variant="outline"
+          className="min-h-11 w-fit"
+          onClick={() => void refetch()}
+        >
+          {t("retry")}
+        </Button>
       </div>
     );
   }

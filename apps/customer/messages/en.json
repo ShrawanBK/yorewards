@@ -51,11 +51,43 @@
       "missingPhone": "Missing phone. Go back to login."
     }
   },
+  "footer": {
+    "privacy": "Privacy policy"
+  },
+  "offline": {
+    "message": "You're offline — some features may not work until you're back online."
+  },
   "profile": {
     "title": "Profile",
     "name": "Name",
     "phone": "Phone",
+    "privacyLink": "Privacy policy",
+    "requestDeletion": "Request data deletion",
+    "requestDeletionHint": "We'll process GDPR deletion requests by email.",
+    "deletionEmailSubject": "YORewards data deletion request",
     "logout": "Log out"
+  },
+  "privacy": {
+    "title": "Privacy policy",
+    "updated": "Last updated: June 2026",
+    "intro": "YORewards helps you collect digital loyalty stamps. This policy explains what we collect and how we protect your data.",
+    "dataCollected": {
+      "title": "What we collect",
+      "body": "Phone number, display name, loyalty card progress, stamp and redemption history, and basic device/browser data needed to run the app."
+    },
+    "hosting": {
+      "title": "Where data is stored",
+      "body": "Data is hosted in Supabase EU West (Frankfurt, Germany). We use this region to meet GDPR requirements for users in Nepal and Finland."
+    },
+    "rights": {
+      "title": "Your rights",
+      "body": "You can request access, correction, or deletion of your personal data. We will respond to verified requests within a reasonable time."
+    },
+    "deletion": {
+      "title": "Account deletion",
+      "body": "To delete your account and associated data, use Request data deletion on your profile or email us at the address below."
+    },
+    "backToProfile": "Back to profile"
   },
   "pwa": {
     "dismiss": "Not now",
@@ -81,6 +113,7 @@
     "stampProgressAria": "{current} of {target} stamps collected",
     "rewardReady": "Reward ready",
     "loadError": "We couldn't load your wallet — pull to refresh or try again.",
+    "retry": "Try again",
     "backToWallet": "Back to wallet",
     "banner": {
       "title": "You have a reward ready to claim",
@@ -101,7 +134,8 @@
     "cameraPrompt": "Allow camera access to scan loyalty QR codes.",
     "retryCamera": "Allow camera",
     "requestingCamera": "Requesting access…",
-    "backToWallet": "Back to wallet"
+    "backToWallet": "Back to wallet",
+    "signInAgain": "Sign in again"
   },
   "stamp": {
     "pending": {
@@ -188,10 +222,13 @@
   "errors": {
     "actions": {
       "UNKNOWN": "Something went wrong — please try again.",
+      "UNAUTHORIZED": "Your session expired — please sign in again.",
+      "FORBIDDEN": "You don't have permission to do that.",
       "INVALID_PHONE": "Enter a valid phone number for the selected country.",
       "CUSTOMER_PHONE_REQUIRED": "Enter your phone number to continue.",
       "CUSTOMER_NAME_REQUIRED": "Enter your name — at least 2 characters.",
       "CUSTOMER_LOGIN_FAILED": "We couldn't sign you in — please try again.",
+      "CUSTOMER_NOT_FOUND": "We couldn't find your account — try signing in again.",
       "CUSTOMER_ONBOARDING_FAILED": "We couldn't finish setup — please try again.",
       "CUSTOMER_ALREADY_EXISTS": "This phone is already registered — try signing in instead.",
       "CUSTOMER_SUSPENDED": "Your account is suspended. Contact support if you think this is a mistake.",

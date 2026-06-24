@@ -180,9 +180,9 @@ Set the same vars in **Vercel** for each project (deferred):
 
 ## I. Vercel deployments
 
-- [ ] `customer` → `app.yorewards.com` (or Vercel default URL for now)
-- [ ] `merchant` → `merchant.yorewards.com`
-- [ ] `admin` → `admin.yorewards.com`
+- [ ] `customer` → `app.yorewards.com.np` (or Vercel default URL for now)
+- [ ] `merchant` → `merchant.yorewards.com.np`
+- [ ] `admin` → `admin.yorewards.com.np`
 - [ ] Root directory / build settings correct per app (`apps/customer`, etc.)
 - [ ] GitHub auto-deploy on push to main
 - [ ] All 3 preview URLs load (default Next.js page is fine for Day 1)

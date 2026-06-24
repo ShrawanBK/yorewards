@@ -501,6 +501,11 @@
       "branch": "Counter branch",
       "branchUnknown": "Primary branch",
       "branchHint": "Change your counter branch from the sidebar when you have multiple locations."
+    },
+    "legal": {
+      "title": "Legal",
+      "subtitle": "Privacy and data handling for YORewards.",
+      "privacy": "Privacy policy"
     }
   },
   "errors": {

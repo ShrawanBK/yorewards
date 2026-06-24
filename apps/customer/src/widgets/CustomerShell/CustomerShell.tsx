@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { ScanLine, User, Wallet } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@repo/ui/lib/utils";
+import { AppFooter } from "@/shared/ui/AppFooter";
+import { OfflineBanner } from "@/shared/ui/OfflineBanner";
 
 const navItems = [
   { href: "/wallet", labelKey: "wallet" as const, icon: Wallet },
@@ -20,6 +22,7 @@ export function CustomerShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
+      <OfflineBanner />
       <main
         className={cn(
           "flex flex-1 flex-col",
@@ -27,6 +30,7 @@ export function CustomerShell({ children }: { children: React.ReactNode }) {
         )}
       >
         {children}
+        {!hideNav ? <AppFooter /> : null}
       </main>
       {!hideNav ? (
         <nav

@@ -10,7 +10,7 @@
 
 | Area                                    | Status     |
 | --------------------------------------- | ---------- |
-| Phase A — Customer PWA (manifest, icons) | ⏳ Planned |
+| Phase A — Customer PWA (manifest, icons) | ✅ Done |
 | Phase B — Privacy & GDPR                | ⏳ Planned |
 | Phase C — Cross-app empty/error states  | ⏳ Planned |
 | Phase D — Mobile responsiveness pass    | ⏳ Planned |
@@ -32,10 +32,12 @@
 
 ## Phase A — Customer PWA
 
-- [ ] `next-pwa` config in `apps/customer` (customer app only — PRD)
-- [ ] Manifest: name, icons, theme colors (brand from `@repo/tailwind-config`)
-- [ ] Apple touch icons + meta tags
-- [ ] Verify install prompt on Android; iOS “Add to Home Screen” instructions (optional UI hint)
+- [x] `next-pwa` config in `apps/customer` (customer app only — PRD); production build uses `next build --webpack`
+- [x] Manifest: name, icons, theme colors (brand from `@repo/tailwind-config`)
+- [x] Apple touch icons + meta tags (`metadata.appleWebApp`, `viewport.themeColor`)
+- [x] Install UI: Android `beforeinstallprompt` button + iOS Add to Home Screen steps on Profile
+- [x] Dev mobile testing: `clean-dev-sw.mjs` on `pnpm dev` clears stale SW; use `turbo build` + `turbo start -- --hostname 0.0.0.0` for PWA/install smoke tests on phone
+- [ ] **Manual:** Verify install prompt on Android device; iOS Add to Home Screen on iPhone
 
 ---
 

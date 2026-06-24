@@ -4,12 +4,10 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@repo/ui/button";
 import { customerLoginAction } from "@/features/auth/api/authActions";
 import { PhoneCountryFields } from "@/features/auth/components/PhoneCountryFields";
-import { useAuthStore } from "@/features/auth/store/authStore";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
 import { isActionFailure } from "@/shared/types/action-result";
 import { isValidCustomerPhoneLocal } from "@repo/utils/phone";
@@ -17,8 +15,6 @@ import { isValidCustomerPhoneLocal } from "@repo/utils/phone";
 export function CustomerLoginForm() {
   const t = useTranslations("auth");
   const tErrors = useTranslations("errors.actions");
-  const router = useRouter();
-  const refreshProfile = useAuthStore((s) => s.refreshProfile);
   const [error, setError] = useState<string | null>(null);
 
   const schema = useMemo(
@@ -61,18 +57,8 @@ export function CustomerLoginForm() {
         fd.set("country", values.country);
         fd.set("phoneLocal", values.phoneLocal);
         const result = await customerLoginAction(fd);
-        if (isActionFailure(result)) {
+        if (result && isActionFailure(result)) {
           setError(resolveActionError(tErrors, result.error));
-          return;
-        }
-        if ("isNew" in result && result.isNew) {
-          router.push(`/onboarding?phone=${encodeURIComponent(result.phone)}`);
-          return;
-        }
-        if ("loggedIn" in result && result.loggedIn) {
-          await refreshProfile();
-          router.push("/wallet");
-          router.refresh();
         }
       })}
     >

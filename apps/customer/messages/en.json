@@ -57,6 +57,23 @@
     "phone": "Phone",
     "logout": "Log out"
   },
+  "pwa": {
+    "dismiss": "Not now",
+    "dismissAria": "Dismiss install instructions",
+    "android": {
+      "title": "Install YORewards",
+      "subtitle": "Add the app to your home screen for quick access to your wallet.",
+      "install": "Install app",
+      "installing": "Installing…"
+    },
+    "ios": {
+      "title": "Add to Home Screen",
+      "subtitle": "Install YORewards on your iPhone for a full-screen wallet experience.",
+      "stepShare": "Tap Share in Safari's toolbar",
+      "stepAdd": "Choose Add to Home Screen",
+      "stepConfirm": "Tap Add to confirm"
+    }
+  },
   "wallet": {
     "title": "Wallet",
     "stamps": "Stamps",

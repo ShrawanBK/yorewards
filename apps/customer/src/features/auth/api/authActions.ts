@@ -38,7 +38,7 @@ function parsePhoneFromForm(formData: FormData) {
 
 export async function customerLoginAction(
   formData: FormData,
-): Promise<ActionResult<{ isNew: true; phone: string } | { loggedIn: true }>> {
+): Promise<ActionResult | void> {
   const parsed = parsePhoneFromForm(formData);
   if (!parsed.ok) {
     return fail(
@@ -48,17 +48,23 @@ export async function customerLoginAction(
 
   const phone = parsed.phone;
 
+  let customer;
   try {
-    const customer = await findCustomerByPhone(phone);
+    customer = await findCustomerByPhone(phone);
+  } catch (err) {
+    logActionFailure("customerLogin.lookup", err);
+    return fail("CUSTOMER_LOGIN_FAILED");
+  }
 
-    if (!customer) {
-      return { isNew: true, phone };
-    }
+  if (!customer) {
+    redirect(`/onboarding?phone=${encodeURIComponent(phone)}`);
+  }
 
-    if (customer.status === "suspended") {
-      return fail("CUSTOMER_SUSPENDED");
-    }
+  if (customer.status === "suspended") {
+    return fail("CUSTOMER_SUSPENDED");
+  }
 
+  try {
     const admin = createServiceRoleClient();
     await admin
       .from("customers")
@@ -66,16 +72,17 @@ export async function customerLoginAction(
       .eq("id", customer.id);
 
     await establishCustomerSession(customer.id);
-    return { loggedIn: true };
   } catch (err) {
     logActionFailure("customerLogin", err);
     return fail("CUSTOMER_LOGIN_FAILED");
   }
+
+  redirect("/wallet");
 }
 
 export async function customerOnboardingAction(
   formData: FormData,
-): Promise<ActionResult<{ completed: true }>> {
+): Promise<ActionResult | void> {
   const parsed = parsePhoneFromForm(formData);
   const name = String(formData.get("name") ?? "").trim();
 
@@ -95,32 +102,32 @@ export async function customerOnboardingAction(
         return fail("CUSTOMER_SUSPENDED");
       }
       await establishCustomerSession(existing.id);
-      return { completed: true };
+    } else {
+      const admin = createServiceRoleClient();
+      const { data: customer, error } = await admin
+        .from("customers")
+        .insert({
+          phone,
+          name,
+          country_code: detectCountry(phone),
+        })
+        .select()
+        .single();
+
+      if (error) {
+        logActionFailure("customerOnboarding.insert", error);
+        if (error.code === "23505") return fail("CUSTOMER_ALREADY_EXISTS");
+        return fail("CUSTOMER_ONBOARDING_FAILED");
+      }
+
+      await establishCustomerSession(customer.id);
     }
-
-    const admin = createServiceRoleClient();
-    const { data: customer, error } = await admin
-      .from("customers")
-      .insert({
-        phone,
-        name,
-        country_code: detectCountry(phone),
-      })
-      .select()
-      .single();
-
-    if (error) {
-      logActionFailure("customerOnboarding.insert", error);
-      if (error.code === "23505") return fail("CUSTOMER_ALREADY_EXISTS");
-      return fail("CUSTOMER_ONBOARDING_FAILED");
-    }
-
-    await establishCustomerSession(customer.id);
-    return { completed: true };
   } catch (err) {
     logActionFailure("customerOnboarding", err);
     return fail("CUSTOMER_ONBOARDING_FAILED");
   }
+
+  redirect("/wallet");
 }
 
 export async function customerLogoutAction(): Promise<void> {

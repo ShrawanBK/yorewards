@@ -4,14 +4,13 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Field } from "@repo/ui/field";
 import { customerOnboardingAction } from "@/features/auth/api/authActions";
-import { useAuthStore } from "@/features/auth/store/authStore";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
 import { isActionFailure } from "@/shared/types/action-result";
 import { detectCountry } from "@repo/utils/phone";
@@ -19,8 +18,6 @@ import { detectCountry } from "@repo/utils/phone";
 export function CustomerOnboardingForm() {
   const t = useTranslations("auth");
   const tErrors = useTranslations("errors.actions");
-  const router = useRouter();
-  const refreshProfile = useAuthStore((s) => s.refreshProfile);
   const params = useSearchParams();
   const phone = params.get("phone") ?? "";
   const [error, setError] = useState<string | null>(null);
@@ -63,14 +60,8 @@ export function CustomerOnboardingForm() {
         );
         fd.set("name", name);
         const result = await customerOnboardingAction(fd);
-        if (isActionFailure(result)) {
+        if (result && isActionFailure(result)) {
           setError(resolveActionError(tErrors, result.error));
-          return;
-        }
-        if (result.completed) {
-          await refreshProfile();
-          router.push("/wallet");
-          router.refresh();
         }
       })}
     >

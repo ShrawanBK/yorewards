@@ -33,9 +33,10 @@
 | Merchant settings + status UX + branch context + success feedback         | ✅ Done (Day 5) — [`Day5_Checklist.md`](../resources/Day5_Checklist.md) |
 | Super Admin — full platform (dashboard, customers, stamps, audit)         | ✅ Done (Day 6) — [`Day6_Checklist.md`](../resources/Day6_Checklist.md) |
 | Customer auth + wallet + scan + OTP                                       | ✅ Done (Day 7) — [`Day7_Checklist.md`](../resources/Day7_Checklist.md) |
-| PWA, privacy, production deploy                                           | ⏳ Day 8 — [`Day8_Checklist.md`](../resources/Day8_Checklist.md) |
+| Customer PWA installability (manifest, SW, icons)                         | ✅ Done (Day 8 Phase A) — `next-pwa`, `manifest.ts`, Profile install hint; login/onboarding use server `redirect()` |
+| Privacy policy, production deploy                                         | ⏳ Day 8 Phases B–F — [`Day8_Checklist.md`](../resources/Day8_Checklist.md) |
 
-**Next up (Day 8):** PWA manifest, privacy policy, production deploy — see [`Day8_Checklist.md`](../resources/Day8_Checklist.md).
+**Next up (Day 8):** Privacy policy (`/privacy`), empty/error states, E2E, production deploy — see [`Day8_Checklist.md`](../resources/Day8_Checklist.md).
 
 ---
 

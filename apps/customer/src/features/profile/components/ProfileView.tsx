@@ -3,6 +3,7 @@
 import { Button } from "@repo/ui/button";
 import { useTranslations } from "next-intl";
 import { customerLogoutAction } from "@/features/auth";
+import { PwaInstallHint } from "@/features/pwa";
 import type { CustomerProfile } from "@/features/auth/types/auth.types";
 
 export function ProfileView({
@@ -25,6 +26,7 @@ export function ProfileView({
           <dd className="font-medium">{customer?.phone ?? "—"}</dd>
         </div>
       </dl>
+      <PwaInstallHint />
       <form action={customerLogoutAction}>
         <Button type="submit" variant="outline" className="min-h-11">
           {t("logout")}

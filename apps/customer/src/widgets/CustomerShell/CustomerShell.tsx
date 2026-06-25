@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { ScanLine, User, Wallet } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@repo/ui/lib/utils";
-import { AppFooter } from "@/shared/ui/AppFooter";
 import { OfflineBanner } from "@/shared/ui/OfflineBanner";
 
 const navItems = [
@@ -30,7 +29,6 @@ export function CustomerShell({ children }: { children: React.ReactNode }) {
         )}
       >
         {children}
-        {!hideNav ? <AppFooter /> : null}
       </main>
       {!hideNav ? (
         <nav

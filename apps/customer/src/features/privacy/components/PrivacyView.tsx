@@ -4,7 +4,12 @@ import { PRIVACY_EMAIL } from "@/shared/constants/contact";
 
 const SECTIONS = ["dataCollected", "hosting", "rights", "deletion"] as const;
 
-export async function PrivacyView() {
+type PrivacyViewProps = {
+  backHref: string;
+  signedIn: boolean;
+};
+
+export async function PrivacyView({ backHref, signedIn }: PrivacyViewProps) {
   const t = await getTranslations("privacy");
 
   return (
@@ -34,10 +39,10 @@ export async function PrivacyView() {
       </p>
 
       <Link
-        href="/profile"
+        href={backHref}
         className="text-sm font-medium text-brand-purple underline-offset-4 hover:underline"
       >
-        {t("backToProfile")}
+        {signedIn ? t("backToProfile") : t("backToLogin")}
       </Link>
     </article>
   );

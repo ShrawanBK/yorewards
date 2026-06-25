@@ -51,9 +51,6 @@
       "missingPhone": "Missing phone. Go back to login."
     }
   },
-  "footer": {
-    "privacy": "Privacy policy"
-  },
   "offline": {
     "message": "You're offline — some features may not work until you're back online."
   },
@@ -87,7 +84,8 @@
       "title": "Account deletion",
       "body": "To delete your account and associated data, use Request data deletion on your profile or email us at the address below."
     },
-    "backToProfile": "Back to profile"
+    "backToProfile": "Back to profile",
+    "backToLogin": "Back to sign in"
   },
   "pwa": {
     "dismiss": "Not now",

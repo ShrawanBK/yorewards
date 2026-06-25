@@ -1,3 +1,4 @@
+export { LoginAuthExtras } from "./components/LoginAuthExtras";
 export { LoginView } from "./components/LoginView";
 export { OnboardingView } from "./components/OnboardingView";
 export { CustomerLoginForm } from "./components/CustomerLoginForm";

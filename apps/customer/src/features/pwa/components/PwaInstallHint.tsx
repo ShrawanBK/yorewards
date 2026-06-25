@@ -13,6 +13,7 @@ import {
 import { Download, Share, X } from "lucide-react";
 
 const DISMISS_KEY = "yorewards-pwa-hint-dismissed";
+const DISMISS_TTL_MS = 24 * 60 * 60 * 1000;
 
 type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -36,11 +37,30 @@ function detectPlatform(): "ios" | "android" | "other" {
   return "other";
 }
 
-function isDismissed() {
+function readDismissedAt(): number | null {
   try {
-    return localStorage.getItem(DISMISS_KEY) === "1";
+    const raw = localStorage.getItem(DISMISS_KEY);
+    if (!raw) return null;
+    // Legacy permanent flag — treat as expired so users see the hint again.
+    if (raw === "1") return null;
+    const parsed = Number(raw);
+    return Number.isFinite(parsed) ? parsed : null;
   } catch {
-    return false;
+    return null;
+  }
+}
+
+function isDismissedWithinTtl(): boolean {
+  const dismissedAt = readDismissedAt();
+  if (dismissedAt === null) return false;
+  return Date.now() - dismissedAt < DISMISS_TTL_MS;
+}
+
+function markDismissed() {
+  try {
+    localStorage.setItem(DISMISS_KEY, String(Date.now()));
+  } catch {
+    // private browsing
   }
 }
 
@@ -56,7 +76,7 @@ export function PwaInstallHint() {
   const [installing, setInstalling] = useState(false);
 
   useEffect(() => {
-    if (isStandaloneMode() || isDismissed()) return;
+    if (isStandaloneMode() || isDismissedWithinTtl()) return;
 
     const detected = detectPlatform();
     setPlatform(detected);
@@ -75,11 +95,7 @@ export function PwaInstallHint() {
   }, []);
 
   function dismiss() {
-    try {
-      localStorage.setItem(DISMISS_KEY, "1");
-    } catch {
-      // private browsing
-    }
+    markDismissed();
     setHidden(true);
   }
 

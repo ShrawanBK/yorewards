@@ -1,10 +1,13 @@
 import { CustomerAuthLayout } from "@/widgets/CustomerAuthLayout";
-import { LoginView } from "@/features/auth";
+import { LoginAuthExtras, LoginView } from "@/features/auth";
 
 export default function LoginPage() {
   return (
     <CustomerAuthLayout>
-      <LoginView />
+      <div className="flex w-full max-w-md flex-col gap-4">
+        <LoginView />
+        <LoginAuthExtras />
+      </div>
     </CustomerAuthLayout>
   );
 }

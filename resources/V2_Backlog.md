@@ -37,4 +37,10 @@
 
 ---
 
-_Last updated: June 2026 · See also PRD §13 Future Roadmap_
+## 7-day sprint
+
+Active build plan: [`v2/README.md`](v2/README.md) · **current:** [`v2/Day1_Checklist.md`](v2/Day1_Checklist.md). Items below not in sprint → **Post-sprint** in README.
+
+---
+
+_Last updated: July 2026 · See also [`YoRewards_V2_Final.md`](YoRewards_V2_Final.md) §11_

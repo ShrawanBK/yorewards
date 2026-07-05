@@ -25,6 +25,12 @@ Supabase runs **every `.sql` file in this folder once**, in **filename order** (
 | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `20260611120000_merchant_locations.sql` | Branches per business: `merchant_locations` table, nullable `location_id` on `stamp_sessions` / `redemptions`, backfill primary location, RLS |
 
+## V2 Day 1
+
+| File                                   | What it does                                                                                          |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `20260703120000_v2_spend_tracking.sql` | Spend on approve, `stamp_transactions`, `loyalty_card_locations`, updated `approve_stamp_session` RPC |
+
 ## Rules
 
 - **Never edit** a migration after it has been pushed to production — add a new file instead.

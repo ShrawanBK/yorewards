@@ -75,6 +75,7 @@ export async function fetchPendingStampQueueAction(merchantId: string): Promise<
 export async function approveStampAction(
   merchantId: string,
   sessionId: string,
+  amountSpent: number,
 ): Promise<ActionResult> {
   const supabase = await createClient();
   const {
@@ -84,6 +85,10 @@ export async function approveStampAction(
 
   const denied = await assertActiveMerchantOwner(user.id, merchantId);
   if (denied) return denied;
+
+  if (!Number.isFinite(amountSpent) || amountSpent <= 0) {
+    return fail("STAMP_AMOUNT_INVALID");
+  }
 
   try {
     const session = await createServiceRoleClient()
@@ -97,7 +102,10 @@ export async function approveStampAction(
       return fail("STAMP_NOT_FOUND");
     }
 
-    await approveStampSession(sessionId);
+    await approveStampSession(sessionId, {
+      amountSpent,
+      approvedBy: user.id,
+    });
     revalidateMerchantOpsPaths();
     return {};
   } catch (err) {
@@ -109,6 +117,15 @@ export async function approveStampAction(
     }
     if (message.includes("not pending")) {
       return fail("STAMP_NOT_PENDING");
+    }
+    if (message.includes("stamp_amount_required")) {
+      return fail("STAMP_AMOUNT_REQUIRED");
+    }
+    if (message.includes("stamp_min_spend_not_met")) {
+      return fail("STAMP_MIN_SPEND_NOT_MET");
+    }
+    if (message.includes("stamp_branch_not_allowed")) {
+      return fail("STAMP_BRANCH_NOT_ALLOWED");
     }
     return fail("STAMP_APPROVE_FAILED");
   }

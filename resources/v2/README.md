@@ -9,7 +9,7 @@
 
 ## Current build day
 
-**→ [`Day1_Checklist.md`](Day1_Checklist.md)** (update this line as you progress)
+**→ [`Day2_Checklist.md`](Day2_Checklist.md)** (merchant queue polish)
 
 | Day | Focus | Checklist |
 | --- | ----- | --------- |

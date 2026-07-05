@@ -1,8 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { createServiceRoleClient } from "../service-role";
-import type { StampSessionStatus, RewardStatus } from "../types";
+import { assertLocationStampAllowed } from "./loyalty-card-locations";
+import type { StampSessionStatus, RewardStatus, Json } from "../types";
 
 export const STAMP_PENDING_TTL_MS = 5 * 60 * 1000;
+export const STAMP_RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000;
+export const STAMP_RATE_LIMIT_MAX = 3;
 
 const PENDING_TTL_MS = STAMP_PENDING_TTL_MS;
 
@@ -231,10 +234,15 @@ export async function getStampSuccessContextForCustomer(
   };
 }
 
-export async function approveStampSession(sessionId: string): Promise<void> {
+export async function approveStampSession(
+  sessionId: string,
+  options: { amountSpent: number; approvedBy?: string | null },
+): Promise<void> {
   const supabase = createServiceRoleClient();
   const { error } = await supabase.rpc("approve_stamp_session", {
     p_session_id: sessionId,
+    p_amount_spent: options.amountSpent,
+    p_approved_by: options.approvedBy ?? null,
   });
 
   if (!error) return;
@@ -257,26 +265,67 @@ export async function approveStampSession(sessionId: string): Promise<void> {
     throw new Error("Stamp request has expired");
   }
 
+  if (!Number.isFinite(options.amountSpent) || options.amountSpent <= 0) {
+    throw new Error("stamp_amount_required");
+  }
+
   const { data: card, error: cardError } = await supabase
     .from("customer_cards")
-    .select("current_stamps, loyalty_card_id, loyalty_cards ( stamp_target )")
+    .select(
+      "current_stamps, loyalty_card_id, customer_id, loyalty_cards ( stamp_target, min_spend )",
+    )
     .eq("id", session.customer_card_id)
     .single();
 
-  if (cardError || !card) throw cardError ?? new Error("Customer card not found");
+  if (cardError || !card)
+    throw cardError ?? new Error("Customer card not found");
 
-  const stampTarget =
-    (card.loyalty_cards as { stamp_target: number } | null)?.stamp_target ?? 0;
+  const loyaltyCard = card.loyalty_cards as {
+    stamp_target: number;
+    min_spend: number;
+  } | null;
+  const stampTarget = loyaltyCard?.stamp_target ?? 0;
+  const minSpend = loyaltyCard?.min_spend ?? 0;
+
+  if (options.amountSpent < minSpend) {
+    throw new Error("stamp_min_spend_not_met");
+  }
+
+  if (session.location_id) {
+    await assertLocationStampAllowed(card.loyalty_card_id, session.location_id);
+  }
+
   const newCount = card.current_stamps + 1;
   const newStatus = newCount >= stampTarget ? "pending_otp" : "collecting";
+  const now = new Date().toISOString();
 
   const { error: approveError } = await supabase
     .from("stamp_sessions")
-    .update({ status: "approved", resolved_at: new Date().toISOString() })
+    .update({
+      status: "approved",
+      resolved_at: now,
+      amount_spent: options.amountSpent,
+      approved_by: options.approvedBy ?? null,
+    })
     .eq("id", sessionId)
     .eq("status", "pending");
 
   if (approveError) throw approveError;
+
+  const { error: txError } = await supabase.from("stamp_transactions").insert({
+    stamp_session_id: sessionId,
+    customer_id: card.customer_id,
+    customer_card_id: session.customer_card_id,
+    merchant_id: session.merchant_id,
+    loyalty_card_id: card.loyalty_card_id,
+    location_id: session.location_id,
+    amount_spent: options.amountSpent,
+    session_token: session.session_token,
+    device_info: session.device_info,
+    approved_by: options.approvedBy ?? null,
+    stamped_at: now,
+  });
+  if (txError) throw txError;
 
   const { error: incrementError } = await supabase.rpc("increment_stamps", {
     card_id: session.customer_card_id,
@@ -323,8 +372,41 @@ export async function createPendingStampSession(input: {
   merchantId: string;
   customerCardId: string;
   locationId?: string | null;
+  deviceInfo?: Json | null;
 }): Promise<string> {
   const supabase = createServiceRoleClient();
+
+  const windowStart = new Date(
+    Date.now() - STAMP_RATE_LIMIT_WINDOW_MS,
+  ).toISOString();
+  const { count: recentCount, error: rateError } = await supabase
+    .from("stamp_sessions")
+    .select("*", { count: "exact", head: true })
+    .eq("customer_card_id", input.customerCardId)
+    .gte("created_at", windowStart);
+
+  if (rateError) throw rateError;
+  if ((recentCount ?? 0) >= STAMP_RATE_LIMIT_MAX) {
+    throw new Error("stamp_rate_limited");
+  }
+
+  const { data: customerCard, error: cardError } = await supabase
+    .from("customer_cards")
+    .select("loyalty_card_id")
+    .eq("id", input.customerCardId)
+    .single();
+
+  if (cardError || !customerCard) {
+    throw cardError ?? new Error("Customer card not found");
+  }
+
+  if (input.locationId) {
+    await assertLocationStampAllowed(
+      customerCard.loyalty_card_id,
+      input.locationId,
+    );
+  }
+
   const { data, error } = await supabase
     .from("stamp_sessions")
     .insert({
@@ -334,6 +416,7 @@ export async function createPendingStampSession(input: {
       session_token: randomUUID(),
       source: "qr_scan",
       status: "pending",
+      device_info: input.deviceInfo ?? null,
     })
     .select("id")
     .single();

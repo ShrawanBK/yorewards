@@ -601,6 +601,13 @@ Three distinct concepts — do not conflate them:
 - `location_id` is **attribution only** — it must never filter or partition the stamp count or redemption scope (redemption stays `merchant_id`-scoped).
 - An outlet is **always a child of a merchant**, never its own `merchants` row. Registering a branch as a separate merchant would split the card balance and break cross-branch stamping.
 
+**V2 branch subset (Day 1)** — migration `20260703120000_v2_spend_tracking.sql`
+
+- `loyalty_card_locations(loyalty_card_id, location_id, stamp_allowed, redeem_allowed)` — optional per-card branch rules. **No rows** = all active branches (V1 behaviour).
+- `stamp_sessions.amount_spent`, `approved_by`, `device_info` — set on merchant approve.
+- `stamp_transactions` — immutable spend row per approved stamp (analytics source).
+- `approve_stamp_session(session_id, amount_spent, approved_by)` — enforces min spend + branch subset.
+
 ---
 
 ## 5. State Management

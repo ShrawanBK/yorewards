@@ -239,6 +239,8 @@
       "SCAN_LOCATION_INVALID": "This branch isn't valid for scanning.",
       "SCAN_SESSION_FAILED": "We couldn't start your stamp request — please try again.",
       "SCAN_CAMERA_DENIED": "Camera access is required to scan.",
+      "STAMP_BRANCH_NOT_ALLOWED": "This branch can't stamp on this card right now.",
+      "STAMP_RATE_LIMITED": "Too many scan attempts — wait a moment and try again.",
       "STAMP_SESSION_NOT_FOUND": "Stamp request not found.",
       "OTP_SEND_FAILED": "We couldn't send the verification code — please try again.",
       "OTP_INVALID": "That code isn't correct — check the SMS and try again.",

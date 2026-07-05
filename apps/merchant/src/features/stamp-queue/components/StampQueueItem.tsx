@@ -46,6 +46,7 @@ export function StampQueueItem({
   const tErrors = useTranslations("errors.actions");
   const format = useFormatter();
   const [error, setError] = useState<string | null>(null);
+  const [amountSpent, setAmountSpent] = useState("");
   const [rejectOpen, setRejectOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -62,8 +63,13 @@ export function StampQueueItem({
 
   function handleApprove() {
     setError(null);
+    const amount = Number(amountSpent);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      setError(t("amountRequired"));
+      return;
+    }
     startTransition(async () => {
-      const result = await approveStampAction(merchantId, item.id);
+      const result = await approveStampAction(merchantId, item.id, amount);
       if (result.error) setError(resolveActionError(tErrors, result.error));
       else showActionSuccess(t, "success.approved", { customer: displayName });
     });
@@ -124,8 +130,22 @@ export function StampQueueItem({
           ) : null}
         </div>
 
-        <div className="flex shrink-0 items-center gap-2 self-end sm:self-center">
-          <Button
+        <div className="flex w-full shrink-0 flex-col gap-3 sm:w-auto sm:min-w-[12rem]">
+          <Field label={t("amountLabel")} htmlFor={`amount-${item.id}`}>
+            <Input
+              id={`amount-${item.id}`}
+              type="number"
+              inputMode="decimal"
+              min={0}
+              step="any"
+              placeholder={t("amountPlaceholder")}
+              value={amountSpent}
+              disabled={isPending || countdown <= 0}
+              onChange={(e) => setAmountSpent(e.target.value)}
+            />
+          </Field>
+          <div className="flex items-center justify-end gap-2">
+            <Button
             type="button"
             size="icon"
             variant="outline"
@@ -135,8 +155,8 @@ export function StampQueueItem({
             onClick={handleApprove}
           >
             <Check className="size-5 text-emerald-600 dark:text-emerald-400" aria-hidden />
-          </Button>
-          <Button
+            </Button>
+            <Button
             type="button"
             size="icon"
             variant="outline"
@@ -146,7 +166,8 @@ export function StampQueueItem({
             onClick={() => setRejectOpen(true)}
           >
             <X className="size-5 text-destructive" aria-hidden />
-          </Button>
+            </Button>
+          </div>
         </div>
       </article>
 

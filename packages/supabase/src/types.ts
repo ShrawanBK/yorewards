@@ -222,6 +222,42 @@ export type Database = {
           },
         ];
       };
+      loyalty_card_locations: {
+        Row: {
+          loyalty_card_id: string;
+          location_id: string;
+          stamp_allowed: boolean;
+          redeem_allowed: boolean;
+        };
+        Insert: {
+          loyalty_card_id: string;
+          location_id: string;
+          stamp_allowed?: boolean;
+          redeem_allowed?: boolean;
+        };
+        Update: {
+          loyalty_card_id?: string;
+          location_id?: string;
+          stamp_allowed?: boolean;
+          redeem_allowed?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_card_locations_loyalty_card_id_fkey";
+            columns: ["loyalty_card_id"];
+            isOneToOne: false;
+            referencedRelation: "loyalty_cards";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "loyalty_card_locations_location_id_fkey";
+            columns: ["location_id"];
+            isOneToOne: false;
+            referencedRelation: "merchant_locations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       merchants: {
         Row: {
           approved_at: string | null;
@@ -407,8 +443,11 @@ export type Database = {
       };
       stamp_sessions: {
         Row: {
+          amount_spent: number | null;
+          approved_by: string | null;
           created_at: string;
           customer_card_id: string;
+          device_info: Json | null;
           id: string;
           location_id: string | null;
           merchant_id: string;
@@ -419,8 +458,11 @@ export type Database = {
           status: StampSessionStatus;
         };
         Insert: {
+          amount_spent?: number | null;
+          approved_by?: string | null;
           created_at?: string;
           customer_card_id: string;
+          device_info?: Json | null;
           id?: string;
           location_id?: string | null;
           merchant_id: string;
@@ -431,8 +473,11 @@ export type Database = {
           status?: StampSessionStatus;
         };
         Update: {
+          amount_spent?: number | null;
+          approved_by?: string | null;
           created_at?: string;
           customer_card_id?: string;
+          device_info?: Json | null;
           id?: string;
           location_id?: string | null;
           merchant_id?: string;
@@ -466,6 +511,59 @@ export type Database = {
           },
         ];
       };
+      stamp_transactions: {
+        Row: {
+          amount_spent: number;
+          approved_by: string | null;
+          customer_card_id: string;
+          customer_id: string;
+          device_info: Json | null;
+          id: string;
+          location_id: string | null;
+          loyalty_card_id: string;
+          merchant_id: string;
+          session_token: string;
+          stamp_session_id: string;
+          stamped_at: string;
+        };
+        Insert: {
+          amount_spent: number;
+          approved_by?: string | null;
+          customer_card_id: string;
+          customer_id: string;
+          device_info?: Json | null;
+          id?: string;
+          location_id?: string | null;
+          loyalty_card_id: string;
+          merchant_id: string;
+          session_token: string;
+          stamp_session_id: string;
+          stamped_at?: string;
+        };
+        Update: {
+          amount_spent?: number;
+          approved_by?: string | null;
+          customer_card_id?: string;
+          customer_id?: string;
+          device_info?: Json | null;
+          id?: string;
+          location_id?: string | null;
+          loyalty_card_id?: string;
+          merchant_id?: string;
+          session_token?: string;
+          stamp_session_id?: string;
+          stamped_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "stamp_transactions_stamp_session_id_fkey";
+            columns: ["stamp_session_id"];
+            isOneToOne: true;
+            referencedRelation: "stamp_sessions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -476,7 +574,11 @@ export type Database = {
         Returns: undefined;
       };
       approve_stamp_session: {
-        Args: { p_session_id: string };
+        Args: {
+          p_session_id: string;
+          p_amount_spent: number;
+          p_approved_by?: string | null;
+        };
         Returns: undefined;
       };
       current_customer_id: { Args: never; Returns: string };

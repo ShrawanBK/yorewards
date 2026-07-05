@@ -39,7 +39,7 @@
 
 ## 7-day sprint
 
-Active build plan: [`v2/README.md`](v2/README.md) · **current:** [`v2/Day1_Checklist.md`](v2/Day1_Checklist.md). Items below not in sprint → **Post-sprint** in README.
+Active build plan: [`v2/README.md`](v2/README.md) · **current:** [`v2/Day2_Checklist.md`](v2/Day2_Checklist.md). Items below not in sprint → **Post-sprint** in README.
 
 ---
 

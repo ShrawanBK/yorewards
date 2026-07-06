@@ -6,6 +6,8 @@ import {
 } from "@repo/supabase/queries/stamps";
 import { StampPendingView } from "@/features/stamp";
 
+export const dynamic = "force-dynamic";
+
 type StampPendingPageProps = {
   params: Promise<{ sessionId: string }>;
 };

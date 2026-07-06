@@ -9,6 +9,10 @@ import type { StampSuccessDetails } from "@/features/stamp/types/stamp.types";
 
 type StampSuccessViewProps = StampSuccessDetails;
 
+function formatAmount(amount: number, currency: string) {
+  return `${currency} ${amount.toLocaleString()}`;
+}
+
 function isRewardReady(rewardStatus: StampSuccessDetails["rewardStatus"]): boolean {
   return rewardStatus === "pending_otp" || rewardStatus === "unlocked";
 }
@@ -20,6 +24,8 @@ export function StampSuccessView({
   rewardStatus,
   cardName,
   businessName,
+  amountSpent,
+  currency,
 }: StampSuccessViewProps) {
   const t = useTranslations("stamp.success");
   const shouldReduceMotion = useReducedMotion();
@@ -49,6 +55,11 @@ export function StampSuccessView({
         <p className="text-lg font-semibold text-brand-purple">
           {t("progress", { current: currentStamps, target: stampTarget })}
         </p>
+        {amountSpent != null && amountSpent > 0 ? (
+          <p className="text-sm text-muted-foreground">
+            {t("spent", { amount: formatAmount(amountSpent, currency) })}
+          </p>
+        ) : null}
       </div>
 
       {rewardReady ? (

@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { createServiceRoleClient } from "../service-role";
 import { assertLocationStampAllowed } from "./loyalty-card-locations";
-import type { StampSessionStatus, RewardStatus, Json } from "../types";
+import type { StampSessionStatus, RewardStatus, Json, CurrencyCode } from "../types";
 
 export const STAMP_PENDING_TTL_MS = 5 * 60 * 1000;
 export const STAMP_RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000;
@@ -77,6 +77,8 @@ export type StampSessionSuccessContext = {
   rewardStatus: RewardStatus;
   cardName: string;
   businessName: string;
+  amountSpent: number | null;
+  currency: CurrencyCode;
 };
 
 export async function expireStalePendingSessions(
@@ -192,11 +194,16 @@ export async function getStampSessionForCustomer(
 
 type StampSuccessRow = {
   customer_card_id: string;
+  amount_spent: number | null;
   customer_cards: {
     current_stamps: number;
     reward_status: RewardStatus;
     merchants: { business_name: string } | null;
-    loyalty_cards: { card_name: string; stamp_target: number } | null;
+    loyalty_cards: {
+      card_name: string;
+      stamp_target: number;
+      min_spend_currency: CurrencyCode;
+    } | null;
   } | null;
 };
 
@@ -212,12 +219,13 @@ export async function getStampSuccessContextForCustomer(
       id,
       status,
       customer_card_id,
+      amount_spent,
       customer_cards!inner (
         customer_id,
         current_stamps,
         reward_status,
         merchants ( business_name ),
-        loyalty_cards ( card_name, stamp_target, min_spend, min_spend_currency )
+        loyalty_cards ( card_name, stamp_target, min_spend_currency )
       )
     `,
     )
@@ -240,6 +248,8 @@ export async function getStampSuccessContextForCustomer(
     rewardStatus: card.reward_status,
     cardName: card.loyalty_cards?.card_name ?? "Loyalty card",
     businessName: card.merchants?.business_name ?? "Business",
+    amountSpent: row.amount_spent != null ? Number(row.amount_spent) : null,
+    currency: card.loyalty_cards?.min_spend_currency ?? "NPR",
   };
 }
 

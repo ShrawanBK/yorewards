@@ -1,16 +1,20 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { STAMP_PENDING_TTL_MS } from "@/features/stamp/constants";
-import { getStampSessionStatusAction } from "@/features/stamp/api/stampActions";
+import {
+  STAMP_PENDING_TTL_MS,
+  STAMP_STATUS_POLL_MS,
+} from "@/features/stamp/constants";
+import { fetchStampSessionStatus } from "@/features/stamp/api/stampSessionStatus";
 import { StampPendingSpinner } from "@/features/stamp/components/StampPendingSpinner";
 import { subscribeStampSession } from "@/features/stamp/lib/subscribeStampSession";
 import { useAuthStore } from "@/features/auth";
 import { invalidateCustomerWallet } from "@/features/wallet/api/walletQueries";
 import { isActionFailure } from "@/shared/types/action-result";
+import type { StampSessionStatus } from "@repo/supabase/types";
 
 type StampPendingViewProps = {
   sessionId: string;
@@ -32,12 +36,71 @@ export function StampPendingView({
   const router = useRouter();
   const queryClient = useQueryClient();
   const customerId = useAuthStore((s) => s.customerId);
+  const navigatedRef = useRef(false);
+
+  const handleStatus = useCallback(
+    (status: StampSessionStatus, source: "poll" | "websocket") => {
+      if (navigatedRef.current) return;
+
+      const path = routeForStatus(sessionId, status);
+      if (!path) return;
+
+      if (process.env.NODE_ENV === "development") {
+        console.log(`[stamp-pending] navigating via ${source}:`, status);
+      }
+
+      navigatedRef.current = true;
+      if (status === "approved" && customerId) {
+        void invalidateCustomerWallet(queryClient, customerId);
+      }
+      router.replace(path);
+      router.refresh();
+    },
+    [sessionId, router, queryClient, customerId],
+  );
+
+  const pollStatus = useCallback(async () => {
+    if (navigatedRef.current) return;
+
+    try {
+      const result = await fetchStampSessionStatus(sessionId);
+      if (navigatedRef.current) return;
+
+      if (isActionFailure(result)) {
+        if (result.error.code === "STAMP_SESSION_NOT_FOUND") {
+          navigatedRef.current = true;
+          router.replace("/wallet");
+        }
+        return;
+      }
+
+      if (process.env.NODE_ENV === "development") {
+        console.log("[stamp-pending] poll:", result.status);
+      }
+
+      handleStatus(result.status, "poll");
+    } catch {
+      // Network blip — keep polling.
+    }
+  }, [sessionId, router, handleStatus]);
+
+  const handleRealtimeStatus = useCallback(
+    (status: StampSessionStatus) => {
+      if (process.env.NODE_ENV === "development") {
+        console.log("[stamp-pending] websocket event:", status);
+      }
+      handleStatus(status, "websocket");
+    },
+    [handleStatus],
+  );
 
   useEffect(() => {
     const expiresAt = new Date(createdAt).getTime() + STAMP_PENDING_TTL_MS;
 
     const checkExpiry = () => {
+      if (navigatedRef.current) return;
       if (Date.now() >= expiresAt) {
+        navigatedRef.current = true;
         router.replace(`/stamp/expired/${sessionId}`);
       }
     };
@@ -48,27 +111,28 @@ export function StampPendingView({
   }, [createdAt, router, sessionId]);
 
   useEffect(() => {
-    void getStampSessionStatusAction(sessionId).then((result) => {
-      if (isActionFailure(result)) {
-        router.replace("/wallet");
-        return;
-      }
+    void pollStatus();
+    const intervalId = window.setInterval(
+      () => void pollStatus(),
+      STAMP_STATUS_POLL_MS,
+    );
 
-      const path = routeForStatus(sessionId, result.status);
-      if (path) router.replace(path);
-    });
-  }, [sessionId, router]);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") {
+        void pollStatus();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      window.clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [pollStatus]);
 
   useEffect(() => {
-    return subscribeStampSession(sessionId, (status) => {
-      if (status === "approved" && customerId) {
-        void invalidateCustomerWallet(queryClient, customerId);
-      }
-
-      const path = routeForStatus(sessionId, status);
-      if (path) router.replace(path);
-    });
-  }, [sessionId, router, queryClient, customerId]);
+    return subscribeStampSession(sessionId, handleRealtimeStatus);
+  }, [sessionId, handleRealtimeStatus]);
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 p-6 text-center">

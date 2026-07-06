@@ -10,37 +10,40 @@
 
 | Area | Status |
 | ---- | ------ |
-| QR scan + pending UI | ⏳ |
-| Wallet V2 + card detail | ⏳ |
-| Disputes + reward history | ⏳ |
-| Signup OTP | ⏳ |
+| QR scan + pending UI | ✅ |
+| Manual merchant/branch stamp (no camera) | ✅ |
+| Wallet V2 + card detail | ✅ |
+| Disputes + reward history | ✅ |
+| Signup OTP | ⏳ deferred → backlog |
 
 ---
 
 ## Day 3 “done” when
 
-- [ ] Customer scans QR → pending → sees approval with spend message
-- [ ] Wallet sort/search + reward-ready badges work
-- [ ] Dispute form reaches merchant; reward history page live
-- [ ] Phone OTP at customer signup (not only redemption)
+- [x] Customer scans QR → pending → sees approval with spend message
+- [x] Customer can stamp via **manual merchant + branch picker** when camera scan is unavailable
+- [x] Wallet sort/search + reward-ready badges work
+- [x] Dispute form reaches merchant; reward history page live
+- [ ] Phone OTP at customer signup (not only redemption) — **deferred**
 
 ---
 
 ## A. Customer scan (`apps/customer`)
 
-- [ ] `/scan` — camera QR → `createPendingStampSession`; invalid/expired QR errors
-- [ ] Pending UI: “Waiting for merchant…” + poll/realtime until approved/rejected
-- [ ] Post-approve: stamp count + “You spent NPR X” message
+- [x] `/scan` — camera QR → `createPendingStampSession`; invalid/expired QR errors
+- [x] **Manual stamp fallback** — merchant + branch picker → same `submitStampScanAction` flow
+- [x] Pending UI: “Waiting for merchant…” + poll/realtime until approved/rejected
+- [x] Post-approve: stamp count + “You spent NPR X” message
 
 ## B. Wallet V2
 
-- [ ] Sort (recent / reward-ready), search, reward-ready pin + badge
-- [ ] Card detail: spend summary (total, avg, last visit), visit history list
-- [ ] Reward history page — earned / redeemed / expired / active (V2 PRD §3.6)
+- [x] Sort (recent / reward-ready), search, reward-ready pin + badge
+- [x] Card detail: spend summary (total, avg, last visit), visit history list
+- [x] Reward history page — earned / redeemed / expired / active (V2 PRD §3.6)
 
 ## C. Disputes
 
-- [ ] “Missing stamp?” form on card detail → merchant notification (V2 PRD §3.8)
+- [x] “Missing stamp?” form on card detail → `stamp_disputes` (merchant UI Day 4)
 
 ## D. Backlog
 

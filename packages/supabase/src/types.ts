@@ -562,7 +562,73 @@ export type Database = {
             referencedRelation: "stamp_sessions";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "stamp_transactions_location_id_fkey";
+            columns: ["location_id"];
+            isOneToOne: false;
+            referencedRelation: "merchant_locations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "stamp_transactions_merchant_id_fkey";
+            columns: ["merchant_id"];
+            isOneToOne: false;
+            referencedRelation: "merchants";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "stamp_transactions_loyalty_card_id_fkey";
+            columns: ["loyalty_card_id"];
+            isOneToOne: false;
+            referencedRelation: "loyalty_cards";
+            referencedColumns: ["id"];
+          },
         ];
+      };
+      stamp_disputes: {
+        Row: {
+          amount_claimed: number;
+          created_at: string;
+          currency_code: string;
+          customer_card_id: string;
+          customer_id: string;
+          description: string;
+          id: string;
+          merchant_id: string;
+          merchant_response: string | null;
+          resolved_at: string | null;
+          status: string;
+          visit_date: string;
+        };
+        Insert: {
+          amount_claimed: number;
+          created_at?: string;
+          currency_code?: string;
+          customer_card_id: string;
+          customer_id: string;
+          description: string;
+          id?: string;
+          merchant_id: string;
+          merchant_response?: string | null;
+          resolved_at?: string | null;
+          status?: string;
+          visit_date: string;
+        };
+        Update: {
+          amount_claimed?: number;
+          created_at?: string;
+          currency_code?: string;
+          customer_card_id?: string;
+          customer_id?: string;
+          description?: string;
+          id?: string;
+          merchant_id?: string;
+          merchant_response?: string | null;
+          resolved_at?: string | null;
+          status?: string;
+          visit_date?: string;
+        };
+        Relationships: [];
       };
     };
     Views: {

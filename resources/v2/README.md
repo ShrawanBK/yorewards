@@ -27,7 +27,7 @@
 
 | Stakeholder | Shippable |
 | ----------- | --------- |
-| **Customer** | QR scan → approve with spend; wallet V2; insights; reward history; disputes |
+| **Customer** | QR scan → approve with spend; **manual merchant/branch stamp**; wallet V2; insights; reward history; disputes |
 | **Merchant** | Cashier queue; CRM + CSV; multi-staff; auto-approve Free; branch scoping |
 | **Admin** | Verification queue; disputes; tier override; approval email |
 | **Platform** | Spend per stamp; tier gates; eSewa sandbox; ne/fi locale shells |

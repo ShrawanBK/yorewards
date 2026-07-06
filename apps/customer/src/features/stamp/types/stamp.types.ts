@@ -7,4 +7,6 @@ export type StampSuccessDetails = {
   rewardStatus: RewardStatus;
   cardName: string;
   businessName: string;
+  amountSpent: number | null;
+  currency: string;
 };

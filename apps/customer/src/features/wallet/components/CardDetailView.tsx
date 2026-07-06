@@ -8,6 +8,7 @@ import { Button } from "@repo/ui/button";
 import { Skeleton } from "@repo/ui/skeleton";
 import { CustomerLoyaltyCard } from "@/features/wallet/components/CustomerLoyaltyCard";
 import { useCustomerCard } from "@/features/wallet/hooks/useCustomerCard";
+import { DisputeForm } from "@/features/disputes";
 
 type CardDetailViewProps = {
   cardId: string;
@@ -17,6 +18,10 @@ function isRewardReady(
   status: "collecting" | "pending_otp" | "unlocked",
 ): boolean {
   return status === "pending_otp" || status === "unlocked";
+}
+
+function formatAmount(amount: number, currency: string) {
+  return `${currency} ${amount.toLocaleString()}`;
 }
 
 export function CardDetailView({ cardId }: CardDetailViewProps) {
@@ -73,6 +78,7 @@ export function CardDetailView({ cardId }: CardDetailViewProps) {
   const rewardReady = isRewardReady(card.rewardStatus);
   const showRedemptionCode =
     card.rewardStatus === "unlocked" && card.pendingRedemptionCode;
+  const { spendSummary, visits } = card;
 
   return (
     <div className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-5 p-6 pb-8">
@@ -95,6 +101,74 @@ export function CardDetailView({ cardId }: CardDetailViewProps) {
         <p className="text-center text-sm text-muted-foreground">
           {card.description}
         </p>
+      ) : null}
+
+      {spendSummary.visitCount > 0 ? (
+        <section
+          className="space-y-3 rounded-xl border border-border/60 p-4"
+          aria-labelledby="spend-summary-heading"
+        >
+          <h2 id="spend-summary-heading" className="text-base font-semibold">
+            {t("insights.title")}
+          </h2>
+          <dl className="grid grid-cols-2 gap-3 text-sm">
+            <div>
+              <dt className="text-muted-foreground">{t("insights.totalSpent")}</dt>
+              <dd className="font-medium">
+                {formatAmount(spendSummary.totalSpent, spendSummary.currency)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">{t("insights.avgSpent")}</dt>
+              <dd className="font-medium">
+                {formatAmount(spendSummary.averageSpent, spendSummary.currency)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">{t("insights.visits")}</dt>
+              <dd className="font-medium">{spendSummary.visitCount}</dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">{t("insights.lastVisit")}</dt>
+              <dd className="font-medium">
+                {spendSummary.lastVisitAt
+                  ? new Date(spendSummary.lastVisitAt).toLocaleDateString()
+                  : t("insights.noVisits")}
+              </dd>
+            </div>
+          </dl>
+        </section>
+      ) : null}
+
+      {visits.length > 0 ? (
+        <section aria-labelledby="visit-history-heading">
+          <h2 id="visit-history-heading" className="mb-3 text-base font-semibold">
+            {t("visits.title")}
+          </h2>
+          <ul className="space-y-2">
+            {visits.map((visit) => (
+              <li
+                key={visit.id}
+                className="flex items-center justify-between gap-3 rounded-lg border border-border/60 px-3 py-2 text-sm"
+              >
+                <div>
+                  <p className="font-medium">
+                    {formatAmount(visit.amountSpent, visit.currency)}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {visit.branchName ?? t("visits.unknownBranch")}
+                  </p>
+                </div>
+                <time
+                  className="shrink-0 text-xs text-muted-foreground"
+                  dateTime={visit.stampedAt}
+                >
+                  {new Date(visit.stampedAt).toLocaleDateString()}
+                </time>
+              </li>
+            ))}
+          </ul>
+        </section>
       ) : null}
 
       {showRedemptionCode ? (
@@ -152,6 +226,8 @@ export function CardDetailView({ cardId }: CardDetailViewProps) {
           </Button>
         ) : null}
       </div>
+
+      <DisputeForm customerCardId={card.id} />
     </div>
   );
 }

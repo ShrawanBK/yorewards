@@ -25,6 +25,7 @@
 
 ## Other v2 items (from PRD §12–13)
 
+- **Manual stamp (no camera)** — merchant + branch picker on `/scan` when QR camera fails (iOS PWA, permission denied, broken lens). Same pending session as QR; see Day 3 checklist.
 - Multi-staff accounts (`merchant_staff`) + role permissions
 - Phone OTP at customer signup (not just redemption)
 - Nepali + Finnish translations (next-intl keys exist)

@@ -21,8 +21,8 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: [
     "localhost:3000",
     "127.0.0.1:3000",
-    // "192.168.68.104", // Local IP?
-    // "192.168.68.104:3000", // Local IP
+    "192.168.68.104", // Local IP?
+    "192.168.68.104:3000", // Local IP
   ],
 };
 

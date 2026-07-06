@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@repo/ui/button";
 import { submitStampScanAction } from "@/features/scan/api/scanActions";
 import { QrScanner } from "@/features/scan/components/QrScanner";
+import { ManualStampPicker } from "@/features/scan/components/ManualStampPicker";
 import {
   parseLoyaltyQrParams,
   parseLoyaltyQrText,
@@ -25,6 +26,7 @@ export function ScanView({ searchParams }: ScanViewProps) {
   const [error, setError] = useState<string | null>(null);
   const [errorCode, setErrorCode] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [showManual, setShowManual] = useState(false);
   const [scannerKey, setScannerKey] = useState(0);
   const processedDeepLink = useRef(false);
 
@@ -106,7 +108,21 @@ export function ScanView({ searchParams }: ScanViewProps) {
         <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
       </div>
 
-      <QrScanner key={scannerKey} onScan={handleScan} paused={busy} />
+      <QrScanner key={scannerKey} onScan={handleScan} paused={busy || showManual} />
+
+      <Button
+        type="button"
+        variant="outline"
+        className="min-h-11 w-full"
+        onClick={() => setShowManual((v) => !v)}
+        aria-expanded={showManual}
+      >
+        {showManual ? t("hideManual") : t("manualCta")}
+      </Button>
+
+      {showManual ? (
+        <ManualStampPicker disabled={busy} onSelect={handlePayload} />
+      ) : null}
 
       {busy ? (
         <p className="text-center text-sm text-muted-foreground">

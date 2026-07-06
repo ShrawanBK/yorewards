@@ -15,6 +15,17 @@ function downloadCanvasPng(canvas: HTMLCanvasElement, filename: string) {
   link.click();
 }
 
+function printCanvas(canvas: HTMLCanvasElement, title: string) {
+  const printWindow = window.open("", "_blank", "noopener,noreferrer");
+  if (!printWindow) return;
+  printWindow.document.write(
+    `<html><head><title>${title}</title></head><body style="margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;"><img src="${canvas.toDataURL("image/png")}" alt="${title}" /></body></html>`,
+  );
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
+
 export function LoyaltyCardBranchQrDownloads({
   merchantId,
   loyaltyCardId,
@@ -70,22 +81,37 @@ export function LoyaltyCardBranchQrDownloads({
                   canvasRefs.current[location.id] = node;
                 }}
               />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const canvas = canvasRefs.current[location.id];
-                  if (canvas) {
-                    downloadCanvasPng(
-                      canvas,
-                      `yorewards-loyalty-card-qr-${location.name.replace(/\s+/g, "-").toLowerCase()}.png`,
-                    );
-                  }
-                }}
-              >
-                {t("download")}
-              </Button>
+              <div className="flex flex-wrap justify-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const canvas = canvasRefs.current[location.id];
+                    if (canvas) {
+                      downloadCanvasPng(
+                        canvas,
+                        `yorewards-loyalty-card-qr-${location.name.replace(/\s+/g, "-").toLowerCase()}.png`,
+                      );
+                    }
+                  }}
+                >
+                  {t("download")}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const canvas = canvasRefs.current[location.id];
+                    if (canvas) {
+                      printCanvas(canvas, location.name);
+                    }
+                  }}
+                >
+                  {t("print")}
+                </Button>
+              </div>
             </div>
           );
         })}

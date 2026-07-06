@@ -20,6 +20,8 @@ export type PendingStampQueueItem = {
   branchName: string | null;
   currentStamps: number;
   stampTarget: number;
+  minSpend: number;
+  minSpendCurrency: string;
 };
 
 type StampSessionRow = {
@@ -32,7 +34,12 @@ type StampSessionRow = {
   customer_cards: {
     current_stamps: number;
     customers: { name: string | null } | null;
-    loyalty_cards: { card_name: string; stamp_target: number } | null;
+    loyalty_cards: {
+      card_name: string;
+      stamp_target: number;
+      min_spend: number;
+      min_spend_currency: string;
+    } | null;
   } | null;
   merchant_locations: { name: string } | null;
 };
@@ -50,6 +57,8 @@ function mapPendingRow(row: StampSessionRow): PendingStampQueueItem {
     branchName: row.merchant_locations?.name ?? null,
     currentStamps: card?.current_stamps ?? 0,
     stampTarget: card?.loyalty_cards?.stamp_target ?? 0,
+    minSpend: card?.loyalty_cards?.min_spend ?? 0,
+    minSpendCurrency: card?.loyalty_cards?.min_spend_currency ?? "NPR",
   };
 }
 
@@ -110,7 +119,7 @@ export async function getPendingStampSessions(
       customer_cards (
         current_stamps,
         customers ( name ),
-        loyalty_cards ( card_name, stamp_target )
+        loyalty_cards ( card_name, stamp_target, min_spend, min_spend_currency )
       ),
       merchant_locations ( name )
     `,
@@ -208,7 +217,7 @@ export async function getStampSuccessContextForCustomer(
         current_stamps,
         reward_status,
         merchants ( business_name ),
-        loyalty_cards ( card_name, stamp_target )
+        loyalty_cards ( card_name, stamp_target, min_spend, min_spend_currency )
       )
     `,
     )

@@ -11,11 +11,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
 import { cn } from "@repo/ui/lib/utils";
 import type { MerchantRow } from "@repo/supabase/queries/merchants";
 import type { LoyaltyCardRow } from "@repo/supabase/queries/loyalty-cards";
+import type { MerchantLocationRow } from "@repo/supabase/queries/locations";
+import type { LoyaltyCardLocationRow } from "@repo/supabase/queries/loyalty-card-locations";
 import type { CurrencyCode, RewardType } from "@repo/supabase/types";
 import {
   saveLoyaltyCardConfigAction,
   uploadLoyaltyCardLogoAction,
 } from "@/features/loyalty-card/api/loyaltyCardActions";
+import {
+  LoyaltyCardBranchRules,
+  serializeBranchRules,
+  type BranchRuleState,
+} from "@/features/loyalty-card/components/LoyaltyCardBranchRules";
 import { LoyaltyCardPreviewV2 } from "@/features/loyalty-card/components/LoyaltyCardPreviewV2";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
 import { showActionSuccess } from "@/shared/utils/action-feedback";
@@ -39,6 +46,8 @@ const REWARD_TYPES: RewardType[] = [
 type LoyaltyCardConfigFormProps = {
   merchant: MerchantRow;
   loyaltyCard: LoyaltyCardRow | null;
+  locations: MerchantLocationRow[];
+  locationRules: LoyaltyCardLocationRow[];
   readOnly: boolean;
   showPendingSetupHint?: boolean;
 };
@@ -46,6 +55,8 @@ type LoyaltyCardConfigFormProps = {
 export function LoyaltyCardConfigForm({
   merchant,
   loyaltyCard,
+  locations,
+  locationRules,
   readOnly,
   showPendingSetupHint = false,
 }: LoyaltyCardConfigFormProps) {
@@ -83,6 +94,7 @@ export function LoyaltyCardConfigForm({
   const [rewardDescription, setRewardDescription] = useState(
     loyaltyCard?.reward_description ?? "",
   );
+  const [branchRules, setBranchRules] = useState<BranchRuleState[]>([]);
 
   const previewValues = useMemo(
     () => ({
@@ -132,6 +144,22 @@ export function LoyaltyCardConfigForm({
     formData.set("reward_type", rewardType);
     formData.set("reward_value", rewardValue);
     formData.set("reward_description", rewardDescription);
+    if (branchRules.length > 0) {
+      formData.set("location_rules", serializeBranchRules(branchRules));
+    } else if (locations.filter((l) => l.is_active).length > 1) {
+      formData.set(
+        "location_rules",
+        serializeBranchRules(
+          locations
+            .filter((l) => l.is_active)
+            .map((location) => ({
+              locationId: location.id,
+              stampAllowed: true,
+              redeemAllowed: true,
+            })),
+        ),
+      );
+    }
 
     startTransition(async () => {
       const result = await saveLoyaltyCardConfigAction(merchant.id, formData);
@@ -294,6 +322,13 @@ export function LoyaltyCardConfigForm({
             </Field>
           </CardContent>
         </Card>
+
+        <LoyaltyCardBranchRules
+          locations={locations}
+          existingRules={locationRules}
+          readOnly={readOnly}
+          onChange={setBranchRules}
+        />
 
         <Card className="merchant-glass-card">
           <CardHeader>

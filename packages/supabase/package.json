@@ -15,6 +15,7 @@
     "./queries/customer-wallet": "./src/queries/customer-wallet.ts",
     "./queries/locations": "./src/queries/locations.ts",
     "./queries/loyalty-cards": "./src/queries/loyalty-cards.ts",
+    "./queries/loyalty-card-locations": "./src/queries/loyalty-card-locations.ts",
     "./queries/stamps": "./src/queries/stamps.ts",
     "./queries/redemptions": "./src/queries/redemptions.ts",
     "./queries/reward-otp": "./src/queries/reward-otp.ts",

@@ -9,7 +9,7 @@
 
 ## Current build day
 
-**→ [`Day2_Checklist.md`](Day2_Checklist.md)** (merchant queue polish)
+**→ [`Day3_Checklist.md`](Day3_Checklist.md)** (customer scan + wallet V2)
 
 | Day | Focus | Checklist |
 | --- | ----- | --------- |

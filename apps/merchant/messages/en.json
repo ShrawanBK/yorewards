@@ -348,9 +348,16 @@
     },
     "qr": {
       "title": "Branch QR codes",
-      "subtitle": "One loyalty card, many counters. Print a QR for each active branch.",
+      "subtitle": "Per-branch counter QR (one card, many counters). Download or print for each stamp-enabled branch.",
       "download": "Download PNG",
-      "noBranches": "Add at least one active branch to generate QR codes."
+      "print": "Print",
+      "noBranches": "Add at least one stamp-enabled branch to generate QR codes."
+    },
+    "branches": {
+      "title": "Branch availability",
+      "subtitle": "Choose which branches can stamp and redeem on this card. Leave all enabled to allow every branch.",
+      "stampAllowed": "Allow stamps",
+      "redeemAllowed": "Allow redemption"
     },
     "actions": {
       "save": "Save card settings"
@@ -371,15 +378,26 @@
     "unknownCustomer": "Customer",
     "progress": "{current} of {target} stamps collected",
     "expiresIn": "Expires in {time}",
-    "amountLabel": "Amount spent (NPR)",
+    "amountLabel": "Amount spent ({currency})",
     "amountPlaceholder": "e.g. 450",
     "amountRequired": "Enter the amount the customer spent before approving.",
+    "minSpendWarning": "Below minimum spend ({amount}) — you can still approve if the visit qualifies.",
+    "approve": "Approve",
+    "approving": "Approving…",
+    "reject": "Reject",
+    "quickRedeem": "Redeem code",
     "approveAria": "Approve stamp for {name}",
     "rejectAria": "Reject stamp for {name}",
     "rejectTitle": "Reject stamp request",
     "rejectDescription": "Optionally tell the customer why this request was rejected.",
     "rejectReasonLabel": "Reason (optional)",
+    "rejectReasonOptional": "No reason",
     "rejectReasonPlaceholder": "e.g. Minimum spend not met",
+    "rejectReasons": {
+      "min_spend_not_met": "Minimum spend not met",
+      "item_not_eligible": "Item not eligible",
+      "other": "Other"
+    },
     "cancel": "Cancel",
     "confirmReject": "Reject",
     "emptyTitle": "No pending requests",
@@ -393,6 +411,7 @@
     "demoLoyaltyAlertCta": "Go to loyalty card",
     "success": {
       "approved": "Stamp added for {customer} — one step closer to their reward!",
+      "approvedWithAmount": "Stamp added for {customer} ({amount} recorded).",
       "rejected": "{customer}'s request declined. They can scan again when ready.",
       "demoSeeded": "Demo queue is ready — try approving a stamp!"
     }
@@ -541,6 +560,8 @@
       "LOYALTY_CARD_REWARD_VALUE_REQUIRED": "Tell us what they're earning (e.g. free coffee or 10% off).",
       "LOYALTY_CARD_REWARD_DESCRIPTION_REQUIRED": "Add reward text — this is what customers see on their card.",
       "LOYALTY_CARD_SAVE_FAILED": "We couldn't save your card — check the fields and try again.",
+      "LOYALTY_CARD_BRANCH_RULES_INVALID": "Branch settings are invalid — refresh and try again.",
+      "LOYALTY_CARD_BRANCH_STAMP_REQUIRED": "At least one branch must allow stamps.",
       "LOGO_FILE_REQUIRED": "Choose a logo image to upload.",
       "LOGO_FILE_TOO_LARGE": "That image is too large — keep it under 2MB.",
       "LOGO_FILE_TYPE_INVALID": "Use a JPG, PNG, or WebP image for your logo.",

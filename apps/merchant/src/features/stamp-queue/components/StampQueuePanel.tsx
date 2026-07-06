@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { AlertTriangle, Inbox, MapPin, Sparkles } from "lucide-react";
+import { AlertTriangle, Gift, Inbox, MapPin, Sparkles } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import type { PendingStampQueueItem } from "@repo/supabase/queries/stamps";
 import { StampQueueItem } from "@/features/stamp-queue/components/StampQueueItem";
@@ -115,10 +115,13 @@ export function StampQueuePanel({
   }
 
   return (
-    <section className="space-y-4" aria-labelledby="stamp-queue-heading">
+    <section
+      className="w-full space-y-4"
+      aria-labelledby="stamp-queue-heading"
+    >
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 id="stamp-queue-heading" className="text-lg font-semibold">
+          <h2 id="stamp-queue-heading" className="text-xl font-semibold">
             {t("title")}
           </h2>
           <p className="merchant-body-muted text-sm">{t("subtitle")}</p>
@@ -129,18 +132,26 @@ export function StampQueuePanel({
             </p>
           ) : null}
         </div>
-        {isDevEnvironment ? (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={isSeeding || !loyaltyCardConfigured}
-            onClick={handleSeedDemo}
-          >
-            <Sparkles className="size-4" aria-hidden />
-            {t("loadDemo")}
+        <div className="flex flex-wrap items-center gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/merchant/redeem">
+              <Gift className="size-4" aria-hidden />
+              {t("quickRedeem")}
+            </Link>
           </Button>
-        ) : null}
+          {isDevEnvironment ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={isSeeding || !loyaltyCardConfigured}
+              onClick={handleSeedDemo}
+            >
+              <Sparkles className="size-4" aria-hidden />
+              {t("loadDemo")}
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       {loyaltyAlertCard}
@@ -167,7 +178,7 @@ export function StampQueuePanel({
           ) : null}
         </div>
       ) : (
-        <ul className="space-y-3" aria-live="polite">
+        <ul className="flex w-full flex-col gap-4" aria-live="polite">
           {items.map((item) => (
             <li key={item.id}>
               <StampQueueItem item={item} merchantId={merchantId} />

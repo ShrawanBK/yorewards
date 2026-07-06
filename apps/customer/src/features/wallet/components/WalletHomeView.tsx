@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import { Gift, History, ScanLine } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { BarChart3, Gift, History, ScanLine } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
@@ -13,9 +12,7 @@ import { useCustomerWallet } from "@/features/wallet/hooks/useCustomerWallet";
 import { WalletCardTile } from "@/features/wallet/components/WalletCardTile";
 import type { CustomerWalletCard } from "@/features/wallet/types/wallet.types";
 
-function isRewardReady(
-  status: CustomerWalletCard["rewardStatus"],
-): boolean {
+function isRewardReady(status: CustomerWalletCard["rewardStatus"]): boolean {
   return status === "pending_otp" || status === "unlocked";
 }
 
@@ -25,9 +22,31 @@ export function WalletHomeView() {
   const t = useTranslations("wallet");
   const customerId = useAuthStore((s) => s.customerId);
   const isAuthLoading = useAuthStore((s) => s.isLoading);
-  const { data: cards, isLoading, isError, refetch } = useCustomerWallet(customerId);
+  const {
+    data: cards,
+    isError,
+    refetch,
+  } = useCustomerWallet(customerId);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortMode>("recent");
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    if (!customerId) {
+      setReady(false);
+      return;
+    }
+
+    let cancelled = false;
+    setReady(false);
+    void refetch().finally(() => {
+      if (!cancelled) setReady(true);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [customerId, refetch]);
 
   const filtered = useMemo(() => {
     if (!cards) return [];
@@ -52,9 +71,12 @@ export function WalletHomeView() {
     });
   }, [cards, query, sort]);
 
-  const rewardReadyCards = cards?.filter((c) => isRewardReady(c.rewardStatus)) ?? [];
+  const rewardReadyCards =
+    cards?.filter((c) => isRewardReady(c.rewardStatus)) ?? [];
 
-  if (isAuthLoading || isLoading) {
+  const waitingForData = isAuthLoading || !customerId || !ready;
+
+  if (waitingForData) {
     return (
       <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-4 p-6">
         <Skeleton className="h-8 w-32" />
@@ -74,7 +96,12 @@ export function WalletHomeView() {
         <p className="text-sm text-destructive" role="alert">
           {t("loadError")}
         </p>
-        <Button type="button" variant="outline" className="min-h-11 w-fit" onClick={() => void refetch()}>
+        <Button
+          type="button"
+          variant="outline"
+          className="min-h-11 w-fit"
+          onClick={() => void refetch()}
+        >
           {t("retry")}
         </Button>
       </div>
@@ -91,7 +118,10 @@ export function WalletHomeView() {
           <h1 className="text-2xl font-semibold">{t("empty.title")}</h1>
           <p className="text-muted-foreground">{t("empty.description")}</p>
         </div>
-        <Button asChild className="min-h-11 bg-brand-purple hover:bg-brand-purple/90">
+        <Button
+          asChild
+          className="min-h-11 bg-brand-purple hover:bg-brand-purple/90"
+        >
           <Link href="/scan">{t("empty.cta")}</Link>
         </Button>
       </div>
@@ -102,12 +132,20 @@ export function WalletHomeView() {
     <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-5 p-6 pb-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">{t("title")}</h1>
-        <Button asChild variant="outline" size="sm" className="min-h-11">
-          <Link href="/wallet/rewards">
-            <History className="mr-2 size-4" aria-hidden />
-            {t("rewardHistory")}
-          </Link>
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="outline" size="sm" className="min-h-11">
+            <Link href="/insights">
+              <BarChart3 className="mr-2 size-4" aria-hidden />
+              {t("insights")}
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="min-h-11">
+            <Link href="/wallet/rewards">
+              <History className="mr-2 size-4" aria-hidden />
+              {t("rewardHistory")}
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">
@@ -130,11 +168,19 @@ export function WalletHomeView() {
       </div>
 
       {rewardReadyCards.length > 0 ? (
-        <div className="flex items-start gap-3 rounded-xl border border-brand-amber/40 bg-brand-amber/10 p-4" role="status">
-          <Gift className="mt-0.5 size-5 shrink-0 text-brand-amber" aria-hidden />
+        <div
+          className="flex items-start gap-3 rounded-xl border border-brand-amber/40 bg-brand-amber/10 p-4"
+          role="status"
+        >
+          <Gift
+            className="mt-0.5 size-5 shrink-0 text-brand-amber"
+            aria-hidden
+          />
           <div className="space-y-1">
             <p className="font-medium">{t("banner.title")}</p>
-            <p className="text-sm text-muted-foreground">{t("banner.description")}</p>
+            <p className="text-sm text-muted-foreground">
+              {t("banner.description")}
+            </p>
           </div>
         </div>
       ) : null}
@@ -143,15 +189,8 @@ export function WalletHomeView() {
         <p className="text-sm text-muted-foreground">{t("noResults")}</p>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((card, index) => (
-            <motion.div
-              key={card.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05, duration: 0.2 }}
-            >
-              <WalletCardTile card={card} />
-            </motion.div>
+          {filtered.map((card) => (
+            <WalletCardTile key={card.id} card={card} />
           ))}
         </div>
       )}

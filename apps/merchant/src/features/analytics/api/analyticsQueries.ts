@@ -11,14 +11,18 @@ export type { MerchantAnalyticsPayload };
 
 export function useMerchantAnalytics(
   merchantId: string,
+  locationId: string | null,
   initialData?: MerchantAnalyticsPayload,
 ) {
   const tErrors = useTranslations("errors.actions");
 
   return useQuery({
-    queryKey: ["merchant-analytics", merchantId],
+    queryKey: ["merchant-analytics", merchantId, locationId],
     queryFn: async () => {
-      const result = await getMerchantAnalyticsAction(merchantId);
+      const result = await getMerchantAnalyticsAction(
+        merchantId,
+        locationId === "all" ? null : locationId,
+      );
       if (result.error) {
         throw new Error(resolveActionError(tErrors, result.error));
       }

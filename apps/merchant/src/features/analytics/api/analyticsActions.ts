@@ -6,6 +6,7 @@ import {
   getMerchantActivityFeed,
   getMerchantAnalyticsSummary,
 } from "@repo/supabase/queries/analytics";
+import { getMerchantSpendSummary } from "@repo/supabase/queries/merchant-spend-analytics";
 import { fail, logActionFailure } from "@repo/utils/action-error";
 import type { ActionFailure, ActionResult } from "@/shared/types/action-result";
 import type { MerchantAnalyticsPayload } from "@/features/analytics/types/analytics.types";
@@ -23,6 +24,7 @@ async function assertOwnsMerchant(
 
 export async function getMerchantAnalyticsAction(
   merchantId: string,
+  locationId?: string | null,
 ): Promise<ActionResult & { data?: MerchantAnalyticsPayload }> {
   const supabase = await createClient();
   const {
@@ -34,11 +36,12 @@ export async function getMerchantAnalyticsAction(
   if (denied) return denied;
 
   try {
-    const [summary, activity] = await Promise.all([
+    const [summary, activity, spend] = await Promise.all([
       getMerchantAnalyticsSummary(merchantId),
       getMerchantActivityFeed(merchantId),
+      getMerchantSpendSummary(merchantId, locationId),
     ]);
-    return { data: { summary, activity } };
+    return { data: { summary, activity, spend } };
   } catch (err) {
     logActionFailure("getMerchantAnalytics", err);
     return fail("ANALYTICS_LOAD_FAILED");

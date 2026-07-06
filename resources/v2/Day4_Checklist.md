@@ -10,40 +10,41 @@
 
 | Area | Status |
 | ---- | ------ |
-| Customer `/insights` | ⏳ |
-| Merchant CRM + CSV | ⏳ |
-| Spend analytics | ⏳ |
+| Customer `/insights` | ✅ |
+| Merchant CRM + CSV | ✅ |
+| Spend analytics | ✅ |
 
 ---
 
 ## Day 4 “done” when
 
-- [ ] Customer sees monthly spend total + per-merchant chart
-- [ ] Merchant customer list with detail drawer + segments
-- [ ] CSV export works (Starter+ gate)
-- [ ] Branch filter on merchant analytics
+- [x] Customer sees monthly spend total + per-merchant chart
+- [x] Merchant customer list with detail drawer + segments
+- [x] CSV export works (Starter+ gate)
+- [x] Branch filter on merchant analytics
 
 ---
 
 ## A. Customer insights
 
-- [ ] `/insights` — monthly total, per-merchant bar chart (Recharts), vs last month delta
-- [ ] Spending history feed — filter by merchant, date, amount
+- [x] `/insights` — monthly total, per-merchant bar chart (Recharts), vs last month delta
+- [x] Spending history feed — filter by merchant, date, amount
 
 ## B. Merchant CRM (`/merchant/customers`)
 
-- [ ] List: search, sort (spend / visits / last visit)
-- [ ] **Detail drawer:** profile, segment (VIP/Regular/At-Risk/New/Lapsed), stamp + reward history, notes
-- [ ] **CSV export** (Starter+ gate)
-- [ ] **Per-branch analytics** — location filter on charts
+- [x] List: search, sort (spend / visits / last visit)
+- [x] **Detail drawer:** profile, segment (VIP/Regular/At-Risk/New/Lapsed), stamp + reward history, notes
+- [x] **CSV export** (Starter+ gate)
+- [x] **Per-branch analytics** — location filter on charts
 
 ## C. Merchant analytics
 
-- [ ] Spend dashboard: loyalty revenue, avg spend/visit, week trend sparkline
+- [x] Spend dashboard: loyalty revenue, avg spend/visit, week trend sparkline
 
 ## D. QA
 
 - [ ] CSV downloads; insight numbers match `stamp_transactions`
+- [ ] Run `pnpm exec supabase db push` for `20260707120000_v2_day4_crm_insights.sql`
 
 ---
 

@@ -9,7 +9,7 @@ export function useCustomerWallet(customerId: string | null) {
   return useQuery({
     queryKey: walletQueryKeys.customer(customerId ?? ""),
     enabled: Boolean(customerId),
-    staleTime: 30_000,
+    staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: async () => {
       const result = await fetchCustomerWalletAction();
       if (isActionFailure(result)) {

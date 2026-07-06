@@ -16,6 +16,7 @@ export type Json =
 /** Strict unions — mirror supabase/migrations check constraints */
 export type CountryCode = "NP" | "FI";
 export type CurrencyCode = "NPR" | "EUR";
+export type SubscriptionTier = "free" | "starter" | "growth" | "enterprise";
 export type CustomerStatus = "active" | "suspended";
 export type MerchantStatus = "pending" | "active" | "suspended" | "rejected";
 export type RewardStatus = "collecting" | "pending_otp" | "unlocked";
@@ -274,6 +275,7 @@ export type Database = {
           rejection_reason: string | null;
           status: MerchantStatus;
           status_reason: string | null;
+          subscription_tier: SubscriptionTier;
           user_id: string;
         };
         Insert: {
@@ -291,6 +293,7 @@ export type Database = {
           rejection_reason?: string | null;
           status?: MerchantStatus;
           status_reason?: string | null;
+          subscription_tier?: SubscriptionTier;
           user_id: string;
         };
         Update: {
@@ -308,6 +311,7 @@ export type Database = {
           rejection_reason?: string | null;
           status?: MerchantStatus;
           status_reason?: string | null;
+          subscription_tier?: SubscriptionTier;
           user_id?: string;
         };
         Relationships: [];
@@ -627,6 +631,30 @@ export type Database = {
           resolved_at?: string | null;
           status?: string;
           visit_date?: string;
+        };
+        Relationships: [];
+      };
+      merchant_customer_notes: {
+        Row: {
+          customer_id: string;
+          id: string;
+          merchant_id: string;
+          note: string;
+          updated_at: string;
+        };
+        Insert: {
+          customer_id: string;
+          id?: string;
+          merchant_id: string;
+          note?: string;
+          updated_at?: string;
+        };
+        Update: {
+          customer_id?: string;
+          id?: string;
+          merchant_id?: string;
+          note?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };

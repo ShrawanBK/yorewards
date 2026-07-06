@@ -9,7 +9,7 @@
 
 ## Current build day
 
-**→ [`Day3_Checklist.md`](Day3_Checklist.md)** (customer scan + wallet V2)
+**→ [`Day5_Checklist.md`](Day5_Checklist.md)** (multi-staff + auth flows)
 
 | Day | Focus | Checklist |
 | --- | ----- | --------- |

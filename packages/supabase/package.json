@@ -28,7 +28,10 @@
     "./queries/admin-customers": "./src/queries/admin-customers.ts",
     "./queries/admin-stamps": "./src/queries/admin-stamps.ts",
     "./queries/admin-audit": "./src/queries/admin-audit.ts",
-    "./queries/merchant-customers": "./src/queries/merchant-customers.ts"
+    "./queries/merchant-customers": "./src/queries/merchant-customers.ts",
+    "./queries/customer-insights": "./src/queries/customer-insights.ts",
+    "./queries/merchant-spend-analytics": "./src/queries/merchant-spend-analytics.ts",
+    "./utils/local-date": "./src/utils/local-date.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

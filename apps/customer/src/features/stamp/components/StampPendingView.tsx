@@ -12,7 +12,7 @@ import { fetchStampSessionStatus } from "@/features/stamp/api/stampSessionStatus
 import { StampPendingSpinner } from "@/features/stamp/components/StampPendingSpinner";
 import { subscribeStampSession } from "@/features/stamp/lib/subscribeStampSession";
 import { useAuthStore } from "@/features/auth";
-import { invalidateCustomerWallet } from "@/features/wallet/api/walletQueries";
+import { refreshCustomerWallet } from "@/features/wallet/api/walletQueries";
 import { isActionFailure } from "@/shared/types/action-result";
 import type { StampSessionStatus } from "@repo/supabase/types";
 
@@ -39,7 +39,7 @@ export function StampPendingView({
   const navigatedRef = useRef(false);
 
   const handleStatus = useCallback(
-    (status: StampSessionStatus, source: "poll" | "websocket") => {
+    async (status: StampSessionStatus, source: "poll" | "websocket") => {
       if (navigatedRef.current) return;
 
       const path = routeForStatus(sessionId, status);
@@ -51,7 +51,7 @@ export function StampPendingView({
 
       navigatedRef.current = true;
       if (status === "approved" && customerId) {
-        void invalidateCustomerWallet(queryClient, customerId);
+        await refreshCustomerWallet(queryClient, customerId);
       }
       router.replace(path);
       router.refresh();
@@ -78,7 +78,7 @@ export function StampPendingView({
         console.log("[stamp-pending] poll:", result.status);
       }
 
-      handleStatus(result.status, "poll");
+      void handleStatus(result.status, "poll");
     } catch {
       // Network blip — keep polling.
     }
@@ -89,7 +89,7 @@ export function StampPendingView({
       if (process.env.NODE_ENV === "development") {
         console.log("[stamp-pending] websocket event:", status);
       }
-      handleStatus(status, "websocket");
+      void handleStatus(status, "websocket");
     },
     [handleStatus],
   );

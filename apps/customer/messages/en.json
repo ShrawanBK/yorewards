@@ -123,6 +123,7 @@
     "sortRecent": "Most recent",
     "sortRewardReady": "Reward ready first",
     "rewardHistory": "Reward history",
+    "insights": "Spending insights",
     "noResults": "No cards match your search.",
     "empty": {
       "title": "No cards yet",
@@ -232,6 +233,30 @@
       "hint": "The merchant will review your request. You'll hear back soon."
     }
   },
+  "insights": {
+    "title": "Spending insights",
+    "subtitle": "See how much you've spent at YoRewards merchants.",
+    "back": "Back to wallet",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "monthlyTotal": "This month",
+    "noSpend": "No spending recorded this month yet.",
+    "vsLastMonth": "{amount} {direction} than last month",
+    "more": "more",
+    "less": "less",
+    "stampsThisMonth": "{count, plural, one {# stamp} other {# stamps}} earned this month",
+    "byMerchant": "By merchant",
+    "chartAria": "Bar chart of spending by merchant this month",
+    "dailyTrend": "Daily spending",
+    "dailyTrendAria": "Line chart of daily spending for the selected month",
+    "historyTitle": "Spending history",
+    "filterMerchant": "Filter by merchant",
+    "allMerchants": "All merchants",
+    "minAmountPlaceholder": "Min. amount",
+    "minAmountAria": "Minimum spend amount filter",
+    "historyEmpty": "No visits match your filters.",
+    "unknownBranch": "Branch"
+  },
   "rewardHistory": {
     "title": "Reward history",
     "back": "Back to wallet",
@@ -310,7 +335,8 @@
       "DISPUTE_AMOUNT_INVALID": "Enter a valid amount spent on your visit.",
       "DISPUTE_VISIT_DATE_REQUIRED": "Select the date of your visit.",
       "DISPUTE_LIMIT_EXCEEDED": "You've reached the dispute limit for this business this month.",
-      "DISPUTE_SUBMIT_FAILED": "We couldn't submit your dispute — please try again."
+      "DISPUTE_SUBMIT_FAILED": "We couldn't submit your dispute — please try again.",
+      "INSIGHTS_LOAD_FAILED": "We couldn't load your spending insights — please try again."
     }
   }
 }

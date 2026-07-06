@@ -25,7 +25,14 @@ async function CustomersContent({
     ),
   ]);
 
-  return <MerchantCustomersView customers={customers} locations={locations} />;
+  return (
+    <MerchantCustomersView
+      merchantId={merchant.id}
+      subscriptionTier={merchant.subscription_tier}
+      customers={customers}
+      locations={locations}
+    />
+  );
 }
 
 export default async function MerchantCustomersPage({ searchParams }: PageProps) {

@@ -436,12 +436,54 @@
     },
     "table": {
       "name": "Customer",
+      "segment": "Segment",
+      "spend": "Total spend",
+      "visits": "Visits",
       "progress": "Stamps",
       "cycle": "Cycle",
       "status": "Status",
       "lastBranch": "Last branch",
       "lastVisit": "Last visit",
       "totalStamps": "All-time stamps"
+    },
+    "searchPlaceholder": "Search name or phone…",
+    "searchAria": "Search customers",
+    "sortAria": "Sort customers",
+    "sort": {
+      "spend": "Highest spend",
+      "visits": "Most visits",
+      "lastVisit": "Recent visit"
+    },
+    "noResults": "No customers match your search.",
+    "exportCsv": "Export CSV",
+    "exportStarterOnly": "CSV export is available on Starter plans and above.",
+    "openProfile": "View profile for {name}",
+    "segments": {
+      "vip": "VIP",
+      "regular": "Regular",
+      "at_risk": "At risk",
+      "new": "New",
+      "lapsed": "Lapsed"
+    },
+    "drawer": {
+      "loading": "Loading profile…",
+      "totalSpend": "Total spend",
+      "visits": "Visits",
+      "avgSpend": "Avg. per visit",
+      "lastVisit": "Last visit",
+      "stampHistory": "Stamp history",
+      "noVisits": "No approved visits yet.",
+      "rewardHistory": "Reward history",
+      "noRewards": "No rewards yet.",
+      "rewardRedeemed": "Redeemed",
+      "rewardPending": "Pending",
+      "notes": "Private notes",
+      "notesPlaceholder": "e.g. Prefers oat milk, birthday in March",
+      "saveNote": "Save note",
+      "savingNote": "Saving…"
+    },
+    "success": {
+      "noteSaved": "Note saved"
     }
   },
   "redemption": {
@@ -474,7 +516,11 @@
   },
   "analytics": {
     "title": "Analytics",
-    "subtitle": "Track stamps issued, rewards redeemed, and recent activity.",
+    "subtitle": "Track stamps issued, rewards redeemed, spend, and recent activity.",
+    "loading": "Loading analytics…",
+    "branchFilter": "Branch",
+    "allBranches": "All branches",
+    "branchFilterHint": "Spend metrics filter by branch; stamp counts are business-wide.",
     "stats": {
       "regionLabel": "Analytics overview",
       "collectors": "Active collectors",
@@ -497,6 +543,16 @@
         "stamp_voided": "Stamp voided",
         "redemption": "Reward redeemed"
       }
+    },
+    "spend": {
+      "title": "Spend analytics",
+      "revenue": "Loyalty revenue",
+      "avgVisit": "Avg. spend per visit",
+      "visitCount": "Approved visits",
+      "weekTrend": "Last 7 days",
+      "weekChartAria": "Bar chart of daily spend over the last seven days",
+      "empty": "No spend recorded yet. Amounts appear when staff approve stamp requests and enter how much the customer spent.",
+      "weekEmpty": "No spend in the last 7 days — older visits still count in loyalty revenue above."
     }
   },
   "settings": {
@@ -587,7 +643,11 @@
       "DEMO_SEED_FAILED": "We couldn't create demo data — please try again.",
       "DEMO_NO_REDEMPTION_CODE": "Demo stamps loaded! Redemption codes DEMO01–DEMO99 are all in use.",
       "DEMO_REDEMPTION_CREATE_FAILED": "Demo stamps loaded, but we couldn't create a redemption code.",
-      "ANALYTICS_LOAD_FAILED": "We couldn't load analytics — refresh the page."
+      "ANALYTICS_LOAD_FAILED": "We couldn't load analytics — refresh the page.",
+      "CUSTOMER_DETAIL_LOAD_FAILED": "We couldn't load this customer profile — try again.",
+      "CUSTOMER_NOTE_SAVE_FAILED": "We couldn't save your note — try again.",
+      "CSV_EXPORT_NOT_ALLOWED": "CSV export requires a Starter plan or above.",
+      "CSV_EXPORT_FAILED": "We couldn't export customers — try again."
     }
   }
 }

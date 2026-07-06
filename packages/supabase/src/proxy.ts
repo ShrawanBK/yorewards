@@ -17,12 +17,13 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
-  const cookieMethods: CookieMethodsServer = {
+  const cookieMethods = {
     getAll() {
       return request.cookies.getAll();
     },
     setAll(
       cookiesToSet: { name: string; value: string; options: CookieOptions }[],
+      headers: Record<string, string>,
     ) {
       cookiesToSet.forEach(({ name, value }) => {
         request.cookies.set(name, value);
@@ -31,8 +32,11 @@ export async function updateSession(request: NextRequest) {
       cookiesToSet.forEach(({ name, value, options }) => {
         supabaseResponse.cookies.set(name, value, options);
       });
+      Object.entries(headers).forEach(([key, value]) => {
+        supabaseResponse.headers.set(key, value);
+      });
     },
-  };
+  } satisfies CookieMethodsServer;
 
   const supabase = createServerClient(url, anonKey, {
     cookieOptions: getSupabaseAuthCookieOptions(),

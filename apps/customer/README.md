@@ -10,7 +10,15 @@ From the repo root:
 pnpm exec turbo dev --filter=customer
 ```
 
+The dev server binds to `0.0.0.0:3000`, so you can open it on a phone via your PC’s LAN IP: `http://192.168.68.104:3000`. That IP must appear in `next.config.ts` → `allowedDevOrigins` (update both if DHCP changes your address). Phone and PC must be on the same Wi‑Fi; allow port **3000** through the Windows firewall if needed.
+
 Copy shared env from [`.env.example`](../../.env.example) into `apps/customer/.env.local`.
+
+### Login on a phone (local dev)
+
+- Use the **LAN IP**, not `localhost` — on the phone, `localhost` means the phone itself.
+- After tapping **Continue**, the terminal should show a **POST** (not `GET /login?country=…&phoneLocal=…`). Query params on GET mean the form fell back without JavaScript; restart dev and hard-refresh the page.
+- If login succeeds but you bounce back to `/login`, check the terminal for `[supabase] Failed to set auth cookies` and ensure `NEXT_PUBLIC_SUPABASE_URL` / keys are set in `.env.local`.
 
 ## Reward OTP — local dev (no SMS)
 

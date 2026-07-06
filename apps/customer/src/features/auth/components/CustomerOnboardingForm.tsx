@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useActionState, useState } from "react";
+import type { FormEvent } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
@@ -20,15 +21,28 @@ export function CustomerOnboardingForm() {
   const tErrors = useTranslations("errors.actions");
   const params = useSearchParams();
   const phone = params.get("phone") ?? "";
-  const [error, setError] = useState<string | null>(null);
+  const [clientError, setClientError] = useState<string | null>(null);
+
+  const [serverState, formAction, isPending] = useActionState(
+    customerOnboardingAction,
+    null,
+  );
+
+  const serverError =
+    serverState && isActionFailure(serverState)
+      ? resolveActionError(tErrors, serverState.error)
+      : null;
+
+  const error = clientError ?? serverError;
 
   const schema = z.object({
     name: z.string().min(2, t("errors.name")),
   });
   const {
     register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
+    setError,
+    clearErrors,
+    formState: { errors },
   } = useForm({ resolver: zodResolver(schema) });
 
   if (!phone) {
@@ -45,28 +59,35 @@ export function CustomerOnboardingForm() {
   }
 
   const country = detectCountry(phone);
+  const phoneLocal = phone.replace(country === "FI" ? "+358" : "+977", "");
+
+  function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
+    setClientError(null);
+    clearErrors();
+
+    const fd = new FormData(event.currentTarget);
+    const name = String(fd.get("name") ?? "").trim();
+
+    if (name.length < 2) {
+      event.preventDefault();
+      setError("name", { message: t("errors.name") });
+    }
+  }
 
   return (
     <form
+      method="post"
+      action={formAction}
       className="space-y-4"
-      onSubmit={handleSubmit(async ({ name }) => {
-        setError(null);
-        const fd = new FormData();
-        fd.set("phone", phone);
-        fd.set("country", country);
-        fd.set(
-          "phoneLocal",
-          phone.replace(country === "FI" ? "+358" : "+977", ""),
-        );
-        fd.set("name", name);
-        const result = await customerOnboardingAction(fd);
-        if (result && isActionFailure(result)) {
-          setError(resolveActionError(tErrors, result.error));
-        }
-      })}
+      onSubmit={handleFormSubmit}
+      noValidate
     >
+      <input type="hidden" name="phone" value={phone} />
+      <input type="hidden" name="country" value={country} />
+      <input type="hidden" name="phoneLocal" value={phoneLocal} />
       <p className="text-sm text-muted-foreground">
-        {t("onboarding.phoneLabel")}: <span className="font-medium text-foreground">{phone}</span>
+        {t("onboarding.phoneLabel")}:{" "}
+        <span className="font-medium text-foreground">{phone}</span>
       </p>
       <Field
         label={t("fields.name")}
@@ -88,7 +109,7 @@ export function CustomerOnboardingForm() {
       <Button
         type="submit"
         className="min-h-11 w-full bg-brand-purple hover:bg-brand-purple/90"
-        disabled={isSubmitting}
+        disabled={isPending}
       >
         {t("actions.start")}
       </Button>

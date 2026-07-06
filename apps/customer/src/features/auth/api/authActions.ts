@@ -36,9 +36,11 @@ function parsePhoneFromForm(formData: FormData) {
   return { ok: false as const, reason: "missing" as const };
 }
 
+/** Form action for `useActionState` — also works as a native POST without JS. */
 export async function customerLoginAction(
+  _prevState: ActionResult | null,
   formData: FormData,
-): Promise<ActionResult | void> {
+): Promise<ActionResult | null> {
   const parsed = parsePhoneFromForm(formData);
   if (!parsed.ok) {
     return fail(
@@ -80,9 +82,11 @@ export async function customerLoginAction(
   redirect("/wallet");
 }
 
+/** Form action for `useActionState` — also works as a native POST without JS. */
 export async function customerOnboardingAction(
+  _prevState: ActionResult | null,
   formData: FormData,
-): Promise<ActionResult | void> {
+): Promise<ActionResult | null> {
   const parsed = parsePhoneFromForm(formData);
   const name = String(formData.get("name") ?? "").trim();
 

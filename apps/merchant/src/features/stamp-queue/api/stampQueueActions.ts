@@ -19,6 +19,8 @@ import type { ActionError } from "@repo/utils/action-error";
 import { fail, logActionFailure } from "@repo/utils/action-error";
 import type { ActionFailure, ActionResult } from "@/shared/types/action-result";
 import { isDevEnvironment } from "@/shared/utils/env";
+import { assertMerchantAccess } from "@/shared/utils/merchant-access";
+import { resolveApprovedByUserId } from "@/shared/utils/resolve-approved-by";
 
 const REVALIDATE_PATHS = [
   "/merchant/dashboard",
@@ -36,16 +38,13 @@ function revalidateMerchantOpsPaths() {
   }
 }
 
-async function assertActiveMerchantOwner(
+async function assertActiveMerchantStaff(
   userId: string,
   merchantId: string,
+  minimumRole: "cashier" | "manager" | "owner" = "cashier",
 ): Promise<ActionFailure | null> {
-  const merchants = await getMerchantsByUserId(userId);
-  const merchant = merchants.find((m) => m.id === merchantId);
-  if (!merchant) return fail("BUSINESS_NOT_FOUND");
-  if (merchant.status !== "active") {
-    return fail("BUSINESS_NOT_ACTIVE");
-  }
+  const access = await assertMerchantAccess(userId, merchantId, minimumRole);
+  if ("error" in access) return access;
   return null;
 }
 
@@ -60,7 +59,7 @@ export async function fetchPendingStampQueueAction(merchantId: string): Promise<
   } = await supabase.auth.getUser();
   if (!user) return fail("UNAUTHORIZED");
 
-  const denied = await assertActiveMerchantOwner(user.id, merchantId);
+  const denied = await assertActiveMerchantStaff(user.id, merchantId);
   if (denied) return denied;
 
   try {
@@ -83,7 +82,7 @@ export async function approveStampAction(
   } = await supabase.auth.getUser();
   if (!user) return fail("UNAUTHORIZED");
 
-  const denied = await assertActiveMerchantOwner(user.id, merchantId);
+  const denied = await assertActiveMerchantStaff(user.id, merchantId);
   if (denied) return denied;
 
   if (!Number.isFinite(amountSpent) || amountSpent <= 0) {
@@ -102,9 +101,11 @@ export async function approveStampAction(
       return fail("STAMP_NOT_FOUND");
     }
 
+    const approvedBy = await resolveApprovedByUserId(merchantId, user.id);
+
     await approveStampSession(sessionId, {
       amountSpent,
-      approvedBy: user.id,
+      approvedBy,
     });
     revalidateMerchantOpsPaths();
     return {};
@@ -142,7 +143,7 @@ export async function rejectStampAction(
   } = await supabase.auth.getUser();
   if (!user) return fail("UNAUTHORIZED");
 
-  const denied = await assertActiveMerchantOwner(user.id, merchantId);
+  const denied = await assertActiveMerchantStaff(user.id, merchantId);
   if (denied) return denied;
 
   if (reason && reason.trim().length > 120) {
@@ -260,7 +261,7 @@ export async function seedDemoStampQueueAction(
   } = await supabase.auth.getUser();
   if (!user) return fail("UNAUTHORIZED");
 
-  const denied = await assertActiveMerchantOwner(user.id, merchantId);
+  const denied = await assertActiveMerchantStaff(user.id, merchantId);
   if (denied) return denied;
 
   const loyaltyCard = await getLoyaltyCardByMerchantId(merchantId);

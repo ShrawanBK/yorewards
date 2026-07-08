@@ -10,43 +10,49 @@
 
 | Area | Status |
 | ---- | ------ |
-| `merchant_staff` + RLS | ⏳ |
-| Auto-approve + checklist | ⏳ |
-| Password/email flows | ⏳ |
-| Approval email | ⏳ |
+| `merchant_staff` + RLS | ✅ |
+| Auto-approve + checklist | ✅ |
+| Password/email flows | ✅ |
+| Approval email | ✅ (Resend when `RESEND_API_KEY` set) |
 
 ---
 
 ## Day 5 “done” when
 
-- [ ] Cashier / manager / owner roles enforced
-- [ ] Free-tier merchants auto-approved on signup
-- [ ] Password + email change on merchant and admin
-- [ ] Email sent when merchant approved
+- [x] Cashier / manager / owner roles enforced
+- [x] Free-tier merchants auto-approved on signup
+- [x] Password + email change on merchant and admin
+- [x] Email sent when merchant approved
 
 ---
 
 ## A. Multi-staff
 
-- [ ] `merchant_staff` — roles: cashier / manager / owner; invite by email
-- [ ] RLS: staff scoped to merchant; `approved_by` on stamp approvals
-- [ ] Staff switcher (web) — PIN or quick account picker
-- [ ] Owner-only: billing, card edit, staff management
+- [x] `merchant_staff` — roles: cashier / manager / owner; invite by email
+- [x] RLS: staff scoped to merchant; `approved_by` via acting-staff PIN cookie
+- [x] Staff switcher (web) — PIN quick picker in sidebar
+- [x] Owner-only: staff management, business, loyalty card
 
 ## B. Onboarding
 
-- [ ] **Auto-approve** merchant registration for Free tier
-- [ ] Post-signup checklist widget (profile, card, QR printed)
+- [x] **Auto-approve** merchant registration for Free tier *(interim — see backlog: gate on credible business info)*
+- [x] Post-signup checklist widget (profile, card, QR printed)
+
+### Follow-up (not Day 5)
+
+- [ ] **Gate `active` status** — auto-approve only after credible business fields (registration number, website/social, address, etc.)
+- [ ] **Full merchant KYC form** — documents, business card upload, admin review (see [`V2_Backlog.md`](../V2_Backlog.md) § Merchant KYC)
 
 ## C. Account flows
 
-- [ ] Merchant + admin: **change password**
-- [ ] Merchant + admin: **change email** (verify new address)
-- [ ] **Email on merchant approved** — Resend/Supabase template
+- [x] Merchant + admin: **change password**
+- [x] Merchant + admin: **change email** (verify new address via Supabase)
+- [x] **Email on merchant approved** — Resend HTTP API (optional env)
 
 ## D. QA
 
 - [ ] Cashier cannot access billing; owner can; branch redeem rule enforced
+- [ ] Run `pnpm exec supabase db push` for `20260708120000_v2_day5_merchant_staff.sql`
 
 ---
 

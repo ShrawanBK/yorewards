@@ -20,6 +20,7 @@
     "customers": "Customers",
     "business": "Business",
     "loyaltyCard": "Loyalty card",
+    "staff": "Team",
     "settings": "Settings",
     "logout": "Log out",
     "openMenu": "Open menu",
@@ -555,15 +556,80 @@
       "weekEmpty": "No spend in the last 7 days — older visits still count in loyalty revenue above."
     }
   },
+  "staff": {
+    "title": "Team",
+    "subtitle": "Invite cashiers and managers to help at the counter.",
+    "inviteTitle": "Invite team member",
+    "emailLabel": "Email",
+    "nameLabel": "Display name",
+    "roleLabel": "Role",
+    "inviteCta": "Send invite",
+    "inviting": "Sending…",
+    "listTitle": "Team members",
+    "remove": "Remove",
+    "roles": {
+      "owner": "Owner",
+      "manager": "Manager",
+      "cashier": "Cashier"
+    },
+    "status": {
+      "pending": "Invite pending",
+      "active": "Active",
+      "disabled": "Disabled"
+    },
+    "inviteSuccess": "Invite sent",
+    "removeSuccess": "Team member removed",
+    "switcher": {
+      "title": "Counter staff",
+      "none": "No staff selected — approvals use your account.",
+      "active": "Acting as {name}",
+      "selectLabel": "Select staff member",
+      "selectPlaceholder": "Choose staff…",
+      "pinPlaceholder": "PIN",
+      "pinAria": "Staff PIN",
+      "switch": "Switch",
+      "switching": "Switching…",
+      "clear": "Clear"
+    }
+  },
+  "onboarding": {
+    "checklist": {
+      "title": "Complete your setup",
+      "subtitle": "{done} of {total} steps done",
+      "profile": "Add business profile & phone",
+      "card": "Configure your loyalty card",
+      "qr": "Go live — print your QR code",
+      "cta": "Continue setup"
+    }
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Account and business preferences.",
     "account": {
       "title": "Account",
       "subtitle": "Your merchant login details.",
-      "email": "Email",
+      "emailLabel": "Email",
       "emailUnknown": "No email on file",
-      "signOutHint": "Use Log out in the sidebar to sign out of this device."
+      "signOutHint": "Use Log out in the sidebar to sign out of this device.",
+      "password": {
+        "title": "Change password",
+        "newLabel": "New password",
+        "confirmLabel": "Confirm password",
+        "show": "Show password",
+        "hide": "Hide password",
+        "submit": "Update password",
+        "saving": "Updating…",
+        "success": "Password updated"
+      },
+      "email": {
+        "title": "Change email",
+        "current": "Signed in as {email}",
+        "newLabel": "New email address",
+        "verifyHint": "We will send a confirmation link to the new address.",
+        "submit": "Update email",
+        "saving": "Updating…",
+        "success": "Check your inbox to confirm the new email"
+      }
     },
     "business": {
       "title": "Active business",
@@ -589,6 +655,7 @@
   "errors": {
     "actions": {
       "UNAUTHORIZED": "Please sign in to continue.",
+      "FORBIDDEN": "You don't have permission for that action.",
       "UNKNOWN": "That didn't work — give it another try in a moment.",
       "AUTH_FAILED": "We couldn't verify your session. Please sign in again.",
       "INVALID_CREDENTIALS": "That email or password doesn't look right. Double-check and try again.",
@@ -647,7 +714,15 @@
       "CUSTOMER_DETAIL_LOAD_FAILED": "We couldn't load this customer profile — try again.",
       "CUSTOMER_NOTE_SAVE_FAILED": "We couldn't save your note — try again.",
       "CSV_EXPORT_NOT_ALLOWED": "CSV export requires a Starter plan or above.",
-      "CSV_EXPORT_FAILED": "We couldn't export customers — try again."
+      "CSV_EXPORT_FAILED": "We couldn't export customers — try again.",
+      "STAFF_INVITE_FAILED": "We couldn't send that invite — try again.",
+      "STAFF_PIN_INVALID": "That PIN doesn't match — try again.",
+      "STAFF_NOT_FOUND": "We couldn't find that team member.",
+      "STAFF_REMOVE_FAILED": "We couldn't remove that team member — try again.",
+      "PASSWORD_UPDATE_FAILED": "We couldn't update your password — try again.",
+      "PASSWORD_CONFIRM_MISMATCH": "Passwords don't match.",
+      "EMAIL_UPDATE_FAILED": "We couldn't update your email — try again.",
+      "EMAIL_INVALID": "Enter a valid email address."
     }
   }
 }

@@ -5,9 +5,11 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@repo/supabase/server";
 import { createServiceRoleClient } from "@repo/supabase/service-role";
 import { switchActiveMerchant } from "@repo/supabase/queries/merchants";
+import { createOwnerStaffRow } from "@repo/supabase/queries/merchant-staff";
 import { createDefaultLocationForMerchant } from "@repo/supabase/queries/locations";
 import type { CountryCode } from "@repo/supabase/types";
 import { fail, logActionFailure } from "@repo/utils/action-error";
+import { sendMerchantApprovedEmail } from "@repo/utils/merchant-email";
 import type { ActionResult } from "@/shared/types/action-result";
 import { isValidMerchantPhone } from "@/features/business/utils/phoneSchema";
 
@@ -29,6 +31,7 @@ export async function addBusinessAction(
   }
 
   const admin = createServiceRoleClient();
+  const isFreeTier = true;
 
   const { data: merchant, error: merchantError } = await admin
     .from("merchants")
@@ -39,7 +42,9 @@ export async function addBusinessAction(
       country,
       email,
       phone,
-      status: "pending",
+      status: isFreeTier ? "active" : "pending",
+      approved_at: isFreeTier ? new Date().toISOString() : null,
+      subscription_tier: "free",
     })
     .select("*")
     .single();
@@ -53,6 +58,28 @@ export async function addBusinessAction(
     merchant.id,
     String(formData.get("business_name") ?? ""),
   );
+
+  try {
+    await createOwnerStaffRow({
+      merchantId: merchant.id,
+      userId: user.id,
+      email,
+      displayName: merchant.business_name,
+    });
+  } catch (err) {
+    logActionFailure("createOwnerStaffRow", err);
+  }
+
+  if (isFreeTier) {
+    try {
+      await sendMerchantApprovedEmail({
+        to: email,
+        businessName: merchant.business_name,
+      });
+    } catch (err) {
+      logActionFailure("sendMerchantApprovedEmail", err);
+    }
+  }
 
   await switchActiveMerchant(user.id, merchant.id);
 

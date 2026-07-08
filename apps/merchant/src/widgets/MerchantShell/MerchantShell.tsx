@@ -13,6 +13,7 @@ import {
   Settings,
   BarChart3,
   Users,
+  UserCog,
   X,
 } from "lucide-react";
 import { useId, useState } from "react";
@@ -21,8 +22,11 @@ import { Separator } from "@repo/ui/separator";
 import { cn } from "@repo/ui/lib/utils";
 import type { MerchantRow } from "@repo/supabase/queries/merchants";
 import type { MerchantLocationRow } from "@repo/supabase/queries/locations";
+import type { MerchantStaffRow } from "@repo/supabase/queries/merchant-staff";
+import type { MerchantStaffRole } from "@repo/supabase/types";
 import { logoutAction } from "@/features/auth/api/authActions";
 import { MerchantSidebarSwitcher } from "@/features/business/components/MerchantSidebarSwitcher";
+import { StaffSwitcher } from "@/features/staff";
 import { SkipLink } from "@/shared/ui/SkipLink";
 import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 
@@ -32,17 +36,23 @@ type MerchantShellProps = {
   activeMerchantId: string;
   branches: MerchantLocationRow[];
   activeBranchId: string | null;
+  role: MerchantStaffRole;
+  staff: MerchantStaffRow[];
+  actingStaffUserId: string | null;
 };
 
-const navItems = [
-  { href: "/merchant/dashboard", icon: LayoutDashboard, labelKey: "dashboard" as const },
-  { href: "/merchant/redeem", icon: Gift, labelKey: "redeem" as const },
-  { href: "/merchant/analytics", icon: BarChart3, labelKey: "analytics" as const },
-  { href: "/merchant/customers", icon: Users, labelKey: "customers" as const },
-  { href: "/merchant/business", icon: Building2, labelKey: "business" as const },
-  { href: "/merchant/loyalty-card", icon: CreditCard, labelKey: "loyaltyCard" as const },
-  { href: "/merchant/settings", icon: Settings, labelKey: "settings" as const },
-];
+const allNavItems = [
+  { href: "/merchant/dashboard", icon: LayoutDashboard, labelKey: "dashboard" as const, minRole: "cashier" as const },
+  { href: "/merchant/redeem", icon: Gift, labelKey: "redeem" as const, minRole: "cashier" as const },
+  { href: "/merchant/analytics", icon: BarChart3, labelKey: "analytics" as const, minRole: "manager" as const },
+  { href: "/merchant/customers", icon: Users, labelKey: "customers" as const, minRole: "manager" as const },
+  { href: "/merchant/business", icon: Building2, labelKey: "business" as const, minRole: "owner" as const },
+  { href: "/merchant/loyalty-card", icon: CreditCard, labelKey: "loyaltyCard" as const, minRole: "owner" as const },
+  { href: "/merchant/staff", icon: UserCog, labelKey: "staff" as const, minRole: "owner" as const },
+  { href: "/merchant/settings", icon: Settings, labelKey: "settings" as const, minRole: "manager" as const },
+] as const;
+
+const ROLE_RANK = { cashier: 1, manager: 2, owner: 3 } as const;
 
 export function MerchantShell({
   children,
@@ -50,12 +60,18 @@ export function MerchantShell({
   activeMerchantId,
   branches,
   activeBranchId,
+  role,
+  staff,
+  actingStaffUserId,
 }: MerchantShellProps) {
   const t = useTranslations("nav");
   const tA11y = useTranslations("a11y");
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileNavId = useId();
+  const navItems = allNavItems.filter(
+    (item) => ROLE_RANK[role] >= ROLE_RANK[item.minRole],
+  );
 
   async function handleLogout() {
     await logoutAction();
@@ -116,6 +132,11 @@ export function MerchantShell({
             </p>
           </div>
           {switcher}
+          <StaffSwitcher
+            merchantId={activeMerchantId}
+            staff={staff}
+            actingStaffUserId={actingStaffUserId}
+          />
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-3" aria-label={t("main")}>

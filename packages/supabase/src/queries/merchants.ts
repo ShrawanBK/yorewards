@@ -6,25 +6,41 @@ import {
 import { clearActiveLocationIdCookie } from "../active-location";
 import { createServiceRoleClient } from "../service-role";
 import type { Database, MerchantStatus } from "../types";
+import { getStaffMerchantsForUser } from "./merchant-staff";
 
 export type MerchantRow = Database["public"]["Tables"]["merchants"]["Row"];
 export type { MerchantStatus };
 
-/** All businesses owned by one auth user (multi-business per owner). */
+/** All businesses accessible to the auth user (owned + active staff). */
 export async function getMerchantsByUserId(
   userId: string,
 ): Promise<MerchantRow[]> {
   const supabase = createServiceRoleClient();
-  const { data, error } = await supabase
-    .from("merchants")
-    .select("*")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: true });
+  const [ownedResult, staffMerchants] = await Promise.all([
+    supabase
+      .from("merchants")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: true }),
+    getStaffMerchantsForUser(userId),
+  ]);
 
-  if (error) {
-    throw error;
+  if (ownedResult.error) {
+    throw ownedResult.error;
   }
-  return data ?? [];
+
+  const owned = ownedResult.data ?? [];
+  const seen = new Set(owned.map((merchant) => merchant.id));
+  const merged = [...owned];
+
+  for (const merchant of staffMerchants) {
+    if (!seen.has(merchant.id)) {
+      merged.push(merchant);
+      seen.add(merchant.id);
+    }
+  }
+
+  return merged;
 }
 
 /**

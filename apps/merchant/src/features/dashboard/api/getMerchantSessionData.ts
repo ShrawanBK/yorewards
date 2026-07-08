@@ -10,6 +10,13 @@ import {
   getActiveLocationsByMerchantId,
   resolveActiveLocationForMerchant,
 } from "@repo/supabase/queries/locations";
+import type { MerchantStaffRole } from "@repo/supabase/types";
+import type { MerchantStaffRow } from "@repo/supabase/queries/merchant-staff";
+import {
+  getMerchantRoleForUser,
+  listMerchantStaff,
+} from "@repo/supabase/queries/merchant-staff";
+import { getActingStaffUserIdFromCookie } from "@repo/supabase/acting-staff";
 
 export type MerchantSessionWithBusiness = {
   user: NonNullable<
@@ -21,6 +28,9 @@ export type MerchantSessionWithBusiness = {
   merchant: MerchantRow;
   branches: MerchantLocationRow[];
   activeBranch: MerchantLocationRow | null;
+  role: MerchantStaffRole;
+  staff: MerchantStaffRow[];
+  actingStaffUserId: string | null;
 };
 
 export type MerchantSessionForShell =
@@ -70,10 +80,14 @@ async function loadMerchantSession(requireBusiness: boolean) {
     redirect("/merchant/add-business");
   }
 
-  const [branches, activeBranch] = await Promise.all([
-    getActiveLocationsByMerchantId(merchant.id),
-    resolveActiveLocationForMerchant(merchant.id),
-  ]);
+  const [branches, activeBranch, role, staff, actingStaffUserId] =
+    await Promise.all([
+      getActiveLocationsByMerchantId(merchant.id),
+      resolveActiveLocationForMerchant(merchant.id),
+      getMerchantRoleForUser(user.id, merchant.id),
+      listMerchantStaff(merchant.id),
+      getActingStaffUserIdFromCookie(),
+    ]);
 
   return {
     user,
@@ -81,6 +95,9 @@ async function loadMerchantSession(requireBusiness: boolean) {
     merchant,
     branches,
     activeBranch,
+    role: role ?? "cashier",
+    staff,
+    actingStaffUserId,
   } satisfies MerchantSessionWithBusiness;
 }
 

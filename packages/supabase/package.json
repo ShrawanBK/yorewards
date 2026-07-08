@@ -9,6 +9,7 @@
     "./proxy": "./src/proxy.ts",
     "./active-merchant": "./src/active-merchant.ts",
     "./active-location": "./src/active-location.ts",
+    "./acting-staff": "./src/acting-staff.ts",
     "./types": "./src/types.ts",
     "./queries/merchants": "./src/queries/merchants.ts",
     "./queries/customers": "./src/queries/customers.ts",
@@ -31,6 +32,7 @@
     "./queries/merchant-customers": "./src/queries/merchant-customers.ts",
     "./queries/customer-insights": "./src/queries/customer-insights.ts",
     "./queries/merchant-spend-analytics": "./src/queries/merchant-spend-analytics.ts",
+    "./queries/merchant-staff": "./src/queries/merchant-staff.ts",
     "./utils/local-date": "./src/utils/local-date.ts"
   },
   "scripts": {

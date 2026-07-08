@@ -17,6 +17,8 @@ export type Json =
 export type CountryCode = "NP" | "FI";
 export type CurrencyCode = "NPR" | "EUR";
 export type SubscriptionTier = "free" | "starter" | "growth" | "enterprise";
+export type MerchantStaffRole = "cashier" | "manager" | "owner";
+export type MerchantStaffStatus = "pending" | "active" | "disabled";
 export type CustomerStatus = "active" | "suspended";
 export type MerchantStatus = "pending" | "active" | "suspended" | "rejected";
 export type RewardStatus = "collecting" | "pending_otp" | "unlocked";
@@ -658,6 +660,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      merchant_staff: {
+        Row: {
+          id: string;
+          merchant_id: string;
+          user_id: string | null;
+          invited_email: string;
+          display_name: string | null;
+          role: MerchantStaffRole;
+          status: MerchantStaffStatus;
+          pin_hash: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          merchant_id: string;
+          user_id?: string | null;
+          invited_email: string;
+          display_name?: string | null;
+          role?: MerchantStaffRole;
+          status?: MerchantStaffStatus;
+          pin_hash?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          merchant_id?: string;
+          user_id?: string | null;
+          invited_email?: string;
+          display_name?: string | null;
+          role?: MerchantStaffRole;
+          status?: MerchantStaffStatus;
+          pin_hash?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -678,6 +719,10 @@ export type Database = {
       current_customer_id: { Args: never; Returns: string };
       current_merchant_id: { Args: never; Returns: string };
       current_merchant_ids: { Args: never; Returns: string[] };
+      merchant_role_for: {
+        Args: { p_merchant_id: string };
+        Returns: MerchantStaffRole;
+      };
       increment_stamps: {
         Args: { card_id: string; new_status: string };
         Returns: undefined;

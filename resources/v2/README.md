@@ -9,7 +9,7 @@
 
 ## Current build day
 
-**→ [`Day5_Checklist.md`](Day5_Checklist.md)** (multi-staff + auth flows)
+**→ [`Day6_Checklist.md`](Day6_Checklist.md)** (billing + tier gates)
 
 | Day | Focus | Checklist |
 | --- | ----- | --------- |

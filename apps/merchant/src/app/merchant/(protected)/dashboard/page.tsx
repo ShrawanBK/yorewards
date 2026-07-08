@@ -2,7 +2,7 @@ import { getDashboardData } from "@/features/dashboard";
 import { MerchantDashboard } from "@/widgets/MerchantDashboard";
 
 export default async function MerchantDashboardPage() {
-  const { merchants, merchant, metrics, pendingQueue, activeBranch } =
+  const { merchants, merchant, metrics, pendingQueue, activeBranch, user } =
     await getDashboardData();
   return (
     <MerchantDashboard
@@ -11,6 +11,7 @@ export default async function MerchantDashboardPage() {
       metrics={metrics}
       pendingQueue={pendingQueue}
       activeBranchName={activeBranch?.name ?? null}
+      userId={user.id}
     />
   );
 }

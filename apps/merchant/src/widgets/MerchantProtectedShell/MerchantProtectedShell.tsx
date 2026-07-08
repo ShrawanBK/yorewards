@@ -12,7 +12,8 @@ export async function MerchantProtectedShell({
     return <>{children}</>;
   }
 
-  const { merchants, merchant, branches, activeBranch } = session;
+  const { merchants, merchant, branches, activeBranch, role, staff, actingStaffUserId } =
+    session;
 
   return (
     <MerchantShell
@@ -20,6 +21,9 @@ export async function MerchantProtectedShell({
       activeMerchantId={merchant.id}
       branches={branches}
       activeBranchId={activeBranch?.id ?? null}
+      role={role}
+      staff={staff}
+      actingStaffUserId={actingStaffUserId}
     >
       {children}
     </MerchantShell>

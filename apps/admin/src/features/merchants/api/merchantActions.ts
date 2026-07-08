@@ -6,6 +6,7 @@ import { getMerchantDetailForAdmin } from "@repo/supabase/queries/admin-merchant
 import type { MerchantStatus } from "@repo/supabase/types";
 import { revalidatePath } from "next/cache";
 import { fail, logActionFailure } from "@repo/utils/action-error";
+import { sendMerchantApprovedEmail } from "@repo/utils/merchant-email";
 import type { ActionResult } from "@/shared/types/action-result";
 import { requireAdminForAction } from "@/features/auth/utils/requireAdminAuth";
 
@@ -36,6 +37,19 @@ export async function approveMerchantAction(
   if (!guard.ok) return guard.result;
 
   const admin = createServiceRoleClient();
+  const { data: merchant, error: fetchError } = await admin
+    .from("merchants")
+    .select("email, business_name, status")
+    .eq("id", merchantId)
+    .single();
+
+  if (fetchError || !merchant) {
+    logActionFailure("approveMerchant.fetch", fetchError);
+    return fail("MERCHANT_NOT_FOUND");
+  }
+
+  const wasActive = merchant.status === "active";
+
   const { error: updateError } = await admin
     .from("merchants")
     .update({
@@ -58,6 +72,17 @@ export async function approveMerchantAction(
     target_type: "merchant",
     target_id: merchantId,
   });
+
+  if (!wasActive) {
+    try {
+      await sendMerchantApprovedEmail({
+        to: merchant.email,
+        businessName: merchant.business_name,
+      });
+    } catch (err) {
+      logActionFailure("sendMerchantApprovedEmail", err);
+    }
+  }
 
   revalidatePath("/admin/merchants");
   revalidatePath(`/admin/merchants/${merchantId}`);

@@ -9,6 +9,8 @@ import type { MerchantLocationRow } from "@repo/supabase/queries/locations";
 import type { MerchantRow } from "@repo/supabase/queries/merchants";
 import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 import { MERCHANT_STATUS_BADGE } from "@/shared/constants/status-badges";
+import { ChangeEmailForm } from "@/features/account/components/ChangeEmailForm";
+import { ChangePasswordForm } from "@/features/account/components/ChangePasswordForm";
 
 type MerchantSettingsViewProps = {
   email: string;
@@ -42,10 +44,20 @@ export async function MerchantSettingsView({
         </CardHeader>
         <CardContent className="space-y-2">
           <dl className="grid gap-1 text-sm">
-            <dt className="text-muted-foreground">{t("account.email")}</dt>
+            <dt className="text-muted-foreground">{t("account.emailLabel")}</dt>
             <dd className="font-medium">{email}</dd>
           </dl>
           <p className="text-sm merchant-body-muted">{t("account.signOutHint")}</p>
+          <div className="space-y-6 border-t border-border pt-6">
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium">{t("account.password.title")}</h3>
+              <ChangePasswordForm />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium">{t("account.email.title")}</h3>
+              <ChangeEmailForm currentEmail={email} />
+            </div>
+          </div>
         </CardContent>
       </Card>
 

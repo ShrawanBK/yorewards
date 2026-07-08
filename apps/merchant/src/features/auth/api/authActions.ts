@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@repo/supabase/server";
 import { createServiceRoleClient } from "@repo/supabase/service-role";
+import { linkPendingStaffInvites } from "@repo/supabase/queries/merchant-staff";
 import {
   clearActiveMerchantForUser,
   getMerchantsByUserId,
@@ -40,6 +41,14 @@ export async function signInMerchantAction(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return fail("SIGN_IN_FAILED");
+
+  if (user.email) {
+    try {
+      await linkPendingStaffInvites(user.id, user.email);
+    } catch (err) {
+      logActionFailure("linkPendingStaffInvites", err);
+    }
+  }
 
   const merchants = await getMerchantsByUserId(user.id);
 

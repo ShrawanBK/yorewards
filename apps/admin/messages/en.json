@@ -12,7 +12,25 @@
     "customers": "Customers",
     "stamps": "Stamps",
     "audit": "Audit log",
+    "settings": "Settings",
     "logout": "Log out"
+  },
+  "settings": {
+    "title": "Account settings",
+    "subtitle": "Update your super admin login.",
+    "account": {
+      "passwordTitle": "Change password",
+      "passwordSubtitle": "Use at least 8 characters.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "passwordSubmit": "Update password",
+      "emailTitle": "Change email",
+      "emailSubtitle": "We will send a confirmation link to the new address.",
+      "newEmail": "New email",
+      "emailSubmit": "Update email",
+      "show": "Show password",
+      "hide": "Hide password"
+    }
   },
   "dashboard": {
     "title": "Platform overview",
@@ -369,7 +387,11 @@
       "STAMP_ISSUE_FAILED": "Could not issue stamp. Please try again.",
       "STAMP_VOID_FAILED": "Could not remove stamp. Only approved stamps can be removed.",
       "REJECTION_REASON_REQUIRED": "Add a reason before rejecting.",
-      "ACTION_REASON_REQUIRED": "Add a reason before continuing."
+      "ACTION_REASON_REQUIRED": "Add a reason before continuing.",
+      "PASSWORD_UPDATE_FAILED": "Could not update password. Please try again.",
+      "PASSWORD_CONFIRM_MISMATCH": "Passwords do not match.",
+      "EMAIL_UPDATE_FAILED": "Could not update email. Please try again.",
+      "EMAIL_INVALID": "Enter a valid email address."
     }
   }
 }

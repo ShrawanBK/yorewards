@@ -8,6 +8,7 @@ import {
   ClipboardList,
   LayoutDashboard,
   LogOut,
+  Settings,
   Stamp,
   Users,
 } from "lucide-react";
@@ -21,6 +22,7 @@ const navItems = [
   { href: "/admin/customers", icon: Users, labelKey: "customers" as const },
   { href: "/admin/stamps", icon: Stamp, labelKey: "stamps" as const },
   { href: "/admin/audit", icon: ClipboardList, labelKey: "audit" as const },
+  { href: "/admin/settings", icon: Settings, labelKey: "settings" as const },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {

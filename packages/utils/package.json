@@ -6,6 +6,8 @@
     "./phone": "./src/phone.ts",
     "./currency": "./src/currency.ts",
     "./otp": "./src/otp.ts",
+    "./staff-pin": "./src/staff-pin.ts",
+    "./merchant-email": "./src/merchant-email.ts",
     "./action-error": "./src/action-error.ts"
   },
   "scripts": {

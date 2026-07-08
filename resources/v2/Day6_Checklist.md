@@ -13,6 +13,8 @@
 | Subscriptions schema + gates | ⏳ |
 | eSewa sandbox | ⏳ |
 | Verification upload | ⏳ |
+| Credible onboarding gate (Free) | ⏳ |
+| Staff invite accept flow | ⏳ |
 | “X more stamps” notification | ⏳ |
 
 ---
@@ -23,6 +25,8 @@
 - [ ] eSewa sandbox checkout activates Starter trial
 - [ ] T&C required before paid checkout
 - [ ] Document verification → admin queue → verified badge
+- [ ] Free tier: credible business fields required before `active` (interim Day 5 auto-approve replaced)
+- [ ] Invited staff can accept an invite without falling into owner/business signup
 - [ ] One smart promo: “X more stamps” when threshold hit
 
 ---
@@ -47,7 +51,26 @@
 
 - [ ] Document upload → admin queue → verified badge on customer-facing card
 
-## E. QA
+## E. Free-tier credible onboarding (before auto-`active`)
+
+> Day 5 ships interim auto-`active` on add-business. Replace with a credibility gate before merchants can use the counter workflow.
+
+- [ ] Collect **credible business fields** before setting `status: active` (e.g. registration / PAN number, website or social URL, full address, optional business card image)
+- [ ] Keep merchant `pending` (or `pending_verification`) until minimum fields pass validation
+- [ ] Phone OTP for owner (PRD §4.2 basic verification) — optional same step
+- [ ] **Full KYC form** (documents + admin review) — separate follow-up; see [`V2_Backlog.md`](../V2_Backlog.md) § Merchant KYC
+
+## F. Staff invite acceptance
+
+> Day 5 sends Supabase invite emails for `merchant_staff`, but the public signup UI still assumes "new business owner" and redirects to `/merchant/add-business`.
+
+- [ ] Add dedicated **accept invite** flow for cashier / manager users
+- [ ] Invite email should land on staff-only onboarding, not owner business registration
+- [ ] If invite email matches an existing auth user, signing in should link the membership and route to dashboard
+- [ ] If invite email is new, account creation should end in staff activation, not `add-business`
+- [ ] Optional: support invite token / email param to prefill and lock the invited email
+
+## G. QA
 
 - [ ] Free merchant blocked at 51st customer; upgrade unlocks; trial countdown works
 

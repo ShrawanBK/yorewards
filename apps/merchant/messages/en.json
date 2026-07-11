@@ -21,12 +21,14 @@
     "business": "Business",
     "loyaltyCard": "Loyalty card",
     "staff": "Team",
+    "billing": "Billing",
     "settings": "Settings",
     "logout": "Log out",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "switchBusiness": "Switch business",
     "switchBranch": "Counter branch",
+    "roleInBusiness": "Your role: {role}",
     "allBranchesHint": "Select which branch you are working at",
     "addBusiness": "Add another business",
     "success": {
@@ -119,6 +121,7 @@
     },
     "status": {
       "pending": "Pending",
+      "pending_verification": "Pending verification",
       "active": "Active",
       "suspended": "Suspended",
       "rejected": "Rejected"
@@ -131,7 +134,11 @@
       "businessName": "Business name",
       "category": "Category",
       "country": "Country",
-      "phoneOptional": "Phone (optional)"
+      "phone": "Business phone",
+      "phoneOptional": "Phone (optional)",
+      "registrationNumber": "Registration / PAN number",
+      "websiteUrl": "Website or social profile",
+      "businessAddress": "Business address"
     },
     "details": {
       "title": "Account details",
@@ -145,19 +152,36 @@
       "businessName": "Helsinki Hair Studio",
       "category": "Salon",
       "phoneNP": "+977 98XXXXXXXX",
-      "phoneFI": "+358 4XXXXXXXX"
+      "phoneFI": "+358 4XXXXXXXX",
+      "registrationNumber": "PAN / company registration",
+      "websiteUrl": "https://instagram.com/yourbusiness",
+      "businessAddress": "Street, city"
+    },
+    "credibleHint": "We use these details to verify your business before you go live.",
+    "profileEdit": {
+      "title": "Business profile",
+      "subtitle": "Update your category, phone, and verification details."
     },
     "countries": {
       "NP": "Nepal",
       "FI": "Finland"
     },
     "actions": {
-      "submit": "Submit for approval",
-      "back": "Back to dashboard"
+      "submit": "Create business",
+      "back": "Back to dashboard",
+      "saveProfile": "Save profile",
+      "savingProfile": "Saving…"
+    },
+    "success": {
+      "profileSaved": "Business profile saved."
     },
     "errors": {
       "businessName": "Business name is required",
       "category": "Category is required",
+      "phoneRequired": "Business phone is required",
+      "registrationNumber": "Enter your registration or PAN number",
+      "websiteUrl": "Enter a valid website or social profile URL",
+      "businessAddress": "Enter your full business address",
       "phone": {
         "NP": "Enter a valid Nepal mobile number (e.g. +977 98XXXXXXXX)",
         "FI": "Enter a valid Finland mobile number (e.g. +358 4XXXXXXXX)"
@@ -226,6 +250,10 @@
       "pending": {
         "label": "Pending approval",
         "description": "Your application is under review. Configure your loyalty card and branches while you wait — you'll go live as soon as an admin approves your account."
+      },
+      "pending_verification": {
+        "label": "Pending verification",
+        "description": "We're verifying your business details. Configure your loyalty card while you wait."
       },
       "active": {
         "label": "Active",
@@ -420,6 +448,11 @@
   "customers": {
     "title": "Customers",
     "subtitle": "Everyone collecting stamps at this business — filter by branch to see who visited a specific location.",
+    "upgrade": {
+      "title": "Customer CRM is a Starter feature",
+      "description": "Upgrade to see customer profiles, segments, private notes, and CSV export.",
+      "cta": "View plans"
+    },
     "loading": "Loading customers…",
     "branchFilter": "Branch",
     "allBranches": "All branches",
@@ -577,7 +610,11 @@
       "active": "Active",
       "disabled": "Disabled"
     },
-    "inviteSuccess": "Invite sent",
+    "inviteSuccess": "Invite email sent",
+    "inviteSaved": "Invite saved",
+    "resend": "Resend email",
+    "resending": "Sending…",
+    "resendSuccess": "Invite email sent again",
     "removeSuccess": "Team member removed",
     "switcher": {
       "title": "Counter staff",
@@ -596,7 +633,7 @@
     "checklist": {
       "title": "Complete your setup",
       "subtitle": "{done} of {total} steps done",
-      "profile": "Add business profile & phone",
+      "profile": "Complete business profile & phone",
       "card": "Configure your loyalty card",
       "qr": "Go live — print your QR code",
       "cta": "Continue setup"
@@ -649,7 +686,135 @@
     "legal": {
       "title": "Legal",
       "subtitle": "Privacy and data handling for YORewards.",
-      "privacy": "Privacy policy"
+      "privacy": "Privacy policy",
+      "terms": "Merchant subscription terms"
+    },
+    "promotions": {
+      "title": "Smart promotions",
+      "subtitle": "Automatically nudge customers when they are close to a reward."
+    },
+    "verification": {
+      "title": "Verified badge",
+      "subtitle": "Upload business documents for admin review.",
+      "status": "Current status: {status}"
+    }
+  },
+  "acceptInvite": {
+    "title": "Accept team invite",
+    "layoutSubheading": "Create an account with your invited email, or sign in if you already have one.",
+    "subtitle": "You're joining as {email}.",
+    "roleHint": "Invited role(s): {roles}",
+    "missingEmailTitle": "Invite link incomplete",
+    "missingEmailBody": "Open the invite link from your email again, or ask your manager to resend it.",
+    "notFoundTitle": "No pending invite",
+    "notFoundBody": "This invite may have expired or already been accepted.",
+    "tabs": {
+      "signin": "Sign in",
+      "signup": "Create account"
+    },
+    "fields": {
+      "email": "Invited email",
+      "password": "Password",
+      "confirmPassword": "Confirm password"
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password"
+    },
+    "actions": {
+      "signin": "Sign in and join team",
+      "signup": "Create account and join team"
+    },
+    "errors": {
+      "email": "Enter a valid email",
+      "password": "Password must be at least 6 characters",
+      "confirmPassword": "Passwords must match"
+    }
+  },
+  "billing": {
+    "title": "Billing",
+    "subtitle": "Manage your subscription and invoices.",
+    "plans": {
+      "free": "Free",
+      "starter": "Starter",
+      "growth": "Growth",
+      "enterprise": "Enterprise"
+    },
+    "currentPlan": {
+      "title": "Current plan",
+      "trialCountdown": "{days, plural, =0 {Trial ends today} one {# day left in trial} other {# days left in trial}}",
+      "freeHint": "Free includes 1 card, 50 customers, and 1 staff account."
+    },
+    "upgrade": {
+      "title": "Upgrade to Starter",
+      "starterBlurb": "NPR {price}/month after your 30-day free trial — CRM, CSV export, smart promotions, and verified badge.",
+      "termsPrefix": "I agree to the",
+      "termsLink": "merchant subscription terms",
+      "termsAria": "Accept merchant subscription terms",
+      "cta": "Start free trial with eSewa (sandbox)",
+      "pending": "Opening checkout…",
+      "sandboxNote": "Sandbox mode — no real charge. Completing checkout activates your Starter trial."
+    },
+    "invoices": {
+      "title": "Invoices",
+      "empty": "No invoices yet.",
+      "trial": "Trial",
+      "amount": "NPR {amount}"
+    },
+    "termsPage": {
+      "title": "Merchant subscription terms",
+      "updated": "Last updated July 2026",
+      "section1": {
+        "title": "Billing",
+        "body": "Paid plans renew monthly unless cancelled. Trials convert to paid unless you cancel before the trial ends."
+      },
+      "section2": {
+        "title": "Refunds",
+        "body": "Contact support for billing disputes. Failed payments receive a 7-day grace period before downgrade to Free."
+      },
+      "section3": {
+        "title": "Acceptance",
+        "body": "By starting a paid checkout you confirm you are authorized to bind this business to these terms."
+      }
+    }
+  },
+  "verification": {
+    "fields": {
+      "documentType": "Document type",
+      "file": "Upload file (PDF or image, max 5MB)"
+    },
+    "documentTypes": {
+      "registration": "Business registration",
+      "pan": "PAN / tax ID",
+      "businessLicense": "Business license",
+      "other": "Other"
+    },
+    "actions": {
+      "submit": "Submit for review",
+      "submitting": "Uploading…"
+    },
+    "success": {
+      "submitted": "Document submitted — we'll review it within 24 hours."
+    }
+  },
+  "promotions": {
+    "fields": {
+      "enabled": "Send “X more stamps” reminders",
+      "enabledAria": "Enable smart promotion reminders",
+      "threshold": "Notify when customer is this many stamps away"
+    },
+    "thresholdOptions": {
+      "one": "1 stamp away",
+      "two": "2 stamps away",
+      "three": "3 stamps away"
+    },
+    "hint": "Fires once per reward cycle when a stamp is approved.",
+    "actions": {
+      "save": "Save promotion settings",
+      "saving": "Saving…"
+    },
+    "success": {
+      "saved": "Promotion settings saved."
     }
   },
   "errors": {
@@ -661,7 +826,7 @@
       "INVALID_CREDENTIALS": "That email or password doesn't look right. Double-check and try again.",
       "SIGN_IN_FAILED": "We couldn't sign you in right now. Please try again.",
       "SIGN_UP_FAILED": "We couldn't create your account yet. Please try again.",
-      "EMAIL_ALREADY_EXISTS": "You already have an account with this email — try signing in instead.",
+      "EMAIL_ALREADY_EXISTS": "We couldn't create your account yet. Please try again.",
       "BUSINESS_NOT_FOUND": "We couldn't find that business. Refresh the page and try again.",
       "BUSINESS_NOT_ACTIVE": "This unlocks once your business is approved — hang tight!",
       "INVALID_PHONE": "That phone number doesn't match the format for your selected country.",
@@ -722,7 +887,21 @@
       "PASSWORD_UPDATE_FAILED": "We couldn't update your password — try again.",
       "PASSWORD_CONFIRM_MISMATCH": "Passwords don't match.",
       "EMAIL_UPDATE_FAILED": "We couldn't update your email — try again.",
-      "EMAIL_INVALID": "Enter a valid email address."
+      "EMAIL_INVALID": "Enter a valid email address.",
+      "PLAN_LIMIT_CUSTOMERS": "This business reached its Free plan customer limit (50). Ask them to upgrade to Starter.",
+      "PLAN_LIMIT_STAFF": "Your plan allows up to {limit} team members. Upgrade to invite more.",
+      "PLAN_LIMIT_CARDS": "Your plan limit for loyalty cards has been reached. Upgrade to add more.",
+      "PLAN_FEATURE_CRM": "Customer CRM requires a Starter plan or above.",
+      "PLAN_FEATURE_REQUIRED": "This feature requires a paid plan.",
+      "BILLING_CHECKOUT_FAILED": "We couldn't start checkout — please try again.",
+      "BILLING_TERMS_REQUIRED": "Accept the subscription terms before checkout.",
+      "BILLING_TRIAL_ALREADY_USED": "You already have an active trial or paid plan.",
+      "VERIFICATION_UPLOAD_FAILED": "We couldn't upload that document — try again.",
+      "VERIFICATION_DOC_REQUIRED": "Choose a document to upload.",
+      "ONBOARDING_FIELDS_REQUIRED": "Complete all credible business fields before going live.",
+      "STAFF_INVITE_NOT_FOUND": "No pending team invite for this email.",
+      "STAFF_INVITE_EMAIL_MISMATCH": "Use the same email address that received the invite.",
+      "STAFF_INVITE_EMAIL_DEFERRED": "Invite saved, but we couldn't send email — check Supabase Auth email settings or use Resend email."
     }
   }
 }

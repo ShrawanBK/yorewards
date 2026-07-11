@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@repo/supabase/server";
+import { cache } from "react";
+import { getServerAuthUser } from "@/shared/lib/get-server-auth-user";
 import type { MerchantRow } from "@repo/supabase/queries/merchants";
 import {
   getMerchantByUserId,
@@ -20,9 +21,7 @@ import { getActingStaffUserIdFromCookie } from "@repo/supabase/acting-staff";
 
 export type MerchantSessionWithBusiness = {
   user: NonNullable<
-    Awaited<
-      ReturnType<Awaited<ReturnType<typeof createClient>>["auth"]["getUser"]>
-    >["data"]["user"]
+    Awaited<ReturnType<typeof getServerAuthUser>>["data"]["user"]
   >;
   merchants: MerchantRow[];
   merchant: MerchantRow;
@@ -43,70 +42,69 @@ export type MerchantSessionForShell =
       activeBranch: null;
     };
 
-async function loadMerchantSession(requireBusiness: boolean) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    redirect("/merchant/login");
-  }
+const loadMerchantSession = cache(
+  async (): Promise<MerchantSessionForShell> => {
+    const {
+      data: { user },
+    } = await getServerAuthUser();
+    if (!user) {
+      redirect("/merchant/login");
+    }
 
-  const merchants = await getMerchantsByUserId(user.id);
-  if (merchants.length === 0) {
-    if (!requireBusiness) {
+    const merchants = await getMerchantsByUserId(user.id);
+    if (merchants.length === 0) {
       return {
         user,
         merchants: [],
         merchant: null,
         branches: [],
         activeBranch: null,
-      } satisfies MerchantSessionForShell;
+      };
     }
-    redirect("/merchant/add-business");
-  }
 
-  const merchant = await getMerchantByUserId(user.id);
-  if (!merchant) {
-    if (!requireBusiness) {
+    const merchant = await getMerchantByUserId(user.id);
+    if (!merchant) {
       return {
         user,
         merchants: [],
         merchant: null,
         branches: [],
         activeBranch: null,
-      } satisfies MerchantSessionForShell;
+      };
     }
-    redirect("/merchant/add-business");
-  }
 
-  const [branches, activeBranch, role, staff, actingStaffUserId] =
-    await Promise.all([
-      getActiveLocationsByMerchantId(merchant.id),
-      resolveActiveLocationForMerchant(merchant.id),
-      getMerchantRoleForUser(user.id, merchant.id),
-      listMerchantStaff(merchant.id),
-      getActingStaffUserIdFromCookie(),
-    ]);
+    const [branches, activeBranch, role, staff, actingStaffUserId] =
+      await Promise.all([
+        getActiveLocationsByMerchantId(merchant.id),
+        resolveActiveLocationForMerchant(merchant.id),
+        getMerchantRoleForUser(user.id, merchant.id),
+        listMerchantStaff(merchant.id),
+        getActingStaffUserIdFromCookie(),
+      ]);
 
-  return {
-    user,
-    merchants,
-    merchant,
-    branches,
-    activeBranch,
-    role: role ?? "cashier",
-    staff,
-    actingStaffUserId,
-  } satisfies MerchantSessionWithBusiness;
+    return {
+      user,
+      merchants,
+      merchant,
+      branches,
+      activeBranch,
+      role: role ?? "cashier",
+      staff,
+      actingStaffUserId,
+    };
+  },
+);
+
+/** For protected layout — allows add-business onboarding without a merchant yet. */
+export async function getMerchantSessionForShell(): Promise<MerchantSessionForShell> {
+  return loadMerchantSession();
 }
 
 /** Requires an active merchant; redirects to add-business or login when missing. */
 export async function getMerchantSessionData(): Promise<MerchantSessionWithBusiness> {
-  return loadMerchantSession(true) as Promise<MerchantSessionWithBusiness>;
-}
-
-/** For protected layout — allows add-business onboarding without a merchant yet. */
-export async function getMerchantSessionForShell(): Promise<MerchantSessionForShell> {
-  return loadMerchantSession(false);
+  const session = await loadMerchantSession();
+  if (!session.merchant) {
+    redirect("/merchant/add-business");
+  }
+  return session;
 }

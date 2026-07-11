@@ -14,6 +14,7 @@ import {
   BarChart3,
   Users,
   UserCog,
+  Wallet,
   X,
 } from "lucide-react";
 import { useId, useState } from "react";
@@ -49,6 +50,7 @@ const allNavItems = [
   { href: "/merchant/business", icon: Building2, labelKey: "business" as const, minRole: "owner" as const },
   { href: "/merchant/loyalty-card", icon: CreditCard, labelKey: "loyaltyCard" as const, minRole: "owner" as const },
   { href: "/merchant/staff", icon: UserCog, labelKey: "staff" as const, minRole: "owner" as const },
+  { href: "/merchant/billing", icon: Wallet, labelKey: "billing" as const, minRole: "owner" as const },
   { href: "/merchant/settings", icon: Settings, labelKey: "settings" as const, minRole: "manager" as const },
 ] as const;
 
@@ -107,6 +109,7 @@ export function MerchantShell({
       activeMerchantId={activeMerchantId}
       branches={branches}
       activeBranchId={activeBranchId}
+      role={role}
     />
   );
 

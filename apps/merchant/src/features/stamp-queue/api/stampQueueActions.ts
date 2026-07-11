@@ -14,6 +14,7 @@ import {
   getPendingStampSessions,
   rejectStampSession,
 } from "@repo/supabase/queries/stamps";
+import { evaluateSmartPromoAfterStampApproval } from "@repo/supabase/queries/smart-promo";
 import { createPendingRedemption } from "@repo/supabase/queries/redemptions";
 import type { ActionError } from "@repo/utils/action-error";
 import { fail, logActionFailure } from "@repo/utils/action-error";
@@ -107,6 +108,13 @@ export async function approveStampAction(
       amountSpent,
       approvedBy,
     });
+
+    try {
+      await evaluateSmartPromoAfterStampApproval(sessionId);
+    } catch (err) {
+      logActionFailure("evaluateSmartPromoAfterStampApproval", err);
+    }
+
     revalidateMerchantOpsPaths();
     return {};
   } catch (err) {

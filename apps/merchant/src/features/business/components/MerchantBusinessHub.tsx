@@ -16,6 +16,7 @@ import type { MerchantStatus } from "@repo/supabase/types";
 import { Check, MapPin } from "lucide-react";
 import { switchActiveMerchantAction } from "@/features/business/api/businessActions";
 import { MerchantBusinessDetailCard } from "@/features/business/components/MerchantBusinessDetailCard";
+import { EditBusinessProfileForm } from "@/features/business/components/EditBusinessProfileForm";
 import { BranchList } from "@/features/business/components/BranchList";
 import {
   MERCHANT_CHIP,
@@ -228,7 +229,16 @@ export function MerchantBusinessHub({
                 {t("tabs.loyaltyCard")}
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="overview" className="mt-4">
+            <TabsContent value="overview" className="mt-4 space-y-4">
+              <Card className="merchant-glass-card">
+                <CardHeader>
+                  <CardTitle className="text-lg">{t("profileEdit.title")}</CardTitle>
+                  <p className="text-sm merchant-body-muted">{t("profileEdit.subtitle")}</p>
+                </CardHeader>
+                <CardContent>
+                  <EditBusinessProfileForm merchant={activeMerchant} />
+                </CardContent>
+              </Card>
               <MerchantBusinessDetailCard merchant={activeMerchant} />
             </TabsContent>
             <TabsContent value="branches" className="mt-4">

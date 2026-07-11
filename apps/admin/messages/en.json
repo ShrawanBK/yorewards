@@ -116,6 +116,7 @@
     },
     "status": {
       "pending": "Pending",
+      "pending_verification": "Pending verification",
       "active": "Active",
       "suspended": "Suspended",
       "rejected": "Rejected"
@@ -123,6 +124,15 @@
     "empty": {
       "title": "Nothing here",
       "description": "No merchants match this filter yet."
+    },
+    "verification": {
+      "title": "Verification queue",
+      "subtitle": "Review uploaded business documents for the verified badge.",
+      "empty": "No documents waiting for review.",
+      "viewDocument": "View document",
+      "approve": "Approve",
+      "reject": "Reject",
+      "defaultRejectReason": "Document could not be verified — please resubmit a clearer copy."
     },
     "registered": "Registered {date}",
     "approvedOn": "Approved {date}",

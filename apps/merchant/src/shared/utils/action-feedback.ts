@@ -14,6 +14,11 @@ export function showActionSuccess(
   toast.success(t(messageKey, values));
 }
 
+/** Warning toast for partial success (e.g. saved but email not sent). */
+export function showActionWarning(message: string) {
+  toast.warning(message);
+}
+
 /** Error toast when inline feedback is easy to miss (e.g. sidebar switchers). */
 export function showActionError(message: string) {
   toast.error(message);

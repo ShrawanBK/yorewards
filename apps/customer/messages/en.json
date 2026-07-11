@@ -323,6 +323,7 @@
       "SCAN_CAMERA_DENIED": "Camera access is required to scan.",
       "STAMP_BRANCH_NOT_ALLOWED": "This branch can't stamp on this card right now.",
       "STAMP_RATE_LIMITED": "Too many scan attempts — wait a moment and try again.",
+      "PLAN_LIMIT_CUSTOMERS": "This business has reached its customer limit on the Free plan. Ask the merchant to upgrade.",
       "STAMP_SESSION_NOT_FOUND": "Stamp request not found.",
       "OTP_SEND_FAILED": "We couldn't send the verification code — please try again.",
       "OTP_INVALID": "That code isn't correct — check the SMS and try again.",

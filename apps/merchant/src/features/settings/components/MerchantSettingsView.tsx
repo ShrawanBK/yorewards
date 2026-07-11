@@ -11,6 +11,12 @@ import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 import { MERCHANT_STATUS_BADGE } from "@/shared/constants/status-badges";
 import { ChangeEmailForm } from "@/features/account/components/ChangeEmailForm";
 import { ChangePasswordForm } from "@/features/account/components/ChangePasswordForm";
+import { VerificationUploadForm } from "@/features/verification";
+import { SmartPromoSettingsForm } from "@/features/promotions/components/SmartPromoSettingsForm";
+import {
+  merchantCanUseSmartPromo,
+  merchantCanUseVerifiedBadge,
+} from "@repo/utils/plan-limits";
 
 type MerchantSettingsViewProps = {
   email: string;
@@ -31,6 +37,8 @@ export async function MerchantSettingsView({
   const tBusiness = await getTranslations("business");
   const statusBadge = MERCHANT_STATUS_BADGE[merchant.status];
   const privacyUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/privacy`;
+  const canVerify = merchantCanUseVerifiedBadge(merchant.subscription_tier);
+  const canSmartPromo = merchantCanUseSmartPromo(merchant.subscription_tier);
 
   return (
     <div className="space-y-6">
@@ -105,6 +113,39 @@ export async function MerchantSettingsView({
           </div>
         </CardContent>
       </Card>
+
+      {canSmartPromo ? (
+        <Card className="merchant-glass-card">
+          <CardHeader>
+            <CardTitle className="text-lg">{t("promotions.title")}</CardTitle>
+            <CardDescription>{t("promotions.subtitle")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SmartPromoSettingsForm
+              merchantId={merchant.id}
+              enabled={merchant.smart_promo_enabled}
+              threshold={merchant.smart_promo_threshold}
+            />
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {canVerify ? (
+        <Card className="merchant-glass-card">
+          <CardHeader>
+            <CardTitle className="text-lg">{t("verification.title")}</CardTitle>
+            <CardDescription>{t("verification.subtitle")}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm merchant-body-muted">
+              {t("verification.status", {
+                status: merchant.verification_status,
+              })}
+            </p>
+            <VerificationUploadForm merchantId={merchant.id} />
+          </CardContent>
+        </Card>
+      ) : null}
 
       <Card className="merchant-glass-card">
         <CardHeader>

@@ -18,10 +18,11 @@ export function ChangePasswordForm() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const form = event.currentTarget;
     setPending(true);
     setError(null);
 
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(form);
     const result = await changePasswordAction(formData);
 
     setPending(false);
@@ -31,7 +32,7 @@ export function ChangePasswordForm() {
     }
 
     showActionSuccess(t, "success");
-    event.currentTarget.reset();
+    form.reset();
   }
 
   return (

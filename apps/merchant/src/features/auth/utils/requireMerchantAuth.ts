@@ -1,12 +1,11 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@repo/supabase/server";
+import { getServerAuthUser } from "@/shared/lib/get-server-auth-user";
 import { getMerchantsByUserId } from "@repo/supabase/queries/merchants";
 
 export async function requireMerchantSession() {
-  const supabase = await createClient();
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getServerAuthUser();
   if (!user) {
     redirect("/merchant/login");
   }

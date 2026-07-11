@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { getMerchantSessionData } from "@/features/dashboard/api/getMerchantSessionData";
 import { MerchantBusinessHub } from "@/features/business";
+import { requireOwnerForMerchantRoute } from "@/shared/utils/require-owner-route";
 import {
   getActiveLocationCountsByMerchantIds,
   getLocationsByMerchantId,
@@ -11,6 +12,7 @@ import { PageHeader } from "@/shared/ui/PageHeader";
 export default async function BusinessPage() {
   const t = await getTranslations("business");
   const { merchants, merchant } = await getMerchantSessionData();
+  await requireOwnerForMerchantRoute(merchant);
 
   const [branchCounts, locations, loyaltyCard] = await Promise.all([
     getActiveLocationCountsByMerchantIds(merchants.map((m) => m.id)),

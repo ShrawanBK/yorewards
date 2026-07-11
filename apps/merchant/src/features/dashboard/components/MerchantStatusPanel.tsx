@@ -16,6 +16,7 @@ import { MERCHANT_STATUS_BADGE } from "@/shared/constants/status-badges";
 
 const STATUS_ICON: Record<MerchantStatus, typeof Clock> = {
   pending: Clock,
+  pending_verification: Clock,
   active: CheckCircle2,
   rejected: XCircle,
   suspended: ShieldAlert,
@@ -36,7 +37,8 @@ export async function MerchantStatusPanel({
   const badge = MERCHANT_STATUS_BADGE[status];
   const Icon = STATUS_ICON[status];
 
-  const showConfigureCard = status === "pending";
+  const showConfigureCard =
+    status === "pending" || status === "pending_verification";
   const showSettingsLink = status !== "active";
 
   return (

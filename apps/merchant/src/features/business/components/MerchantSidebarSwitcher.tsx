@@ -8,6 +8,7 @@ import { Building2, MapPin, Plus } from "lucide-react";
 import { cn } from "@repo/ui/lib/utils";
 import type { MerchantRow } from "@repo/supabase/queries/merchants";
 import type { MerchantLocationRow } from "@repo/supabase/queries/locations";
+import type { MerchantStaffRole } from "@repo/supabase/types";
 import { switchActiveMerchantAction } from "@/features/business/api/businessActions";
 import { switchActiveBranchAction } from "@/features/business/api/locationActions";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
@@ -21,6 +22,7 @@ type MerchantSidebarSwitcherProps = {
   activeMerchantId: string;
   branches: MerchantLocationRow[];
   activeBranchId: string | null;
+  role: MerchantStaffRole;
   className?: string;
 };
 
@@ -32,9 +34,11 @@ export function MerchantSidebarSwitcher({
   activeMerchantId,
   branches,
   activeBranchId,
+  role,
   className,
 }: MerchantSidebarSwitcherProps) {
   const t = useTranslations("nav");
+  const tStaff = useTranslations("staff");
   const tBranches = useTranslations("branches");
   const tErrors = useTranslations("errors.actions");
   const router = useRouter();
@@ -65,7 +69,10 @@ export function MerchantSidebarSwitcher({
       if (locationId === activeBranchId || isPending) return;
       const branch = branches.find((b) => b.id === locationId)?.name ?? "";
       startTransition(async () => {
-        const result = await switchActiveBranchAction(activeMerchantId, locationId);
+        const result = await switchActiveBranchAction(
+          activeMerchantId,
+          locationId,
+        );
         if (result?.error) {
           showActionError(resolveActionError(tErrors, result.error));
           return;
@@ -94,6 +101,7 @@ export function MerchantSidebarSwitcher({
             value={activeMerchantId}
             disabled={isPending}
             onChange={(e) => switchBusiness(e.target.value)}
+            aria-describedby="sidebar-business-role"
           >
             {merchants.map((merchant) => (
               <option key={merchant.id} value={merchant.id}>
@@ -102,10 +110,19 @@ export function MerchantSidebarSwitcher({
             ))}
           </select>
         ) : (
-          <p className="truncate px-0.5 text-sm font-medium text-sidebar-foreground">
+          <p
+            id="sidebar-business-select"
+            className="truncate px-0.5 text-sm font-medium text-sidebar-foreground"
+          >
             {merchants[0]?.business_name}
           </p>
         )}
+        <p
+          id="sidebar-business-role"
+          className="px-0.5 text-xs text-sidebar-foreground/70"
+        >
+          {t("roleInBusiness", { role: tStaff(`roles.${role}`) })}
+        </p>
       </div>
 
       {showBranchSwitcher ? (
@@ -128,9 +145,7 @@ export function MerchantSidebarSwitcher({
             {branches.map((branch) => (
               <option key={branch.id} value={branch.id}>
                 {branch.name}
-                {branch.is_primary
-                  ? ` (${tBranches("badges.primary")})`
-                  : ""}
+                {branch.is_primary ? ` (${tBranches("badges.primary")})` : ""}
               </option>
             ))}
           </select>

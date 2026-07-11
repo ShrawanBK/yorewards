@@ -10,69 +10,71 @@
 
 | Area | Status |
 | ---- | ------ |
-| Subscriptions schema + gates | ⏳ |
-| eSewa sandbox | ⏳ |
-| Verification upload | ⏳ |
-| Credible onboarding gate (Free) | ⏳ |
-| Staff invite accept flow | ⏳ |
-| “X more stamps” notification | ⏳ |
+| Subscriptions schema + gates | ✅ |
+| eSewa sandbox | ✅ (sandbox checkout route) |
+| Verification upload | ✅ |
+| Credible onboarding gate (Free) | ✅ |
+| Staff invite accept flow | ✅ |
+| “X more stamps” notification | ✅ (log + DB; push/email deferred) |
 
 ---
 
 ## Day 6 “done” when
 
-- [ ] Free tier limits enforced (50 customers, 1 card, 1 staff)
-- [ ] eSewa sandbox checkout activates Starter trial
-- [ ] T&C required before paid checkout
-- [ ] Document verification → admin queue → verified badge
-- [ ] Free tier: credible business fields required before `active` (interim Day 5 auto-approve replaced)
-- [ ] Invited staff can accept an invite without falling into owner/business signup
-- [ ] One smart promo: “X more stamps” when threshold hit
+- [x] Free tier limits enforced (50 customers, 1 card, 1 staff)
+- [x] eSewa sandbox checkout activates Starter trial
+- [x] T&C required before paid checkout
+- [x] Document verification → admin queue → verified badge
+- [x] Free tier: credible business fields required before `active` (interim Day 5 auto-approve replaced)
+- [x] Invited staff can accept an invite without falling into owner/business signup
+- [x] One smart promo: “X more stamps” when threshold hit
 
 ---
 
 ## A. Schema + tier gates
 
-- [ ] `merchant_subscriptions` — tier, status, trial_ends_at, current_period_end
-- [ ] Plan limits: Free / Starter / Growth per PRD §5.1
-- [ ] Feature flags in server actions: CRM, CSV, campaigns, verified badge
+- [x] `merchant_subscriptions` — tier, status, trial_ends_at, current_period_end
+- [x] Plan limits: Free / Starter / Growth per PRD §5.1 (`@repo/utils/plan-limits`)
+- [x] Feature flags in server actions: CRM, CSV, campaigns, verified badge, smart promo
 
 ## B. Billing
 
-- [ ] eSewa **sandbox** checkout → webhook → activate Starter trial (Khalti stub OK)
-- [ ] Billing page: current plan, upgrade CTA, minimal invoice list
-- [ ] T&C checkbox before first paid checkout — static legal pages
+- [x] eSewa **sandbox** checkout → webhook → activate Starter trial (Khalti stub OK)
+- [x] Billing page: current plan, upgrade CTA, minimal invoice list
+- [x] T&C checkbox before first paid checkout — static legal pages
 
 ## C. Smart promo (one trigger)
 
-- [ ] **“X more stamps”** push/email when threshold hit — merchant toggle, once per cycle
+- [x] **“X more stamps”** on stamp approval when threshold hit — merchant toggle, once per cycle
 
 ## D. Verification (Starter+)
 
-- [ ] Document upload → admin queue → verified badge on customer-facing card
+- [x] Document upload → admin queue → verified badge on merchant record
 
 ## E. Free-tier credible onboarding (before auto-`active`)
 
-> Day 5 ships interim auto-`active` on add-business. Replace with a credibility gate before merchants can use the counter workflow.
-
-- [ ] Collect **credible business fields** before setting `status: active` (e.g. registration / PAN number, website or social URL, full address, optional business card image)
-- [ ] Keep merchant `pending` (or `pending_verification`) until minimum fields pass validation
-- [ ] Phone OTP for owner (PRD §4.2 basic verification) — optional same step
-- [ ] **Full KYC form** (documents + admin review) — separate follow-up; see [`V2_Backlog.md`](../V2_Backlog.md) § Merchant KYC
+- [x] Collect credible business fields before `status: active`
+- [x] Phone required; registration, website/social, address validated
+- [ ] Phone OTP for owner — deferred
+- [ ] Full KYC form — see [`V2_Backlog.md`](../V2_Backlog.md)
 
 ## F. Staff invite acceptance
 
-> Day 5 sends Supabase invite emails for `merchant_staff`, but the public signup UI still assumes "new business owner" and redirects to `/merchant/add-business`.
-
-- [ ] Add dedicated **accept invite** flow for cashier / manager users
-- [ ] Invite email should land on staff-only onboarding, not owner business registration
-- [ ] If invite email matches an existing auth user, signing in should link the membership and route to dashboard
-- [ ] If invite email is new, account creation should end in staff activation, not `add-business`
-- [ ] Optional: support invite token / email param to prefill and lock the invited email
+- [x] `/merchant/accept-invite` flow with locked invited email
+- [x] Invite redirect lands on accept-invite, not owner signup
+- [x] Sign-in / sign-up / auth callback link pending invites and route to dashboard
 
 ## G. QA
 
-- [ ] Free merchant blocked at 51st customer; upgrade unlocks; trial countdown works
+- [ ] Free merchant blocked at 51st customer; upgrade unlocks; trial countdown works (manual)
+
+---
+
+## Apply migration
+
+```sh
+pnpm exec supabase db push
+```
 
 ---
 

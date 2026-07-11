@@ -303,6 +303,7 @@ export const MERCHANT_STATUS_BADGE: Record<
   }
 > = {
   pending: { variant: "secondary" },
+  pending_verification: { variant: "secondary" },
   active: { variant: "default", className: "bg-brand-green text-white" },
   suspended: { variant: "outline" },
   rejected: { variant: "destructive" },

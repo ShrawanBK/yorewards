@@ -112,7 +112,21 @@ export type ActionErrorCode =
   | "PASSWORD_UPDATE_FAILED"
   | "EMAIL_UPDATE_FAILED"
   | "PASSWORD_CONFIRM_MISMATCH"
-  | "EMAIL_INVALID";
+  | "EMAIL_INVALID"
+  | "PLAN_LIMIT_CUSTOMERS"
+  | "PLAN_LIMIT_STAFF"
+  | "PLAN_LIMIT_CARDS"
+  | "PLAN_FEATURE_CRM"
+  | "PLAN_FEATURE_REQUIRED"
+  | "BILLING_CHECKOUT_FAILED"
+  | "BILLING_TERMS_REQUIRED"
+  | "BILLING_TRIAL_ALREADY_USED"
+  | "VERIFICATION_UPLOAD_FAILED"
+  | "VERIFICATION_DOC_REQUIRED"
+  | "ONBOARDING_FIELDS_REQUIRED"
+  | "STAFF_INVITE_NOT_FOUND"
+  | "STAFF_INVITE_EMAIL_MISMATCH"
+  | "STAFF_INVITE_EMAIL_DEFERRED";
 
 export type ActionError = {
   code: ActionErrorCode;
@@ -153,10 +167,10 @@ export function mapAuthErrorCode(message: string): ActionErrorCode {
     return "INVALID_CREDENTIALS";
   }
   if (lower.includes("already") && lower.includes("registered")) {
-    return "EMAIL_ALREADY_EXISTS";
+    return "SIGN_UP_FAILED";
   }
   if (lower.includes("already") && lower.includes("exists")) {
-    return "EMAIL_ALREADY_EXISTS";
+    return "SIGN_UP_FAILED";
   }
   return "AUTH_FAILED";
 }

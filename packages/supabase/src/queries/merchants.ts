@@ -79,10 +79,6 @@ export async function resolveActiveMerchantForUser(
   const match = targetId ? merchants.find((m) => m.id === targetId) : undefined;
   const active = match ?? merchants[0]!;
 
-  if (!targetId || targetId !== active.id) {
-    await setActiveMerchantIdCookie(active.id);
-  }
-
   return active;
 }
 

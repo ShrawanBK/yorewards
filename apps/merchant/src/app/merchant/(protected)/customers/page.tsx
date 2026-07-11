@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { merchantCanUseCrm } from "@repo/utils/plan-limits";
 import { getLocationsByMerchantId } from "@repo/supabase/queries/locations";
 import { getMerchantCustomers } from "@repo/supabase/queries/merchant-customers";
-import { MerchantCustomersView } from "@/features/customers";
+import { CrmUpgradeView, MerchantCustomersView } from "@/features/customers";
 import { getMerchantSessionData } from "@/features/dashboard/api/getMerchantSessionData";
 import { PageHeader } from "@/shared/ui/PageHeader";
 
@@ -17,6 +18,11 @@ async function CustomersContent({
   branchId?: string;
 }) {
   const { merchant } = await getMerchantSessionData();
+
+  if (!merchantCanUseCrm(merchant.subscription_tier)) {
+    return <CrmUpgradeView />;
+  }
+
   const [locations, customers] = await Promise.all([
     getLocationsByMerchantId(merchant.id),
     getMerchantCustomers(

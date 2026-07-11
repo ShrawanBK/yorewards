@@ -1,4 +1,5 @@
 import { createServiceRoleClient } from "../service-role";
+import { assertMerchantCustomerLimit } from "./merchant-limits";
 import type { CurrencyCode, RewardStatus } from "../types";
 
 export type CustomerWalletCard = {
@@ -173,6 +174,11 @@ export async function getOrCreateCustomerCard(
 
   if (existingError) throw existingError;
   if (existing) return existing.id;
+
+  const limit = await assertMerchantCustomerLimit(merchantId);
+  if (!limit.ok) {
+    throw new Error("plan_limit_customers");
+  }
 
   const { data: created, error: createError } = await supabase
     .from("customer_cards")

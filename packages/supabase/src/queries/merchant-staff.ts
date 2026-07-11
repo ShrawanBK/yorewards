@@ -1,6 +1,7 @@
 import { createServiceRoleClient } from "../service-role";
 import type { MerchantStaffRole, MerchantStaffStatus } from "../types";
 import type { MerchantRow } from "./merchants";
+import { deliverStaffInviteEmail } from "./staff-invite-delivery";
 
 export type MerchantStaffRow = {
   id: string;
@@ -117,9 +118,17 @@ export async function inviteMerchantStaff(input: {
   email: string;
   role: Exclude<MerchantStaffRole, "owner">;
   displayName?: string | null;
-}): Promise<MerchantStaffRow> {
+}): Promise<{ staff: MerchantStaffRow; emailSent: boolean }> {
   const supabase = createServiceRoleClient();
   const normalizedEmail = input.email.trim().toLowerCase();
+
+  const { data: merchant, error: merchantError } = await supabase
+    .from("merchants")
+    .select("business_name")
+    .eq("id", input.merchantId)
+    .maybeSingle();
+
+  if (merchantError) throw merchantError;
 
   const { data, error } = await supabase
     .from("merchant_staff")
@@ -137,16 +146,61 @@ export async function inviteMerchantStaff(input: {
 
   const merchantUrl =
     process.env.NEXT_PUBLIC_MERCHANT_URL ?? "http://localhost:3001";
+  const inviteUrl = `${merchantUrl}/merchant/accept-invite?email=${encodeURIComponent(normalizedEmail)}`;
 
-  try {
-    await supabase.auth.admin.inviteUserByEmail(normalizedEmail, {
-      redirectTo: `${merchantUrl}/merchant/login`,
-    });
-  } catch {
-    // Existing auth users link on next sign-in via invited_email match.
+  const emailResult = await deliverStaffInviteEmail({
+    email: normalizedEmail,
+    inviteUrl,
+    businessName: merchant?.business_name ?? "your team",
+    role: input.role,
+    displayName: input.displayName,
+  });
+
+  return {
+    staff: data as MerchantStaffRow,
+    emailSent: emailResult.emailSent,
+  };
+}
+
+export async function resendMerchantStaffInvite(input: {
+  merchantId: string;
+  staffId: string;
+}): Promise<{ emailSent: boolean }> {
+  const supabase = createServiceRoleClient();
+
+  const { data: staff, error: staffError } = await supabase
+    .from("merchant_staff")
+    .select("id, invited_email, display_name, role, status, merchant_id")
+    .eq("id", input.staffId)
+    .eq("merchant_id", input.merchantId)
+    .maybeSingle();
+
+  if (staffError) throw staffError;
+  if (!staff || staff.status !== "pending") {
+    throw new Error("staff_invite_not_pending");
   }
 
-  return data as MerchantStaffRow;
+  const { data: merchant, error: merchantError } = await supabase
+    .from("merchants")
+    .select("business_name")
+    .eq("id", input.merchantId)
+    .maybeSingle();
+
+  if (merchantError) throw merchantError;
+
+  const merchantUrl =
+    process.env.NEXT_PUBLIC_MERCHANT_URL ?? "http://localhost:3001";
+  const inviteUrl = `${merchantUrl}/merchant/accept-invite?email=${encodeURIComponent(staff.invited_email)}`;
+
+  const emailResult = await deliverStaffInviteEmail({
+    email: staff.invited_email,
+    inviteUrl,
+    businessName: merchant?.business_name ?? "your team",
+    role: staff.role === "manager" ? "manager" : "cashier",
+    displayName: staff.display_name,
+  });
+
+  return { emailSent: emailResult.emailSent };
 }
 
 export async function linkPendingStaffInvites(
@@ -214,4 +268,36 @@ export async function removeStaffMember(staffId: string): Promise<void> {
     .neq("role", "owner");
 
   if (error) throw error;
+}
+
+export async function hasPendingStaffInvite(
+  email: string,
+): Promise<boolean> {
+  const supabase = createServiceRoleClient();
+  const normalizedEmail = email.trim().toLowerCase();
+  const { count, error } = await supabase
+    .from("merchant_staff")
+    .select("id", { count: "exact", head: true })
+    .eq("invited_email", normalizedEmail)
+    .eq("status", "pending")
+    .is("user_id", null);
+
+  if (error) throw error;
+  return (count ?? 0) > 0;
+}
+
+export async function getPendingStaffInvitesForEmail(
+  email: string,
+): Promise<MerchantStaffRow[]> {
+  const supabase = createServiceRoleClient();
+  const normalizedEmail = email.trim().toLowerCase();
+  const { data, error } = await supabase
+    .from("merchant_staff")
+    .select("*")
+    .eq("invited_email", normalizedEmail)
+    .eq("status", "pending")
+    .is("user_id", null);
+
+  if (error) throw error;
+  return (data ?? []) as MerchantStaffRow[];
 }

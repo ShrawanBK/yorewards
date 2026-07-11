@@ -441,8 +441,4 @@ export async function upsertMerchantCustomerNote(
   if (error) throw error;
 }
 
-export function merchantCanExportCsv(
-  tier: string | null | undefined,
-): boolean {
-  return tier === "starter" || tier === "growth" || tier === "enterprise";
-}
+export { merchantCanExportCsv } from "@repo/utils/plan-limits";

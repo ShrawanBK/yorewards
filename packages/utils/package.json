@@ -8,7 +8,8 @@
     "./otp": "./src/otp.ts",
     "./staff-pin": "./src/staff-pin.ts",
     "./merchant-email": "./src/merchant-email.ts",
-    "./action-error": "./src/action-error.ts"
+    "./action-error": "./src/action-error.ts",
+    "./plan-limits": "./src/plan-limits.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

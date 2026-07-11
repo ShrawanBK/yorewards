@@ -10,10 +10,11 @@ import type { MerchantStaffRow } from "@repo/supabase/queries/merchant-staff";
 import {
   inviteStaffAction,
   removeStaffAction,
+  resendStaffInviteAction,
 } from "@/features/staff/api/staffActions";
-import { isActionFailure } from "@/shared/types/action-result";
-import { resolveActionError } from "@/shared/utils/resolve-action-error";
-import { showActionSuccess } from "@/shared/utils/action-feedback";
+import { isActionFailure, type ActionSuccess } from "@/shared/types/action-result";
+import { resolveActionError, resolveActionWarning } from "@/shared/utils/resolve-action-error";
+import { showActionSuccess, showActionWarning } from "@/shared/utils/action-feedback";
 
 export function StaffManagementView({
   merchantId,
@@ -28,20 +29,48 @@ export function StaffManagementView({
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
+  const [resendingId, setResendingId] = useState<string | null>(null);
+
+  function showInviteResult(result: ActionSuccess) {
+    if (result.warning) {
+      showActionWarning(resolveActionWarning(tErrors, result.warning));
+      showActionSuccess(t, "inviteSaved");
+      return;
+    }
+    showActionSuccess(t, "inviteSuccess");
+  }
+
   async function handleInvite(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const form = event.currentTarget;
     setPending(true);
     setError(null);
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(form);
     const result = await inviteStaffAction(merchantId, formData);
     setPending(false);
     if (isActionFailure(result)) {
       setError(resolveActionError(tErrors, result.error));
       return;
     }
-    showActionSuccess(t, "inviteSuccess");
-    event.currentTarget.reset();
+    showInviteResult(result);
+    form.reset();
     router.refresh();
+  }
+
+  async function handleResend(staffId: string) {
+    setResendingId(staffId);
+    setError(null);
+    const result = await resendStaffInviteAction(merchantId, staffId);
+    setResendingId(null);
+    if (isActionFailure(result)) {
+      setError(resolveActionError(tErrors, result.error));
+      return;
+    }
+    if (result.warning) {
+      showActionWarning(resolveActionWarning(tErrors, result.warning));
+      return;
+    }
+    showActionSuccess(t, "resendSuccess");
   }
 
   async function handleRemove(staffId: string) {
@@ -107,15 +136,29 @@ export function StaffManagementView({
                 </p>
               </div>
               {member.role !== "owner" ? (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="min-h-11"
-                  onClick={() => handleRemove(member.id)}
-                >
-                  {t("remove")}
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  {member.status === "pending" ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="min-h-11"
+                      disabled={resendingId === member.id}
+                      onClick={() => handleResend(member.id)}
+                    >
+                      {resendingId === member.id ? t("resending") : t("resend")}
+                    </Button>
+                  ) : null}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="min-h-11"
+                    onClick={() => handleRemove(member.id)}
+                  >
+                    {t("remove")}
+                  </Button>
+                </div>
               ) : null}
             </li>
           ))}

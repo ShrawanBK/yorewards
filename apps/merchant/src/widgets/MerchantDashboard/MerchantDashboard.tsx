@@ -9,6 +9,7 @@ import { getTranslations } from "next-intl/server";
 import { getMerchantRoleForUser } from "@repo/supabase/queries/merchant-staff";
 import { MerchantStatusPanel } from "@/features/dashboard";
 import { SetupChecklist } from "@/features/onboarding/components/SetupChecklist";
+import { isMerchantProfileComplete } from "@/features/business/utils/credibleOnboarding";
 import { StampQueuePanel } from "@/features/stamp-queue";
 import { PageHeader } from "@/shared/ui/PageHeader";
 
@@ -89,11 +90,13 @@ export async function MerchantDashboard({
         description={t("subtitle")}
       />
 
-      <SetupChecklist
-        profileComplete={Boolean(merchant.phone && merchant.category)}
-        loyaltyCardConfigured={metrics.loyaltyCardConfigured}
-        merchantActive={merchant.status === "active"}
-      />
+      {role === "owner" ? (
+        <SetupChecklist
+          profileComplete={isMerchantProfileComplete(merchant)}
+          loyaltyCardConfigured={metrics.loyaltyCardConfigured}
+          merchantActive={merchant.status === "active"}
+        />
+      ) : null}
 
       <StampQueuePanel
         merchantId={merchant.id}

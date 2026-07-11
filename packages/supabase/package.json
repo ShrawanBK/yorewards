@@ -32,7 +32,13 @@
     "./queries/merchant-customers": "./src/queries/merchant-customers.ts",
     "./queries/customer-insights": "./src/queries/customer-insights.ts",
     "./queries/merchant-spend-analytics": "./src/queries/merchant-spend-analytics.ts",
+    "./queries/auth-admin": "./src/queries/auth-admin.ts",
+    "./queries/staff-invite-delivery": "./src/queries/staff-invite-delivery.ts",
     "./queries/merchant-staff": "./src/queries/merchant-staff.ts",
+    "./queries/merchant-subscriptions": "./src/queries/merchant-subscriptions.ts",
+    "./queries/merchant-limits": "./src/queries/merchant-limits.ts",
+    "./queries/merchant-verification": "./src/queries/merchant-verification.ts",
+    "./queries/smart-promo": "./src/queries/smart-promo.ts",
     "./utils/local-date": "./src/utils/local-date.ts"
   },
   "scripts": {

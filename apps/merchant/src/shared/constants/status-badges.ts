@@ -13,6 +13,11 @@ export const MERCHANT_STATUS_BADGE: Record<
     className:
       "merchant-chip text-amber-950 border-amber-700/45 bg-amber-100 dark:border-amber-500/55 dark:bg-amber-950/45 dark:text-amber-100",
   },
+  pending_verification: {
+    variant: "outline",
+    className:
+      "merchant-chip text-amber-950 border-amber-700/45 bg-amber-100 dark:border-amber-500/55 dark:bg-amber-950/45 dark:text-amber-100",
+  },
   active: {
     variant: "default",
     className:

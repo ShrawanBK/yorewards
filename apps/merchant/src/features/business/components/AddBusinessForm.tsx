@@ -10,6 +10,7 @@ import { Input } from "@repo/ui/input";
 import { Field } from "@repo/ui/field";
 import { addBusinessAction } from "@/features/business/api/businessActions";
 import { isValidMerchantPhone } from "@/features/business/utils/phoneSchema";
+import { isCredibleWebsiteOrSocial } from "@/features/business/utils/credibleOnboarding";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
 
 export function AddBusinessForm({ ownerEmail }: { ownerEmail: string }) {
@@ -24,7 +25,17 @@ export function AddBusinessForm({ ownerEmail }: { ownerEmail: string }) {
           business_name: z.string().min(2, t("errors.businessName")),
           category: z.string().min(2, t("errors.category")),
           country: z.enum(["NP", "FI"]),
-          phone: z.string().optional(),
+          phone: z.string().min(1, t("errors.phoneRequired")),
+          registration_number: z
+            .string()
+            .min(3, t("errors.registrationNumber")),
+          website_url: z
+            .string()
+            .min(4, t("errors.websiteUrl"))
+            .refine(isCredibleWebsiteOrSocial, t("errors.websiteUrl")),
+          business_address: z
+            .string()
+            .min(5, t("errors.businessAddress")),
         })
         .superRefine((data, ctx) => {
           if (!isValidMerchantPhone(data.phone, data.country)) {
@@ -79,6 +90,41 @@ export function AddBusinessForm({ ownerEmail }: { ownerEmail: string }) {
           {...form.register("category")}
         />
       </Field>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field
+          label={t("fields.registrationNumber")}
+          htmlFor="registration_number"
+          error={form.formState.errors.registration_number?.message}
+        >
+          <Input
+            id="registration_number"
+            placeholder={t("placeholders.registrationNumber")}
+            {...form.register("registration_number")}
+          />
+        </Field>
+        <Field
+          label={t("fields.websiteUrl")}
+          htmlFor="website_url"
+          error={form.formState.errors.website_url?.message}
+        >
+          <Input
+            id="website_url"
+            placeholder={t("placeholders.websiteUrl")}
+            {...form.register("website_url")}
+          />
+        </Field>
+      </div>
+      <Field
+        label={t("fields.businessAddress")}
+        htmlFor="business_address"
+        error={form.formState.errors.business_address?.message}
+      >
+        <Input
+          id="business_address"
+          placeholder={t("placeholders.businessAddress")}
+          {...form.register("business_address")}
+        />
+      </Field>
       <Field label={t("fields.country")} htmlFor="country">
         <select
           id="country"
@@ -90,7 +136,7 @@ export function AddBusinessForm({ ownerEmail }: { ownerEmail: string }) {
         </select>
       </Field>
       <Field
-        label={t("fields.phoneOptional")}
+        label={t("fields.phone")}
         htmlFor="phone"
         error={form.formState.errors.phone?.message}
       >
@@ -105,7 +151,12 @@ export function AddBusinessForm({ ownerEmail }: { ownerEmail: string }) {
           {...form.register("phone")}
         />
       </Field>
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      <p className="text-sm merchant-body-muted">{t("credibleHint")}</p>
+      {error ? (
+        <p className="text-sm text-destructive" role="alert">
+          {error}
+        </p>
+      ) : null}
       <Button
         type="submit"
         className="w-full bg-primary hover:bg-primary/90 sm:w-auto"

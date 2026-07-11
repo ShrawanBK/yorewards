@@ -1,11 +1,13 @@
 import { LoyaltyCardPageView } from "@/features/loyalty-card";
 import { getMerchantSessionData } from "@/features/dashboard/api/getMerchantSessionData";
+import { requireOwnerForMerchantRoute } from "@/shared/utils/require-owner-route";
 import { getActiveLocationsByMerchantId } from "@repo/supabase/queries/locations";
 import { getLoyaltyCardByMerchantId } from "@repo/supabase/queries/loyalty-cards";
 import { getLoyaltyCardLocationRules } from "@repo/supabase/queries/loyalty-card-locations";
 
 export default async function LoyaltyCardPage() {
   const { merchant } = await getMerchantSessionData();
+  await requireOwnerForMerchantRoute(merchant);
   const loyaltyCard = await getLoyaltyCardByMerchantId(merchant.id);
   const [locations, locationRules] = await Promise.all([
     getActiveLocationsByMerchantId(merchant.id),

@@ -2,11 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@repo/supabase/server";
+import { assertMerchantStaffLimit } from "@repo/supabase/queries/merchant-limits";
 import {
   getStaffMemberByUserId,
   inviteMerchantStaff,
   listMerchantStaff,
   removeStaffMember,
+  resendMerchantStaffInvite,
   updateStaffPin,
 } from "@repo/supabase/queries/merchant-staff";
 import type { MerchantStaffRole } from "@repo/supabase/types";
@@ -64,17 +66,51 @@ export async function inviteStaffAction(
   if (!email) return fail("EMAIL_INVALID");
   if (role !== "cashier" && role !== "manager") return fail("FORBIDDEN");
 
+  const limit = await assertMerchantStaffLimit(merchantId);
+  if (!limit.ok) {
+    return fail("PLAN_LIMIT_STAFF", { limit: limit.limit });
+  }
+
   try {
-    await inviteMerchantStaff({
+    const { emailSent } = await inviteMerchantStaff({
       merchantId,
       email,
       role,
       displayName: displayName || null,
     });
     revalidatePath("/merchant/staff");
+    if (!emailSent) {
+      return { warning: { code: "STAFF_INVITE_EMAIL_DEFERRED" } };
+    }
     return {};
   } catch (err) {
     logActionFailure("inviteStaff", err);
+    return fail("STAFF_INVITE_FAILED");
+  }
+}
+
+export async function resendStaffInviteAction(
+  merchantId: string,
+  staffId: string,
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return fail("UNAUTHORIZED");
+
+  const access = await assertMerchantAccess(user.id, merchantId, "owner");
+  if ("error" in access) return access;
+
+  try {
+    const { emailSent } = await resendMerchantStaffInvite({ merchantId, staffId });
+    revalidatePath("/merchant/staff");
+    if (!emailSent) {
+      return { warning: { code: "STAFF_INVITE_EMAIL_DEFERRED" } };
+    }
+    return {};
+  } catch (err) {
+    logActionFailure("resendStaffInvite", err);
     return fail("STAFF_INVITE_FAILED");
   }
 }

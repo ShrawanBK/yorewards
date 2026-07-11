@@ -153,6 +153,10 @@ export async function saveLoyaltyCardConfigAction(
     return {};
   } catch (e) {
     logActionFailure("saveLoyaltyCardConfig", e);
+    const message = e instanceof Error ? e.message : "";
+    if (message.includes("plan_limit_cards")) {
+      return fail("PLAN_LIMIT_CARDS");
+    }
     return fail("LOYALTY_CARD_SAVE_FAILED");
   }
 }

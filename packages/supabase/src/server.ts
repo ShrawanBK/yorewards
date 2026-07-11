@@ -33,14 +33,8 @@ export async function createClient() {
         cookiesToSet.forEach(({ name, value, options }) => {
           cookieStore.set(name, value, options);
         });
-      } catch (err) {
-        if (process.env.NODE_ENV === "development") {
-          console.error(
-            "[supabase] Failed to set auth cookies in this context:",
-            err,
-          );
-        }
-        // Server Components cannot set cookies — proxy.ts refresh handles those.
+      } catch {
+        // Server Components cannot set cookies — proxy.ts refreshes sessions.
       }
     },
   } satisfies CookieMethodsServer;

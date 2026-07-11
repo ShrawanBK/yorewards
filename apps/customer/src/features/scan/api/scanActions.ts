@@ -135,6 +135,9 @@ export async function submitStampScanAction(
     if (message.includes("stamp_rate_limited")) {
       return fail("STAMP_RATE_LIMITED");
     }
+    if (message.includes("plan_limit_customers")) {
+      return fail("PLAN_LIMIT_CUSTOMERS");
+    }
     return fail("SCAN_SESSION_FAILED");
   }
 }

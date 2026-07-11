@@ -9,7 +9,7 @@
 
 ## Current build day
 
-**→ [`Day6_Checklist.md`](Day6_Checklist.md)** (billing + tier gates)
+**→ [`Day7_Checklist.md`](Day7_Checklist.md)** (admin V2 + hardening)
 
 | Day | Focus | Checklist |
 | --- | ----- | --------- |

@@ -16,12 +16,12 @@
 | Turborepo + pnpm workspace                                                | ✅ Done                                                                                                             |
 | Customer PWA — `apps/customer`                                            | ✅ Day 7 MVP — auth, wallet, scan, OTP, redeem loop · `localhost:3000`                                              |
 | Merchant Dashboard — `apps/merchant`                                      | ✅ Scaffolded — local `localhost:3001` · prod `merchant.yorewards.com.np`                                           |
-| Super Admin — `apps/admin`                                                | ✅ Day 6 MVP complete — all §8.3 routes · FDA · `localhost:3002`                                                    |
+| Super Admin — `apps/admin`                                                | ✅ Day 7 V2 — disputes centre, tier override, stamps workbench, MRR stub · `localhost:3002`                         |
 | `@repo/eslint-config`, `@repo/typescript-config`, `@repo/tailwind-config` | ✅ Done — brand colors live in `tailwind-config`                                                                    |
 | `@repo/ui`                                                                | ✅ Done — shadcn (`button`, `input`, `label`, `card`, `badge`, `sonner`)                                            |
 | `@repo/supabase`, `@repo/utils`                                           | ✅ Done                                                                                                             |
 | `supabase/` folder (migrations + RLS)                                     | ✅ Done — pushed to cloud                                                                                           |
-| next-intl scaffold (all 3 apps)                                           | ✅ Done — `messages/en.json`, middleware, provider                                                                  |
+| next-intl scaffold (all 3 apps)                                           | ✅ Done — `messages/en.json` + ne/fi locale shells (Day 7 V2), middleware, provider                                 |
 | Local `.env.local` (all 3 apps)                                           | ✅ Done — gitignored                                                                                                |
 | Vercel deployments                                                        | ⏳ Deferred                                                                                                         |
 | Admin + merchant auth, approval queue                                     | ✅ Done — email + password (no magic link)                                                                          |
@@ -31,14 +31,15 @@
 | Loyalty card config (PRD §6.1)                                            | ✅ Done — `/merchant/loyalty-card` + live preview + branch QR PNG                                                   |
 | Merchant stamp queue + redeem + analytics (PRD §6.3)                      | ✅ Done (Day 4) — Realtime queue, `/merchant/redeem`, `/merchant/analytics`, customers list                         |
 | Merchant settings + status UX + branch context + success feedback         | ✅ Done (Day 5) — [`Day5_Checklist.md`](../resources/Day5_Checklist.md)                                             |
-| Super Admin — full platform (dashboard, customers, stamps, audit)         | ✅ Done (Day 6) — [`Day6_Checklist.md`](../resources/Day6_Checklist.md)                                             |
-| Customer auth + wallet + scan + OTP                                       | ✅ Done (Day 7) — [`Day7_Checklist.md`](../resources/Day7_Checklist.md)                                             |
+| Super Admin — full platform (dashboard, customers, stamps, audit)         | ✅ Done (Day 6) — [`Day6_Checklist.md`](../resources/v1/Day6_Checklist.md)                                          |
+| V2 admin ops — disputes, subscription override, live dispute broadcast    | ✅ Done (V2 Day 7) — [`v2/Day7_Checklist.md`](../resources/v2/Day7_Checklist.md)                                    |
+| Customer auth + wallet + scan + OTP                                       | ✅ Done (V1 Day 7) — [`v1/Day7_Checklist.md`](../resources/v1/Day7_Checklist.md)                                    |
 | Customer PWA installability (manifest, SW, icons)                         | ✅ Done (Day 8 Phase A) — `next-pwa`, `manifest.ts`, Profile install hint; login/onboarding use server `redirect()` |
 | Privacy policy + GDPR deletion contact                                    | ✅ Done (Day 8 Phase B) — `/privacy`, profile mailto, merchant settings link                                        |
 | Empty/error states (customer offline, scan, wallet)                       | ✅ Done (Day 8 Phase C)                                                                                             |
 | Privacy policy, production deploy                                         | ⏳ Day 8 Phases D–F — [`Day8_Checklist.md`](../resources/Day8_Checklist.md)                                         |
 
-**Next up (Day 8):** Mobile responsiveness pass, E2E, production deploy — see [`Day8_Checklist.md`](../resources/Day8_Checklist.md).
+**Next up (post–V2 sprint):** Full E2E sign-off, production deploy, Expo native apps — see [`v2/README.md`](../resources/v2/README.md) §Post-sprint.
 
 ---
 

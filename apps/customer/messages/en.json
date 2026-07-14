@@ -10,6 +10,9 @@
     "profile": "Profile",
     "aria": "Main navigation"
   },
+  "locale": {
+    "label": "Language"
+  },
   "auth": {
     "login": {
       "title": "Welcome to YORewards",

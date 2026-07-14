@@ -12,12 +12,16 @@
   "a11y": {
     "skipToMain": "Skip to main content"
   },
+  "locale": {
+    "label": "Language"
+  },
   "nav": {
     "main": "Main navigation",
     "dashboard": "Dashboard",
     "redeem": "Redeem",
     "analytics": "Analytics",
     "customers": "Customers",
+    "disputes": "Disputes",
     "business": "Business",
     "loyaltyCard": "Loyalty card",
     "staff": "Team",
@@ -679,6 +683,7 @@
       "title": "Preferences",
       "subtitle": "Appearance and counter context.",
       "theme": "Color theme",
+      "language": "Language",
       "branch": "Counter branch",
       "branchUnknown": "Primary branch",
       "branchHint": "Change your counter branch from the sidebar when you have multiple locations."
@@ -901,7 +906,49 @@
       "ONBOARDING_FIELDS_REQUIRED": "Complete all credible business fields before going live.",
       "STAFF_INVITE_NOT_FOUND": "No pending team invite for this email.",
       "STAFF_INVITE_EMAIL_MISMATCH": "Use the same email address that received the invite.",
-      "STAFF_INVITE_EMAIL_DEFERRED": "Invite saved, but we couldn't send email — check Supabase Auth email settings or use Resend email."
+      "STAFF_INVITE_EMAIL_DEFERRED": "Invite saved, but we couldn't send email — check Supabase Auth email settings or use Resend email.",
+      "DISPUTE_NOT_FOUND": "This dispute wasn't found.",
+      "DISPUTE_ALREADY_RESOLVED": "This dispute was already handled.",
+      "DISPUTE_RESPONSE_REQUIRED": "Add a resolution note — at least 10 characters.",
+      "DISPUTE_RESOLVE_FAILED": "We couldn't update this dispute — try again.",
+      "STAMP_ISSUE_FAILED": "We couldn't issue the stamp — try again."
+    }
+  },
+  "disputes": {
+    "title": "Stamp disputes",
+    "subtitle": "Review missing-stamp claims from customers. Respond within 48 hours under your service level agreement.",
+    "pendingTitle": "Awaiting review ({count})",
+    "pendingEmpty": "No open disputes — you're all caught up.",
+    "resolvedTitle": "Recently resolved",
+    "unknownCustomer": "Customer",
+    "visitSummary": "Visit {date} · {amount}",
+    "responseLabel": "Resolution note",
+    "filedAt": "Filed {date}",
+    "resolveSectionTitle": "Your resolution",
+    "noteLabel": "Resolution note (required)",
+    "notePlaceholder": "Explain your decision for the customer and audit log…",
+    "noteHint": "At least 10 characters required.",
+    "rejectCta": "Reject",
+    "approveNoStampCta": "Approve (no stamp)",
+    "approveWithStampCta": "Approve & add stamp",
+    "resolving": "Resolving…",
+    "refreshing": "Syncing latest disputes…",
+    "responseDeadline": {
+      "on_track": "Within agreement",
+      "due": "Due soon",
+      "overdue": "Past agreement"
+    },
+    "deadlineDueAlert": "This dispute is approaching the 48-hour service level agreement. Please respond soon.",
+    "deadlineOverdueAlert": "This dispute is past the 48-hour service level agreement. Admin may step in if you do not resolve it.",
+    "status": {
+      "pending": "Open",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "success": {
+      "approved": "Dispute approved",
+      "approvedWithStamp": "Dispute approved — stamp added",
+      "rejected": "Dispute rejected"
     }
   }
 }

@@ -10,6 +10,8 @@
     "./active-merchant": "./src/active-merchant.ts",
     "./active-location": "./src/active-location.ts",
     "./acting-staff": "./src/acting-staff.ts",
+    "./realtime/stamp-disputes": "./src/realtime/stamp-disputes.ts",
+    "./realtime/dispute-broadcast": "./src/realtime/dispute-broadcast.ts",
     "./types": "./src/types.ts",
     "./queries/merchants": "./src/queries/merchants.ts",
     "./queries/customers": "./src/queries/customers.ts",

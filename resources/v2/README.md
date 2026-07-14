@@ -9,7 +9,7 @@
 
 ## Current build day
 
-**→ [`Day7_Checklist.md`](Day7_Checklist.md)** (admin V2 + hardening)
+**→ [`Day7_Checklist.md`](Day7_Checklist.md)** — sprint code complete; E2E + stakeholder sign-off pending
 
 | Day | Focus | Checklist |
 | --- | ----- | --------- |

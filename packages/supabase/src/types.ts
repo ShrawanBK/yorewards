@@ -643,6 +643,7 @@ export type Database = {
           merchant_id: string;
           merchant_response: string | null;
           resolved_at: string | null;
+          stamp_session_id: string | null;
           status: string;
           visit_date: string;
         };
@@ -657,6 +658,7 @@ export type Database = {
           merchant_id: string;
           merchant_response?: string | null;
           resolved_at?: string | null;
+          stamp_session_id?: string | null;
           status?: string;
           visit_date: string;
         };
@@ -671,6 +673,7 @@ export type Database = {
           merchant_id?: string;
           merchant_response?: string | null;
           resolved_at?: string | null;
+          stamp_session_id?: string | null;
           status?: string;
           visit_date?: string;
         };
@@ -921,6 +924,15 @@ export type Database = {
         Returns: undefined;
       };
       issue_stamp_manual: { Args: { p_card_id: string }; Returns: string };
+      resolve_stamp_dispute: {
+        Args: {
+          p_dispute_id: string;
+          p_status: string;
+          p_response?: string | null;
+          p_issue_stamp?: boolean;
+        };
+        Returns: string;
+      };
       void_stamp: { Args: { p_session_id: string }; Returns: undefined };
     };
     Enums: {

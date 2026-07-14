@@ -1,0 +1,69 @@
+{
+  "locale": {
+    "label": "Language"
+  },
+  "nav": {
+    "wallet": "Lompakko",
+    "scan": "Skannaa",
+    "profile": "Profiili",
+    "aria": "Päänavigaatio"
+  },
+  "auth": {
+    "login": {
+      "title": "Tervetuloa YORewardsiin",
+      "subtitle": "Syötä puhelinnumerosi kirjautuaksesi tai luodaksesi lompakon."
+    },
+    "fields": {
+      "phone": "Puhelinnumero",
+      "country": "Maakoodi",
+      "name": "Nimesi"
+    },
+    "actions": {
+      "continue": "Jatka",
+      "start": "Aloita"
+    },
+    "errors": {
+      "phoneRequired": "Syötä puhelinnumerosi",
+      "name": "Nimi vaaditaan"
+    }
+  },
+  "scan": {
+    "title": "Skannaa QR-koodi",
+    "subtitle": "Osoita kamera kassalla olevaan leimakortti-QR:ään.",
+    "processing": "Lähetetään leimapyyntöä…",
+    "invalidQr": "Tämä ei näytä YORewards-QR-koodilta — yritä uudelleen.",
+    "backToWallet": "Takaisin lompakkoon"
+  },
+  "stamp": {
+    "pending": {
+      "title": "Odotetaan hyväksyntää",
+      "subtitle": "Kauppias vahvistaa leimasi pian."
+    },
+    "success": {
+      "title": "Leima lisätty!",
+      "subtitle": "Leimakorttisi on päivitetty.",
+      "backToWallet": "Takaisin lompakkoon"
+    },
+    "rejected": {
+      "title": "Leimaa ei lisätty",
+      "subtitle": "Kauppias hylkäsi tämän pyynnön."
+    },
+    "expired": {
+      "title": "Pyyntö vanhentui",
+      "subtitle": "Kauppias ei hyväksynyt ajoissa. Skannaa QR uudelleen."
+    }
+  },
+  "dispute": {
+    "title": "Puuttuuko leima?",
+    "subtitle": "Kerro käynnistä, jota ei kirjattu. Kauppias tarkistaa pyynnön.",
+    "submit": "Lähetä reklamaatio",
+    "submitting": "Lähetetään…"
+  },
+  "errors": {
+    "actions": {
+      "UNAUTHORIZED": "Istuntosi vanhentui — kirjaudu uudelleen.",
+      "SCAN_INVALID_QR": "Tämä ei ole kelvollinen leima-QR.",
+      "DISPUTE_SUBMIT_FAILED": "Reklamaatiota ei voitu lähettää — yritä uudelleen."
+    }
+  }
+}

@@ -85,7 +85,20 @@
 
 ## 7-day sprint
 
-Active build plan: [`v2/README.md`](v2/README.md) · **current:** [`v2/Day3_Checklist.md`](v2/Day3_Checklist.md). Items below not in sprint → **Post-sprint** in README.
+Active build plan: [`v2/README.md`](v2/README.md) · **current:** [`v2/Day7_Checklist.md`](v2/Day7_Checklist.md) (sprint complete; E2E sign-off pending).
+
+---
+
+## Post-sprint (deferred from V2 Day 7)
+
+| Item | Notes |
+| ---- | ----- |
+| **Full ne/fi translation** | Locale shells + switcher shipped; most UI strings still English-only |
+| **Full E2E sign-off** | signup → scan → approve → insights → upgrade → dispute (manual checklist) |
+| **Expo native apps** | Customer + merchant; see [`v2/README.md`](v2/README.md) §Post-sprint |
+| **Khalti live billing** | eSewa sandbox only in sprint |
+| **Push/email on dispute SLA** | Disputes use in-app list + realtime broadcast; no push/email yet |
+| **Admin demo / stakeholder sign-off** | Checklist item D in Day 7 |
 
 ---
 

@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@repo/supabase/server";
-import { getMerchantsByUserId } from "@repo/supabase/queries/merchants";
 import { getLoyaltyCardByMerchantId } from "@repo/supabase/queries/loyalty-cards";
 import { getLocationsByMerchantId } from "@repo/supabase/queries/locations";
 import { createServiceRoleClient } from "@repo/supabase/service-role";

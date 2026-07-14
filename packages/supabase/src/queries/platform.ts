@@ -1,5 +1,7 @@
 import { createServiceRoleClient } from "../service-role";
 import type { CustomerStatus, MerchantStatus } from "../types";
+import { PLAN_PRICES_NPR } from "@repo/utils/plan-limits";
+import { countOpenDisputes, countOverdueDisputes } from "./stamp-disputes";
 
 export type PlatformStatsPeriod = "today" | "week" | "month";
 
@@ -29,6 +31,9 @@ export type PlatformStats = {
   customers: PlatformCustomerCounts;
   stampsIssued: PlatformPeriodCounts;
   redemptions: PlatformPeriodCounts;
+  openDisputes: number;
+  overdueDisputes: number;
+  mrrStubNpr: number;
 };
 
 export type PlatformActivityItem = {
@@ -96,6 +101,26 @@ async function countApprovedStamps(since?: string): Promise<number> {
   return count ?? 0;
 }
 
+async function computeMrrStubNpr(): Promise<number> {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("merchant_subscriptions")
+    .select("tier, status")
+    .in("status", ["active", "trialing"]);
+
+  if (error) throw error;
+
+  let total = 0;
+  for (const row of data ?? []) {
+    if (row.tier === "starter") {
+      total += PLAN_PRICES_NPR.starter;
+    } else if (row.tier === "growth") {
+      total += PLAN_PRICES_NPR.growth;
+    }
+  }
+  return total;
+}
+
 async function countRedemptions(since?: string): Promise<number> {
   const supabase = createServiceRoleClient();
   let query = supabase
@@ -128,6 +153,9 @@ export async function getPlatformStats(): Promise<PlatformStats> {
     redemptionsToday,
     redemptionsWeek,
     redemptionsMonth,
+    openDisputes,
+    overdueDisputes,
+    mrrStubNpr,
   ] = await Promise.all([
     countMerchants("pending"),
     countMerchants("active"),
@@ -144,6 +172,9 @@ export async function getPlatformStats(): Promise<PlatformStats> {
     countRedemptions(periodStart("today")),
     countRedemptions(periodStart("week")),
     countRedemptions(periodStart("month")),
+    countOpenDisputes(),
+    countOverdueDisputes(),
+    computeMrrStubNpr(),
   ]);
 
   return {
@@ -171,6 +202,9 @@ export async function getPlatformStats(): Promise<PlatformStats> {
       week: redemptionsWeek,
       month: redemptionsMonth,
     },
+    openDisputes,
+    overdueDisputes,
+    mrrStubNpr,
   };
 }
 

@@ -10,6 +10,7 @@
     "dashboard": "Dashboard",
     "merchants": "Merchants",
     "customers": "Customers",
+    "disputes": "Disputes",
     "stamps": "Stamps",
     "audit": "Audit log",
     "settings": "Settings",
@@ -48,6 +49,11 @@
       "customersHint": "{active, plural, =0 {No active customers} one {# active} other {# active}}",
       "stamps": "Stamps issued",
       "redemptions": "Rewards redeemed",
+      "openDisputes": "Open disputes",
+      "openDisputesHint": "Pending merchant or admin review",
+      "overdueDisputesHint": "{count, plural, one {# past 48-hour service level agreement — needs admin action} other {# past 48-hour service level agreement — need admin action}}",
+      "mrrStub": "MRR (stub)",
+      "mrrStubHint": "Starter + Growth active/trial subscriptions",
       "period": {
         "today": "Today",
         "week": "Last 7 days",
@@ -65,6 +71,12 @@
       "customers": {
         "title": "Customers",
         "description": "View accounts and manage suspensions."
+      },
+      "disputes": {
+        "title": "Dispute centre",
+        "description": "Review escalated missing-stamp claims.",
+        "open": "{count, plural, one {# open} other {# open}}",
+        "overdue": "{count, plural, one {# overdue} other {# overdue}}"
       },
       "audit": {
         "title": "Audit log",
@@ -188,6 +200,101 @@
         "percent_discount": "Percent discount",
         "fixed_discount": "Fixed discount"
       }
+    },
+    "subscription": {
+      "title": "Subscription",
+      "currentTier": "Plan tier",
+      "status": "Billing status",
+      "trialEnds": "Trial ends",
+      "adjustTier": "Adjust tier",
+      "saveTier": "Save tier",
+      "saving": "Saving…",
+      "extendTrialDays": "Extend trial (days)",
+      "extendTrial": "Extend trial",
+      "extending": "Extending…",
+      "tiers": {
+        "free": "Free",
+        "starter": "Starter",
+        "growth": "Growth",
+        "enterprise": "Enterprise"
+      },
+      "statuses": {
+        "free": "Free",
+        "trialing": "Trialing",
+        "active": "Active",
+        "past_due": "Past due",
+        "canceled": "Canceled"
+      },
+      "success": {
+        "tierUpdated": "Tier updated to {tier}.",
+        "trialExtended": "Trial extended by {days} days."
+      }
+    }
+  },
+  "disputes": {
+    "title": "Dispute centre",
+    "subtitle": "Review missing-stamp claims across the platform. Merchants have 48 hours to respond under the service level agreement before admin escalation.",
+    "filterLabel": "Filter disputes",
+    "filters": {
+      "pending": "Open",
+      "resolved": "Resolved",
+      "all": "All"
+    },
+    "empty": "No disputes match this filter.",
+    "unknownCustomer": "Customer",
+    "filedAt": "Filed {date}",
+    "status": {
+      "pending": "Open",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "responseDeadline": {
+      "on_track": "Within agreement",
+      "due": "Due soon",
+      "overdue": "Past agreement"
+    },
+    "noteLabel": "Resolution note (required)",
+    "notePlaceholder": "Explain your decision for the audit log…",
+    "noteHint": "At least 10 characters required.",
+    "resolveSectionTitle": "Admin resolution",
+    "viewDetailsCta": "View details",
+    "viewAndResolveCta": "Review & resolve",
+    "rejectCta": "Reject",
+    "approveNoStampCta": "Approve (no stamp)",
+    "approveWithStampCta": "Approve & add stamp",
+    "cancel": "Cancel",
+    "resolving": "Resolving…",
+    "refreshing": "Syncing latest disputes…",
+    "slaAwaitingMerchantAlert": "The merchant has not resolved this dispute yet. They still have time within the 48-hour service level agreement. Admin resolution is available if you need to override early.",
+    "slaOverdueAlert": "This dispute is past the 48-hour service level agreement. The merchant has not resolved it — admin action is expected.",
+    "earlyResolveTitle": "Resolve before the service level agreement ends?",
+    "earlyResolveDescription": "The merchant has not resolved this dispute yet, and the 48-hour service level agreement has not passed. Are you sure you want to resolve it now?",
+    "earlyResolveConfirm": "Yes, resolve now",
+    "listOverdueAlert": "{count, plural, one {# dispute is past the 48-hour service level agreement and needs admin action.} other {# disputes are past the 48-hour service level agreement and need admin action.}}",
+    "success": {
+      "approved": "Dispute approved",
+      "approvedWithStamp": "Dispute approved and stamp added",
+      "rejected": "Dispute rejected"
+    },
+    "detail": {
+      "title": "Dispute details",
+      "unnamedCustomer": "Customer",
+      "backToList": "Back to disputes",
+      "claimHeading": "Customer claim",
+      "responseHeading": "Resolution note",
+      "merchantPending": "Waiting for merchant response (48-hour service level agreement).",
+      "resolvedAt": "Resolved {date}",
+      "cardContextHeading": "Loyalty card context",
+      "stampProgress": "{current} of {target} stamps",
+      "openStampsWorkbench": "Open stamps workbench",
+      "noStampHistory": "No approved stamps on this card yet.",
+      "stampDate": "Date",
+      "stampAmount": "Amount",
+      "stampBranch": "Branch",
+      "stampSource": "Source"
+    },
+    "cardPanel": {
+      "title": "Open disputes for this card"
     }
   },
   "customers": {
@@ -313,8 +420,17 @@
     "sessions": {
       "title": "Recent approved stamps",
       "empty": "No approved stamps on this card yet.",
+      "requested": "Requested",
+      "approved": "Approved",
+      "approvedPending": "—",
       "date": "Date",
       "source": "Source",
+      "branch": "Branch",
+      "branchUnknown": "Not recorded",
+      "amount": "Spend",
+      "amountUnknown": "—",
+      "approvedBy": "Approved by",
+      "approverUnknown": "—",
       "sourceAdmin": "Admin manual",
       "sourceQr": "QR scan",
       "actions": "Actions"
@@ -366,7 +482,10 @@
       "suspend_customer": "Customer suspended",
       "reactivate_customer": "Customer reactivated",
       "issue_stamp_manual": "Stamp issued manually",
-      "void_stamp": "Stamp removed"
+      "void_stamp": "Stamp removed",
+      "dispute_approved_admin": "Dispute approved (admin)",
+      "dispute_approved_admin_with_stamp": "Dispute approved with stamp (admin)",
+      "dispute_rejected_admin": "Dispute rejected (admin)"
     },
     "empty": {
       "title": "No actions yet",
@@ -401,7 +520,14 @@
       "PASSWORD_UPDATE_FAILED": "Could not update password. Please try again.",
       "PASSWORD_CONFIRM_MISMATCH": "Passwords do not match.",
       "EMAIL_UPDATE_FAILED": "Could not update email. Please try again.",
-      "EMAIL_INVALID": "Enter a valid email address."
+      "EMAIL_INVALID": "Enter a valid email address.",
+      "DISPUTE_NOT_FOUND": "Dispute not found.",
+      "DISPUTE_ALREADY_RESOLVED": "This dispute was already resolved.",
+      "DISPUTE_RESPONSE_REQUIRED": "Add a resolution note — at least 10 characters.",
+      "DISPUTE_RESOLVE_FAILED": "Could not resolve dispute. Please try again.",
+      "DISPUTE_MERCHANT_SLA_ACTIVE": "The merchant still has time under the service level agreement. Confirm early admin resolution to continue.",
+      "SUBSCRIPTION_UPDATE_FAILED": "Could not update subscription. Please try again.",
+      "TRIAL_EXTEND_FAILED": "Could not extend trial. Check the number of days and try again."
     }
   }
 }

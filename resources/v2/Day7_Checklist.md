@@ -10,41 +10,43 @@
 
 | Area | Status |
 | ---- | ------ |
-| Admin verification + disputes | ⏳ |
-| ne/fi locales | ⏳ |
-| Lint / types / build | ⏳ |
+| Admin verification + disputes | ✅ |
+| ne/fi locales | ✅ |
+| Lint / types / build | ✅ |
 | Sprint sign-off | ⏳ |
 
 ---
 
 ## Sprint “done” when
 
-- [ ] Admin: verification queue, dispute centre, tier adjust, MRR stub on dashboard
-- [ ] `messages/ne.json` + `messages/fi.json` for auth, stamp flow, errors, nav
-- [ ] All three apps pass lint, types, build
+- [x] Admin: verification queue, dispute centre, tier adjust, MRR stub on dashboard
+- [x] `messages/ne.json` + `messages/fi.json` for auth, stamp flow, errors, nav
+- [x] All three apps pass lint, types, build
 - [ ] Full E2E: signup → scan → approve → insights → upgrade → dispute
-- [ ] Deferred items logged in `V2_Backlog.md` §Post-sprint
+- [x] Deferred items logged in `V2_Backlog.md` §Post-sprint
 
 ---
 
 ## A. Admin (`apps/admin`)
 
-- [ ] Verification queue UI (from Day 6)
-- [ ] **Dispute centre** — list, override, manual stamp, SLA badge (V2 PRD §7.4)
-- [ ] Merchant detail: subscription tier, adjust tier, extend trial
-- [ ] Platform dashboard: MRR stub, stamps today, open disputes count
+- [x] Verification queue UI (from Day 6)
+- [x] **Dispute centre** — list, override, manual stamp link, SLA badge (V2 PRD §7.4)
+- [x] **Dispute live updates** — broadcast channel + React Query refetch (admin + merchant)
+- [x] **Stamps workbench** — per-card dispute panel, richer approved-session table (branch, amount, approver)
+- [x] Merchant detail: subscription tier, adjust tier, extend trial
+- [x] Platform dashboard: MRR stub, stamps today (default period), open disputes count
 
 ## B. i18n
 
-- [ ] `messages/ne.json` + `messages/fi.json` — auth, stamp flow, errors, nav (not full app)
-- [ ] Locale switcher where next-intl already wired
+- [x] `messages/ne.json` + `messages/fi.json` — auth, stamp flow, errors, nav (not full app)
+- [x] Locale switcher (customer profile + merchant settings)
 
 ## C. Hardening
 
-- [ ] `pnpm lint` · `pnpm check-types` · `pnpm build` (customer, merchant, admin)
+- [x] `pnpm lint` · `pnpm check-types` · `pnpm build` (customer, merchant, admin)
 - [ ] Manual E2E: signup → scan → approve → insights → upgrade → dispute
-- [ ] Update Technical Doc implementation status
-- [ ] Move deferred items to `V2_Backlog.md` §Post-sprint
+- [x] Update Technical Doc implementation status
+- [x] Move deferred items to `V2_Backlog.md` §Post-sprint
 
 ## D. Sign-off
 

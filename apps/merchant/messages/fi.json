@@ -1,0 +1,48 @@
+{
+  "locale": {
+    "label": "Language"
+  },
+  "nav": {
+    "dashboard": "Hallintapaneeli",
+    "redeem": "Lunasta",
+    "analytics": "Analytiikka",
+    "customers": "Asiakkaat",
+    "disputes": "Reklamaatiot",
+    "settings": "Asetukset",
+    "logout": "Kirjaudu ulos"
+  },
+  "auth": {
+    "heading": "Tili",
+    "subheading": "Kirjaudu sisään tai luo kauppias tili.",
+    "tabs": {
+      "signin": "Kirjaudu",
+      "signup": "Rekisteröidy"
+    },
+    "fields": {
+      "email": "Sähköposti",
+      "password": "Salasana"
+    },
+    "actions": {
+      "signin": "Kirjaudu",
+      "signup": "Luo tili"
+    },
+    "errors": {
+      "email": "Syötä kelvollinen sähköposti",
+      "password": "Vähintään 6 merkkiä"
+    }
+  },
+  "disputes": {
+    "title": "Leimakiistat",
+    "subtitle": "Tarkista asiakkaiden puuttuvien leimien ilmoitukset.",
+    "approveCta": "Hyväksy ja lisää leima",
+    "rejectCta": "Hylkää",
+    "pendingEmpty": "Ei avoimia kiistoja."
+  },
+  "errors": {
+    "actions": {
+      "UNAUTHORIZED": "Kirjaudu sisään jatkaaksesi.",
+      "FORBIDDEN": "Sinulla ei ole oikeutta tähän toimintoon.",
+      "DISPUTE_RESOLVE_FAILED": "Kiistaa ei voitu päivittää."
+    }
+  }
+}

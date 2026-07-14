@@ -6,6 +6,9 @@ export type AdminStampSessionRow = {
   source: string;
   createdAt: string;
   resolvedAt: string | null;
+  amountSpent: number | null;
+  branchName: string | null;
+  approvedByLabel: string | null;
 };
 
 export type AdminStampCardLookup = {
@@ -16,6 +19,7 @@ export type AdminStampCardLookup = {
   merchantId: string;
   merchantName: string;
   cardName: string;
+  currencyCode: string;
   currentStamps: number;
   stampTarget: number;
   rewardStatus: RewardStatus;
@@ -44,7 +48,7 @@ type CustomerCardQueryRow = {
   reward_status: RewardStatus;
   customers: { name: string | null; phone: string } | null;
   merchants: { business_name: string } | null;
-  loyalty_cards: { card_name: string; stamp_target: number } | null;
+  loyalty_cards: { card_name: string; stamp_target: number; min_spend_currency: string } | null;
 };
 
 const UUID_RE =
@@ -62,14 +66,57 @@ function phoneIlikePattern(query: string): string {
   return `%${escapeIlikePattern(term)}%`;
 }
 
+async function resolveApproverLabels(
+  merchantId: string,
+  approverIds: (string | null)[],
+): Promise<Map<string, string>> {
+  const ids = [...new Set(approverIds.filter((id): id is string => Boolean(id)))];
+  if (ids.length === 0) return new Map();
+
+  const supabase = createServiceRoleClient();
+  const [staffResult, merchantResult] = await Promise.all([
+    supabase
+      .from("merchant_staff")
+      .select("user_id, display_name")
+      .eq("merchant_id", merchantId)
+      .in("user_id", ids),
+    supabase.from("merchants").select("user_id").eq("id", merchantId).maybeSingle(),
+  ]);
+
+  if (staffResult.error) throw staffResult.error;
+  if (merchantResult.error) throw merchantResult.error;
+
+  const labels = new Map<string, string>();
+  for (const row of staffResult.data ?? []) {
+    if (row.user_id) {
+      labels.set(row.user_id, row.display_name?.trim() || "Staff");
+    }
+  }
+  if (merchantResult.data?.user_id && ids.includes(merchantResult.data.user_id)) {
+    labels.set(merchantResult.data.user_id, "Owner");
+  }
+  return labels;
+}
+
 async function getApprovedSessionsForCard(
   cardId: string,
+  merchantId: string,
   limit = 10,
 ): Promise<AdminStampSessionRow[]> {
   const supabase = createServiceRoleClient();
   const { data, error } = await supabase
     .from("stamp_sessions")
-    .select("id, source, created_at, resolved_at")
+    .select(
+      `
+      id,
+      source,
+      created_at,
+      resolved_at,
+      amount_spent,
+      approved_by,
+      merchant_locations ( name )
+    `,
+    )
     .eq("customer_card_id", cardId)
     .eq("status", "approved")
     .order("created_at", { ascending: false })
@@ -77,12 +124,32 @@ async function getApprovedSessionsForCard(
 
   if (error) throw error;
 
-  return (data ?? []).map((row) => ({
-    id: row.id,
-    source: row.source,
-    createdAt: row.created_at,
-    resolvedAt: row.resolved_at,
-  }));
+  const rows = data ?? [];
+  const approverLabels = await resolveApproverLabels(
+    merchantId,
+    rows.map((row) => row.approved_by),
+  );
+
+  return rows.map((row) => {
+    const branch = row.merchant_locations as { name: string } | null;
+    let approvedByLabel: string | null = null;
+    if (row.approved_by) {
+      approvedByLabel = approverLabels.get(row.approved_by) ?? null;
+    }
+    if (!approvedByLabel && row.source === "admin_manual") {
+      approvedByLabel = "Admin";
+    }
+
+    return {
+      id: row.id,
+      source: row.source,
+      createdAt: row.created_at,
+      resolvedAt: row.resolved_at,
+      amountSpent: row.amount_spent != null ? Number(row.amount_spent) : null,
+      branchName: branch?.name ?? null,
+      approvedByLabel,
+    };
+  });
 }
 
 async function getAdminStampCardLookup(
@@ -100,7 +167,7 @@ async function getAdminStampCardLookup(
       reward_status,
       customers ( name, phone ),
       merchants ( business_name ),
-      loyalty_cards ( card_name, stamp_target )
+      loyalty_cards ( card_name, stamp_target, min_spend_currency )
     `,
     )
     .eq("id", cardId)
@@ -110,7 +177,7 @@ async function getAdminStampCardLookup(
   if (!data) return null;
 
   const row = data as CustomerCardQueryRow;
-  const recentApprovedSessions = await getApprovedSessionsForCard(cardId);
+  const recentApprovedSessions = await getApprovedSessionsForCard(cardId, row.merchant_id);
 
   return {
     customerCardId: row.id,
@@ -120,6 +187,7 @@ async function getAdminStampCardLookup(
     merchantId: row.merchant_id,
     merchantName: row.merchants?.business_name ?? "—",
     cardName: row.loyalty_cards?.card_name ?? "—",
+    currencyCode: row.loyalty_cards?.min_spend_currency ?? "NPR",
     currentStamps: row.current_stamps,
     stampTarget: row.loyalty_cards?.stamp_target ?? 0,
     rewardStatus: row.reward_status,

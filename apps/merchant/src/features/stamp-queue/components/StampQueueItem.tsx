@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState, useTransition } from "react";
-import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
-import { AlertTriangle, Check, Clock, Gift, MapPin, X } from "lucide-react";
+import { AlertTriangle, Check, Clock, MapPin, X } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import {
   Dialog,

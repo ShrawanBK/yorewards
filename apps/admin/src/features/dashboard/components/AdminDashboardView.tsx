@@ -8,8 +8,10 @@ import {
   Building2,
   ClipboardList,
   Gift,
+  MessageSquare,
   Stamp,
   Users,
+  Wallet,
 } from "lucide-react";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
@@ -54,7 +56,8 @@ function ActivityRow({ item }: { item: PlatformActivityItem }) {
 
 export function AdminDashboardView({ data }: { data: PlatformDashboardData }) {
   const t = useTranslations("dashboard");
-  const [period, setPeriod] = useState<PlatformStatsPeriod>("week");
+  const format = useFormatter();
+  const [period, setPeriod] = useState<PlatformStatsPeriod>("today");
   const { stats, activity } = data;
 
   const isEmpty =
@@ -94,6 +97,28 @@ export function AdminDashboardView({ data }: { data: PlatformDashboardData }) {
       value: periodRedemptions,
       hint: t(`stats.period.${period}`),
     },
+    {
+      key: "disputes",
+      icon: MessageSquare,
+      label: t("stats.openDisputes"),
+      value: stats.openDisputes,
+      hint:
+        stats.overdueDisputes > 0
+          ? t("stats.overdueDisputesHint", { count: stats.overdueDisputes })
+          : t("stats.openDisputesHint"),
+    },
+    {
+      key: "mrr",
+      icon: Wallet,
+      label: t("stats.mrrStub"),
+      value: format.number(stats.mrrStubNpr, {
+        style: "currency",
+        currency: "NPR",
+        maximumFractionDigits: 0,
+      }),
+      hint: t("stats.mrrStubHint"),
+      isFormatted: true,
+    },
   ] as const;
 
   const quickLinks = [
@@ -106,6 +131,18 @@ export function AdminDashboardView({ data }: { data: PlatformDashboardData }) {
         stats.merchants.pending > 0
           ? t("links.merchants.pending", { count: stats.merchants.pending })
           : null,
+    },
+    {
+      href: "/admin/disputes",
+      icon: MessageSquare,
+      title: t("links.disputes.title"),
+      description: t("links.disputes.description"),
+      badge:
+        stats.overdueDisputes > 0
+          ? t("links.disputes.overdue", { count: stats.overdueDisputes })
+          : stats.openDisputes > 0
+            ? t("links.disputes.open", { count: stats.openDisputes })
+            : null,
     },
     {
       href: "/admin/customers",
@@ -164,11 +201,13 @@ export function AdminDashboardView({ data }: { data: PlatformDashboardData }) {
       </div>
 
       <section
-        className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+        className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
         aria-label={t("stats.regionLabel")}
       >
         {statCards.map((stat) => {
           const Icon = stat.icon;
+          const displayValue =
+            "isFormatted" in stat && stat.isFormatted ? stat.value : stat.value;
           return (
             <Card key={stat.key} className="admin-card">
               <CardHeader className="gap-1.5">
@@ -177,7 +216,7 @@ export function AdminDashboardView({ data }: { data: PlatformDashboardData }) {
                   {stat.label}
                 </CardDescription>
                 <CardTitle className="text-3xl font-semibold tabular-nums tracking-tight">
-                  {stat.value}
+                  {displayValue}
                 </CardTitle>
               </CardHeader>
               <CardContent>

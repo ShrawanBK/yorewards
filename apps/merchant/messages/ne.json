@@ -1,0 +1,48 @@
+{
+  "locale": {
+    "label": "Language"
+  },
+  "nav": {
+    "dashboard": "ड्यासबोर्ड",
+    "redeem": "रिडिम",
+    "analytics": "विश्लेषण",
+    "customers": "ग्राहकहरू",
+    "disputes": "विवादहरू",
+    "settings": "सेटिङ",
+    "logout": "लग आउट"
+  },
+  "auth": {
+    "heading": "खाता पहुँच",
+    "subheading": "साइन इन गर्नुहोस् वा व्यापारी खाता बनाउनुहोस्।",
+    "tabs": {
+      "signin": "साइन इन",
+      "signup": "साइन अप"
+    },
+    "fields": {
+      "email": "इमेल",
+      "password": "पासवर्ड"
+    },
+    "actions": {
+      "signin": "साइन इन",
+      "signup": "खाता बनाउनुहोस्"
+    },
+    "errors": {
+      "email": "मान्य इमेल हाल्नुहोस्",
+      "password": "कम्तीमा ६ अक्षर"
+    }
+  },
+  "disputes": {
+    "title": "स्ट्याम्प विवादहरू",
+    "subtitle": "ग्राहकका हराएको स्ट्याम्प दाबीहरू समीक्षा गर्नुहोस्।",
+    "approveCta": "अनुमोदन र स्ट्याम्प थप्नुहोस्",
+    "rejectCta": "अस्वीकार",
+    "pendingEmpty": "कुनै खुल्ला विवाद छैन।"
+  },
+  "errors": {
+    "actions": {
+      "UNAUTHORIZED": "कृपया साइन इन गर्नुहोस्।",
+      "FORBIDDEN": "तपाईंसँग यो अनुमति छैन।",
+      "DISPUTE_RESOLVE_FAILED": "विवाद अपडेट गर्न सकिएन।"
+    }
+  }
+}

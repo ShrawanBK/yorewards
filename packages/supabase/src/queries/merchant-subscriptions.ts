@@ -158,3 +158,79 @@ export async function recordTermsAccepted(
 
   if (error) throw error;
 }
+
+export async function adminSetMerchantTier(input: {
+  merchantId: string;
+  tier: SubscriptionTier;
+}): Promise<MerchantSubscriptionRow> {
+  const supabase = createServiceRoleClient();
+  const now = new Date().toISOString();
+
+  await ensureMerchantSubscription(input.merchantId, input.tier);
+
+  const status =
+    input.tier === "free" ? "free" : ("active" as SubscriptionStatus);
+
+  const { data, error } = await supabase
+    .from("merchant_subscriptions")
+    .update({
+      tier: input.tier,
+      status,
+      updated_at: now,
+    })
+    .eq("merchant_id", input.merchantId)
+    .select("*")
+    .single();
+
+  if (error) throw error;
+
+  const { error: merchantError } = await supabase
+    .from("merchants")
+    .update({ subscription_tier: input.tier })
+    .eq("id", input.merchantId);
+
+  if (merchantError) throw merchantError;
+
+  return data as MerchantSubscriptionRow;
+}
+
+export async function adminExtendMerchantTrial(input: {
+  merchantId: string;
+  extraDays: number;
+}): Promise<MerchantSubscriptionRow> {
+  if (!Number.isFinite(input.extraDays) || input.extraDays < 1 || input.extraDays > 90) {
+    throw new Error("TRIAL_EXTEND_DAYS_INVALID");
+  }
+
+  const supabase = createServiceRoleClient();
+  const existing = await getMerchantSubscription(input.merchantId);
+  if (!existing) {
+    throw new Error("SUBSCRIPTION_NOT_FOUND");
+  }
+
+  const base = existing.trial_ends_at
+    ? new Date(existing.trial_ends_at)
+    : new Date();
+  if (base.getTime() < Date.now()) {
+    base.setTime(Date.now());
+  }
+  base.setDate(base.getDate() + input.extraDays);
+
+  const trialEndsAt = base.toISOString();
+  const now = new Date().toISOString();
+
+  const { data, error } = await supabase
+    .from("merchant_subscriptions")
+    .update({
+      status: "trialing",
+      trial_ends_at: trialEndsAt,
+      current_period_end: trialEndsAt,
+      updated_at: now,
+    })
+    .eq("merchant_id", input.merchantId)
+    .select("*")
+    .single();
+
+  if (error) throw error;
+  return data as MerchantSubscriptionRow;
+}

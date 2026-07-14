@@ -8,6 +8,7 @@ import { cn } from "@repo/ui/lib/utils";
 import type { MerchantLocationRow } from "@repo/supabase/queries/locations";
 import type { MerchantRow } from "@repo/supabase/queries/merchants";
 import { ThemeToggle } from "@/shared/ui/ThemeToggle";
+import { LocaleSwitcher } from "@/shared/ui/LocaleSwitcher";
 import { MERCHANT_STATUS_BADGE } from "@/shared/constants/status-badges";
 import { ChangeEmailForm } from "@/features/account/components/ChangeEmailForm";
 import { ChangePasswordForm } from "@/features/account/components/ChangePasswordForm";
@@ -156,6 +157,11 @@ export async function MerchantSettingsView({
           <div className="space-y-2">
             <p className="text-sm font-medium">{t("preferences.theme")}</p>
             <ThemeToggle className="w-full max-w-xs" />
+          </div>
+
+          <div className="space-y-2 border-t border-border pt-6">
+            <p className="text-sm font-medium">{t("preferences.language")}</p>
+            <LocaleSwitcher className="max-w-xs" />
           </div>
 
           {branchCount > 1 ? (

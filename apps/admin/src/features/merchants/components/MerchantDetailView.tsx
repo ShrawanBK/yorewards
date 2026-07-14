@@ -11,13 +11,14 @@ import {
   MERCHANT_STATUS_BADGE,
   MerchantAdminActions,
 } from "@/features/merchants/components/MerchantAdminActions";
+import { MerchantSubscriptionPanel } from "@/features/merchants/components/MerchantSubscriptionPanel";
 
 export function MerchantDetailView({ detail }: { detail: AdminMerchantDetail }) {
   const t = useTranslations("merchants");
   const tDetail = useTranslations("merchants.detail");
   const tAudit = useTranslations("audit.actions");
   const format = useFormatter();
-  const { merchant, loyaltyCard, branchesCount, activeBranchesCount, recentAudit } =
+  const { merchant, loyaltyCard, branchesCount, activeBranchesCount, subscription, recentAudit } =
     detail;
   const badge = MERCHANT_STATUS_BADGE[merchant.status];
 
@@ -82,6 +83,12 @@ export function MerchantDetailView({ detail }: { detail: AdminMerchantDetail }) 
       </Card>
 
       <div className="grid gap-4 md:grid-cols-2">
+        <MerchantSubscriptionPanel
+          merchantId={merchant.id}
+          subscription={subscription}
+          merchantTier={merchant.subscription_tier}
+        />
+
         <Card className="admin-card">
           <CardHeader>
             <CardTitle className="text-base">{tDetail("branchesTitle")}</CardTitle>

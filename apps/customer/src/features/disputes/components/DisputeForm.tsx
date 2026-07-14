@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@repo/ui/button";
@@ -14,9 +15,13 @@ type DisputeFormProps = {
   customerCardId: string;
 };
 
-export function DisputeForm({ customerCardId }: DisputeFormProps) {
+export function DisputeForm({
+  customerCardId,
+  onSubmitted,
+}: DisputeFormProps & { onSubmitted?: () => void }) {
   const t = useTranslations("dispute");
   const tErrors = useTranslations("errors.actions");
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [pending, setPending] = useState(false);
@@ -33,6 +38,8 @@ export function DisputeForm({ customerCardId }: DisputeFormProps) {
     }
     toast.success(t("success.submitted"));
     setDone(true);
+    onSubmitted?.();
+    router.refresh();
   }
 
   if (done) {

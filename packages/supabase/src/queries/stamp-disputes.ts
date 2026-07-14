@@ -1,4 +1,5 @@
 import { createServiceRoleClient } from "../service-role";
+import { createClient } from "../server";
 import { notifyDisputeChange } from "../realtime/dispute-broadcast";
 import type { CurrencyCode } from "../types";
 
@@ -22,6 +23,18 @@ export type StampDisputeListItem = {
 };
 
 export type StampDisputeFilter = "pending" | "resolved" | "all";
+
+export type CustomerStampDisputeItem = {
+  id: string;
+  visitDate: string;
+  amountClaimed: number;
+  currencyCode: CurrencyCode;
+  description: string;
+  status: StampDisputeStatus;
+  merchantResponse: string | null;
+  createdAt: string;
+  resolvedAt: string | null;
+};
 
 type StampDisputeRow = {
   id: string;
@@ -225,6 +238,33 @@ export async function getStampDisputeById(
 
   const [item] = await enrichDisputeRows([data as StampDisputeRow]);
   return item ?? null;
+}
+
+export async function listStampDisputesForCustomerCard(
+  customerCardId: string,
+): Promise<CustomerStampDisputeItem[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("stamp_disputes")
+    .select(
+      "id, visit_date, amount_claimed, currency_code, description, status, merchant_response, created_at, resolved_at",
+    )
+    .eq("customer_card_id", customerCardId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    visitDate: row.visit_date,
+    amountClaimed: Number(row.amount_claimed),
+    currencyCode: row.currency_code as CurrencyCode,
+    description: row.description,
+    status: row.status as StampDisputeStatus,
+    merchantResponse: row.merchant_response,
+    createdAt: row.created_at,
+    resolvedAt: row.resolved_at,
+  }));
 }
 
 export async function listStampDisputesForMerchant(

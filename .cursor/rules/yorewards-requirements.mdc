@@ -13,7 +13,7 @@ alwaysApply: true
 | Technical implementation (how to build) | `resources/YORewards_Technical_Doc_v1.md`                     |
 | Turborepo / new app setup               | `resources/Turborepo_App_Setup_Guide.md`                      |
 | **V2 sprint index**                     | `resources/v2/README.md`                                      |
-| **Current build day**                   | `resources/v2/Day3_Checklist.md` (customer scan + wallet V2) |
+| **Current build day**                   | `resources/v2/Day8_Checklist.md` (post-sprint: dispute loop + E2E) |
 | **V2 upcoming**                         | `Day2`–`Day7` in `resources/v2/`                              |
 | **V1 completed**                        | `resources/v1/Day1_Checklist.md` … `Day8_Checklist.md`        |
 | **Post-sprint / deferred**              | `resources/V2_Backlog.md`                                     |

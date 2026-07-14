@@ -9,7 +9,7 @@
 
 ## Current build day
 
-**→ [`Day7_Checklist.md`](Day7_Checklist.md)** — sprint code complete; E2E + stakeholder sign-off pending
+**→ [`Day8_Checklist.md`](Day8_Checklist.md)** — post-sprint: customer dispute loop, E2E sign-off, launch polish
 
 | Day | Focus | Checklist |
 | --- | ----- | --------- |
@@ -20,6 +20,7 @@
 | **5** | Multi-staff + auth flows | [`Day5_Checklist.md`](Day5_Checklist.md) |
 | **6** | Billing + tier gates | [`Day6_Checklist.md`](Day6_Checklist.md) |
 | **7** | Admin V2 + hardening | [`Day7_Checklist.md`](Day7_Checklist.md) |
+| **8** | Post-sprint loop + E2E | [`Day8_Checklist.md`](Day8_Checklist.md) |
 
 ---
 

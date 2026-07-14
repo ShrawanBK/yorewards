@@ -8,10 +8,12 @@ import { Button } from "@repo/ui/button";
 import { Skeleton } from "@repo/ui/skeleton";
 import { CustomerLoyaltyCard } from "@/features/wallet/components/CustomerLoyaltyCard";
 import { useCustomerCard } from "@/features/wallet/hooks/useCustomerCard";
-import { DisputeForm } from "@/features/disputes";
+import { CustomerDisputesPanel, DisputeForm } from "@/features/disputes";
+import type { CustomerStampDisputeItem } from "@repo/supabase/queries/stamp-disputes";
 
 type CardDetailViewProps = {
   cardId: string;
+  initialDisputes?: CustomerStampDisputeItem[];
 };
 
 function isRewardReady(
@@ -24,8 +26,12 @@ function formatAmount(amount: number, currency: string) {
   return `${currency} ${amount.toLocaleString()}`;
 }
 
-export function CardDetailView({ cardId }: CardDetailViewProps) {
+export function CardDetailView({
+  cardId,
+  initialDisputes = [],
+}: CardDetailViewProps) {
   const t = useTranslations("card");
+  const tDispute = useTranslations("dispute");
   const tErrors = useTranslations("errors.actions");
   const { data: card, isLoading, isError, error } = useCustomerCard(cardId);
   const [copied, setCopied] = useState(false);
@@ -79,6 +85,7 @@ export function CardDetailView({ cardId }: CardDetailViewProps) {
   const showRedemptionCode =
     card.rewardStatus === "unlocked" && card.pendingRedemptionCode;
   const { spendSummary, visits } = card;
+  const hasPendingDispute = initialDisputes.some((d) => d.status === "pending");
 
   return (
     <div className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-5 p-6 pb-8">
@@ -227,7 +234,15 @@ export function CardDetailView({ cardId }: CardDetailViewProps) {
         ) : null}
       </div>
 
-      <DisputeForm customerCardId={card.id} />
+      <CustomerDisputesPanel disputes={initialDisputes} />
+
+      {!hasPendingDispute ? (
+        <DisputeForm customerCardId={card.id} />
+      ) : (
+        <p className="text-sm text-muted-foreground" role="status">
+          {tDispute("pendingBlocked")}
+        </p>
+      )}
     </div>
   );
 }

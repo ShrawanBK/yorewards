@@ -231,9 +231,19 @@
     "descriptionPlaceholder": "e.g. I paid NPR 500 but didn't get a stamp",
     "submit": "Submit dispute",
     "submitting": "Submitting…",
+    "historyTitle": "Your disputes",
+    "resolutionLabel": "Resolution",
+    "pendingHint": "Waiting for the merchant to respond (within 48 hours).",
+    "pendingBlocked": "You already have an open dispute for this card. We'll notify you when it's resolved.",
+    "filedAt": "Filed {date}",
+    "status": {
+      "pending": "Under review",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
     "success": {
       "submitted": "Dispute submitted",
-      "hint": "The merchant will review your request. You'll hear back soon."
+      "hint": "The merchant will review your request. You'll see updates here."
     }
   },
   "insights": {

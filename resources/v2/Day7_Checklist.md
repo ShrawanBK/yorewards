@@ -30,7 +30,7 @@
 ## A. Admin (`apps/admin`)
 
 - [x] Verification queue UI (from Day 6)
-- [x] **Dispute centre** — list, override, manual stamp link, SLA badge (V2 PRD §7.4)
+- [x] **Dispute centre** — detail page, 3-way resolve (reject / approve / approve+stamp), 48h service level agreement + admin early-resolve confirm
 - [x] **Dispute live updates** — broadcast channel + React Query refetch (admin + merchant)
 - [x] **Stamps workbench** — per-card dispute panel, richer approved-session table (branch, amount, approver)
 - [x] Merchant detail: subscription tier, adjust tier, extend trial

@@ -18,7 +18,7 @@ import {
   getDisputeSlaLevel,
   needsEarlyAdminResolveConfirm,
   type StampDisputeListItem,
-} from "@repo/supabase/queries/stamp-disputes";
+} from "@repo/supabase/queries/stamp-disputes-shared";
 import { adminResolveDisputeAction } from "@/features/disputes/api/disputeActions";
 import { isActionFailure } from "@/shared/types/action-result";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";

@@ -10,7 +10,7 @@ import {
   getDisputeSlaLevel,
   type StampDisputeFilter,
   type StampDisputeListItem,
-} from "@repo/supabase/queries/stamp-disputes";
+} from "@repo/supabase/queries/stamp-disputes-shared";
 import { useAdminDisputes } from "@/features/disputes/api/disputeQueries";
 
 const FILTERS: StampDisputeFilter[] = ["pending", "resolved", "all"];

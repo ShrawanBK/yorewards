@@ -10,7 +10,7 @@ import { Textarea } from "@repo/ui/textarea";
 import {
   getDisputeSlaLevel,
   type StampDisputeListItem,
-} from "@repo/supabase/queries/stamp-disputes";
+} from "@repo/supabase/queries/stamp-disputes-shared";
 import { resolveMerchantDisputeAction } from "@/features/disputes/api/disputeActions";
 import { MERCHANT_STATUS_BADGE } from "@/shared/constants/status-badges";
 import { isActionFailure } from "@/shared/types/action-result";

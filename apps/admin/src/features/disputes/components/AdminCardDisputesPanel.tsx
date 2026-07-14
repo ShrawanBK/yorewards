@@ -6,7 +6,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { ExternalLink } from "lucide-react";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
-import { getDisputeSlaLevel } from "@repo/supabase/queries/stamp-disputes";
+import { getDisputeSlaLevel } from "@repo/supabase/queries/stamp-disputes-shared";
 import {
   adminCardDisputesQueryKey,
   useAdminCardDisputes,

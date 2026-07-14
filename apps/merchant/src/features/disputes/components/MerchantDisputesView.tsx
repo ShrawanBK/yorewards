@@ -3,8 +3,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useFormatter, useTranslations } from "next-intl";
 import { Badge } from "@repo/ui/badge";
-import type { StampDisputeListItem } from "@repo/supabase/queries/stamp-disputes";
-import { getDisputeSlaLevel } from "@repo/supabase/queries/stamp-disputes";
+import type { StampDisputeListItem } from "@repo/supabase/queries/stamp-disputes-shared";
+import { getDisputeSlaLevel } from "@repo/supabase/queries/stamp-disputes-shared";
 import {
   merchantDisputesQueryKey,
   useMerchantDisputes,

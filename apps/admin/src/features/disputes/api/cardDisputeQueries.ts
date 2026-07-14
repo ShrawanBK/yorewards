@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import type { StampDisputeListItem } from "@repo/supabase/queries/stamp-disputes";
+import type { StampDisputeListItem } from "@repo/supabase/queries/stamp-disputes-shared";
 import {
   subscribeStampDisputes,
   unsubscribeStampDisputes,

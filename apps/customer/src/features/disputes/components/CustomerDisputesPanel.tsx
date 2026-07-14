@@ -2,7 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { Badge } from "@repo/ui/badge";
-import type { CustomerStampDisputeItem } from "@repo/supabase/queries/stamp-disputes";
+import type { CustomerStampDisputeItem } from "@repo/supabase/queries/stamp-disputes-shared";
 
 const STATUS_VARIANT = {
   pending: "secondary" as const,

@@ -22,6 +22,7 @@
     "./queries/stamp-catalog": "./src/queries/stamp-catalog.ts",
     "./queries/card-insights": "./src/queries/card-insights.ts",
     "./queries/stamp-disputes": "./src/queries/stamp-disputes.ts",
+    "./queries/stamp-disputes-shared": "./src/queries/stamp-disputes-shared.ts",
     "./queries/stamps": "./src/queries/stamps.ts",
     "./queries/redemptions": "./src/queries/redemptions.ts",
     "./queries/reward-otp": "./src/queries/reward-otp.ts",

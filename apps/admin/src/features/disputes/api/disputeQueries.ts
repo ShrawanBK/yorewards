@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import type {
   StampDisputeFilter,
   StampDisputeListItem,
-} from "@repo/supabase/queries/stamp-disputes";
+} from "@repo/supabase/queries/stamp-disputes-shared";
 import {
   subscribeStampDisputes,
   unsubscribeStampDisputes,

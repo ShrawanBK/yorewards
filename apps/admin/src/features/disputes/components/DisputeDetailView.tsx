@@ -10,7 +10,7 @@ import type { AdminStampCardLookup } from "@repo/supabase/queries/admin-stamps";
 import {
   getDisputeSlaLevel,
   type StampDisputeListItem,
-} from "@repo/supabase/queries/stamp-disputes";
+} from "@repo/supabase/queries/stamp-disputes-shared";
 import { AdminDisputeResolvePanel } from "./AdminDisputeResolvePanel";
 
 const SLA_BADGE = {

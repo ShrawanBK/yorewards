@@ -9,7 +9,7 @@ import { Skeleton } from "@repo/ui/skeleton";
 import { CustomerLoyaltyCard } from "@/features/wallet/components/CustomerLoyaltyCard";
 import { useCustomerCard } from "@/features/wallet/hooks/useCustomerCard";
 import { CustomerDisputesPanel, DisputeForm } from "@/features/disputes";
-import type { CustomerStampDisputeItem } from "@repo/supabase/queries/stamp-disputes";
+import type { CustomerStampDisputeItem } from "@repo/supabase/queries/stamp-disputes-shared";
 
 type CardDetailViewProps = {
   cardId: string;

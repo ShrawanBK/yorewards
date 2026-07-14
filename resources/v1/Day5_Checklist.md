@@ -103,7 +103,7 @@ Customer scan → wallet → OTP → live redemption E2E is **Day 7** ([`Day7_Ch
 - [x] **Counter branch** — when 2+ active branches, show current branch + “change in sidebar” hint (or compact select mirroring sidebar)
 - [x] i18n: `settings.preferences.*`
 
-### B5. Out of scope (v2 — see [`V2_Backlog.md`](V2_Backlog.md))
+### B5. Out of scope (v2 — see [`V2_Backlog.md`](../v2/V2_Backlog.md))
 
 - [ ] Change password / change email
 - [ ] Notification preferences (email/push)
@@ -187,7 +187,7 @@ apps/merchant/src/features/dashboard/components/MerchantStatusPanel.tsx
 apps/merchant/src/features/stamp-queue/components/StampQueuePanel.tsx
 apps/merchant/src/app/merchant/(protected)/customers/page.tsx
 apps/merchant/messages/en.json
-resources/YORewards_Technical_Doc_v1.md
+resources/YORewards_Technical_Doc.md
 resources/Day5_Checklist.md
 ```
 
@@ -214,7 +214,7 @@ resources/Day5_Checklist.md
 | Stamp session from real scan + customer Realtime                 | Day 7                                 |
 | OTP (Sparrow / Twilio) + customer reward unlock                  | Day 7                                 |
 | PWA manifest, privacy policy, production deploy all 3 apps       | Day 8 — [`Day8_Checklist.md`](Day8_Checklist.md) |
-| Branch-scoped loyalty programs (per-branch cards / redeem rules) | V2 — [`V2_Backlog.md`](V2_Backlog.md) |
+| Branch-scoped loyalty programs (per-branch cards / redeem rules) | V2 — [`V2_Backlog.md`](../v2/V2_Backlog.md) |
 
 ---
 
@@ -240,4 +240,4 @@ resources/Day5_Checklist.md
 
 ---
 
-_Previous: [`Day4_Checklist.md`](Day4_Checklist.md) · V2: [`V2_Backlog.md`](V2_Backlog.md) · **Start:** [`Day6_Checklist.md`](Day6_Checklist.md)_
+_Previous: [`Day4_Checklist.md`](Day4_Checklist.md) · V2: [`V2_Backlog.md`](../v2/V2_Backlog.md) · **Start:** [`Day6_Checklist.md`](Day6_Checklist.md)_

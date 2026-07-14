@@ -1,7 +1,7 @@
 # YORewards — V2 Day 4 (Spend Insights + Merchant CRM)
 
 > **Goal:** Both sides see spend data; merchant can export customers.  
-> **Reference:** V2 PRD §3.5, §4.6–4.7 · [`V2_Backlog.md`](../V2_Backlog.md) (CSV, branch analytics)  
+> **Reference:** V2 PRD §3.5, §4.6–4.7 · [`V2_Backlog.md`](V2_Backlog.md) (CSV, branch analytics)  
 > **Prerequisite:** [`Day3_Checklist.md`](Day3_Checklist.md)
 
 ---

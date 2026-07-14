@@ -97,7 +97,7 @@
 - [ ] Update PRD / Technical Doc — **MVP launch complete**
 - [ ] Update all Day checklists final status
 - [ ] Launch git tag or commit (when you ask)
-- [ ] [`V2_Backlog.md`](V2_Backlog.md) — triage post-launch items
+- [ ] [`V2_Backlog.md`](../v2/V2_Backlog.md) — triage post-launch items
 
 ---
 
@@ -110,4 +110,4 @@
 
 ---
 
-_Previous: [`Day7_Checklist.md`](Day7_Checklist.md) · V2: [`V2_Backlog.md`](V2_Backlog.md)_
+_Previous: [`Day7_Checklist.md`](Day7_Checklist.md) · V2: [`V2_Backlog.md`](../v2/V2_Backlog.md)_

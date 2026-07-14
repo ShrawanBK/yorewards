@@ -1,7 +1,7 @@
 # YORewards — V2 Day 8 (Post-sprint: dispute loop + E2E + launch)
 
 > **Goal:** Close the customer dispute loop, run full E2E sign-off, and advance launch polish from V1 Day 8.  
-> **Reference:** [`V2_Backlog.md`](../V2_Backlog.md) §Post-sprint · [`v1/Day8_Checklist.md`](../v1/Day8_Checklist.md) Phases D–F  
+> **Reference:** [`V2_Backlog.md`](V2_Backlog.md) §Post-sprint · [`v1/Day8_Checklist.md`](../v1/Day8_Checklist.md) Phases D–F  
 > **Prerequisite:** [`Day7_Checklist.md`](Day7_Checklist.md) — sprint code complete
 
 ---
@@ -57,4 +57,4 @@
 
 ---
 
-_Next: [`V2_Backlog.md`](../V2_Backlog.md) §Post-sprint (Expo, full ne/fi, Khalti live)_
+_Next: [`V2_Backlog.md`](V2_Backlog.md) §Post-sprint (Expo, full ne/fi, Khalti live)_

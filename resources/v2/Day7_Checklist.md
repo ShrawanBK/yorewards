@@ -1,7 +1,7 @@
 # YORewards — V2 Day 7 (Admin V2 + i18n + Hardening)
 
 > **Goal:** Platform ops for V2; locale shells; green CI; sprint sign-off.  
-> **Reference:** V2 PRD §7 · [`V2_Backlog.md`](../V2_Backlog.md) (ne/fi)  
+> **Reference:** V2 PRD §7 · [`V2_Backlog.md`](V2_Backlog.md) (ne/fi)  
 > **Prerequisite:** [`Day6_Checklist.md`](Day6_Checklist.md)
 
 ---

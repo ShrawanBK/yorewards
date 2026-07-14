@@ -1,7 +1,7 @@
 # YORewards — V2 Day 5 (Multi-Staff + Auth + Auto-Approve)
 
 > **Goal:** Team accounts, frictionless onboarding, account maintenance.  
-> **Reference:** V2 PRD §4.1, §4.8 · [`V2_Backlog.md`](../V2_Backlog.md)  
+> **Reference:** V2 PRD §4.1, §4.8 · [`V2_Backlog.md`](V2_Backlog.md)  
 > **Prerequisite:** [`Day4_Checklist.md`](Day4_Checklist.md)
 
 ---
@@ -41,7 +41,7 @@
 ### Follow-up (not Day 5)
 
 - [ ] **Gate `active` status** — auto-approve only after credible business fields (registration number, website/social, address, etc.)
-- [ ] **Full merchant KYC form** — documents, business card upload, admin review (see [`V2_Backlog.md`](../V2_Backlog.md) § Merchant KYC)
+- [ ] **Full merchant KYC form** — documents, business card upload, admin review (see [`V2_Backlog.md`](V2_Backlog.md) § Merchant KYC)
 
 ## C. Account flows
 

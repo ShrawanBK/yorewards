@@ -1,7 +1,7 @@
 # YORewards — V2 Day 3 (Customer Scan + Wallet V2 + Disputes)
 
 > **Goal:** Customer completes QR flow end-to-end; wallet feels V2.  
-> **Reference:** V2 PRD §3.3–3.6, §3.8 · [`V2_Backlog.md`](../V2_Backlog.md) (signup OTP)  
+> **Reference:** V2 PRD §3.3–3.6, §3.8 · [`V2_Backlog.md`](V2_Backlog.md) (signup OTP)  
 > **Prerequisite:** [`Day2_Checklist.md`](Day2_Checklist.md)
 
 ---

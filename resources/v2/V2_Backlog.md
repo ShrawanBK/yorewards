@@ -50,30 +50,27 @@
 
 ---
 
-## Staff invite acceptance UX
+## Staff invite acceptance UX — ✅ RESOLVED (Day 6)
 
-**Current gap (Day 5):** Owner can invite `cashier` / `manager` by email, and `merchant_staff` rows are created. But the public merchant auth UI still treats "sign up" as **create a business owner account** and redirects to `/merchant/add-business`.
+**Shipped Day 6.** Dedicated `/merchant/accept-invite` flow with locked invited email; `resolvePostAuthRedirect` + `linkPendingStaffInvites` link pending invites on sign-in / sign-up / auth callback and route staff to the dashboard (not owner onboarding).
 
-**Problem:** A newly invited cashier can receive an invite email, but if they follow the wrong path they can end up in owner onboarding instead of staff activation.
+- [x] Dedicated **accept invite** flow for merchant staff (`AcceptInviteView` / `AcceptInviteForm`)
+- [x] Owner signup and staff invite acceptance are separate journeys
+- [x] Existing auth user → membership linked → merchant dashboard
+- [x] New email → invite completion activates `merchant_staff`, skips `add-business`
+- [x] Email-prefill route (`?email=`) so staff never see the owner signup tab first
 
-**Follow-up (Day 6):**
-
-- [ ] Add dedicated **accept invite** flow for merchant staff
-- [ ] Keep owner signup and staff invite acceptance as separate auth journeys
-- [ ] If invited email already belongs to an auth user, sign-in should link membership and go to merchant dashboard
-- [ ] If invited email is new, completing invite/signup should activate `merchant_staff` and skip `add-business`
-- [ ] Optional: invite token / email-prefill route so staff never see the owner signup tab first
-
-**Touch points:** `inviteMerchantStaff`, `linkPendingStaffInvites`, merchant auth UI (`MerchantAuthScreen` / `MerchantAuthForm`), auth redirects, staff onboarding copy.
+**Touch points (implemented):** `inviteMerchantStaff`, `linkPendingStaffInvites`, `resolvePostAuthRedirect`, `AcceptInviteView`, auth callback route.
 
 ---
 
 ## Other v2 items (from PRD §12–13)
 
-- **Manual stamp (no camera)** — merchant + branch picker on `/scan` when QR camera fails (iOS PWA, permission denied, broken lens). Same pending session as QR; see Day 3 checklist.
+- ~~Manual stamp (no camera) — merchant + branch picker on `/scan`~~ — ✅ Day 3 (`ManualStampPicker`)
 - ~~Multi-staff accounts (`merchant_staff`) + role permissions~~ — ✅ Day 5
-- Phone OTP at customer signup (not just redemption)
-- Nepali + Finnish translations (next-intl keys exist)
+- ~~Staff invite acceptance flow~~ — ✅ Day 6 (`/merchant/accept-invite` + `linkPendingStaffInvites`)
+- Phone OTP at customer signup (not just redemption) — **now in V2 Day 10**
+- Nepali + Finnish translations (next-intl keys exist) — **now in V2 Day 11**
 - ~~Customer detail drawer + CSV export on `/merchant/customers`~~ — ✅ Day 4
 - Per-branch analytics charts (beyond `location_id` filter)
 - Merchant subscription billing (Stripe + eSewa / MobilePay)
@@ -83,23 +80,45 @@
 
 ---
 
-## 7-day sprint
+## Build plan
 
-Active build plan: [`v2/README.md`](v2/README.md) · **current:** [`v2/Day8_Checklist.md`](v2/Day8_Checklist.md) (post-sprint: dispute loop + E2E).
+Active build plan: [`README.md`](README.md) · **current:** [`Day9_Checklist.md`](Day9_Checklist.md).
+
+Days 1–8 shipped the core loop. **Days 9–12 = V2 completion phase** (pulled in from the list below): notifications, verification, full i18n, launch hardening. See [`YORewards_PRD_Final_v2.md`](../YORewards_PRD_Final_v2.md) §0.
 
 ---
 
-## Post-sprint (deferred from V2 Day 7)
+## Now IN V2 (completion phase — Days 9–12)
+
+Moved out of "post-sprint" because they block a credible launch:
+
+| Item                              | Day | Notes                                                                     |
+| --------------------------------- | --- | ------------------------------------------------------------------------- |
+| **Notifications (all sides)**     | 9   | In-app centre + email; dispute filed → merchant, SLA breach → admin, resolved → customer, reward unlocked |
+| **Account verification**          | 10  | Merchant owner email (free); customer phone OTP (Sparrow NP / Twilio · GatewayAPI FI); provider abstraction |
+| **Full en/ne/fi translation**    | 11  | Key parity check + full coverage on critical paths                        |
+| **Full E2E sign-off**             | 12  | 12 flows + 3 reward types; run [`Day8_E2E_Runbook.md`](Day8_E2E_Runbook.md) |
+| **Production deploy**             | 12  | 3 Vercel apps + prod env (SMS, Resend, eSewa, Supabase RLS)               |
+| **Admin demo / stakeholder sign-off** | 12 | Founder sign-off on full loop demo                                    |
+
+---
+
+## Post-sprint → V3 (still deferred)
 
 | Item                                  | Notes                                                                     |
 | ------------------------------------- | ------------------------------------------------------------------------- |
-| **Full ne/fi translation**            | Locale shells + switcher shipped; most UI strings still English-only      |
-| **Full E2E sign-off**                 | signup → scan → approve → insights → upgrade → dispute (manual checklist) |
-| **Expo native apps**                  | Customer + merchant; see [`v2/README.md`](v2/README.md) §Post-sprint      |
-| **Khalti live billing**               | eSewa sandbox only in sprint                                              |
-| **Push/email on dispute SLA**         | Disputes use in-app list + realtime broadcast; no push/email yet          |
-| **Admin demo / stakeholder sign-off** | Checklist item D in Day 7                                                 |
+| **Expo native apps**                  | Customer + merchant; see [`README.md`](README.md) §Post-sprint      |
+| **Offline stamp queue**               | WatermelonDB — native only                                                |
+| **Khalti live + Finland payments**    | eSewa sandbox → live; Stripe/MobilePay + EUR pricing for FI               |
+| **Full smart-promo suite**            | Win-back, streak, birthday, expiry campaigns, push campaign builder       |
+| **POS API + webhooks**                | Growth+ tier                                                              |
+| **In-app live chat**                  | Interim: WhatsApp/email support link                                      |
+| **Deep legal/compliance**             | Full EU GDPR DPAs + breach process; Nepal tax/registration                |
+| **Full merchant KYC (documents)**     | Doc upload + admin review beyond credible-fields gate                     |
+| **Phone OTP for merchant owner**      | Email verification ships in V2 (Day 10); owner phone OTP deferred         |
+| **Observability**                     | Sentry + PostHog                                                          |
+| **App/Play Store submission**         | When native apps ship                                                     |
 
 ---
 
-_Last updated: July 2026 · See also [`YoRewards_V2_Final.md`](YoRewards_V2_Final.md) §11_
+_Last updated: July 2026 · See also [`YORewards_PRD_Final_v2.md`](../YORewards_PRD_Final_v2.md) §0_

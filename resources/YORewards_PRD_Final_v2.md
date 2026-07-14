@@ -2,14 +2,16 @@
 
 ### Your Loyalty. Tracked. Rewarded.
 
-> **Version:** 2.0 Final · **Date:** 2026 · **Market:** Nepal 🇳🇵
+> **Version:** 2.1 Final · **Date:** July 2026 · **Market:** Nepal 🇳🇵 (Finland 🇫🇮 groundwork)
 > **Phase 1 Status:** Complete — Web PWA live
-> **Phase 2 Goal:** Full native platform with spending insights, QR stamp flow, merchant CRM, subscription monetisation, and a wholesome experience for every stakeholder
+> **Phase 2 Web Status:** Core loop shipped (7-day sprint Days 1–8). **Completion phase in progress** (Days 9–12 — see §0).
+> **Phase 2 Goal:** Full native platform with spending insights, QR stamp flow, merchant CRM, subscription monetisation, and a wholesome experience for every stakeholder. **Native Expo apps are deferred to V3** — V2 ships as a web PWA (installable / wrapped).
 
 ---
 
 ## Table of Contents
 
+0. [V2 As-Built Status & Completion Scope](#0-v2-as-built-status--completion-scope)
 1. [What Changed from V1](#1-what-changed-from-v1)
 2. [Core Fix — QR Stamp Flow + Spend Tracking](#2-core-fix--qr-stamp-flow--spend-tracking)
 3. [Customer Experience](#3-customer-experience)
@@ -23,6 +25,56 @@
 11. [V2 Build Order — 16 Weeks](#11-v2-build-order--16-weeks)
 12. [Complete Feature Summary](#12-complete-feature-summary)
 13. [The V2 Promise](#13-the-v2-promise)
+
+---
+
+## 0. V2 As-Built Status & Completion Scope
+
+> This section reflects **what is actually running in the codebase today** (verified July 2026), and defines the **critical work remaining to close V2** before onboarding real customers. It supersedes the aspirational "16-week" framing in §11 — that full scope is now split across V2 completion (below) and **V3** (native apps, full promo suite, POS API, deep legal/compliance).
+>
+> **Architecture reality:** V2 is **three Next.js web apps** — customer PWA (`app.`), merchant dashboard (`merchant.`), super admin (`admin.`). Mobile = installable/wrapped web, **not** Expo native.
+
+### 0.1 Confirmed shipped (safe to demo)
+
+| Area | Status |
+| ---- | ------ |
+| QR stamp + spend approval (pending session → cashier queue → approve with amount) | ✅ |
+| Manual stamp fallback (merchant + branch picker, no camera) | ✅ |
+| Customer wallet V2, card detail, spend insights, reward history | ✅ |
+| Merchant Realtime stamp queue + redeem + analytics | ✅ |
+| Multi-staff (owner / manager / cashier) + PIN switcher + RLS | ✅ |
+| Staff invite acceptance (`/merchant/accept-invite`, links pending invites on auth) | ✅ |
+| Merchant CRM + detail drawer + CSV export (Starter+ gate) | ✅ |
+| Credible onboarding gate (registration #, website/social, address, phone before `active`) | ✅ |
+| Disputes: file → merchant/admin 3-way resolve → customer sees outcome + SLA badge | ✅ |
+| Subscriptions + tier gates; **eSewa sandbox** checkout | ✅ (sandbox) |
+| Redemption OTP SMS — Sparrow (NP) / Twilio (FI); dev logs when unconfigured | ✅ |
+| Password / email change (merchant + admin); merchant-approved email (Resend) | ✅ |
+| Privacy page + merchant T&C; GDPR deletion contact | ✅ (basic) |
+| Locale switcher + `en` / `ne` / `fi` message files | ⚠️ Switcher live; **ne/fi ~20% translated** |
+
+### 0.2 Critical to finish IN V2 (Days 9–12)
+
+These are pulled **into V2** (not V3) because they block a credible, trustworthy launch:
+
+| # | Feature | Why critical | Day |
+| - | ------- | ------------ | --- |
+| 1 | **Notifications — merchant + admin + customer** (in-app centre + email; dispute filed → merchant, SLA breach → admin, dispute resolved → customer, reward unlocked, "X more stamps") | Disputes/rewards currently only surface if someone has the dashboard open; SLAs age silently | **9** |
+| 2 | **Account verification** — merchant owner **email verification** (free) at onboarding + optional phone OTP; **customer signup phone OTP**; provider abstraction (Sparrow NP / Twilio · GatewayAPI FI) | Prevents fake businesses; aligns with §4.2 basic verification; needed before public signup | **10** |
+| 3 | **Full i18n** — complete `en` / `ne` / `fi` coverage for every critical path (auth, scan, wallet, queue, disputes, billing, errors) | A half-translated app reads as broken; blocks Nepali + Finnish testers | **11** |
+| 4 | **Launch hardening** — full E2E sign-off, mobile-web pass, production deploy (3 apps), prod env (SMS, Resend, eSewa) | "Does the loop work in production on a real phone?" is still unproven | **12** |
+
+### 0.3 Verification — free vs. paid SMS decision
+
+There is **no fully free + reliable SMS** for Nepal or Finland phone numbers. Decision for V2:
+
+- **Merchant owners → email verification (FREE, reliable).** Merchants are email-first; verify owner email via Supabase/Resend link. No SMS cost.
+- **Customer phone identity → SMS OTP (paid, cheap).** Nepal customers are phone-first; use **Sparrow SMS** (NP) and **Twilio / GatewayAPI** (FI) via a thin provider abstraction. Reuse the existing redemption-OTP layer.
+- **Rejected free alternatives:** WhatsApp auth templates (Meta charges + setup friction, unreliable in NP); email OTP for customers (breaks phone-first identity). Email OTP is only "free enough" for merchants.
+
+### 0.4 Explicitly deferred to V3 (do NOT block V2)
+
+Expo native apps · offline stamp queue (WatermelonDB) · Khalti **live** + Finland payment rail (Stripe/MobilePay) + EUR pricing · full smart-promo suite (win-back, streak, birthday, expiry campaigns) · manual push campaign builder · POS API + webhooks · fraud ML · referrals · deep links · nearby merchants map · onboarding tutorial · post-redemption feedback · in-app live chat · Sentry/PostHog · deep legal/compliance program (full EU GDPR DPAs, breach process) · App/Play Store submission.
 
 ---
 

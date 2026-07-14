@@ -1,7 +1,7 @@
 # YORewards — V2 Day 1 (Schema + QR Stamp Backend)
 
 > **Goal:** Data model and server actions for 2-step QR stamp with spend.  
-> **Reference:** V2 PRD §2 · [`V2_Backlog.md`](../V2_Backlog.md) (branch subset) · Technical Doc §4.7  
+> **Reference:** V2 PRD §2 · [`V2_Backlog.md`](V2_Backlog.md) (branch subset) · Technical Doc §4.7  
 > **Prerequisite:** V1 complete ([`v1/Day8_Checklist.md`](../v1/Day8_Checklist.md))
 
 ---

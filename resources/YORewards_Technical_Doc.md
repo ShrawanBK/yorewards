@@ -37,9 +37,14 @@
 | Customer PWA installability (manifest, SW, icons)                         | ✅ Done (Day 8 Phase A) — `next-pwa`, `manifest.ts`, Profile install hint; login/onboarding use server `redirect()` |
 | Privacy policy + GDPR deletion contact                                    | ✅ Done (Day 8 Phase B) — `/privacy`, profile mailto, merchant settings link                                        |
 | Empty/error states (customer offline, scan, wallet)                       | ✅ Done (Day 8 Phase C)                                                                                             |
-| Privacy policy, production deploy                                         | ⏳ Day 8 Phases D–F — [`Day8_Checklist.md`](../resources/Day8_Checklist.md)                                         |
+| Customer dispute loop (status panel, hide form while pending)             | ✅ Done (V2 Day 8) — [`v2/Day8_Checklist.md`](../resources/v2/Day8_Checklist.md)                                    |
+| Redemption OTP SMS (Sparrow NP / Twilio FI)                               | ✅ Done — `packages/supabase/src/sms/send-redemption-otp.ts`                                                        |
+| Notifications — merchant + admin + customer (in-app + email, SLA cron)    | ⏳ V2 Day 9 — [`v2/Day9_Checklist.md`](../resources/v2/Day9_Checklist.md)                                           |
+| Account verification — merchant email + customer signup phone OTP         | ⏳ V2 Day 10 — [`v2/Day10_Checklist.md`](../resources/v2/Day10_Checklist.md)                                        |
+| Full i18n — en / ne / fi coverage on critical paths                       | ⏳ V2 Day 11 — [`v2/Day11_Checklist.md`](../resources/v2/Day11_Checklist.md) (ne/fi ~20% today)                     |
+| Launch hardening — full E2E, mobile-web pass, production deploy           | ⏳ V2 Day 12 — [`v2/Day12_Checklist.md`](../resources/v2/Day12_Checklist.md)                                        |
 
-**Next up (post–V2 sprint):** Full E2E sign-off, production deploy, Expo native apps — see [`v2/README.md`](../resources/v2/README.md) §Post-sprint.
+**Next up (V2 completion phase — Days 9–12):** notifications, account verification, full i18n, then launch hardening + production deploy. See [`v2/README.md`](v2/README.md) and [`YORewards_PRD_Final_v2.md`](YORewards_PRD_Final_v2.md) §0. Expo native apps + full promo suite → V3 ([`v2/V2_Backlog.md`](v2/V2_Backlog.md) §Post-sprint → V3).
 
 ---
 

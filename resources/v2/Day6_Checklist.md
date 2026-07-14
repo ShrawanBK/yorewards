@@ -56,7 +56,7 @@
 - [x] Collect credible business fields before `status: active`
 - [x] Phone required; registration, website/social, address validated
 - [ ] Phone OTP for owner — deferred
-- [ ] Full KYC form — see [`V2_Backlog.md`](../V2_Backlog.md)
+- [ ] Full KYC form — see [`V2_Backlog.md`](V2_Backlog.md)
 
 ## F. Staff invite acceptance
 

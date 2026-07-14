@@ -7,9 +7,9 @@ This monorepo builds **YORewards**, a digital loyalty stamp wallet (Nepal + Finl
 Before feature work, read the current versions of:
 
 1. [`resources/YORewards_PRD_Final_v1.md`](resources/YORewards_PRD_Final_v1.md) — product requirements, routes, MVP scope, locked stack
-2. [`resources/YORewards_Technical_Doc_v1.md`](resources/YORewards_Technical_Doc_v1.md) — architecture, DB schema, auth, pitfalls, build plan
+2. [`resources/YORewards_Technical_Doc.md`](resources/YORewards_Technical_Doc.md) — architecture, DB schema, auth, pitfalls, build plan
 3. [`resources/Turborepo_App_Setup_Guide.md`](resources/Turborepo_App_Setup_Guide.md) — adding apps to the monorepo
-4. **Build day checklists** — V2 sprint: [`resources/v2/README.md`](resources/v2/README.md) · **current:** [`Day8_Checklist.md`](resources/v2/Day8_Checklist.md); V1 archived in [`resources/v1/`](resources/v1/); deferred → [`V2_Backlog.md`](resources/V2_Backlog.md)
+4. **Build day checklists** — V2 sprint: [`resources/v2/README.md`](resources/v2/README.md) · **current:** [`Day9_Checklist.md`](resources/v2/Day9_Checklist.md); V1 archived in [`resources/v1/`](resources/v1/); deferred → [`resources/v2/V2_Backlog.md`](resources/v2/V2_Backlog.md)
 
 Keep docs in `resources/`. Update them there; do not duplicate requirements into code comments.
 

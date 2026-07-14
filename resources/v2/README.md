@@ -1,7 +1,7 @@
 # YORewards — V2 Sprint (7 Days)
 
 > **Goal:** Ship a **usable V2 foundation** on existing web apps — QR stamp + spend, CRM basics, tier gates, backlog items.  
-> **Reference:** [`YoRewards_V2_Final.md`](../YoRewards_V2_Final.md) · [`V2_Backlog.md`](../V2_Backlog.md)  
+> **Reference:** [`YORewards_PRD_Final_v2.md`](../YORewards_PRD_Final_v2.md) · [`V2_Backlog.md`](V2_Backlog.md)  
 > **Prerequisite:** V1 complete ([`v1/Day8_Checklist.md`](../v1/Day8_Checklist.md))  
 > **Reality check:** Full V2 PRD = 16 weeks. This sprint = **core loop + revenue path**. Native Expo, full promotions, POS API → post-sprint.
 
@@ -9,7 +9,9 @@
 
 ## Current build day
 
-**→ [`Day8_Checklist.md`](Day8_Checklist.md)** — post-sprint: customer dispute loop, E2E sign-off, launch polish
+**→ [`Day9_Checklist.md`](Day9_Checklist.md)** — V2 completion phase: notifications (merchant + admin + customer)
+
+The 7-day sprint (Days 1–8) shipped the core loop. **Days 9–12 = V2 completion phase** — the critical features that make the whole system launch-ready (notifications, verification, full i18n, production hardening). See [`YORewards_PRD_Final_v2.md`](../YORewards_PRD_Final_v2.md) §0.
 
 | Day | Focus | Checklist |
 | --- | ----- | --------- |
@@ -21,6 +23,10 @@
 | **6** | Billing + tier gates | [`Day6_Checklist.md`](Day6_Checklist.md) |
 | **7** | Admin V2 + hardening | [`Day7_Checklist.md`](Day7_Checklist.md) |
 | **8** | Post-sprint loop + E2E | [`Day8_Checklist.md`](Day8_Checklist.md) |
+| **9** | 🆕 Notifications (merchant + admin + customer) | [`Day9_Checklist.md`](Day9_Checklist.md) |
+| **10** | 🆕 Account verification (email + SMS OTP) | [`Day10_Checklist.md`](Day10_Checklist.md) |
+| **11** | 🆕 Full i18n (en / ne / fi) | [`Day11_Checklist.md`](Day11_Checklist.md) |
+| **12** | 🆕 Launch hardening + production deploy | [`Day12_Checklist.md`](Day12_Checklist.md) |
 
 ---
 

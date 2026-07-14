@@ -1,0 +1,79 @@
+---
+description: Codebase map — where things live, canonical reference implementations, and the import/export conventions to copy. Read this before exploring or building a feature.
+alwaysApply: true
+---
+
+# YORewards — Codebase Map
+
+Use this to locate patterns instead of re-searching. When building a feature, **copy the canonical reference slice** below rather than inventing a new shape.
+
+## App ownership
+
+| App | Path | Routing dir | Features dir | Font / theme |
+| --- | ---- | ----------- | ------------ | ------------ |
+| Customer PWA | `apps/customer` | `app/` (route groups `(main)`, `(public)`, `(auth)`, `stamp`) | `src/features/*` | Geist · light · installable PWA |
+| Merchant dashboard | `apps/merchant` | `src/app/merchant/*` | `src/features/*` + `src/widgets/*` | Plus Jakarta Sans · dark · sidebar shell |
+| Super admin | `apps/admin` | `app/admin/*` | `src/features/*` | light · `AdminShell` |
+
+Shared packages: `@repo/supabase` (data), `@repo/utils` (pure helpers, error codes, otp, email), `@repo/ui` (shadcn primitives), `@repo/tailwind-config`, `@repo/eslint-config`, `@repo/typescript-config`.
+
+## Layering (from `root.mdc` / `fda-structure.mdc`)
+
+```
+app → widgets → features → entities → shared → (@repo/*)
+```
+
+Never import feature-to-feature. Import shared code via `@/…` aliases and `@repo/*` barrels. Pages stay thin — compose from features.
+
+## The canonical reference slice — copy this for any vertical feature
+
+**Disputes** is the reference end-to-end implementation. To add a new data-backed feature, mirror these files in order:
+
+| Layer | Reference file | What to copy |
+| ----- | -------------- | ------------ |
+| Client-safe types + pure helpers | `packages/supabase/src/queries/stamp-disputes-shared.ts` | Types, enums, SLA math — **imports only `../types`**, no `server.ts` |
+| Server-only queries | `packages/supabase/src/queries/stamp-disputes.ts` | DB reads/writes; imports `../server` / `../service-role`; add path to `package.json` `exports` |
+| Server action | `apps/customer/src/features/disputes/api/disputeActions.ts` | `"use server"`, auth guard → `fail("UNAUTHORIZED")`, validation → codes, `try/catch` → `logActionFailure` + `fail(...)`, `revalidatePath` |
+| TanStack keys / invalidation | `apps/customer/src/features/wallet/api/walletQueries.ts` | Query-key factory + `invalidate*` / `refresh*` helpers |
+| UI | `apps/customer/src/features/disputes/components/*` | `"use client"`, `useTranslations`, `resolveActionError`, toast on success |
+| Barrel | `apps/customer/src/features/disputes/index.ts` | Export only the public API |
+
+Admin + merchant mirror the same slice under their own `features/disputes/`.
+
+## Server actions (see `server-action-errors.mdc`)
+
+- Return **codes only** via `fail("CODE")` from `@repo/utils/action-error`; never English strings or raw DB errors.
+- Register every new code in `packages/utils/src/action-error.ts` (`ActionErrorCode` union) + copy under `errors.actions.*` in each app's `messages/*.json`.
+- Result type: `ActionResult<T>`; check with `isActionFailure`; log with `logActionFailure(context, err)`.
+- Client resolves with `resolveActionError(tErrors, result.error)`; success → `showActionSuccess`.
+
+## Data conventions
+
+- **Server state = TanStack Query. Client/UI state = Zustand** (`'use client'` only). Realtime = stamp queue + disputes only.
+- **RLS on every table before writing queries.** Service-role client only for privileged server paths.
+- Supabase types: **`packages/supabase/src/types.ts` is the hand-maintained source of truth** (strict unions mirror check constraints). `pnpm supabase:types` writes raw CLI output to the gitignored `types.generated.ts` — diff it and merge new columns/tables into `types.ts` by hand. See `packages/supabase/AGENTS.md`.
+
+## i18n
+
+- Every user-facing string (labels, errors, `aria-*`) via `next-intl`. Keys in `apps/<app>/messages/{en,ne,fi}.json`. `en.json` is source of truth; `ne`/`fi` must reach key parity (see Day 11).
+
+## Commands
+
+```sh
+pnpm build | pnpm lint | pnpm check-types        # all apps (turbo)
+pnpm exec turbo <task> --filter=customer          # single app
+pnpm supabase:types                               # write raw types.generated.ts to diff against types.ts
+pnpm exec supabase db push                        # apply migrations to linked project
+```
+
+## Migrations
+
+- Location `supabase/migrations/`; naming `YYYYMMDDHHMMSS_v2_<slug>.sql`. Include RLS in the same migration.
+
+## Reference docs
+
+- Product: `resources/YORewards_PRD_Final_v2.md` (§0 = as-built + completion scope)
+- Technical: `resources/YORewards_Technical_Doc.md`
+- Build plan: `resources/v2/README.md` · current day `resources/v2/Day9_Checklist.md`
+- Backlog / V3: `resources/v2/V2_Backlog.md`
+- New-subsystem decisions: `resources/v2/Day9_10_Design_Decisions.md`

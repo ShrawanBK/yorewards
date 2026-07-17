@@ -10,7 +10,9 @@
     "switchToDark": "Switch to dark mode"
   },
   "a11y": {
-    "skipToMain": "Skip to main content"
+    "skipToMain": "Skip to main content",
+    "openNotifications": "Notifications{count, plural, =0 {} other {, {count} unread}}",
+    "disputesNavPending": "Disputes, {count, plural, one {# open} other {# open}}"
   },
   "locale": {
     "label": "Language"
@@ -22,6 +24,7 @@
     "analytics": "Analytics",
     "customers": "Customers",
     "disputes": "Disputes",
+    "notifications": "Notifications",
     "business": "Business",
     "loyaltyCard": "Loyalty card",
     "staff": "Team",
@@ -911,6 +914,8 @@
       "DISPUTE_ALREADY_RESOLVED": "This dispute was already handled.",
       "DISPUTE_RESPONSE_REQUIRED": "Add a resolution note — at least 10 characters.",
       "DISPUTE_RESOLVE_FAILED": "We couldn't update this dispute — try again.",
+      "NOTIFICATIONS_LOAD_FAILED": "We couldn't load notifications — try again.",
+      "NOTIFICATIONS_UPDATE_FAILED": "We couldn't update notifications — try again.",
       "STAMP_ISSUE_FAILED": "We couldn't issue the stamp — try again."
     }
   },
@@ -924,6 +929,7 @@
     "visitSummary": "Visit {date} · {amount}",
     "responseLabel": "Resolution note",
     "filedAt": "Filed {date}",
+    "openDetail": "Open dispute",
     "resolveSectionTitle": "Your resolution",
     "noteLabel": "Resolution note (required)",
     "notePlaceholder": "Explain your decision for the customer and audit log…",
@@ -945,10 +951,73 @@
       "approved": "Approved",
       "rejected": "Rejected"
     },
+    "detail": {
+      "title": "Dispute details",
+      "subtitle": "Review the claim and approve or reject with a response.",
+      "backToList": "Back to disputes",
+      "switchingBusiness": "Switching to {business}…",
+      "switchingBusinessHint": "Opening this dispute for the correct business."
+    },
     "success": {
       "approved": "Dispute approved",
       "approvedWithStamp": "Dispute approved — stamp added",
       "rejected": "Dispute rejected"
+    }
+  },
+  "notifications": {
+    "centre": {
+      "button": "Notifications",
+      "title": "Notifications",
+      "description": "Alerts about disputes, approvals, and account activity.",
+      "markRead": "Mark read",
+      "markAllRead": "Mark all read",
+      "unread": "Unread",
+      "read": "Read",
+      "allRead": "All read",
+      "unreadCount": "{count, plural, one {# unread} other {# unread}}",
+      "unreadSummary": "{count, plural, =0 {No unread notifications} one {1 unread notification} other {# unread notifications}}",
+      "totalCount": "{count, plural, one {# notification total} other {# notifications total}}",
+      "categoryUnreadSummary": "{unread} unread of {total} in this category",
+      "refreshing": "Refreshing…",
+      "emptyTitle": "All caught up",
+      "emptyDescription": "New alerts will appear here.",
+      "promotionsEmptyTitle": "No promotions yet",
+      "promotionsEmptyDescription": "Merchant offers and boosts will show up here later."
+    },
+    "categories": {
+      "all": "All",
+      "disputes": "Disputes",
+      "account": "Account",
+      "promotions": "Promotions"
+    },
+    "actions": {
+      "openDispute": "Open dispute",
+      "openDashboard": "Open dashboard",
+      "view": "View"
+    },
+    "disputeFiled": {
+      "title": "New stamp dispute",
+      "body": "{customerName, select, null {A customer} other {{customerName}}} disputed a visit at {businessName}."
+    },
+    "disputeResolved": {
+      "title": "Dispute update",
+      "body": "Your dispute with {businessName} was {status}."
+    },
+    "disputeSlaBreach": {
+      "title": "Dispute SLA breach",
+      "body": "A dispute for {merchantName} passed the 48-hour merchant SLA."
+    },
+    "rewardUnlocked": {
+      "title": "Reward ready!",
+      "body": "You unlocked a reward on {cardName} at {businessName}."
+    },
+    "merchantApproved": {
+      "title": "Business approved",
+      "body": "{businessName} is live on YORewards."
+    },
+    "smartPromo": {
+      "title": "Almost there",
+      "body": "Only {stampsRemaining} more stamp(s) to unlock your reward at {businessName}."
     }
   }
 }

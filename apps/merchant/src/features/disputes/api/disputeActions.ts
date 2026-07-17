@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@repo/supabase/server";
 import {
+  countPendingDisputesForMerchant,
   getStampDisputeById,
   listStampDisputesForMerchant,
   resolveStampDisputeAtomic,
@@ -12,7 +13,11 @@ import { fail, logActionFailure } from "@repo/utils/action-error";
 import type { ActionResult } from "@/shared/types/action-result";
 import { assertMerchantAccess } from "@/shared/utils/merchant-access";
 
-const REVALIDATE_PATHS = ["/merchant/disputes", "/merchant/dashboard"] as const;
+const REVALIDATE_PATHS = [
+  "/merchant/disputes",
+  "/merchant/dashboard",
+  "/merchant/notifications",
+] as const;
 
 function revalidateDisputePaths() {
   for (const path of REVALIDATE_PATHS) {
@@ -39,6 +44,25 @@ export async function listMerchantDisputesAction(
   } catch (err) {
     logActionFailure("listMerchantDisputes", err);
     return { error: fail("DISPUTE_RESOLVE_FAILED").error, disputes: [] };
+  }
+}
+
+export async function countMerchantPendingDisputesAction(merchantId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { count: 0, error: fail("UNAUTHORIZED").error };
+
+  const access = await assertMerchantAccess(user.id, merchantId, "manager");
+  if ("error" in access) return { count: 0, error: access.error };
+
+  try {
+    const count = await countPendingDisputesForMerchant(merchantId);
+    return { count };
+  } catch (err) {
+    logActionFailure("countMerchantPendingDisputes", err);
+    return { count: 0, error: fail("DISPUTE_RESOLVE_FAILED").error };
   }
 }
 

@@ -11,6 +11,7 @@ import { createDefaultLocationForMerchant } from "@repo/supabase/queries/locatio
 import type { CountryCode } from "@repo/supabase/types";
 import { fail, logActionFailure } from "@repo/utils/action-error";
 import { sendMerchantApprovedEmail } from "@repo/utils/merchant-email";
+import { notifyMerchantApprovedInApp } from "@repo/supabase/notifications/dispatch";
 import type { ActionResult } from "@/shared/types/action-result";
 import { isValidMerchantPhone } from "@/features/business/utils/phoneSchema";
 import {
@@ -127,6 +128,15 @@ export async function addBusinessAction(
     logActionFailure("sendMerchantApprovedEmail", err);
   }
 
+  try {
+    await notifyMerchantApprovedInApp({
+      ownerUserId: user.id,
+      businessName: merchant.business_name,
+    });
+  } catch (err) {
+    logActionFailure("notifyMerchantApprovedInApp", err);
+  }
+
   await switchActiveMerchant(user.id, merchant.id);
 
   revalidatePath("/merchant/dashboard");
@@ -149,6 +159,8 @@ export async function switchActiveMerchantAction(
   revalidatePath("/merchant/dashboard");
   revalidatePath("/merchant/business");
   revalidatePath("/merchant/loyalty-card");
+  revalidatePath("/merchant/disputes");
+  revalidatePath("/merchant/notifications");
   return {};
 }
 

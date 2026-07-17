@@ -37,6 +37,9 @@ export function ProfileView({
         <LocaleSwitcher />
       </div>
       <div className="space-y-3 border-t border-border pt-4">
+        <Button asChild variant="outline" className="min-h-11 w-full text-foreground">
+          <Link href="/disputes">{t("disputesLink")}</Link>
+        </Button>
         <Button asChild variant="outline" className="min-h-11 w-full">
           <Link href="/privacy">{t("privacyLink")}</Link>
         </Button>

@@ -23,6 +23,9 @@ export type StampDisputeFilter = "pending" | "resolved" | "all";
 
 export type CustomerStampDisputeItem = {
   id: string;
+  merchantId: string;
+  merchantName: string;
+  customerCardId: string;
   visitDate: string;
   amountClaimed: number;
   currencyCode: CurrencyCode;

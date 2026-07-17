@@ -2,11 +2,14 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useFormatter, useTranslations } from "next-intl";
+import Link from "next/link";
 import { Badge } from "@repo/ui/badge";
+import { Button } from "@repo/ui/button";
 import type { StampDisputeListItem } from "@repo/supabase/queries/stamp-disputes-shared";
 import { getDisputeSlaLevel } from "@repo/supabase/queries/stamp-disputes-shared";
 import {
   merchantDisputesQueryKey,
+  merchantPendingDisputeCountQueryKey,
   useMerchantDisputes,
 } from "@/features/disputes/api/disputeQueries";
 import { MERCHANT_STATUS_BADGE } from "@/shared/constants/status-badges";
@@ -47,9 +50,14 @@ export function MerchantDisputesView({
   const resolved = disputes.filter((d) => d.status !== "pending");
 
   async function handleResolved() {
-    await queryClient.invalidateQueries({
-      queryKey: merchantDisputesQueryKey(merchantId),
-    });
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: merchantDisputesQueryKey(merchantId),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: merchantPendingDisputeCountQueryKey(merchantId),
+      }),
+    ]);
   }
 
   function DisputeCard({ dispute }: { dispute: StampDisputeListItem }) {
@@ -113,6 +121,18 @@ export function MerchantDisputesView({
           merchantId={merchantId}
           onResolved={handleResolved}
         />
+
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="text-foreground"
+          asChild
+        >
+          <Link href={`/merchant/disputes/${dispute.id}`}>
+            {t("openDetail")}
+          </Link>
+        </Button>
       </article>
     );
   }

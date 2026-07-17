@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
+  Bell,
   Building2,
   CreditCard,
   Gift,
@@ -20,6 +21,7 @@ import {
 } from "lucide-react";
 import { useId, useState } from "react";
 import { Button } from "@repo/ui/button";
+import { Badge } from "@repo/ui/badge";
 import { Separator } from "@repo/ui/separator";
 import { cn } from "@repo/ui/lib/utils";
 import type { MerchantRow } from "@repo/supabase/queries/merchants";
@@ -28,9 +30,11 @@ import type { MerchantStaffRow } from "@repo/supabase/queries/merchant-staff";
 import type { MerchantStaffRole } from "@repo/supabase/types";
 import { logoutAction } from "@/features/auth/api/authActions";
 import { MerchantSidebarSwitcher } from "@/features/business/components/MerchantSidebarSwitcher";
+import { useMerchantPendingDisputeCount } from "@/features/disputes";
 import { StaffSwitcher } from "@/features/staff";
 import { SkipLink } from "@/shared/ui/SkipLink";
 import { ThemeToggle } from "@/shared/ui/ThemeToggle";
+import { NotificationBell } from "@/features/notifications";
 
 type MerchantShellProps = {
   children: React.ReactNode;
@@ -41,6 +45,7 @@ type MerchantShellProps = {
   role: MerchantStaffRole;
   staff: MerchantStaffRow[];
   actingStaffUserId: string | null;
+  initialPendingDisputeCount?: number;
 };
 
 const allNavItems = [
@@ -49,6 +54,7 @@ const allNavItems = [
   { href: "/merchant/analytics", icon: BarChart3, labelKey: "analytics" as const, minRole: "manager" as const },
   { href: "/merchant/customers", icon: Users, labelKey: "customers" as const, minRole: "manager" as const },
   { href: "/merchant/disputes", icon: MessageSquare, labelKey: "disputes" as const, minRole: "manager" as const },
+  { href: "/merchant/notifications", icon: Bell, labelKey: "notifications" as const, minRole: "cashier" as const },
   { href: "/merchant/business", icon: Building2, labelKey: "business" as const, minRole: "owner" as const },
   { href: "/merchant/loyalty-card", icon: CreditCard, labelKey: "loyaltyCard" as const, minRole: "owner" as const },
   { href: "/merchant/staff", icon: UserCog, labelKey: "staff" as const, minRole: "owner" as const },
@@ -67,12 +73,18 @@ export function MerchantShell({
   role,
   staff,
   actingStaffUserId,
+  initialPendingDisputeCount = 0,
 }: MerchantShellProps) {
   const t = useTranslations("nav");
   const tA11y = useTranslations("a11y");
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileNavId = useId();
+  const canSeeDisputes = ROLE_RANK[role] >= ROLE_RANK.manager;
+  const { data: pendingDisputeCount = 0 } = useMerchantPendingDisputeCount(
+    activeMerchantId,
+    { enabled: canSeeDisputes, initialCount: initialPendingDisputeCount },
+  );
   const navItems = allNavItems.filter(
     (item) => ROLE_RANK[role] >= ROLE_RANK[item.minRole],
   );
@@ -85,6 +97,8 @@ export function MerchantShell({
     const isActive =
       pathname === item.href || pathname.startsWith(`${item.href}/`);
     const Icon = item.icon;
+    const isDisputes = item.labelKey === "disputes";
+    const showDisputeAttention = isDisputes && pendingDisputeCount > 0;
 
     return (
       <Link
@@ -92,15 +106,31 @@ export function MerchantShell({
         href={item.href}
         onClick={onNavigate}
         aria-current={isActive ? "page" : undefined}
+        aria-label={
+          showDisputeAttention
+            ? tA11y("disputesNavPending", { count: pendingDisputeCount })
+            : undefined
+        }
         className={cn(
           "merchant-nav-link",
           isActive
             ? "merchant-nav-active"
-            : "text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+            : showDisputeAttention
+              ? "merchant-nav-attention"
+              : "text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-foreground",
         )}
       >
         <Icon className="size-[1.125rem] shrink-0 opacity-90" aria-hidden />
-        {t(item.labelKey)}
+        <span className="flex-1">{t(item.labelKey)}</span>
+        {showDisputeAttention ? (
+          <Badge
+            variant="destructive"
+            className="min-w-5 justify-center px-1.5 py-0 text-[10px]"
+            aria-hidden
+          >
+            {pendingDisputeCount > 99 ? "99+" : pendingDisputeCount}
+          </Badge>
+        ) : null}
       </Link>
     );
   };
@@ -149,6 +179,7 @@ export function MerchantShell({
         </nav>
 
         <div className="mt-auto space-y-1 border-t border-sidebar-border p-3">
+          <NotificationBell />
           <ThemeToggle />
           <form action={handleLogout}>
             <Button
@@ -178,6 +209,7 @@ export function MerchantShell({
             </span>
           </div>
           <div className="flex items-center gap-1">
+            <NotificationBell showLabel={false} />
             <ThemeToggle showLabel={false} />
             <Button
               type="button"

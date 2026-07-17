@@ -8,11 +8,18 @@ import {
   subscribeStampDisputes,
   unsubscribeStampDisputes,
 } from "@repo/supabase/realtime/stamp-disputes";
-import { listMerchantDisputesAction } from "@/features/disputes/api/disputeActions";
+import {
+  countMerchantPendingDisputesAction,
+  listMerchantDisputesAction,
+} from "@/features/disputes/api/disputeActions";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
 
 export function merchantDisputesQueryKey(merchantId: string) {
   return ["merchant-disputes", merchantId] as const;
+}
+
+export function merchantPendingDisputeCountQueryKey(merchantId: string) {
+  return ["merchant-pending-dispute-count", merchantId] as const;
 }
 
 export function useMerchantDisputes(
@@ -43,12 +50,58 @@ export function useMerchantDisputes(
           void queryClient.refetchQueries({
             queryKey: merchantDisputesQueryKey(merchantId),
           });
+          void queryClient.invalidateQueries({
+            queryKey: merchantPendingDisputeCountQueryKey(merchantId),
+          });
         },
       },
     );
 
     return () => unsubscribeStampDisputes(channel);
   }, [merchantId, queryClient]);
+
+  return query;
+}
+
+export function useMerchantPendingDisputeCount(
+  merchantId: string,
+  options?: { enabled?: boolean; initialCount?: number },
+) {
+  const tErrors = useTranslations("errors.actions");
+  const queryClient = useQueryClient();
+  const enabled = options?.enabled ?? true;
+
+  const query = useQuery({
+    queryKey: merchantPendingDisputeCountQueryKey(merchantId),
+    queryFn: async () => {
+      const result = await countMerchantPendingDisputesAction(merchantId);
+      if (result.error) {
+        throw new Error(resolveActionError(tErrors, result.error));
+      }
+      return result.count;
+    },
+    enabled,
+    initialData: options?.initialCount,
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+  });
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    const channel = subscribeStampDisputes(
+      { kind: "merchant", merchantId },
+      {
+        onChange: () => {
+          void queryClient.invalidateQueries({
+            queryKey: merchantPendingDisputeCountQueryKey(merchantId),
+          });
+        },
+      },
+    );
+
+    return () => unsubscribeStampDisputes(channel);
+  }, [enabled, merchantId, queryClient]);
 
   return query;
 }

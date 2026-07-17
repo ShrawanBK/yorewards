@@ -10,59 +10,60 @@
 
 | Area | Status |
 | ---- | ------ |
-| `notifications` table + RLS | ⏳ |
-| In-app notification centre (merchant + admin + customer) | ⏳ |
-| Email delivery (Resend, generic) | ⏳ |
-| Dispute + reward + approval triggers | ⏳ |
-| SLA breach cron | ⏳ |
+| `notifications` table + RLS | ✅ |
+| In-app notification centre (merchant + admin + customer) | ✅ |
+| Email delivery (Resend, generic) | ✅ |
+| Dispute + reward + approval triggers | ✅ |
+| SLA breach cron | ✅ |
 
 ---
 
 ## Day 9 "done" when
 
-- [ ] Merchant is notified (in-app + email) when a **dispute is filed**
-- [ ] Admin is notified when a dispute **passes its 48h SLA**
-- [ ] Customer is notified (in-app) when their **dispute is resolved** and when a **reward unlocks**
-- [ ] Notification centre shows unread count + mark-as-read; all copy translated
-- [ ] All new tables have RLS; error codes registered; delivery is non-blocking
+- [x] Merchant is notified (in-app + email) when a **dispute is filed**
+- [x] Admin is notified when a dispute **passes its 48h SLA**
+- [x] Customer is notified (in-app) when their **dispute is resolved** and when a **reward unlocks**
+- [x] Notification centre shows unread count + mark-as-read; all copy translated (en)
+- [x] All new tables have RLS; error codes registered; delivery is non-blocking
 
 ---
 
 ## A. Schema / RLS
 
-- [ ] Migration: `notifications(id, recipient_type ['merchant_staff'|'customer'|'admin'], recipient_id, type, title_key, body_key, payload jsonb, channel ['in_app'|'email'], read_at, created_at)`
-- [ ] Index on `(recipient_type, recipient_id, read_at)` for unread lookups
-- [ ] RLS: recipients read/update **only their own** rows; service role writes
-- [ ] Reuse `smart_promo_notifications` (already exists) — surface in centre, do not duplicate
+- [x] Migration: `notifications(id, recipient_type, recipient_id, type, title_key, body_key, payload, channel, read_at, created_at)`
+- [x] Index on `(recipient_type, recipient_id, read_at)` for unread lookups
+- [x] RLS: recipients read/update **only their own** in-app rows; service role writes
+- [x] Reuse `smart_promo_notifications` — also writes `notifications` row on send
 
 ## B. Delivery layer (`@repo/utils` / `@repo/supabase`)
 
-- [ ] Generalise `merchant-email.ts` → `sendNotificationEmail({ to, subjectKey, bodyKey, payload, locale })` (keep existing helpers as thin wrappers)
-- [ ] `createNotification(...)` writes the row; optional `alsoEmail` flag routes through Resend
-- [ ] Email is **non-blocking** — use `after()` (Next.js) or fire-and-forget; never block the mutation response
-- [ ] No-op + `console.info` when `RESEND_API_KEY` unset (dev parity with existing behaviour)
+- [x] `transactional-email.ts` — generic Resend helper + notification templates
+- [x] `createNotification` / `insertNotification` writes the row; email is fire-and-forget
+- [x] Email is **non-blocking** — never blocks the mutation response
+- [x] No-op + `console.info` when `RESEND_API_KEY` unset (dev parity)
 
 ## C. Triggers (server actions / RPC)
 
-- [ ] **Dispute filed** → notify merchant owner + managers (in-app + email)
-- [ ] **Dispute resolved** (any 3-way outcome) → notify customer (in-app; email optional)
-- [ ] **Reward unlocked** (stamp target hit) → notify customer (in-app)
-- [ ] **Merchant approved** → add in-app notification (email already exists Day 5)
-- [ ] **"X more stamps"** smart promo → ensure it lands in the centre (already logged Day 6)
-- [ ] Copy: `notifications.<type>.title` / `.body` keys in **all three** `messages/*.json` (Day 11 fills ne/fi)
+- [x] **Dispute filed** → notify merchant owner + managers (in-app + email to owner)
+- [x] **Dispute resolved** (any outcome) → notify customer (in-app)
+- [x] **Reward unlocked** (`pending_otp`) → notify customer (in-app)
+- [x] **Merchant approved** → in-app notification (+ existing email)
+- [x] **"X more stamps"** smart promo → `notifications` row in centre
+- [x] Copy: `notifications.*` keys in `messages/en.json` (ne/fi → Day 11)
 
 ## D. SLA breach cron
 
-- [ ] Supabase Edge Function or `pg_cron` job: find disputes `pending` past 48h with no admin alert → `createNotification` for admins (in-app + email)
-- [ ] Idempotent — do not re-alert the same dispute; mark `sla_alerted_at`
-- [ ] Document schedule + how to run manually for testing
+- [x] `process_dispute_sla_breach_notifications()` SQL + optional `pg_cron` hourly job
+- [x] Admin app route `GET /api/cron/dispute-sla` (Bearer `CRON_SECRET`) sends admin emails idempotently
+- [x] Idempotent via `stamp_disputes.sla_alerted_at`
 
 ## E. In-app notification centre (all apps)
 
-- [ ] Bell icon + unread badge in merchant sidebar, admin shell, customer header
-- [ ] List: title, body, relative time, read/unread; mark-one + mark-all read
-- [ ] **Supabase Realtime** subscription so new notifications appear without refresh (TanStack Query for the list per `root.mdc`)
-- [ ] Empty state (heading + description), keyboard + screen-reader accessible per `accessibility.mdc`
+- [x] Bell icon + unread badge in merchant sidebar, admin sidebar, customer shell
+- [x] Dedicated notifications page per app with category tabs (disputes / rewards|account / promotions)
+- [x] Per-type actions (e.g. dispute → detail page; reward → claim/card)
+- [x] Mark-one + mark-all read; TanStack Query with 60s poll (no Realtime — per design doc)
+- [x] Empty state (heading + description), keyboard + screen-reader accessible
 
 ## F. QA
 
@@ -70,7 +71,7 @@
 - [ ] Force a dispute past 48h → admin alerted once
 - [ ] Resolve dispute → customer sees it; reward unlock → customer sees it
 - [ ] Run `pnpm exec supabase db push` for the Day 9 notifications migration
-- [ ] `pnpm lint` · `pnpm check-types` · `pnpm build` green (3 apps)
+- [x] `pnpm lint` · `pnpm check-types` · `pnpm build` green (3 apps)
 
 ---
 

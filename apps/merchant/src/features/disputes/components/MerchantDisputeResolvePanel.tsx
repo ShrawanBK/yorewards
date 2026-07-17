@@ -12,10 +12,12 @@ import {
   type StampDisputeListItem,
 } from "@repo/supabase/queries/stamp-disputes-shared";
 import { resolveMerchantDisputeAction } from "@/features/disputes/api/disputeActions";
+import { merchantPendingDisputeCountQueryKey } from "@/features/disputes/api/disputeQueries";
 import { MERCHANT_STATUS_BADGE } from "@/shared/constants/status-badges";
 import { isActionFailure } from "@/shared/types/action-result";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
 import { showActionSuccess } from "@/shared/utils/action-feedback";
+import { useQueryClient } from "@tanstack/react-query";
 
 const MIN_NOTE_LENGTH = 10;
 
@@ -45,6 +47,7 @@ export function MerchantDisputeResolvePanel({
 }) {
   const t = useTranslations("disputes");
   const tErrors = useTranslations("errors.actions");
+  const queryClient = useQueryClient();
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
@@ -72,6 +75,9 @@ export function MerchantDisputeResolvePanel({
     }
 
     setNote("");
+    void queryClient.invalidateQueries({
+      queryKey: merchantPendingDisputeCountQueryKey(merchantId),
+    });
 
     if (resolve.status === "rejected") {
       showActionSuccess(t, "success.rejected");

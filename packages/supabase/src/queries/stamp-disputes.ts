@@ -1,6 +1,10 @@
 import { createServiceRoleClient } from "../service-role";
 import { createClient } from "../server";
 import { notifyDisputeChange } from "../realtime/dispute-broadcast";
+import {
+  notifyDisputeFiled,
+  notifyDisputeResolved,
+} from "../notifications/dispatch";
 import type { CurrencyCode } from "../types";
 
 export {
@@ -134,6 +138,22 @@ export async function createStampDispute(input: {
     status: "pending",
   });
 
+  const [{ data: merchant }, { data: customer }] = await Promise.all([
+    supabase.from("merchants").select("business_name").eq("id", input.merchantId).maybeSingle(),
+    supabase.from("customers").select("name").eq("id", input.customerId).maybeSingle(),
+  ]);
+
+  void notifyDisputeFiled({
+    id: data.id,
+    merchantId: input.merchantId,
+    merchantName: merchant?.business_name ?? "Merchant",
+    customerName: customer?.name ?? null,
+    amountClaimed: input.amountClaimed,
+    currencyCode: input.currencyCode,
+  }).catch((err) => {
+    console.error("[notifyDisputeFiled]", err);
+  });
+
   return data.id;
 }
 
@@ -196,22 +216,15 @@ export async function getStampDisputeById(
   return item ?? null;
 }
 
-export async function listStampDisputesForCustomerCard(
-  customerCardId: string,
-): Promise<CustomerStampDisputeItem[]> {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("stamp_disputes")
-    .select(
-      "id, visit_date, amount_claimed, currency_code, description, status, merchant_response, created_at, resolved_at",
-    )
-    .eq("customer_card_id", customerCardId)
-    .order("created_at", { ascending: false });
-
-  if (error) throw error;
-
-  return (data ?? []).map((row) => ({
+function mapCustomerDisputeRows(
+  rows: StampDisputeRow[],
+  merchantNames: Map<string, string>,
+): CustomerStampDisputeItem[] {
+  return rows.map((row) => ({
     id: row.id,
+    merchantId: row.merchant_id,
+    merchantName: merchantNames.get(row.merchant_id) ?? "—",
+    customerCardId: row.customer_card_id,
     visitDate: row.visit_date,
     amountClaimed: Number(row.amount_claimed),
     currencyCode: row.currency_code as CurrencyCode,
@@ -221,6 +234,61 @@ export async function listStampDisputesForCustomerCard(
     createdAt: row.created_at,
     resolvedAt: row.resolved_at,
   }));
+}
+
+async function loadMerchantNames(
+  merchantIds: string[],
+): Promise<Map<string, string>> {
+  if (merchantIds.length === 0) return new Map();
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("merchants")
+    .select("id, business_name")
+    .in("id", merchantIds);
+  if (error) throw error;
+  return new Map((data ?? []).map((row) => [row.id, row.business_name]));
+}
+
+const CUSTOMER_DISPUTE_COLUMNS =
+  "id, merchant_id, customer_card_id, visit_date, amount_claimed, currency_code, description, status, merchant_response, created_at, resolved_at";
+
+export async function listStampDisputesForCustomerCard(
+  customerCardId: string,
+): Promise<CustomerStampDisputeItem[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("stamp_disputes")
+    .select(CUSTOMER_DISPUTE_COLUMNS)
+    .eq("customer_card_id", customerCardId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  const rows = (data ?? []) as StampDisputeRow[];
+  const merchantNames = await loadMerchantNames([
+    ...new Set(rows.map((row) => row.merchant_id)),
+  ]);
+  return mapCustomerDisputeRows(rows, merchantNames);
+}
+
+/** All disputes filed by this customer across merchants (RLS-scoped). */
+export async function listStampDisputesForCustomer(
+  customerId: string,
+): Promise<CustomerStampDisputeItem[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("stamp_disputes")
+    .select(CUSTOMER_DISPUTE_COLUMNS)
+    .eq("customer_id", customerId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  const rows = (data ?? []) as StampDisputeRow[];
+  const merchantNames = await loadMerchantNames([
+    ...new Set(rows.map((row) => row.merchant_id)),
+  ]);
+  return mapCustomerDisputeRows(rows, merchantNames);
 }
 
 export async function listStampDisputesForMerchant(
@@ -336,6 +404,9 @@ export async function resolveStampDisputeAtomic(input: {
       merchantId: dispute.merchantId,
       customerCardId: dispute.customerCardId,
       status: dispute.status,
+    });
+    void notifyDisputeResolved(dispute).catch((err) => {
+      console.error("[notifyDisputeResolved]", err);
     });
   }
 

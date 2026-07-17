@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
+  Bell,
   Building2,
   ClipboardList,
   LayoutDashboard,
@@ -16,11 +17,13 @@ import {
 import { Button } from "@repo/ui/button";
 import { cn } from "@repo/ui/lib/utils";
 import { logoutAction } from "@/features/auth/api/authActions";
+import { NotificationBell } from "@/features/notifications";
 
 const navItems = [
   { href: "/admin/dashboard", icon: LayoutDashboard, labelKey: "dashboard" as const },
   { href: "/admin/merchants", icon: Building2, labelKey: "merchants" as const },
   { href: "/admin/disputes", icon: MessageSquare, labelKey: "disputes" as const },
+  { href: "/admin/notifications", icon: Bell, labelKey: "notifications" as const },
   { href: "/admin/customers", icon: Users, labelKey: "customers" as const },
   { href: "/admin/stamps", icon: Stamp, labelKey: "stamps" as const },
   { href: "/admin/audit", icon: ClipboardList, labelKey: "audit" as const },
@@ -85,7 +88,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        <div className="mt-auto border-t border-sidebar-border p-3">
+        <div className="mt-auto space-y-1 border-t border-sidebar-border p-3">
+          <NotificationBell />
           <form action={handleLogout}>
             <Button
               type="submit"

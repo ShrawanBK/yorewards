@@ -13,6 +13,9 @@
   "locale": {
     "label": "Language"
   },
+  "a11y": {
+    "openNotifications": "Notifications{count, plural, =0 {} other {, {count} unread}}"
+  },
   "auth": {
     "login": {
       "title": "Welcome to YORewards",
@@ -61,6 +64,7 @@
     "title": "Profile",
     "name": "Name",
     "phone": "Phone",
+    "disputesLink": "My stamp disputes",
     "privacyLink": "Privacy policy",
     "requestDeletion": "Request data deletion",
     "requestDeletionHint": "We'll process GDPR deletion requests by email.",
@@ -225,6 +229,8 @@
   "dispute": {
     "title": "Missing a stamp?",
     "subtitle": "Tell us about a visit that wasn't recorded. The merchant will review your request.",
+    "openForm": "File a dispute",
+    "cancel": "Cancel",
     "visitDate": "Visit date",
     "amount": "Amount spent",
     "description": "What happened?",
@@ -240,6 +246,21 @@
       "pending": "Under review",
       "approved": "Approved",
       "rejected": "Rejected"
+    },
+    "list": {
+      "title": "Stamp disputes",
+      "subtitle": "Track requests you've filed when a stamp was missing.",
+      "back": "Back to profile",
+      "emptyTitle": "No disputes yet",
+      "emptyDescription": "If a visit wasn't stamped, you can file a dispute from that loyalty card.",
+      "emptyPending": "No open disputes.",
+      "emptyApproved": "No approved disputes yet.",
+      "emptyRejected": "No rejected disputes.",
+      "tabs": {
+        "pending": "Open",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      }
     },
     "success": {
       "submitted": "Dispute submitted",
@@ -350,7 +371,59 @@
       "DISPUTE_VISIT_DATE_REQUIRED": "Select the date of your visit.",
       "DISPUTE_LIMIT_EXCEEDED": "You've reached the dispute limit for this business this month.",
       "DISPUTE_SUBMIT_FAILED": "We couldn't submit your dispute — please try again.",
-      "INSIGHTS_LOAD_FAILED": "We couldn't load your spending insights — please try again."
+      "INSIGHTS_LOAD_FAILED": "We couldn't load your spending insights — please try again.",
+      "NOTIFICATIONS_LOAD_FAILED": "We couldn't load notifications — please try again.",
+      "NOTIFICATIONS_UPDATE_FAILED": "We couldn't update notifications — please try again."
+    }
+  },
+  "notifications": {
+    "centre": {
+      "title": "Notifications",
+      "description": "Updates about disputes, rewards, and promotions.",
+      "markRead": "Mark read",
+      "markAllRead": "Mark all read",
+      "unread": "Unread",
+      "unreadCount": "{count, plural, one {# unread} other {# unread}}",
+      "refreshing": "Refreshing…",
+      "emptyTitle": "All caught up",
+      "emptyDescription": "New alerts will appear here.",
+      "promotionsEmptyTitle": "No promotions yet",
+      "promotionsEmptyDescription": "Merchant offers and boosts will show up here later."
+    },
+    "categories": {
+      "all": "All",
+      "disputes": "Disputes",
+      "rewards": "Rewards",
+      "promotions": "Promotions"
+    },
+    "actions": {
+      "openCard": "Open card",
+      "openReward": "Claim reward",
+      "view": "View"
+    },
+    "disputeFiled": {
+      "title": "New stamp dispute",
+      "body": "{customerName, select, null {A customer} other {{customerName}}} disputed a visit at {businessName}."
+    },
+    "disputeResolved": {
+      "title": "Dispute update",
+      "body": "Your dispute with {businessName} was {status}."
+    },
+    "disputeSlaBreach": {
+      "title": "Dispute SLA breach",
+      "body": "A dispute for {merchantName} passed the 48-hour merchant SLA."
+    },
+    "rewardUnlocked": {
+      "title": "Reward ready!",
+      "body": "You unlocked a reward on {cardName} at {businessName}."
+    },
+    "merchantApproved": {
+      "title": "Business approved",
+      "body": "{businessName} is live on YORewards."
+    },
+    "smartPromo": {
+      "title": "Almost there",
+      "body": "Only {stampsRemaining} more stamp(s) to unlock your reward at {businessName}."
     }
   }
 }

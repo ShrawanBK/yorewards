@@ -6,6 +6,7 @@ import { ScanLine, User, Wallet } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@repo/ui/lib/utils";
 import { OfflineBanner } from "@/shared/ui/OfflineBanner";
+import { NotificationBell } from "@/features/notifications";
 
 const navItems = [
   { href: "/wallet", labelKey: "wallet" as const, icon: Wallet },
@@ -22,6 +23,13 @@ export function CustomerShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-col bg-background">
       <OfflineBanner />
+      {!hideNav ? (
+        <div className="pointer-events-none fixed right-3 top-3 z-40 sm:right-4 sm:top-4">
+          <div className="pointer-events-auto">
+            <NotificationBell />
+          </div>
+        </div>
+      ) : null}
       <main
         className={cn(
           "flex flex-1 flex-col",

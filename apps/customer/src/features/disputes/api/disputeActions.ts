@@ -6,6 +6,7 @@ import { getCustomerCardById } from "@repo/supabase/queries/customer-wallet";
 import {
   countCustomerDisputesThisMonth,
   createStampDispute,
+  listStampDisputesForCustomer,
   listStampDisputesForCustomerCard,
 } from "@repo/supabase/queries/stamp-disputes";
 import { fail, logActionFailure } from "@repo/utils/action-error";
@@ -23,6 +24,19 @@ export async function listCustomerCardDisputesAction(customerCardId: string) {
     return { disputes };
   } catch (err) {
     logActionFailure("listCustomerCardDisputes", err);
+    return { disputes: [], error: fail("DISPUTE_SUBMIT_FAILED").error };
+  }
+}
+
+export async function listCustomerDisputesAction() {
+  const customerId = await getCustomerIdFromSession();
+  if (!customerId) return { disputes: [], error: fail("UNAUTHORIZED").error };
+
+  try {
+    const disputes = await listStampDisputesForCustomer(customerId);
+    return { disputes };
+  } catch (err) {
+    logActionFailure("listCustomerDisputes", err);
     return { disputes: [], error: fail("DISPUTE_SUBMIT_FAILED").error };
   }
 }

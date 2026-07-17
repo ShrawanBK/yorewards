@@ -90,6 +90,11 @@ html.light {
     box-shadow: inset 3px 0 0 0 var(--sidebar-primary);
   }
 
+  .merchant-nav-attention {
+    @apply bg-amber-500/15 font-semibold text-amber-950 dark:text-amber-100;
+    box-shadow: inset 3px 0 0 0 oklch(0.75 0.15 85);
+  }
+
   .merchant-stat-label {
     @apply text-sm font-semibold tracking-wide text-muted-foreground uppercase;
   }

@@ -14,7 +14,8 @@
     "TWILIO_PHONE_NUMBER",
     "RESEND_API_KEY",
     "RESEND_FROM_EMAIL",
-    "NEXT_PUBLIC_MERCHANT_URL"
+    "NEXT_PUBLIC_MERCHANT_URL",
+    "CRON_SECRET"
   ],
   "tasks": {
     "build": {

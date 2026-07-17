@@ -42,6 +42,8 @@
     "./queries/merchant-limits": "./src/queries/merchant-limits.ts",
     "./queries/merchant-verification": "./src/queries/merchant-verification.ts",
     "./queries/smart-promo": "./src/queries/smart-promo.ts",
+    "./queries/notifications": "./src/queries/notifications.ts",
+    "./notifications/dispatch": "./src/notifications/dispatch.ts",
     "./utils/local-date": "./src/utils/local-date.ts"
   },
   "scripts": {

@@ -4,6 +4,9 @@
     "description": "Super admin dashboard",
     "cta": "Sign in"
   },
+  "a11y": {
+    "openNotifications": "Notifications{count, plural, =0 {} other {, {count} unread}}"
+  },
   "nav": {
     "main": "Admin navigation",
     "adminLabel": "Super Admin",
@@ -11,6 +14,7 @@
     "merchants": "Merchants",
     "customers": "Customers",
     "disputes": "Disputes",
+    "notifications": "Notifications",
     "stamps": "Stamps",
     "audit": "Audit log",
     "settings": "Settings",
@@ -527,7 +531,56 @@
       "DISPUTE_RESOLVE_FAILED": "Could not resolve dispute. Please try again.",
       "DISPUTE_MERCHANT_SLA_ACTIVE": "The merchant still has time under the service level agreement. Confirm early admin resolution to continue.",
       "SUBSCRIPTION_UPDATE_FAILED": "Could not update subscription. Please try again.",
-      "TRIAL_EXTEND_FAILED": "Could not extend trial. Check the number of days and try again."
+      "TRIAL_EXTEND_FAILED": "Could not extend trial. Check the number of days and try again.",
+      "NOTIFICATIONS_LOAD_FAILED": "Could not load notifications. Please try again.",
+      "NOTIFICATIONS_UPDATE_FAILED": "Could not update notifications. Please try again."
+    }
+  },
+  "notifications": {
+    "centre": {
+      "button": "Notifications",
+      "title": "Notifications",
+      "description": "Platform alerts including dispute SLA breaches.",
+      "markRead": "Mark read",
+      "markAllRead": "Mark all read",
+      "unread": "Unread",
+      "unreadCount": "{count, plural, one {# unread} other {# unread}}",
+      "refreshing": "Refreshing…",
+      "emptyTitle": "All caught up",
+      "emptyDescription": "New alerts will appear here."
+    },
+    "categories": {
+      "all": "All",
+      "disputes": "Disputes",
+      "account": "Account"
+    },
+    "actions": {
+      "openDispute": "Open dispute",
+      "view": "View"
+    },
+    "disputeFiled": {
+      "title": "New stamp dispute",
+      "body": "{customerName, select, null {A customer} other {{customerName}}} disputed a visit at {businessName}."
+    },
+    "disputeResolved": {
+      "title": "Dispute update",
+      "body": "Your dispute with {businessName} was {status}."
+    },
+    "disputeSlaBreach": {
+      "title": "Dispute SLA breach",
+      "body": "A dispute for {merchantName} passed the 48-hour merchant SLA."
+    },
+    "rewardUnlocked": {
+      "title": "Reward ready!",
+      "body": "You unlocked a reward on {cardName} at {businessName}."
+    },
+    "merchantApproved": {
+      "title": "Business approved",
+      "body": "{businessName} is live on YORewards."
+    },
+    "smartPromo": {
+      "title": "Almost there",
+      "body": "Only {stampsRemaining} more stamp(s) to unlock your reward at {businessName}."
     }
   }
 }

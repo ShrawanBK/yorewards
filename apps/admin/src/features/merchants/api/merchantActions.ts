@@ -7,6 +7,7 @@ import type { MerchantStatus } from "@repo/supabase/types";
 import { revalidatePath } from "next/cache";
 import { fail, logActionFailure } from "@repo/utils/action-error";
 import { sendMerchantApprovedEmail } from "@repo/utils/merchant-email";
+import { notifyMerchantApprovedInApp } from "@repo/supabase/notifications/dispatch";
 import type { ActionResult } from "@/shared/types/action-result";
 import { requireAdminForAction } from "@/features/auth/utils/requireAdminAuth";
 
@@ -39,7 +40,7 @@ export async function approveMerchantAction(
   const admin = createServiceRoleClient();
   const { data: merchant, error: fetchError } = await admin
     .from("merchants")
-    .select("email, business_name, status")
+    .select("email, business_name, status, user_id")
     .eq("id", merchantId)
     .single();
 
@@ -81,6 +82,16 @@ export async function approveMerchantAction(
       });
     } catch (err) {
       logActionFailure("sendMerchantApprovedEmail", err);
+    }
+    if (merchant.user_id) {
+      try {
+        await notifyMerchantApprovedInApp({
+          ownerUserId: merchant.user_id,
+          businessName: merchant.business_name,
+        });
+      } catch (err) {
+        logActionFailure("notifyMerchantApprovedInApp", err);
+      }
     }
   }
 

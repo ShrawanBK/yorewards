@@ -1,5 +1,6 @@
 import { createServiceRoleClient } from "../service-role";
 import { merchantCanUseSmartPromo } from "@repo/utils/plan-limits";
+import { notifySmartPromo, notifyRewardUnlocked } from "../notifications/dispatch";
 
 export async function evaluateSmartPromoAfterStampApproval(
   sessionId: string,
@@ -9,7 +10,7 @@ export async function evaluateSmartPromoAfterStampApproval(
   const { data: session, error: sessionError } = await supabase
     .from("stamp_sessions")
     .select(
-      "merchant_id, customer_card_id, customer_cards ( id, customer_id, current_stamps, loyalty_cards ( stamp_target ) )",
+      "merchant_id, customer_card_id, customer_cards ( id, customer_id, current_stamps, reward_status, loyalty_cards ( stamp_target, card_name ) )",
     )
     .eq("id", sessionId)
     .maybeSingle();
@@ -20,10 +21,28 @@ export async function evaluateSmartPromoAfterStampApproval(
     id: string;
     customer_id: string;
     current_stamps: number;
-    loyalty_cards: { stamp_target: number } | null;
+    reward_status: string;
+    loyalty_cards: { stamp_target: number; card_name: string } | null;
   } | null;
 
   if (!customerCard?.loyalty_cards) return;
+
+  const { data: merchantRow } = await supabase
+    .from("merchants")
+    .select("business_name")
+    .eq("id", session.merchant_id)
+    .maybeSingle();
+
+  if (customerCard.reward_status === "pending_otp") {
+    void notifyRewardUnlocked({
+      customerId: customerCard.customer_id,
+      businessName: merchantRow?.business_name ?? "Merchant",
+      cardName: customerCard.loyalty_cards.card_name,
+      customerCardId: customerCard.id,
+    }).catch((err) => {
+      console.error("[notifyRewardUnlocked]", err);
+    });
+  }
 
   const { data: merchant, error: merchantError } = await supabase
     .from("merchants")
@@ -79,7 +98,21 @@ export async function maybeSendSmartPromoNotification(input: {
     throw error;
   }
 
-  // Day 6: log for future push/email integration
+  const { data: merchantRow } = await supabase
+    .from("merchants")
+    .select("business_name")
+    .eq("id", input.merchantId)
+    .maybeSingle();
+
+  void notifySmartPromo({
+    customerId: input.customerId,
+    businessName: merchantRow?.business_name ?? "Merchant",
+    stampsRemaining,
+    customerCardId: input.customerCardId,
+  }).catch((err) => {
+    console.error("[notifySmartPromo]", err);
+  });
+
   console.info("[smart-promo]", {
     merchantId: input.merchantId,
     customerId: input.customerId,

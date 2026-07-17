@@ -48,7 +48,7 @@ export function CardDetailView({
 
   if (isLoading) {
     return (
-      <div className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-4 p-6">
+      <div className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-4 px-4 py-6 sm:px-6">
         <Skeleton className="h-6 w-28" />
         <Skeleton className="mx-auto h-96 w-full max-w-sm rounded-2xl" />
         <Skeleton className="h-11 w-full" />
@@ -63,7 +63,7 @@ export function CardDetailView({
         : t("loadError");
 
     return (
-      <div className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-4 p-6">
+      <div className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-4 px-4 py-6 sm:px-6">
         <Button
           variant="ghost"
           className="min-h-11 w-fit justify-start px-0"
@@ -88,7 +88,7 @@ export function CardDetailView({
   const hasPendingDispute = initialDisputes.some((d) => d.status === "pending");
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-5 p-6 pb-8">
+    <div className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-5 px-4 py-6 pb-8 sm:px-6">
       <Button
         variant="ghost"
         className="min-h-11 w-fit justify-start px-0"
@@ -100,7 +100,7 @@ export function CardDetailView({
         </Link>
       </Button>
 
-      <div className="mx-auto w-full">
+      <div className="mx-auto w-full max-w-sm sm:max-w-none">
         <CustomerLoyaltyCard card={card} />
       </div>
 
@@ -239,7 +239,10 @@ export function CardDetailView({
       {!hasPendingDispute ? (
         <DisputeForm customerCardId={card.id} />
       ) : (
-        <p className="text-sm text-muted-foreground" role="status">
+        <p
+          className="rounded-xl border border-border/60 bg-muted/30 px-4 py-3 text-sm text-muted-foreground"
+          role="status"
+        >
           {tDispute("pendingBlocked")}
         </p>
       )}

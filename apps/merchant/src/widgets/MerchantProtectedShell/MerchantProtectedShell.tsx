@@ -1,3 +1,4 @@
+import { countPendingDisputesForMerchant } from "@repo/supabase/queries/stamp-disputes";
 import { getMerchantSessionForShell } from "@/features/dashboard/api/getMerchantSessionData";
 import { MerchantShell } from "@/widgets/MerchantShell";
 
@@ -15,6 +16,11 @@ export async function MerchantProtectedShell({
   const { merchants, merchant, branches, activeBranch, role, staff, actingStaffUserId } =
     session;
 
+  const initialPendingDisputeCount =
+    role === "cashier"
+      ? 0
+      : await countPendingDisputesForMerchant(merchant.id);
+
   return (
     <MerchantShell
       merchants={merchants}
@@ -24,6 +30,7 @@ export async function MerchantProtectedShell({
       role={role}
       staff={staff}
       actingStaffUserId={actingStaffUserId}
+      initialPendingDisputeCount={initialPendingDisputeCount}
     >
       {children}
     </MerchantShell>

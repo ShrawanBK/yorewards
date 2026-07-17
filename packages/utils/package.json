@@ -8,6 +8,7 @@
     "./otp": "./src/otp.ts",
     "./staff-pin": "./src/staff-pin.ts",
     "./merchant-email": "./src/merchant-email.ts",
+    "./transactional-email": "./src/transactional-email.ts",
     "./action-error": "./src/action-error.ts",
     "./plan-limits": "./src/plan-limits.ts"
   },

@@ -39,7 +39,7 @@
 | Empty/error states (customer offline, scan, wallet)                       | ✅ Done (Day 8 Phase C)                                                                                             |
 | Customer dispute loop (status panel, hide form while pending)             | ✅ Done (V2 Day 8) — [`v2/Day8_Checklist.md`](../resources/v2/Day8_Checklist.md)                                    |
 | Redemption OTP SMS (Sparrow NP / Twilio FI)                               | ✅ Done — `packages/supabase/src/sms/send-redemption-otp.ts`                                                        |
-| Notifications — merchant + admin + customer (in-app + email, SLA cron)    | ⏳ V2 Day 9 — [`v2/Day9_Checklist.md`](../resources/v2/Day9_Checklist.md)                                           |
+| Notifications — merchant + admin + customer (in-app + email, SLA cron)    | ✅ V2 Day 9 — [`v2/Day9_Checklist.md`](v2/Day9_Checklist.md)                                           |
 | Account verification — merchant email + customer signup phone OTP         | ⏳ V2 Day 10 — [`v2/Day10_Checklist.md`](../resources/v2/Day10_Checklist.md)                                        |
 | Full i18n — en / ne / fi coverage on critical paths                       | ⏳ V2 Day 11 — [`v2/Day11_Checklist.md`](../resources/v2/Day11_Checklist.md) (ne/fi ~20% today)                     |
 | Launch hardening — full E2E, mobile-web pass, production deploy           | ⏳ V2 Day 12 — [`v2/Day12_Checklist.md`](../resources/v2/Day12_Checklist.md)                                        |

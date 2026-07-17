@@ -49,6 +49,15 @@ export type StampSessionStatus =
 export type RedemptionStatus = "pending" | "redeemed";
 export type OtpPurpose = "redemption" | "signup";
 export type AuditTargetType = "merchant" | "customer" | "stamp" | "redemption";
+export type NotificationRecipientType = "merchant_staff" | "customer" | "admin";
+export type NotificationChannel = "in_app" | "email";
+export type NotificationType =
+  | "dispute_filed"
+  | "dispute_resolved"
+  | "dispute_sla_breach"
+  | "reward_unlocked"
+  | "merchant_approved"
+  | "smart_promo";
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
@@ -643,6 +652,7 @@ export type Database = {
           merchant_id: string;
           merchant_response: string | null;
           resolved_at: string | null;
+          sla_alerted_at: string | null;
           stamp_session_id: string | null;
           status: string;
           visit_date: string;
@@ -658,6 +668,7 @@ export type Database = {
           merchant_id: string;
           merchant_response?: string | null;
           resolved_at?: string | null;
+          sla_alerted_at?: string | null;
           stamp_session_id?: string | null;
           status?: string;
           visit_date: string;
@@ -673,6 +684,7 @@ export type Database = {
           merchant_id?: string;
           merchant_response?: string | null;
           resolved_at?: string | null;
+          sla_alerted_at?: string | null;
           stamp_session_id?: string | null;
           status?: string;
           visit_date?: string;
@@ -895,6 +907,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      notifications: {
+        Row: {
+          id: string;
+          recipient_type: NotificationRecipientType;
+          recipient_id: string;
+          type: NotificationType;
+          title_key: string;
+          body_key: string;
+          payload: Record<string, unknown>;
+          channel: NotificationChannel;
+          read_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          recipient_type: NotificationRecipientType;
+          recipient_id: string;
+          type: NotificationType;
+          title_key: string;
+          body_key: string;
+          payload?: Record<string, unknown>;
+          channel?: NotificationChannel;
+          read_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          recipient_type?: NotificationRecipientType;
+          recipient_id?: string;
+          type?: NotificationType;
+          title_key?: string;
+          body_key?: string;
+          payload?: Record<string, unknown>;
+          channel?: NotificationChannel;
+          read_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -934,6 +985,10 @@ export type Database = {
         Returns: string;
       };
       void_stamp: { Args: { p_session_id: string }; Returns: undefined };
+      process_dispute_sla_breach_notifications: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
+      };
     };
     Enums: {
       [_ in never]: never;

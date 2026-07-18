@@ -9,7 +9,7 @@
 
 ## Current build day
 
-**→ [`Day9_Checklist.md`](Day9_Checklist.md)** — V2 completion phase: notifications (merchant + admin + customer)
+**→ [`Day11_Checklist.md`](Day11_Checklist.md)** — V2 completion phase: full i18n (en / ne / fi)
 
 The 7-day sprint (Days 1–8) shipped the core loop. **Days 9–12 = V2 completion phase** — the critical features that make the whole system launch-ready (notifications, verification, full i18n, production hardening). See [`YORewards_PRD_Final_v2.md`](../YORewards_PRD_Final_v2.md) §0.
 

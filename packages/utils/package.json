@@ -10,7 +10,8 @@
     "./merchant-email": "./src/merchant-email.ts",
     "./transactional-email": "./src/transactional-email.ts",
     "./action-error": "./src/action-error.ts",
-    "./plan-limits": "./src/plan-limits.ts"
+    "./plan-limits": "./src/plan-limits.ts",
+    "./deep-merge-messages": "./src/deep-merge-messages.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

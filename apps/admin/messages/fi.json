@@ -1,0 +1,593 @@
+{
+  "locale": {
+    "label": "Kieli"
+  },
+  "app": {
+    "title": "YORewards Admin",
+    "description": "Superadmin-hallintapaneeli",
+    "cta": "Kirjaudu sisään"
+  },
+  "a11y": {
+    "openNotifications": "Ilmoitukset{count, plural, =0 {} other {, {count} lukematonta}}"
+  },
+  "nav": {
+    "main": "Admin-navigointi",
+    "adminLabel": "Superadmin",
+    "dashboard": "Hallintapaneeli",
+    "merchants": "Kauppiaat",
+    "customers": "Asiakkaat",
+    "disputes": "Reklamaatiot",
+    "notifications": "Ilmoitukset",
+    "stamps": "Leimat",
+    "audit": "Auditointiloki",
+    "settings": "Asetukset",
+    "logout": "Kirjaudu ulos"
+  },
+  "settings": {
+    "title": "Tiliasetukset",
+    "subtitle": "Päivitä superadmin-kirjautumistietosi.",
+    "language": {
+      "title": "Kieli",
+      "subtitle": "Valitse hallintapaneelin kieli. Valinta tallennetaan tälle laitteelle."
+    },
+    "account": {
+      "passwordTitle": "Vaihda salasana",
+      "passwordSubtitle": "Käytä vähintään 8 merkkiä.",
+      "newPassword": "Uusi salasana",
+      "confirmPassword": "Vahvista salasana",
+      "passwordSubmit": "Päivitä salasana",
+      "emailTitle": "Vaihda sähköposti",
+      "emailSubtitle": "Lähetämme vahvistuslinkin uuteen osoitteeseen.",
+      "newEmail": "Uusi sähköposti",
+      "emailSubmit": "Päivitä sähköposti",
+      "show": "Näytä salasana",
+      "hide": "Piilota salasana"
+    }
+  },
+  "dashboard": {
+    "title": "Alustan yleiskatsaus",
+    "subtitle": "Seuraa kauppiaita, asiakkaita ja aktiviteettia YORewardsissa.",
+    "empty": {
+      "title": "Alustasi on juuri käynnistymässä",
+      "description": "Kun kauppiaat rekisteröityvät ja asiakkaat keräävät leimoja, tilastot näkyvät täällä.",
+      "cta": "Tarkista kauppiaat"
+    },
+    "stats": {
+      "regionLabel": "Alustan tilastot",
+      "merchants": "Kauppiaat",
+      "merchantsHint": "{active, plural, =0 {Ei vielä aktiivisia} one {# aktiivinen} other {# aktiivista}}",
+      "customers": "Asiakkaat",
+      "customersHint": "{active, plural, =0 {Ei aktiivisia asiakkaita} one {# aktiivinen} other {# aktiivista}}",
+      "stamps": "Myönnetyt leimat",
+      "redemptions": "Lunastetut palkinnot",
+      "openDisputes": "Avoimet reklamaatiot",
+      "openDisputesHint": "Odottaa kauppiaan tai adminin käsittelyä",
+      "overdueDisputesHint": "{count, plural, one {# ylitti 48 tunnin palvelutasosopimuksen — vaatii adminin toimenpiteen} other {# ylitti 48 tunnin palvelutasosopimuksen — vaativat adminin toimenpiteen}}",
+      "mrrStub": "MRR (stub)",
+      "mrrStubHint": "Starter- ja Growth-tilaukset (aktiiviset/kokeilut)",
+      "period": {
+        "today": "Tänään",
+        "week": "Viimeiset 7 päivää",
+        "month": "Viimeiset 30 päivää"
+      }
+    },
+    "links": {
+      "regionLabel": "Pikalinkit",
+      "open": "Avaa",
+      "merchants": {
+        "title": "Kauppiaiden jono",
+        "description": "Hyväksy rekisteröintejä ja hallitse käyttöoikeuksia.",
+        "pending": "{count, plural, one {# odottaa} other {# odottaa}}"
+      },
+      "customers": {
+        "title": "Asiakkaat",
+        "description": "Tarkastele tilejä ja hallitse jäädytyksiä."
+      },
+      "disputes": {
+        "title": "Reklamaatiokeskus",
+        "description": "Käsittele eskaloituja puuttuvien leimojen ilmoituksia.",
+        "open": "{count, plural, one {# avoin} other {# avointa}}",
+        "overdue": "{count, plural, one {# myöhässä} other {# myöhässä}}"
+      },
+      "audit": {
+        "title": "Auditointiloki",
+        "description": "Tarkastele jokaista admin-toimenpidettä alustalla."
+      }
+    },
+    "activity": {
+      "title": "Viimeaikainen admin-toiminta",
+      "empty": "Ei vielä kirjattuja admin-toimenpiteitä."
+    }
+  },
+  "auth": {
+    "title": "Admin-kirjautuminen",
+    "subtitle": "Rajoitettu pääsy YORewards-henkilöstölle.",
+    "fields": {
+      "email": "Sähköposti",
+      "password": "Salasana"
+    },
+    "placeholders": {
+      "email": "you@yorewards.com.np"
+    },
+    "actions": {
+      "signin": "Kirjaudu sisään"
+    },
+    "password": {
+      "show": "Näytä salasana",
+      "hide": "Piilota salasana"
+    },
+    "errors": {
+      "email": "Syötä kelvollinen sähköposti",
+      "password": "Vähintään 6 merkkiä",
+      "signin": "Virheelliset tunnukset"
+    }
+  },
+  "merchants": {
+    "title": "Kauppiaat",
+    "subtitle": "Tarkista rekisteröinnit ja hallitse kauppiaiden käyttöoikeuksia.",
+    "searchPlaceholder": "Hae yrityksen nimellä, sähköpostilla tai puhelinnumerolla",
+    "filters": {
+      "all": "Kaikki",
+      "pending": "Odottaa",
+      "active": "Aktiivinen",
+      "suspended": "Jäädytetty",
+      "rejected": "Hylätty",
+      "country": "Maa",
+      "category": "Kategoria",
+      "allCountries": "Kaikki maat",
+      "allCategories": "Kaikki kategoriat"
+    },
+    "status": {
+      "pending": "Odottaa",
+      "pending_verification": "Vahvistus odottaa",
+      "active": "Aktiivinen",
+      "suspended": "Jäädytetty",
+      "rejected": "Hylätty"
+    },
+    "empty": {
+      "title": "Ei tuloksia",
+      "description": "Mikään kauppias ei vastaa tätä suodatinta vielä."
+    },
+    "verification": {
+      "title": "Vahvistusjono",
+      "subtitle": "Tarkista ladatut yritysdokumentit verified-merkkiä varten.",
+      "empty": "Ei dokumentteja odottamassa tarkistusta.",
+      "viewDocument": "Näytä dokumentti",
+      "approve": "Hyväksy",
+      "reject": "Hylkää",
+      "defaultRejectReason": "Dokumenttia ei voitu vahvistaa — lähetä selkeämpi kopio."
+    },
+    "registered": "Rekisteröity {date}",
+    "approvedOn": "Hyväksytty {date}",
+    "rejectedReason": "Syy: {reason}",
+    "suspendedReason": "Jäädytyksen syy: {reason}",
+    "actions": {
+      "approve": "Hyväksy",
+      "reject": "Hylkää",
+      "suspend": "Jäädytä",
+      "reactivate": "Aktivoi uudelleen"
+    },
+    "reject": {
+      "placeholder": "Hylkäyksen syy",
+      "label": "Hylkäyksen syy: {name}",
+      "required": "Lisää syy ennen hylkäystä."
+    },
+    "confirm": {
+      "cancel": "Peruuta",
+      "reasonRequired": "Lisää syy jatkaaksesi.",
+      "suspendTitle": "Jäädytetäänkö {name}?",
+      "suspendDescription": "Kauppias menettää pääsyn hallintapaneeliin ja leimatyökaluihin, kunnes tili aktivoidaan uudelleen.",
+      "suspendReasonLabel": "Miksi jäädytät tämän kauppiaan?",
+      "suspendReasonPlaceholder": "esim. sääntörikkomus, kaksoistili…",
+      "reactivateTitle": "Aktivoidaanko {name} uudelleen?",
+      "reactivateDescription": "Kauppias saa taas täyden pääsyn hallintapaneeliin.",
+      "reactivateReasonLabel": "Miksi aktivoit tämän kauppiaan uudelleen?",
+      "reactivateReasonPlaceholder": "esim. ongelma ratkaistu, valitus hyväksytty…"
+    },
+    "toast": {
+      "error": "Jotain meni pieleen. Yritä uudelleen."
+    },
+    "success": {
+      "approved": "{name} hyväksytty",
+      "rejected": "{name} hylätty",
+      "suspended": "{name} jäädytetty",
+      "reactivated": "{name} aktivoitu uudelleen"
+    },
+    "detail": {
+      "view": "Näytä tiedot",
+      "back": "Takaisin kauppiaisiin",
+      "actionsTitle": "Hallitse käyttöoikeuksia",
+      "branchesTitle": "Toimipisteet",
+      "branchesSummary": "{total, plural, one {# toimipiste} other {# toimipistettä}} · {active, plural, one {# aktiivinen} other {# aktiivista}}",
+      "loyaltyCardTitle": "Kanta-asiakaskortti",
+      "cardName": "Kortin nimi",
+      "stampTarget": "Leimatavoite",
+      "rewardType": "Palkinnon tyyppi",
+      "noLoyaltyCard": "Kanta-asiakaskorttia ei ole vielä määritetty.",
+      "auditTitle": "Viimeaikaiset admin-toimenpiteet",
+      "auditEmpty": "Ei vielä admin-toimenpiteitä tälle kauppiaalle.",
+      "rewardTypes": {
+        "free_item": "Ilmainen tuote",
+        "percent_discount": "Prosenttialennus",
+        "fixed_discount": "Kiinteä alennus"
+      }
+    },
+    "subscription": {
+      "title": "Tilaus",
+      "currentTier": "Pakettitaso",
+      "status": "Laskutuksen tila",
+      "trialEnds": "Kokeilu päättyy",
+      "adjustTier": "Muuta tasoa",
+      "saveTier": "Tallenna taso",
+      "saving": "Tallennetaan…",
+      "extendTrialDays": "Pidennä kokeilua (päivää)",
+      "extendTrial": "Pidennä kokeilua",
+      "extending": "Pidennetään…",
+      "tiers": {
+        "free": "Free",
+        "starter": "Starter",
+        "growth": "Growth",
+        "enterprise": "Enterprise"
+      },
+      "statuses": {
+        "free": "Ilmainen",
+        "trialing": "Kokeilu",
+        "active": "Aktiivinen",
+        "past_due": "Erääntynyt",
+        "canceled": "Peruttu"
+      },
+      "success": {
+        "tierUpdated": "Taso päivitetty: {tier}.",
+        "trialExtended": "Kokeilua pidennetty {days} päivällä."
+      }
+    }
+  },
+  "disputes": {
+    "title": "Reklamaatiokeskus",
+    "subtitle": "Tarkista puuttuvien leimojen ilmoitukset koko alustalla. Kauppiailla on 48 tuntia aikaa vastata palvelutasosopimuksen mukaan ennen admin-eskalointia.",
+    "filterLabel": "Suodata reklamaatioita",
+    "filters": {
+      "pending": "Avoimet",
+      "resolved": "Ratkaistut",
+      "all": "Kaikki"
+    },
+    "empty": "Mikään reklamaatio ei vastaa tätä suodatinta.",
+    "unknownCustomer": "Asiakas",
+    "filedAt": "Ilmoitettu {date}",
+    "status": {
+      "pending": "Avoin",
+      "approved": "Hyväksytty",
+      "rejected": "Hylätty"
+    },
+    "responseDeadline": {
+      "on_track": "Sopimuksen puitteissa",
+      "due": "Erääntyy pian",
+      "overdue": "Sopimus ylitetty"
+    },
+    "noteLabel": "Ratkaisuhuomautus (pakollinen)",
+    "notePlaceholder": "Perustele päätöksesi auditointilokia varten…",
+    "noteHint": "Vähintään 10 merkkiä vaaditaan.",
+    "resolveSectionTitle": "Admin-ratkaisu",
+    "viewDetailsCta": "Näytä tiedot",
+    "viewAndResolveCta": "Tarkista ja ratkaise",
+    "rejectCta": "Hylkää",
+    "approveNoStampCta": "Hyväksy (ei leimaa)",
+    "approveWithStampCta": "Hyväksy ja lisää leima",
+    "cancel": "Peruuta",
+    "resolving": "Ratkaistaan…",
+    "refreshing": "Synkronoidaan uusimmat reklamaatiot…",
+    "slaAwaitingMerchantAlert": "Kauppias ei ole vielä ratkaissut tätä reklamaatiota. Heillä on vielä aikaa 48 tunnin palvelutasosopimuksen puitteissa. Admin-ratkaisu on käytettävissä, jos sinun täytyy ohittaa ajoissa.",
+    "slaOverdueAlert": "Tämä reklamaatio on ylittänyt 48 tunnin palvelutasosopimuksen. Kauppias ei ole ratkaissut sitä — adminin toimenpide on odotettavissa.",
+    "earlyResolveTitle": "Ratkaistaanko ennen palvelutasosopimuksen päättymistä?",
+    "earlyResolveDescription": "Kauppias ei ole vielä ratkaissut tätä reklamaatiota, eikä 48 tunnin palvelutasosopimus ole vielä umpeutunut. Haluatko varmasti ratkaista sen nyt?",
+    "earlyResolveConfirm": "Kyllä, ratkaise nyt",
+    "listOverdueAlert": "{count, plural, one {# reklamaatio on ylittänyt 48 tunnin palvelutasosopimuksen ja vaatii adminin toimenpiteen.} other {# reklamaatiota on ylittänyt 48 tunnin palvelutasosopimuksen ja vaatii adminin toimenpiteen.}}",
+    "success": {
+      "approved": "Reklamaatio hyväksytty",
+      "approvedWithStamp": "Reklamaatio hyväksytty ja leima lisätty",
+      "rejected": "Reklamaatio hylätty"
+    },
+    "detail": {
+      "title": "Reklamaation tiedot",
+      "unnamedCustomer": "Asiakas",
+      "backToList": "Takaisin reklamaatioihin",
+      "claimHeading": "Asiakkaan ilmoitus",
+      "responseHeading": "Ratkaisuhuomautus",
+      "merchantPending": "Odottaa kauppiaan vastausta (48 tunnin palvelutasosopimus).",
+      "resolvedAt": "Ratkaistu {date}",
+      "cardContextHeading": "Kanta-asiakaskortin konteksti",
+      "stampProgress": "{current} / {target} leimaa",
+      "openStampsWorkbench": "Avaa leimatyöpöytä",
+      "noStampHistory": "Tällä kortilla ei ole vielä hyväksyttyjä leimoja.",
+      "stampDate": "Päivämäärä",
+      "stampAmount": "Summa",
+      "stampBranch": "Toimipiste",
+      "stampSource": "Lähde"
+    },
+    "cardPanel": {
+      "title": "Avoimet reklamaatiot tälle kortille"
+    }
+  },
+  "customers": {
+    "title": "Asiakkaat",
+    "subtitle": "Tarkastele asiakastilejä ja hallitse käyttöoikeuksia.",
+    "unnamed": "Nimetön asiakas",
+    "searchPlaceholder": "Hae nimellä tai puhelinnumerolla",
+    "empty": {
+      "title": "Ei vielä asiakkaita",
+      "description": "Asiakkaat näkyvät täällä, kun he rekisteröityvät ja keräävät leimoja."
+    },
+    "table": {
+      "name": "Nimi",
+      "phone": "Puhelin",
+      "cards": "Kortit",
+      "status": "Tila",
+      "joined": "Liittynyt",
+      "actions": "Toiminnot"
+    },
+    "status": {
+      "active": "Aktiivinen",
+      "suspended": "Jäädytetty"
+    },
+    "rewardStatus": {
+      "collecting": "Kerää",
+      "pending_otp": "OTP odottaa",
+      "unlocked": "Palkinto avattu"
+    },
+    "actions": {
+      "suspend": "Jäädytä",
+      "reactivate": "Aktivoi uudelleen",
+      "view": "Näytä"
+    },
+    "confirm": {
+      "suspendTitle": "Jäädytetäänkö asiakas?",
+      "suspendDescription": "{name} ei voi kerätä leimoja, ennen kuin tili aktivoidaan uudelleen.",
+      "suspendReasonLabel": "Miksi jäädytät tämän asiakkaan?",
+      "suspendReasonPlaceholder": "esim. väärinkäyttö, kaksoistili…",
+      "reactivateTitle": "Aktivoidaanko asiakas uudelleen?",
+      "reactivateDescription": "Palauta leimojen keruu asiakkaalle {name}.",
+      "reactivateReasonLabel": "Miksi aktivoit tämän asiakkaan uudelleen?",
+      "reactivateReasonPlaceholder": "esim. ongelma ratkaistu, valitus hyväksytty…",
+      "reasonRequired": "Lisää syy jatkaaksesi.",
+      "cancel": "Peruuta"
+    },
+    "success": {
+      "suspended": "{name} jäädytetty",
+      "reactivated": "{name} aktivoitu uudelleen"
+    },
+    "detail": {
+      "back": "Takaisin asiakkaisiin",
+      "joined": "Liittynyt {date}",
+      "lastActive": "Viimeksi aktiivinen {date}",
+      "suspendedReason": "Jäädytyksen syy: {reason}",
+      "cardsTitle": "Aktiiviset kanta-asiakaskortit",
+      "cardsEmpty": "Ei vielä kanta-asiakaskortteja.",
+      "merchant": "Kauppias",
+      "card": "Kortti",
+      "progress": "Edistyminen",
+      "rewardStatus": "Palkinto",
+      "stamps": "{current} / {target} leimaa"
+    }
+  },
+  "stamps": {
+    "title": "Manuaaliset leimat",
+    "subtitle": "Etsi kanta-asiakaskortti ja myönnä tai poista leimoja, kun tavallinen QR-kulku ei riitä.",
+    "search": {
+      "title": "Etsi kortti",
+      "description": "Valitse hakuperuste ja syötä arvo.",
+      "typeLabel": "Hae perusteella",
+      "submit": "Hae",
+      "types": {
+        "phone": {
+          "label": "Puhelin",
+          "placeholder": "Asiakkaan puhelinnumero…"
+        },
+        "customer_name": {
+          "label": "Asiakkaan nimi",
+          "placeholder": "Asiakkaan nimi…"
+        },
+        "merchant_name": {
+          "label": "Kauppias",
+          "placeholder": "Kauppiaan yrityksen nimi…"
+        },
+        "loyalty_card_name": {
+          "label": "Kanta-asiakaskortti",
+          "placeholder": "Kanta-asiakaskortin nimi…"
+        },
+        "card_id": {
+          "label": "Kortin ID",
+          "placeholder": "Kortin koko UUID…"
+        }
+      }
+    },
+    "empty": {
+      "title": "Korttia ei löytynyt",
+      "description": "Mikään kanta-asiakaskortti ei vastannut hakua. Kokeile toista arvoa tai hakutyyppiä."
+    },
+    "picker": {
+      "title": "Useita kortteja löytyi — valitse yksi"
+    },
+    "card": {
+      "title": "Kortin tiedot",
+      "customer": "Asiakas",
+      "unnamed": "Nimetön asiakas",
+      "phone": "Puhelin",
+      "merchant": "Kauppias",
+      "loyaltyCard": "Kanta-asiakaskortti",
+      "progress": "Leimojen edistyminen",
+      "rewardStatus": "Palkinnon tila",
+      "cardId": "Kortin ID"
+    },
+    "progress": "{current} / {target} leimaa",
+    "rewardStatus": {
+      "collecting": "Kerää",
+      "pending_otp": "OTP odottaa",
+      "unlocked": "Palkinto avattu"
+    },
+    "notes": {
+      "label": "Auditointihuomautukset (valinnainen)",
+      "placeholder": "Syy tai konteksti tälle toimenpiteelle"
+    },
+    "sessions": {
+      "title": "Viimeksi hyväksytyt leimat",
+      "empty": "Tällä kortilla ei ole vielä hyväksyttyjä leimoja.",
+      "requested": "Pyydetty",
+      "approved": "Hyväksytty",
+      "approvedPending": "—",
+      "date": "Päivämäärä",
+      "source": "Lähde",
+      "branch": "Toimipiste",
+      "branchUnknown": "Ei kirjattu",
+      "amount": "Kulutus",
+      "amountUnknown": "—",
+      "approvedBy": "Hyväksyjä",
+      "approverUnknown": "—",
+      "sourceAdmin": "Admin manuaalinen",
+      "sourceQr": "QR-skannaus",
+      "actions": "Toiminnot"
+    },
+    "actions": {
+      "issue": "Myönnä leima",
+      "remove": "Poista",
+      "removeConfirm": "Poista leima",
+      "removeAria": "Poista leima päivämäärältä {date}"
+    },
+    "confirm": {
+      "removeTitle": "Poistetaanko tämä leima?",
+      "removeDescription": "Tätä ei voi perua. Asiakkaan leimaluku vähenee yhdellä.",
+      "cancel": "Peruuta"
+    },
+    "success": {
+      "issued": "Leima myönnetty asiakkaalle {name} ({merchant})",
+      "removed": "Leima poistettu asiakkaalta {name}"
+    }
+  },
+  "audit": {
+    "title": "Auditointiloki",
+    "subtitle": "Täysi historia admin-toimenpiteistä alustalla.",
+    "filters": {
+      "label": "Suodata kohteen mukaan",
+      "all": "Kaikki",
+      "merchant": "Kauppiaat",
+      "customer": "Asiakkaat",
+      "stamp": "Leimat"
+    },
+    "table": {
+      "time": "Aika",
+      "action": "Toimenpide",
+      "admin": "Admin",
+      "target": "Kohde",
+      "notes": "Huomautukset"
+    },
+    "targetTypes": {
+      "merchant": "Kauppias",
+      "customer": "Asiakas",
+      "stamp": "Leima",
+      "redemption": "Lunastus"
+    },
+    "actions": {
+      "approve_merchant": "Kauppias hyväksytty",
+      "reject_merchant": "Kauppias hylätty",
+      "suspend_merchant": "Kauppias jäädytetty",
+      "reactivate_merchant": "Kauppias aktivoitu uudelleen",
+      "suspend_customer": "Asiakas jäädytetty",
+      "reactivate_customer": "Asiakas aktivoitu uudelleen",
+      "issue_stamp_manual": "Leima myönnetty manuaalisesti",
+      "void_stamp": "Leima poistettu",
+      "dispute_approved_admin": "Reklamaatio hyväksytty (admin)",
+      "dispute_approved_admin_with_stamp": "Reklamaatio hyväksytty leimalla (admin)",
+      "dispute_rejected_admin": "Reklamaatio hylätty (admin)"
+    },
+    "empty": {
+      "title": "Ei vielä toimenpiteitä",
+      "description": "Admin-toimenpiteet näkyvät täällä, kun hallitset kauppiaita, asiakkaita ja leimoja."
+    },
+    "loadMore": {
+      "label": "Lataa lisää",
+      "pending": "Ladataan…"
+    }
+  },
+  "errors": {
+    "actions": {
+      "UNAUTHORIZED": "Kirjaudu sisään jatkaaksesi.",
+      "FORBIDDEN": "Tällä tilillä ei ole admin-oikeuksia.",
+      "UNKNOWN": "Jotain meni pieleen. Yritä uudelleen.",
+      "AUTH_FAILED": "Tunnistautuminen epäonnistui. Yritä uudelleen.",
+      "INVALID_CREDENTIALS": "Virheellinen sähköposti tai salasana.",
+      "MERCHANT_UPDATE_FAILED": "Kauppiasta ei voitu päivittää. Yritä uudelleen.",
+      "MERCHANT_NOT_FOUND": "Kauppiasta ei löytynyt.",
+      "CUSTOMER_NOT_FOUND": "Asiakasta ei löytynyt.",
+      "CUSTOMER_UPDATE_FAILED": "Asiakasta ei voitu päivittää. Yritä uudelleen.",
+      "STAMP_SEARCH_REQUIRED": "Syötä arvo hakuun.",
+      "STAMP_INVALID_SEARCH_TYPE": "Virheellinen hakutyyppi. Päivitä sivu ja yritä uudelleen.",
+      "STAMP_INVALID_CARD_ID": "Syötä kortin koko UUID (esim. a1b2c3d4-e5f6-7890-abcd-ef1234567890).",
+      "STAMP_LOOKUP_FAILED": "Korttihaku epäonnistui. Tarkista yhteys ja yritä uudelleen.",
+      "CUSTOMER_CARD_NOT_FOUND": "Asiakaskorttia ei löytynyt.",
+      "STAMP_SESSION_NOT_FOUND": "Leimaistuntoa ei löytynyt.",
+      "STAMP_ISSUE_FAILED": "Leimaa ei voitu myöntää. Yritä uudelleen.",
+      "STAMP_VOID_FAILED": "Leimaa ei voitu poistaa. Vain hyväksyttyjä leimoja voi poistaa.",
+      "REJECTION_REASON_REQUIRED": "Lisää syy ennen hylkäystä.",
+      "ACTION_REASON_REQUIRED": "Lisää syy ennen jatkamista.",
+      "PASSWORD_UPDATE_FAILED": "Salasanaa ei voitu päivittää. Yritä uudelleen.",
+      "PASSWORD_CONFIRM_MISMATCH": "Salasanat eivät täsmää.",
+      "EMAIL_UPDATE_FAILED": "Sähköpostia ei voitu päivittää. Yritä uudelleen.",
+      "EMAIL_INVALID": "Syötä kelvollinen sähköpostiosoite.",
+      "DISPUTE_NOT_FOUND": "Reklamaatiota ei löytynyt.",
+      "DISPUTE_ALREADY_RESOLVED": "Tämä reklamaatio on jo ratkaistu.",
+      "DISPUTE_RESPONSE_REQUIRED": "Lisää ratkaisuhuomautus — vähintään 10 merkkiä.",
+      "DISPUTE_RESOLVE_FAILED": "Reklamaatiota ei voitu ratkaista. Yritä uudelleen.",
+      "DISPUTE_MERCHANT_SLA_ACTIVE": "Kauppiaalla on vielä aikaa palvelutasosopimuksen puitteissa. Vahvista varhainen admin-ratkaisu jatkaaksesi.",
+      "SUBSCRIPTION_UPDATE_FAILED": "Tilausta ei voitu päivittää. Yritä uudelleen.",
+      "TRIAL_EXTEND_FAILED": "Kokeilua ei voitu pidentää. Tarkista päivien määrä ja yritä uudelleen.",
+      "NOTIFICATIONS_LOAD_FAILED": "Ilmoituksia ei voitu ladata. Yritä uudelleen.",
+      "NOTIFICATIONS_UPDATE_FAILED": "Ilmoituksia ei voitu päivittää. Yritä uudelleen."
+    }
+  },
+  "notifications": {
+    "centre": {
+      "button": "Ilmoitukset",
+      "title": "Ilmoitukset",
+      "description": "Alustan hälytykset, mukaan lukien reklamaatioiden SLA-rikkomukset.",
+      "markRead": "Merkitse luetuksi",
+      "markAllRead": "Merkitse kaikki luetuiksi",
+      "unread": "Lukemattomat",
+      "unreadCount": "{count, plural, one {# lukematon} other {# lukematonta}}",
+      "refreshing": "Päivitetään…",
+      "emptyTitle": "Kaikki ajan tasalla",
+      "emptyDescription": "Uudet hälytykset näkyvät täällä."
+    },
+    "categories": {
+      "all": "Kaikki",
+      "disputes": "Reklamaatiot",
+      "account": "Tili"
+    },
+    "actions": {
+      "openDispute": "Avaa reklamaatio",
+      "view": "Näytä"
+    },
+    "disputeFiled": {
+      "title": "Uusi leimareklamaatio",
+      "body": "{customerName, select, null {Asiakas} other {{customerName}}} teki reklamaation käynnistä yrityksessä {businessName}."
+    },
+    "disputeResolved": {
+      "title": "Reklamaation päivitys",
+      "body": "Reklamaatiosi yrityksen {businessName} kanssa päivitettiin: {status}."
+    },
+    "disputeSlaBreach": {
+      "title": "Reklamaation SLA-rikkomus",
+      "body": "Kauppiaan {merchantName} reklamaatio ylitti 48 tunnin kauppias-SLA:n."
+    },
+    "rewardUnlocked": {
+      "title": "Palkinto valmis!",
+      "body": "Avasit palkinnon kortilla {cardName} yrityksessä {businessName}."
+    },
+    "merchantApproved": {
+      "title": "Yritys hyväksytty",
+      "body": "{businessName} on nyt live YORewardsissa."
+    },
+    "smartPromo": {
+      "title": "Melkein valmista",
+      "body": "Vain {stampsRemaining} leima(a) jäljellä palkinnon avaamiseen yrityksessä {businessName}."
+    }
+  }
+}

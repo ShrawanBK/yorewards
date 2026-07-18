@@ -6,7 +6,8 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types",
+    "check-types": "pnpm i18n:check && turbo run check-types",
+    "i18n:check": "node scripts/i18n-check.mjs",
     "supabase:types": "supabase gen types typescript --linked 2>/dev/null > packages/supabase/src/types.generated.ts"
   },
   "devDependencies": {

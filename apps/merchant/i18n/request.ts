@@ -1,5 +1,6 @@
 import { getRequestConfig } from "next-intl/server";
 import { cookies } from "next/headers";
+import { deepMergeMessages } from "@repo/utils/deep-merge-messages";
 import { LOCALE_COOKIE, resolveAppLocale } from "@/shared/i18n/locales";
 
 export default getRequestConfig(async () => {
@@ -15,17 +16,9 @@ export default getRequestConfig(async () => {
 
   return {
     locale,
-    messages: {
-      ...en,
-      ...overlay,
-      nav: { ...en.nav, ...overlay.nav },
-      auth: { ...en.auth, ...overlay.auth },
-      locale: { ...en.locale, ...overlay.locale },
-      disputes: { ...en.disputes, ...overlay.disputes },
-      errors: {
-        ...en.errors,
-        actions: { ...en.errors.actions, ...overlay.errors?.actions },
-      },
-    },
+    messages: deepMergeMessages(
+      en as Record<string, unknown>,
+      overlay as Record<string, unknown>,
+    ),
   };
 });

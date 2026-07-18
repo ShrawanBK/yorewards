@@ -13,15 +13,27 @@ import {
 } from "@/features/settings/api/accountActions";
 import { isActionFailure } from "@repo/utils/action-error";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
+import { LocaleSwitcher } from "@/shared/ui/LocaleSwitcher";
 
 export function AdminSettingsView() {
   const t = useTranslations("settings.account");
+  const tLang = useTranslations("settings.language");
   const tErrors = useTranslations("errors.actions");
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
+      <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle>{tLang("title")}</CardTitle>
+          <CardDescription>{tLang("subtitle")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <LocaleSwitcher className="max-w-xs" />
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>{t("passwordTitle")}</CardTitle>

@@ -1,4 +1,7 @@
 {
+  "locale": {
+    "label": "Language"
+  },
   "app": {
     "title": "YORewards Admin",
     "description": "Super admin dashboard",
@@ -23,6 +26,10 @@
   "settings": {
     "title": "Account settings",
     "subtitle": "Update your super admin login.",
+    "language": {
+      "title": "Language",
+      "subtitle": "Choose the dashboard language. Your choice is saved on this device."
+    },
     "account": {
       "passwordTitle": "Change password",
       "passwordSubtitle": "Use at least 8 characters.",

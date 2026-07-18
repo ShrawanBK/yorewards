@@ -105,6 +105,29 @@ Rationale:
 
 ---
 
+## Day 11 — Full i18n (en / ne / fi)
+
+### Decision: keep all three locales for NP launch
+
+Do **not** hide Finnish (`fi`) for an NP-only soft launch. Finland is an explicit V2 market; the switcher already lists English · नेपाली · Suomi. Hiding `fi` would create a second launch gate and drift risk. Operators who only need NP simply leave the default (`en`) or pick `ne`.
+
+### Source of truth + fallback
+
+- `messages/en.json` is the source of truth per app.
+- `ne.json` / `fi.json` must have **key parity** with `en` (enforced by `pnpm i18n:check`, wired into `pnpm check-types`).
+- Runtime: cookie `NEXT_LOCALE` → `resolveAppLocale` → deep-merge overlay onto `en` so a missing leaf still falls back to English (defense in depth; parity check should make this rare).
+
+### Locale persistence
+
+- Switchers (customer profile, merchant settings, admin settings) call `setLocaleAction` → set `NEXT_LOCALE` cookie (1 year, `SameSite=Lax`) → `revalidatePath("/", "layout")`.
+- Admin gained the same cookie + switcher path as customer/merchant (was English-only before Day 11).
+
+### Currency / dates
+
+- Pricing stays NPR in V2; EUR localization remains V3. Finnish locale still uses `useFormatter` / `timeZone` for numbers and dates where already wired.
+
+---
+
 ## Out of scope for Day 9–10 (deferred to V3)
 
 - SMS as a general notification channel (only OTP uses SMS in V2).

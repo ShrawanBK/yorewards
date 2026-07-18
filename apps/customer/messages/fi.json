@@ -1,6 +1,8 @@
 {
-  "locale": {
-    "label": "Language"
+  "app": {
+    "title": "YORewards",
+    "description": "Digitaalinen leimalompakkosi",
+    "cta": "Aloita"
   },
   "nav": {
     "wallet": "Lompakko",
@@ -8,23 +10,132 @@
     "profile": "Profiili",
     "aria": "Päänavigaatio"
   },
+  "locale": {
+    "label": "Kieli"
+  },
+  "a11y": {
+    "openNotifications": "Ilmoitukset{count, plural, =0 {} other {, {count} lukematonta}}"
+  },
   "auth": {
     "login": {
       "title": "Tervetuloa YORewardsiin",
       "subtitle": "Syötä puhelinnumerosi kirjautuaksesi tai luodaksesi lompakon."
+    },
+    "onboarding": {
+      "title": "Melkein valmista",
+      "subtitle": "Kerro nimesi, jotta voimme viimeistellä lompakkosi.",
+      "phoneLabel": "Puhelin"
     },
     "fields": {
       "phone": "Puhelinnumero",
       "country": "Maakoodi",
       "name": "Nimesi"
     },
+    "dialCodes": {
+      "NP": "+977",
+      "FI": "+358"
+    },
+    "countries": {
+      "NP": "Nepal",
+      "FI": "Suomi"
+    },
+    "placeholders": {
+      "phoneNP": "98XXXXXXXX",
+      "phoneFI": "4XXXXXXXX",
+      "name": "esim. Sita Sharma"
+    },
     "actions": {
       "continue": "Jatka",
-      "start": "Aloita"
+      "start": "Aloita",
+      "backToLogin": "Takaisin kirjautumiseen"
     },
     "errors": {
       "phoneRequired": "Syötä puhelinnumerosi",
-      "name": "Nimi vaaditaan"
+      "phoneNP": "Syötä kelvollinen nepalilainen matkapuhelinnumero (esim. 98XXXXXXXX)",
+      "phoneFI": "Syötä kelvollinen suomalainen matkapuhelinnumero (esim. 4XXXXXXXX tai 04XXXXXXXX)",
+      "name": "Nimi vaaditaan",
+      "missingPhone": "Puhelinnumero puuttuu. Palaa kirjautumiseen."
+    }
+  },
+  "offline": {
+    "message": "Olet offline-tilassa — osa ominaisuuksista ei välttämättä toimi ennen kuin yhteys palaa."
+  },
+  "profile": {
+    "title": "Profiili",
+    "name": "Nimi",
+    "phone": "Puhelin",
+    "disputesLink": "Leimareklamaationi",
+    "privacyLink": "Tietosuojakäytäntö",
+    "requestDeletion": "Pyydä tietojen poistoa",
+    "requestDeletionHint": "Käsittelemme GDPR-poistopyynnöt sähköpostitse.",
+    "deletionEmailSubject": "YORewards-tietojen poistopyyntö",
+    "logout": "Kirjaudu ulos"
+  },
+  "privacy": {
+    "title": "Tietosuojakäytäntö",
+    "updated": "Päivitetty viimeksi: kesäkuu 2026",
+    "intro": "YORewards auttaa sinua keräämään digitaalisia kanta-asiakasleimoja. Tämä käytäntö kertoo, mitä keräämme ja miten suojaamme tietojasi.",
+    "dataCollected": {
+      "title": "Mitä keräämme",
+      "body": "Puhelinnumero, näyttönimi, leimakortin edistyminen, leima- ja lunastushistoria sekä sovelluksen toiminnan edellyttämät perustiedot laitteesta ja selaimesta."
+    },
+    "hosting": {
+      "title": "Missä tietoja säilytetään",
+      "body": "Tiedot hostataan Supabase EU Westissä (Frankfurt, Saksa). Käytämme tätä aluetta täyttääksemme GDPR-vaatimukset Nepalissa ja Suomessa."
+    },
+    "rights": {
+      "title": "Oikeutesi",
+      "body": "Voit pyytää henkilötietojesi tarkastusta, oikaisua tai poistoa. Vastaamme vahvistettuihin pyyntöihin kohtuullisessa ajassa."
+    },
+    "deletion": {
+      "title": "Tilin poisto",
+      "body": "Poistaaksesi tilisi ja siihen liittyvät tiedot, käytä Pyydä tietojen poistoa -toimintoa profiilissasi tai lähetä meille sähköpostia alla olevaan osoitteeseen."
+    },
+    "backToProfile": "Takaisin profiiliin",
+    "backToLogin": "Takaisin kirjautumiseen"
+  },
+  "pwa": {
+    "dismiss": "Ei nyt",
+    "dismissAria": "Sulje asennusohjeet",
+    "android": {
+      "title": "Asenna YORewards",
+      "subtitle": "Lisää sovellus kotinäyttöön, jotta pääset lompakkoon nopeasti.",
+      "install": "Asenna sovellus",
+      "installing": "Asennetaan…"
+    },
+    "ios": {
+      "title": "Lisää kotinäyttöön",
+      "subtitle": "Asenna YORewards iPhoneen täyden näytön lompakkokokemusta varten.",
+      "stepShare": "Napauta Jaa Safarin työkalupalkissa",
+      "stepAdd": "Valitse Lisää kotinäyttöön",
+      "stepConfirm": "Napauta Lisää vahvistaaksesi"
+    }
+  },
+  "wallet": {
+    "title": "Lompakko",
+    "stamps": "Leimat",
+    "stampProgress": "{current} / {target}",
+    "stampProgressAria": "{current} / {target} leimaa kerätty",
+    "rewardReady": "Palkinto valmis",
+    "loadError": "Lompakkoa ei voitu ladata — vedä päivittääksesi tai yritä uudelleen.",
+    "retry": "Yritä uudelleen",
+    "backToWallet": "Takaisin lompakkoon",
+    "banner": {
+      "title": "Sinulla on lunastettava palkinto",
+      "description": "Avaa kortti alta, vahvista puhelinnumerosi ja saat lunastuskoodin."
+    },
+    "searchPlaceholder": "Hae kortteja…",
+    "searchAria": "Hae leimakortteja",
+    "sortAria": "Järjestä kortit",
+    "sortRecent": "Viimeisimmät",
+    "sortRewardReady": "Palkinto valmis ensin",
+    "rewardHistory": "Palkintohistoria",
+    "insights": "Kulutusnäkymät",
+    "noResults": "Mikään kortti ei vastaa hakua.",
+    "empty": {
+      "title": "Ei vielä kortteja",
+      "description": "Skannaamalla QR-koodin osallistuvassa liikkeessä saat ensimmäisen leimasi.",
+      "cta": "Skannaa QR-koodi"
     }
   },
   "scan": {
@@ -32,38 +143,297 @@
     "subtitle": "Osoita kamera kassalla olevaan leimakortti-QR:ään.",
     "processing": "Lähetetään leimapyyntöä…",
     "invalidQr": "Tämä ei näytä YORewards-QR-koodilta — yritä uudelleen.",
-    "backToWallet": "Takaisin lompakkoon"
+    "cameraDenied": "Skannaaminen edellyttää kameran käyttöoikeutta — salli se selaimen asetuksissa.",
+    "cameraPrompt": "Salli kameran käyttö leima-QR-koodien skannaamiseen.",
+    "retryCamera": "Salli kamera",
+    "requestingCamera": "Pyydetään käyttöoikeutta…",
+    "backToWallet": "Takaisin lompakkoon",
+    "signInAgain": "Kirjaudu uudelleen",
+    "manualCta": "Etkö voi skannata?",
+    "hideManual": "Piilota manuaalinen syöttö",
+    "manual": {
+      "title": "Syötä manuaalisesti",
+      "subtitle": "Valitse yritys ja toimipiste, jossa kävit.",
+      "loading": "Ladataan yrityksiä…",
+      "merchantLabel": "Yritys",
+      "merchantPlaceholder": "Valitse yritys",
+      "branchLabel": "Toimipiste",
+      "branchPlaceholder": "Valitse toimipiste",
+      "submit": "Pyydä leimaa"
+    }
   },
   "stamp": {
     "pending": {
       "title": "Odotetaan hyväksyntää",
-      "subtitle": "Kauppias vahvistaa leimasi pian."
+      "subtitle": "Kauppias vahvistaa leimasi pian.",
+      "loadingAria": "Odotetaan kauppiaan hyväksyntää"
     },
     "success": {
       "title": "Leima lisätty!",
       "subtitle": "Leimakorttisi on päivitetty.",
-      "backToWallet": "Takaisin lompakkoon"
+      "progress": "{current} / {target} leimaa",
+      "rewardReady": "Olet saavuttanut palkinnon — lunasta se nyt.",
+      "claimReward": "Lunasta palkinto",
+      "backToWallet": "Takaisin lompakkoon",
+      "scanAgain": "Skannaa uudelleen",
+      "spent": "Käytit {amount} tällä käynnillä"
     },
     "rejected": {
       "title": "Leimaa ei lisätty",
-      "subtitle": "Kauppias hylkäsi tämän pyynnön."
+      "subtitle": "Kauppias hylkäsi tämän leimapyynnön.",
+      "tryAgain": "Skannaa uudelleen",
+      "backToWallet": "Takaisin lompakkoon"
     },
     "expired": {
       "title": "Pyyntö vanhentui",
-      "subtitle": "Kauppias ei hyväksynyt ajoissa. Skannaa QR uudelleen."
+      "subtitle": "Kauppias ei hyväksynyt ajoissa. Skannaa QR uudelleen uutta leimaa varten.",
+      "scanAgain": "Skannaa uudelleen",
+      "backToWallet": "Takaisin lompakkoon"
+    }
+  },
+  "card": {
+    "backToWallet": "Takaisin lompakkoon",
+    "loadError": "Korttia ei voitu ladata — yritä uudelleen.",
+    "progress": "{current} / {target} leimaa",
+    "progressAria": "{current} / {target} leimaa kerätty",
+    "stampsAria": "Leimaruudukko",
+    "stampSlot": "Leima {index}, {state}",
+    "stampFilled": "kerätty",
+    "stampEmpty": "ei kerätty",
+    "stampOverflow": "+{count} kohti seuraavaa palkintoa",
+    "minSpend": "Vähintään {amount} per käynti",
+    "scanCta": "Skannaa leima",
+    "claimPrompt": "Olet avannut palkinnon — vahvista puhelinnumerosi saadaksesi koodin.",
+    "claimReward": "Lunasta palkinto",
+    "redemption": {
+      "title": "Lunastuskoodisi",
+      "subtitle": "Näytä tämä koodi kauppiaalle kassalla.",
+      "copy": "Kopioi koodi",
+      "copied": "Kopioitu!",
+      "copyAria": "Kopioi lunastuskoodi leikepöydälle",
+      "codeAria": "Lunastuskoodi {code}"
+    },
+    "insights": {
+      "title": "Käyntisi",
+      "totalSpent": "Yhteensä käytetty",
+      "avgSpent": "Keskimäärin per käynti",
+      "visits": "Käynnit",
+      "lastVisit": "Viimeisin käynti",
+      "noVisits": "—"
+    },
+    "visits": {
+      "title": "Käyntihistoria",
+      "unknownBranch": "Toimipiste"
     }
   },
   "dispute": {
     "title": "Puuttuuko leima?",
     "subtitle": "Kerro käynnistä, jota ei kirjattu. Kauppias tarkistaa pyynnön.",
+    "openForm": "Tee reklamaatio",
+    "cancel": "Peruuta",
+    "visitDate": "Käyntipäivä",
+    "amount": "Käytetty summa",
+    "description": "Mitä tapahtui?",
+    "descriptionPlaceholder": "esim. Maksoin 500 NPR, mutta en saanut leimaa",
     "submit": "Lähetä reklamaatio",
-    "submitting": "Lähetetään…"
+    "submitting": "Lähetetään…",
+    "historyTitle": "Reklamaatiosi",
+    "resolutionLabel": "Ratkaisu",
+    "pendingHint": "Odotetaan kauppiaan vastausta (48 tunnin kuluessa).",
+    "pendingBlocked": "Sinulla on jo avoin reklamaatio tälle kortille. Ilmoitamme, kun se on ratkaistu.",
+    "filedAt": "Jätetty {date}",
+    "card": {
+      "merchantClaim": "Puuttuvan leiman vaatimus",
+      "visitClaim": "Käyntivaatimus",
+      "amountLabel": "Summa",
+      "visitLabel": "Käynti",
+      "yourNote": "Huomautuksesi"
+    },
+    "status": {
+      "pending": "Käsittelyssä",
+      "approved": "Hyväksytty",
+      "rejected": "Hylätty"
+    },
+    "list": {
+      "title": "Leimareklamaatiot",
+      "subtitle": "Seuraa pyyntöjä, jotka olet jättänyt puuttuvasta leimasta.",
+      "back": "Takaisin profiiliin",
+      "emptyTitle": "Ei vielä reklamaatioita",
+      "emptyDescription": "Jos käyntiä ei leimattu, voit tehdä reklamaation kyseiseltä leimakortilta.",
+      "emptyPending": "Ei avoimia reklamaatioita.",
+      "emptyApproved": "Ei vielä hyväksyttyjä reklamaatioita.",
+      "emptyRejected": "Ei hylättyjä reklamaatioita.",
+      "tabs": {
+        "pending": "Avoimet",
+        "approved": "Hyväksytyt",
+        "rejected": "Hylätyt"
+      }
+    },
+    "success": {
+      "submitted": "Reklamaatio lähetetty",
+      "hint": "Kauppias tarkistaa pyyntösi. Näet päivitykset täällä."
+    }
+  },
+  "insights": {
+    "title": "Kulutusnäkymät",
+    "subtitle": "Näe, kuinka paljon olet käyttänyt YORewards-kauppiailla.",
+    "back": "Takaisin lompakkoon",
+    "prevMonth": "Edellinen kuukausi",
+    "nextMonth": "Seuraava kuukausi",
+    "monthlyTotal": "Tämä kuukausi",
+    "noSpend": "Tälle kuukaudelle ei ole vielä kirjattu kulutusta.",
+    "vsLastMonth": "{amount} {direction} kuin viime kuussa",
+    "more": "enemmän",
+    "less": "vähemmän",
+    "stampsThisMonth": "{count, plural, one {# leima} other {# leimaa}} tienaattu tässä kuussa",
+    "byMerchant": "Kauppiaittain",
+    "chartAria": "Pylväskaavio kulutuksesta kauppiaittain tässä kuussa",
+    "dailyTrend": "Päivittäinen kulutus",
+    "dailyTrendAria": "Viivakaavio päivittäisestä kulutuksesta valitulle kuukaudelle",
+    "historyTitle": "Kulutushistoria",
+    "filterMerchant": "Suodata kauppiaan mukaan",
+    "allMerchants": "Kaikki kauppiaat",
+    "minAmountPlaceholder": "Vähimmäissumma",
+    "minAmountAria": "Vähimmäiskulutuksen suodatin",
+    "historyEmpty": "Mikään käynti ei vastaa suodattimiasi.",
+    "unknownBranch": "Toimipiste"
+  },
+  "rewardHistory": {
+    "title": "Palkintohistoria",
+    "back": "Takaisin lompakkoon",
+    "empty": "Ei vielä palkintoja — kerää leimoja saadaksesi ensimmäisen palkintosi.",
+    "status": {
+      "active": "Aktiivinen",
+      "redeemed": "Lunastettu",
+      "expired": "Vanhentunut",
+      "earned": "Ansaittu"
+    }
+  },
+  "reward": {
+    "title": "Lunasta palkintosi",
+    "backToWallet": "Takaisin lompakkoon",
+    "backToCard": "Takaisin korttiin",
+    "loadError": "Palkintoa ei voitu ladata — yritä uudelleen.",
+    "send": {
+      "phoneLabel": "Vahvistuskoodi lähetetään numeroon",
+      "hint": "Lähetämme 6-numeroisen koodin tekstiviestillä ennen lunastuskoodin näyttämistä.",
+      "sentHint": "Syötä puhelimeesi lähettämämme 6-numeroinen koodi.",
+      "cta": "Lähetä vahvistuskoodi",
+      "sending": "Lähetetään…",
+      "resend": "Lähetä koodi uudelleen"
+    },
+    "verify": {
+      "otpLabel": "Vahvistuskoodi",
+      "otpPlaceholder": "000000",
+      "otpInvalid": "Syötä SMS:stä saamasi 6-numeroinen koodi",
+      "submit": "Vahvista ja hae koodi",
+      "verifying": "Vahvistetaan…"
+    },
+    "code": {
+      "title": "Lunastuskoodisi",
+      "subtitle": "Näytä tämä koodi kauppiaalle kassalla.",
+      "instructions": "Kauppias vahvistaa sen palkinnon viimeistelemiseksi.",
+      "copy": "Kopioi koodi",
+      "copied": "Kopioitu!",
+      "copyAria": "Kopioi lunastuskoodi leikepöydälle",
+      "codeAria": "Lunastuskoodi {code}"
+    },
+    "unavailable": "Tätä palkintoa ei voi vielä lunastaa — kerää ensin lisää leimoja."
   },
   "errors": {
     "actions": {
+      "UNKNOWN": "Jokin meni pieleen — yritä uudelleen.",
       "UNAUTHORIZED": "Istuntosi vanhentui — kirjaudu uudelleen.",
-      "SCAN_INVALID_QR": "Tämä ei ole kelvollinen leima-QR.",
-      "DISPUTE_SUBMIT_FAILED": "Reklamaatiota ei voitu lähettää — yritä uudelleen."
+      "FORBIDDEN": "Sinulla ei ole lupaa tähän.",
+      "INVALID_PHONE": "Syötä kelvollinen puhelinnumero valitulle maalle.",
+      "CUSTOMER_PHONE_REQUIRED": "Syötä puhelinnumerosi jatkaaksesi.",
+      "CUSTOMER_NAME_REQUIRED": "Syötä nimesi — vähintään 2 merkkiä.",
+      "CUSTOMER_LOGIN_FAILED": "Kirjautuminen epäonnistui — yritä uudelleen.",
+      "CUSTOMER_NOT_FOUND": "Tiliäsi ei löytynyt — yritä kirjautua uudelleen.",
+      "CUSTOMER_ONBOARDING_FAILED": "Asetusten viimeistely epäonnistui — yritä uudelleen.",
+      "CUSTOMER_ALREADY_EXISTS": "Tämä numero on jo rekisteröity — kokeile kirjautumista.",
+      "CUSTOMER_SUSPENDED": "Tilisi on jäädytetty. Ota yhteyttä tukeen, jos uskot tämän olevan virhe.",
+      "CUSTOMER_SUSPENDED_REASON": "Tilisi on jäädytetty: {reason}",
+      "WALLET_LOAD_FAILED": "Lompakkoa ei voitu ladata — yritä uudelleen.",
+      "CUSTOMER_CARD_NOT_FOUND": "Tätä leimakorttia ei löytynyt lompakostasi.",
+      "SCAN_INVALID_QR": "Tämä ei näytä kelvolliselta leima-QR-koodilta.",
+      "SCAN_MERCHANT_NOT_ACTIVE": "Tämä yritys ei ota vastaan leimoja juuri nyt.",
+      "SCAN_LOYALTY_CARD_INACTIVE": "Tämä leimakortti ei ole aktiivinen.",
+      "SCAN_LOCATION_INVALID": "Tämä toimipiste ei kelpaa skannaamiseen.",
+      "SCAN_SESSION_FAILED": "Leimapyyntöä ei voitu aloittaa — yritä uudelleen.",
+      "SCAN_CAMERA_DENIED": "Skannaaminen edellyttää kameran käyttöoikeutta.",
+      "STAMP_BRANCH_NOT_ALLOWED": "Tämä toimipiste ei voi leimata tälle kortille juuri nyt.",
+      "STAMP_RATE_LIMITED": "Liian monta skannausyritystä — odota hetki ja yritä uudelleen.",
+      "PLAN_LIMIT_CUSTOMERS": "Tämä yritys on saavuttanut Free-suunnitelman asiakasrajan. Pyydä kauppiasta päivittämään.",
+      "STAMP_SESSION_NOT_FOUND": "Leimapyyntöä ei löytynyt.",
+      "OTP_SEND_FAILED": "Vahvistuskoodia ei voitu lähettää — yritä uudelleen.",
+      "OTP_INVALID": "Koodi ei ole oikein — tarkista SMS ja yritä uudelleen.",
+      "OTP_EXPIRED": "Koodi on vanhentunut — pyydä uusi.",
+      "OTP_RATE_LIMITED": "Liian monta koodipyyntöä — odota muutama minuutti ja yritä uudelleen.",
+      "REWARD_NOT_READY": "Tätä palkintoa ei voi vielä lunastaa.",
+      "REDEMPTION_CREATE_FAILED": "Lunastuskoodia ei voitu luoda — yritä uudelleen.",
+      "STAMP_CATALOG_LOAD_FAILED": "Yrityksiä ei voitu ladata — yritä uudelleen.",
+      "DISPUTE_DESCRIPTION_INVALID": "Kuvaile tapahtunutta — vähintään 10 merkkiä.",
+      "DISPUTE_AMOUNT_INVALID": "Syötä käynnillä käytetty kelvollinen summa.",
+      "DISPUTE_VISIT_DATE_REQUIRED": "Valitse käyntipäiväsi.",
+      "DISPUTE_LIMIT_EXCEEDED": "Olet saavuttanut tämän yrityksen reklamaatiorajan tälle kuukaudelle.",
+      "DISPUTE_SUBMIT_FAILED": "Reklamaatiota ei voitu lähettää — yritä uudelleen.",
+      "INSIGHTS_LOAD_FAILED": "Kulutusnäkymiä ei voitu ladata — yritä uudelleen.",
+      "NOTIFICATIONS_LOAD_FAILED": "Ilmoituksia ei voitu ladata — yritä uudelleen.",
+      "NOTIFICATIONS_UPDATE_FAILED": "Ilmoituksia ei voitu päivittää — yritä uudelleen."
+    }
+  },
+  "notifications": {
+    "centre": {
+      "title": "Ilmoitukset",
+      "description": "Päivityksiä reklamaatioista, palkinnoista ja tarjouksista.",
+      "markRead": "Merkitse luetuksi",
+      "markAllRead": "Merkitse kaikki luetuiksi",
+      "unread": "Lukematon",
+      "unreadCount": "{count, plural, one {# lukematon} other {# lukematonta}}",
+      "refreshing": "Päivitetään…",
+      "emptyTitle": "Kaikki ajan tasalla",
+      "emptyDescription": "Uudet ilmoitukset näkyvät täällä.",
+      "promotionsEmptyTitle": "Ei vielä tarjouksia",
+      "promotionsEmptyDescription": "Kauppiaiden tarjoukset ja tehostukset näkyvät täällä myöhemmin."
+    },
+    "categories": {
+      "all": "Kaikki",
+      "disputes": "Reklamaatiot",
+      "rewards": "Palkinnot",
+      "promotions": "Tarjoukset"
+    },
+    "actions": {
+      "openCard": "Avaa kortti",
+      "openReward": "Lunasta palkinto",
+      "openDisputes": "Näytä reklamaatiot",
+      "view": "Näytä"
+    },
+    "disputeFiled": {
+      "title": "Uusi leimareklamaatio",
+      "body": "{customerName, select, null {Asiakas} other {{customerName}}} reklamoi käynnistä yrityksessä {businessName}."
+    },
+    "disputeResolved": {
+      "title": "Reklamaatiopäivitys",
+      "body": "Reklamaatiosi yrityksen {businessName} kanssa oli {status}.",
+      "bodyApproved": "Reklamaatiosi yrityksen {businessName} kanssa hyväksyttiin.",
+      "bodyRejected": "Reklamaatiosi yrityksen {businessName} kanssa hylättiin."
+    },
+    "disputeSlaBreach": {
+      "title": "Reklamaation SLA ylitetty",
+      "body": "Reklamaatio yritykselle {merchantName} ylitti 48 tunnin kauppias-SLA:n."
+    },
+    "rewardUnlocked": {
+      "title": "Palkinto valmis!",
+      "body": "Avasit palkinnon kortilla {cardName} yrityksessä {businessName}."
+    },
+    "merchantApproved": {
+      "title": "Yritys hyväksytty",
+      "body": "{businessName} on nyt live YORewardsissa."
+    },
+    "smartPromo": {
+      "title": "Melkein valmista",
+      "body": "Vain {stampsRemaining} leima(a) jäljellä palkinnon avaamiseen yrityksessä {businessName}."
     }
   }
 }

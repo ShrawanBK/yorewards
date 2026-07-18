@@ -1,0 +1,593 @@
+{
+  "locale": {
+    "label": "भाषा"
+  },
+  "app": {
+    "title": "YORewards Admin",
+    "description": "सुपर एडमिन ड्यासबोर्ड",
+    "cta": "साइन इन"
+  },
+  "a11y": {
+    "openNotifications": "सूचनाहरू{count, plural, =0 {} other {, {count} नपढिएका}}"
+  },
+  "nav": {
+    "main": "एडमिन नेभिगेसन",
+    "adminLabel": "सुपर एडमिन",
+    "dashboard": "ड्यासबोर्ड",
+    "merchants": "व्यापारीहरू",
+    "customers": "ग्राहकहरू",
+    "disputes": "विवादहरू",
+    "notifications": "सूचनाहरू",
+    "stamps": "स्ट्याम्पहरू",
+    "audit": "अडिट लग",
+    "settings": "सेटिङ",
+    "logout": "लग आउट"
+  },
+  "settings": {
+    "title": "खाता सेटिङ",
+    "subtitle": "आफ्नो सुपर एडमिन लगइन अपडेट गर्नुहोस्।",
+    "language": {
+      "title": "भाषा",
+      "subtitle": "ड्यासबोर्डको भाषा छान्नुहोस्। तपाईंको छनोट यस उपकरणमा सुरक्षित हुन्छ।"
+    },
+    "account": {
+      "passwordTitle": "पासवर्ड परिवर्तन गर्नुहोस्",
+      "passwordSubtitle": "कम्तीमा ८ अक्षर प्रयोग गर्नुहोस्।",
+      "newPassword": "नयाँ पासवर्ड",
+      "confirmPassword": "पासवर्ड पुष्टि गर्नुहोस्",
+      "passwordSubmit": "पासवर्ड अपडेट गर्नुहोस्",
+      "emailTitle": "इमेल परिवर्तन गर्नुहोस्",
+      "emailSubtitle": "हामी नयाँ ठेगानामा पुष्टि लिङ्क पठाउनेछौं।",
+      "newEmail": "नयाँ इमेल",
+      "emailSubmit": "इमेल अपडेट गर्नुहोस्",
+      "show": "पासवर्ड देखाउनुहोस्",
+      "hide": "पासवर्ड लुकाउनुहोस्"
+    }
+  },
+  "dashboard": {
+    "title": "प्लेटफर्म अवलोकन",
+    "subtitle": "YORewards मा व्यापारी, ग्राहक र गतिविधि अनुगमन गर्नुहोस्।",
+    "empty": {
+      "title": "तपाईंको प्लेटफर्म भर्खरै सुरु भएको छ",
+      "description": "व्यापारीहरू दर्ता भएपछि र ग्राहकहरूले स्ट्याम्प सङ्कलन गरेपछि तथ्याङ्क यहाँ देखिन्छ।",
+      "cta": "व्यापारीहरू समीक्षा गर्नुहोस्"
+    },
+    "stats": {
+      "regionLabel": "प्लेटफर्म तथ्याङ्क",
+      "merchants": "व्यापारीहरू",
+      "merchantsHint": "{active, plural, =0 {अहिलेसम्म कुनै सक्रिय छैन} one {# सक्रिय} other {# सक्रिय}}",
+      "customers": "ग्राहकहरू",
+      "customersHint": "{active, plural, =0 {कुनै सक्रिय ग्राहक छैन} one {# सक्रिय} other {# सक्रिय}}",
+      "stamps": "जारी स्ट्याम्पहरू",
+      "redemptions": "रिडिम गरिएका पुरस्कारहरू",
+      "openDisputes": "खुल्ला विवादहरू",
+      "openDisputesHint": "व्यापारी वा एडमिन समीक्षा बाँकी",
+      "overdueDisputesHint": "{count, plural, one {# ले ४८-घण्टे सेवा स्तर सम्झौता नाघ्यो — एडमिन कारबाही चाहिन्छ} other {# ले ४८-घण्टे सेवा स्तर सम्झौता नाघ्यो — एडमिन कारबाही चाहिन्छ}}",
+      "mrrStub": "MRR (stub)",
+      "mrrStubHint": "Starter + Growth सक्रिय/ट्रायल सदस्यताहरू",
+      "period": {
+        "today": "आज",
+        "week": "पछिल्लो ७ दिन",
+        "month": "पछिल्लो ३० दिन"
+      }
+    },
+    "links": {
+      "regionLabel": "द्रुत लिङ्कहरू",
+      "open": "खोल्नुहोस्",
+      "merchants": {
+        "title": "व्यापारी कतार",
+        "description": "दर्ता अनुमोदन गर्नुहोस् र पहुँच व्यवस्थापन गर्नुहोस्।",
+        "pending": "{count, plural, one {# बाँकी} other {# बाँकी}}"
+      },
+      "customers": {
+        "title": "ग्राहकहरू",
+        "description": "खाता हेर्नुहोस् र निलम्बन व्यवस्थापन गर्नुहोस्।"
+      },
+      "disputes": {
+        "title": "विवाद केन्द्र",
+        "description": "एस्केलेट भएका हराएको-स्ट्याम्प दाबीहरू समीक्षा गर्नुहोस्।",
+        "open": "{count, plural, one {# खुल्ला} other {# खुल्ला}}",
+        "overdue": "{count, plural, one {# ढिलो} other {# ढिलो}}"
+      },
+      "audit": {
+        "title": "अडिट लग",
+        "description": "प्लेटफर्ममा हरेक एडमिन कारबाही समीक्षा गर्नुहोस्।"
+      }
+    },
+    "activity": {
+      "title": "हालैका एडमिन गतिविधिहरू",
+      "empty": "अहिलेसम्म कुनै एडमिन कारबाही रेकर्ड गरिएको छैन।"
+    }
+  },
+  "auth": {
+    "title": "एडमिन साइन इन",
+    "subtitle": "YORewards कर्मचारीका लागि सीमित पहुँच।",
+    "fields": {
+      "email": "इमेल",
+      "password": "पासवर्ड"
+    },
+    "placeholders": {
+      "email": "you@yorewards.com.np"
+    },
+    "actions": {
+      "signin": "साइन इन"
+    },
+    "password": {
+      "show": "पासवर्ड देखाउनुहोस्",
+      "hide": "पासवर्ड लुकाउनुहोस्"
+    },
+    "errors": {
+      "email": "मान्य इमेल हाल्नुहोस्",
+      "password": "कम्तीमा ६ अक्षर",
+      "signin": "अमान्य प्रमाणपत्र"
+    }
+  },
+  "merchants": {
+    "title": "व्यापारीहरू",
+    "subtitle": "दर्ता समीक्षा गर्नुहोस् र व्यापारी पहुँच व्यवस्थापन गर्नुहोस्।",
+    "searchPlaceholder": "व्यवसायको नाम, इमेल वा फोनबाट खोज्नुहोस्",
+    "filters": {
+      "all": "सबै",
+      "pending": "बाँकी",
+      "active": "सक्रिय",
+      "suspended": "निलम्बित",
+      "rejected": "अस्वीकृत",
+      "country": "देश",
+      "category": "श्रेणी",
+      "allCountries": "सबै देशहरू",
+      "allCategories": "सबै श्रेणीहरू"
+    },
+    "status": {
+      "pending": "बाँकी",
+      "pending_verification": "प्रमाणीकरण बाँकी",
+      "active": "सक्रिय",
+      "suspended": "निलम्बित",
+      "rejected": "अस्वीकृत"
+    },
+    "empty": {
+      "title": "केही छैन",
+      "description": "यो फिल्टरसँग मिल्ने कुनै व्यापारी छैन।"
+    },
+    "verification": {
+      "title": "प्रमाणीकरण कतार",
+      "subtitle": "प्रमाणित ब्याजका लागि अपलोड गरिएका व्यावसायिक कागजातहरू समीक्षा गर्नुहोस्।",
+      "empty": "समीक्षाका लागि कुनै कागजात बाँकी छैन।",
+      "viewDocument": "कागजात हेर्नुहोस्",
+      "approve": "अनुमोदन",
+      "reject": "अस्वीकार",
+      "defaultRejectReason": "कागजात प्रमाणित गर्न सकिएन — कृपया स्पष्ट प्रतिलिपि पुनः पेश गर्नुहोस्।"
+    },
+    "registered": "दर्ता {date}",
+    "approvedOn": "अनुमोदित {date}",
+    "rejectedReason": "कारण: {reason}",
+    "suspendedReason": "निलम्बन कारण: {reason}",
+    "actions": {
+      "approve": "अनुमोदन",
+      "reject": "अस्वीकार",
+      "suspend": "निलम्बन",
+      "reactivate": "पुनः सक्रिय"
+    },
+    "reject": {
+      "placeholder": "अस्वीकारको कारण",
+      "label": "{name} का लागि अस्वीकारको कारण",
+      "required": "अस्वीकार गर्नु अघि कारण थप्नुहोस्।"
+    },
+    "confirm": {
+      "cancel": "रद्द गर्नुहोस्",
+      "reasonRequired": "जारी राख्न कारण थप्नुहोस्।",
+      "suspendTitle": "{name} निलम्बन गर्ने हो?",
+      "suspendDescription": "पुनः सक्रिय नभएसम्म यो व्यापारीले ड्यासबोर्ड र स्ट्याम्प उपकरणको पहुँच गुमाउनेछ।",
+      "suspendReasonLabel": "तपाईं यो व्यापारी किन निलम्बन गर्दै हुनुहुन्छ?",
+      "suspendReasonPlaceholder": "उदा. नीति उल्लङ्घन, दोहोरो खाता…",
+      "reactivateTitle": "{name} पुनः सक्रिय गर्ने हो?",
+      "reactivateDescription": "यो व्यापारीले पूर्ण ड्यासबोर्ड पहुँच फेरि पाउनेछ।",
+      "reactivateReasonLabel": "तपाईं यो व्यापारी किन पुनः सक्रिय गर्दै हुनुहुन्छ?",
+      "reactivateReasonPlaceholder": "उदा. समस्या समाधान भयो, अपील स्वीकृत…"
+    },
+    "toast": {
+      "error": "केही गलत भयो। कृपया फेरि प्रयास गर्नुहोस्।"
+    },
+    "success": {
+      "approved": "{name} अनुमोदित",
+      "rejected": "{name} अस्वीकृत",
+      "suspended": "{name} निलम्बित",
+      "reactivated": "{name} पुनः सक्रिय"
+    },
+    "detail": {
+      "view": "विवरण हेर्नुहोस्",
+      "back": "व्यापारीहरूमा फर्कनुहोस्",
+      "actionsTitle": "पहुँच व्यवस्थापन",
+      "branchesTitle": "शाखाहरू",
+      "branchesSummary": "{total, plural, one {# शाखा} other {# शाखाहरू}} · {active, plural, one {# सक्रिय} other {# सक्रिय}}",
+      "loyaltyCardTitle": "लोयल्टी कार्ड",
+      "cardName": "कार्डको नाम",
+      "stampTarget": "स्ट्याम्प लक्ष्य",
+      "rewardType": "पुरस्कार प्रकार",
+      "noLoyaltyCard": "अहिलेसम्म कुनै लोयल्टी कार्ड कन्फिगर गरिएको छैन।",
+      "auditTitle": "हालैका एडमिन कारबाहीहरू",
+      "auditEmpty": "यो व्यापारीका लागि अहिलेसम्म कुनै एडमिन कारबाही छैन।",
+      "rewardTypes": {
+        "free_item": "निःशुल्क वस्तु",
+        "percent_discount": "प्रतिशत छुट",
+        "fixed_discount": "निश्चित छुट"
+      }
+    },
+    "subscription": {
+      "title": "सदस्यता",
+      "currentTier": "योजना स्तर",
+      "status": "बिलिङ स्थिति",
+      "trialEnds": "ट्रायल सकिने मिति",
+      "adjustTier": "स्तर समायोजन",
+      "saveTier": "स्तर बचत गर्नुहोस्",
+      "saving": "बचत हुँदै…",
+      "extendTrialDays": "ट्रायल थप्नुहोस् (दिन)",
+      "extendTrial": "ट्रायल थप्नुहोस्",
+      "extending": "थपिँदै…",
+      "tiers": {
+        "free": "Free",
+        "starter": "Starter",
+        "growth": "Growth",
+        "enterprise": "Enterprise"
+      },
+      "statuses": {
+        "free": "निःशुल्क",
+        "trialing": "ट्रायलमा",
+        "active": "सक्रिय",
+        "past_due": "बाँकी बक्यौता",
+        "canceled": "रद्द"
+      },
+      "success": {
+        "tierUpdated": "स्तर {tier} मा अपडेट भयो।",
+        "trialExtended": "ट्रायल {days} दिन थपियो।"
+      }
+    }
+  },
+  "disputes": {
+    "title": "विवाद केन्द्र",
+    "subtitle": "प्लेटफर्मभरि हराएको-स्ट्याम्प दाबीहरू समीक्षा गर्नुहोस्। एडमिन एस्केलेसन अघि व्यापारीहरूसँग सेवा स्तर सम्झौताअनुसार जवाफ दिन ४८ घण्टा हुन्छ।",
+    "filterLabel": "विवाद फिल्टर गर्नुहोस्",
+    "filters": {
+      "pending": "खुल्ला",
+      "resolved": "समाधान भएको",
+      "all": "सबै"
+    },
+    "empty": "यो फिल्टरसँग मिल्ने कुनै विवाद छैन।",
+    "unknownCustomer": "ग्राहक",
+    "filedAt": "दर्ता {date}",
+    "status": {
+      "pending": "खुल्ला",
+      "approved": "अनुमोदित",
+      "rejected": "अस्वीकृत"
+    },
+    "responseDeadline": {
+      "on_track": "सम्झौताभित्र",
+      "due": "चाँडै म्याद सकिन्छ",
+      "overdue": "सम्झौता नाघ्यो"
+    },
+    "noteLabel": "समाधान नोट (आवश्यक)",
+    "notePlaceholder": "अडिट लगका लागि आफ्नो निर्णय व्याख्या गर्नुहोस्…",
+    "noteHint": "कम्तीमा १० अक्षर आवश्यक।",
+    "resolveSectionTitle": "एडमिन समाधान",
+    "viewDetailsCta": "विवरण हेर्नुहोस्",
+    "viewAndResolveCta": "समीक्षा र समाधान",
+    "rejectCta": "अस्वीकार",
+    "approveNoStampCta": "अनुमोदन (स्ट्याम्प बिना)",
+    "approveWithStampCta": "अनुमोदन र स्ट्याम्प थप्नुहोस्",
+    "cancel": "रद्द गर्नुहोस्",
+    "resolving": "समाधान हुँदै…",
+    "refreshing": "नवीनतम विवादहरू सिंक हुँदै…",
+    "slaAwaitingMerchantAlert": "व्यापारीले अझै यो विवाद समाधान गरेको छैन। उनीहरूसँग अझै ४८-घण्टे सेवा स्तर सम्झौताभित्र समय छ। चाँडै ओभरराइड गर्न चाहनुहुन्छ भने एडमिन समाधान उपलब्ध छ।",
+    "slaOverdueAlert": "यो विवाद ४८-घण्टे सेवा स्तर सम्झौता नाघिसकेको छ। व्यापारीले समाधान गरेको छैन — एडमिन कारबाही अपेक्षित छ।",
+    "earlyResolveTitle": "सेवा स्तर सम्झौता सकिनु अघि समाधान गर्ने हो?",
+    "earlyResolveDescription": "व्यापारीले अझै यो विवाद समाधान गरेको छैन, र ४८-घण्टे सेवा स्तर सम्झौता सकिएको छैन। के तपाईं अहिले नै समाधान गर्न चाहनुहुन्छ?",
+    "earlyResolveConfirm": "हो, अहिले समाधान गर्नुहोस्",
+    "listOverdueAlert": "{count, plural, one {# विवाद ४८-घण्टे सेवा स्तर सम्झौता नाघिसकेको छ र एडमिन कारबाही चाहिन्छ।} other {# विवादहरू ४८-घण्टे सेवा स्तर सम्झौता नाघिसकेका छन् र एडमिन कारबाही चाहिन्छ।}}",
+    "success": {
+      "approved": "विवाद अनुमोदित",
+      "approvedWithStamp": "विवाद अनुमोदित र स्ट्याम्प थपियो",
+      "rejected": "विवाद अस्वीकृत"
+    },
+    "detail": {
+      "title": "विवाद विवरण",
+      "unnamedCustomer": "ग्राहक",
+      "backToList": "विवादहरूमा फर्कनुहोस्",
+      "claimHeading": "ग्राहक दाबी",
+      "responseHeading": "समाधान नोट",
+      "merchantPending": "व्यापारी प्रतिक्रिया पर्खँदै (४८-घण्टे सेवा स्तर सम्झौता)।",
+      "resolvedAt": "समाधान {date}",
+      "cardContextHeading": "लोयल्टी कार्ड सन्दर्भ",
+      "stampProgress": "{target} मध्ये {current} स्ट्याम्प",
+      "openStampsWorkbench": "स्ट्याम्प वर्कबेंच खोल्नुहोस्",
+      "noStampHistory": "यो कार्डमा अहिलेसम्म कुनै अनुमोदित स्ट्याम्प छैन।",
+      "stampDate": "मिति",
+      "stampAmount": "रकम",
+      "stampBranch": "शाखा",
+      "stampSource": "स्रोत"
+    },
+    "cardPanel": {
+      "title": "यो कार्डका खुल्ला विवादहरू"
+    }
+  },
+  "customers": {
+    "title": "ग्राहकहरू",
+    "subtitle": "ग्राहक खाता हेर्नुहोस् र पहुँच व्यवस्थापन गर्नुहोस्।",
+    "unnamed": "नाम नभएको ग्राहक",
+    "searchPlaceholder": "नाम वा फोनबाट खोज्नुहोस्",
+    "empty": {
+      "title": "अहिलेसम्म कुनै ग्राहक छैन",
+      "description": "ग्राहकहरू साइन अप गरेर स्ट्याम्प सङ्कलन गर्दा यहाँ देखिन्छन्।"
+    },
+    "table": {
+      "name": "नाम",
+      "phone": "फोन",
+      "cards": "कार्डहरू",
+      "status": "स्थिति",
+      "joined": "सामेल",
+      "actions": "कार्यहरू"
+    },
+    "status": {
+      "active": "सक्रिय",
+      "suspended": "निलम्बित"
+    },
+    "rewardStatus": {
+      "collecting": "सङ्कलन गर्दै",
+      "pending_otp": "OTP बाँकी",
+      "unlocked": "पुरस्कार अनलक"
+    },
+    "actions": {
+      "suspend": "निलम्बन",
+      "reactivate": "पुनः सक्रिय",
+      "view": "हेर्नुहोस्"
+    },
+    "confirm": {
+      "suspendTitle": "ग्राहक निलम्बन गर्ने हो?",
+      "suspendDescription": "पुनः सक्रिय नभएसम्म {name} ले स्ट्याम्प सङ्कलन गर्न सक्ने छैन।",
+      "suspendReasonLabel": "तपाईं यो ग्राहक किन निलम्बन गर्दै हुनुहुन्छ?",
+      "suspendReasonPlaceholder": "उदा. दुरुपयोग, दोहोरो खाता…",
+      "reactivateTitle": "ग्राहक पुनः सक्रिय गर्ने हो?",
+      "reactivateDescription": "{name} का लागि स्ट्याम्प सङ्कलन फेरि सक्रिय गर्नुहोस्।",
+      "reactivateReasonLabel": "तपाईं यो ग्राहक किन पुनः सक्रिय गर्दै हुनुहुन्छ?",
+      "reactivateReasonPlaceholder": "उदा. समस्या समाधान भयो, अपील स्वीकृत…",
+      "reasonRequired": "जारी राख्न कारण थप्नुहोस्।",
+      "cancel": "रद्द गर्नुहोस्"
+    },
+    "success": {
+      "suspended": "{name} निलम्बित",
+      "reactivated": "{name} पुनः सक्रिय"
+    },
+    "detail": {
+      "back": "ग्राहकहरूमा फर्कनुहोस्",
+      "joined": "सामेल {date}",
+      "lastActive": "अन्तिम सक्रिय {date}",
+      "suspendedReason": "निलम्बन कारण: {reason}",
+      "cardsTitle": "सक्रिय लोयल्टी कार्डहरू",
+      "cardsEmpty": "अहिलेसम्म कुनै लोयल्टी कार्ड छैन।",
+      "merchant": "व्यापारी",
+      "card": "कार्ड",
+      "progress": "प्रगति",
+      "rewardStatus": "पुरस्कार",
+      "stamps": "{current} / {target} स्ट्याम्प"
+    }
+  },
+  "stamps": {
+    "title": "म्यानुअल स्ट्याम्पहरू",
+    "subtitle": "लोयल्टी कार्ड खोज्नुहोस्, त्यसपछि सामान्य QR प्रवाह पर्याप्त नभए स्ट्याम्प जारी गर्नुहोस् वा हटाउनुहोस्।",
+    "search": {
+      "title": "कार्ड खोज्नुहोस्",
+      "description": "केबाट खोज्ने छान्नुहोस्, त्यसपछि मान हाल्नुहोस्।",
+      "typeLabel": "यसबाट खोज्नुहोस्",
+      "submit": "खोज्नुहोस्",
+      "types": {
+        "phone": {
+          "label": "फोन",
+          "placeholder": "ग्राहकको फोन नम्बर…"
+        },
+        "customer_name": {
+          "label": "ग्राहकको नाम",
+          "placeholder": "ग्राहकको नाम…"
+        },
+        "merchant_name": {
+          "label": "व्यापारी",
+          "placeholder": "व्यापारी व्यवसायको नाम…"
+        },
+        "loyalty_card_name": {
+          "label": "लोयल्टी कार्ड",
+          "placeholder": "लोयल्टी कार्डको नाम…"
+        },
+        "card_id": {
+          "label": "कार्ड ID",
+          "placeholder": "पूर्ण कार्ड UUID…"
+        }
+      }
+    },
+    "empty": {
+      "title": "कार्ड फेला परेन",
+      "description": "त्यो खोजसँग मिल्ने कुनै लोयल्टी कार्ड छैन। अर्को मान वा खोज प्रकार प्रयास गर्नुहोस्।"
+    },
+    "picker": {
+      "title": "धेरै कार्ड फेला परे — एउटा छान्नुहोस्"
+    },
+    "card": {
+      "title": "कार्ड विवरण",
+      "customer": "ग्राहक",
+      "unnamed": "नाम नभएको ग्राहक",
+      "phone": "फोन",
+      "merchant": "व्यापारी",
+      "loyaltyCard": "लोयल्टी कार्ड",
+      "progress": "स्ट्याम्प प्रगति",
+      "rewardStatus": "पुरस्कार स्थिति",
+      "cardId": "कार्ड ID"
+    },
+    "progress": "{current} / {target} स्ट्याम्प",
+    "rewardStatus": {
+      "collecting": "सङ्कलन गर्दै",
+      "pending_otp": "OTP बाँकी",
+      "unlocked": "पुरस्कार अनलक"
+    },
+    "notes": {
+      "label": "अडिट नोटहरू (वैकल्पिक)",
+      "placeholder": "यो कार्यको कारण वा सन्दर्भ"
+    },
+    "sessions": {
+      "title": "हालैका अनुमोदित स्ट्याम्पहरू",
+      "empty": "यो कार्डमा अहिलेसम्म कुनै अनुमोदित स्ट्याम्प छैन।",
+      "requested": "अनुरोध",
+      "approved": "अनुमोदित",
+      "approvedPending": "—",
+      "date": "मिति",
+      "source": "स्रोत",
+      "branch": "शाखा",
+      "branchUnknown": "रेकर्ड छैन",
+      "amount": "खर्च",
+      "amountUnknown": "—",
+      "approvedBy": "अनुमोदनकर्ता",
+      "approverUnknown": "—",
+      "sourceAdmin": "एडमिन म्यानुअल",
+      "sourceQr": "QR स्क्यान",
+      "actions": "कार्यहरू"
+    },
+    "actions": {
+      "issue": "स्ट्याम्प जारी गर्नुहोस्",
+      "remove": "हटाउनुहोस्",
+      "removeConfirm": "स्ट्याम्प हटाउनुहोस्",
+      "removeAria": "{date} बाट स्ट्याम्प हटाउनुहोस्"
+    },
+    "confirm": {
+      "removeTitle": "यो स्ट्याम्प हटाउने हो?",
+      "removeDescription": "यो उल्ट्याउन सकिँदैन। ग्राहकको स्ट्याम्प सङ्ख्या एकले घट्नेछ।",
+      "cancel": "रद्द गर्नुहोस्"
+    },
+    "success": {
+      "issued": "{merchant} मा {name} का लागि स्ट्याम्प जारी भयो",
+      "removed": "{name} का लागि स्ट्याम्प हटाइयो"
+    }
+  },
+  "audit": {
+    "title": "अडिट लग",
+    "subtitle": "प्लेटफर्ममा एडमिन कारबाहीहरूको पूर्ण इतिहास।",
+    "filters": {
+      "label": "लक्ष्यअनुसार फिल्टर",
+      "all": "सबै",
+      "merchant": "व्यापारीहरू",
+      "customer": "ग्राहकहरू",
+      "stamp": "स्ट्याम्पहरू"
+    },
+    "table": {
+      "time": "समय",
+      "action": "कार्य",
+      "admin": "एडमिन",
+      "target": "लक्ष्य",
+      "notes": "नोटहरू"
+    },
+    "targetTypes": {
+      "merchant": "व्यापारी",
+      "customer": "ग्राहक",
+      "stamp": "स्ट्याम्प",
+      "redemption": "रिडेम्प्शन"
+    },
+    "actions": {
+      "approve_merchant": "व्यापारी अनुमोदित",
+      "reject_merchant": "व्यापारी अस्वीकृत",
+      "suspend_merchant": "व्यापारी निलम्बित",
+      "reactivate_merchant": "व्यापारी पुनः सक्रिय",
+      "suspend_customer": "ग्राहक निलम्बित",
+      "reactivate_customer": "ग्राहक पुनः सक्रिय",
+      "issue_stamp_manual": "स्ट्याम्प म्यानुअल जारी",
+      "void_stamp": "स्ट्याम्प हटाइयो",
+      "dispute_approved_admin": "विवाद अनुमोदित (एडमिन)",
+      "dispute_approved_admin_with_stamp": "स्ट्याम्पसहित विवाद अनुमोदित (एडमिन)",
+      "dispute_rejected_admin": "विवाद अस्वीकृत (एडमिन)"
+    },
+    "empty": {
+      "title": "अहिलेसम्म कुनै कारबाही छैन",
+      "description": "तपाईंले व्यापारी, ग्राहक र स्ट्याम्प व्यवस्थापन गर्दा एडमिन कारबाहीहरू यहाँ देखिन्छन्।"
+    },
+    "loadMore": {
+      "label": "थप लोड गर्नुहोस्",
+      "pending": "लोड हुँदै…"
+    }
+  },
+  "errors": {
+    "actions": {
+      "UNAUTHORIZED": "जारी राख्न साइन इन गर्नुहोस्।",
+      "FORBIDDEN": "यो खातासँग एडमिन पहुँच छैन।",
+      "UNKNOWN": "केही गलत भयो। कृपया फेरि प्रयास गर्नुहोस्।",
+      "AUTH_FAILED": "प्रमाणीकरण असफल। कृपया फेरि प्रयास गर्नुहोस्।",
+      "INVALID_CREDENTIALS": "अमान्य इमेल वा पासवर्ड।",
+      "MERCHANT_UPDATE_FAILED": "व्यापारी अपडेट गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।",
+      "MERCHANT_NOT_FOUND": "व्यापारी फेला परेन।",
+      "CUSTOMER_NOT_FOUND": "ग्राहक फेला परेन।",
+      "CUSTOMER_UPDATE_FAILED": "ग्राहक अपडेट गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।",
+      "STAMP_SEARCH_REQUIRED": "खोज्न मान हाल्नुहोस्।",
+      "STAMP_INVALID_SEARCH_TYPE": "अमान्य खोज प्रकार। कृपया रिफ्रेस गरेर फेरि प्रयास गर्नुहोस्।",
+      "STAMP_INVALID_CARD_ID": "पूर्ण कार्ड UUID हाल्नुहोस् (उदा. a1b2c3d4-e5f6-7890-abcd-ef1234567890)।",
+      "STAMP_LOOKUP_FAILED": "कार्ड खोज असफल। जडान जाँच गरेर फेरि प्रयास गर्नुहोस्।",
+      "CUSTOMER_CARD_NOT_FOUND": "ग्राहक कार्ड फेला परेन।",
+      "STAMP_SESSION_NOT_FOUND": "स्ट्याम्प सेसन फेला परेन।",
+      "STAMP_ISSUE_FAILED": "स्ट्याम्प जारी गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।",
+      "STAMP_VOID_FAILED": "स्ट्याम्प हटाउन सकिएन। केवल अनुमोदित स्ट्याम्पहरू हटाउन सकिन्छ।",
+      "REJECTION_REASON_REQUIRED": "अस्वीकार गर्नु अघि कारण थप्नुहोस्।",
+      "ACTION_REASON_REQUIRED": "जारी राख्नु अघि कारण थप्नुहोस्।",
+      "PASSWORD_UPDATE_FAILED": "पासवर्ड अपडेट गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।",
+      "PASSWORD_CONFIRM_MISMATCH": "पासवर्डहरू मिल्दैनन्।",
+      "EMAIL_UPDATE_FAILED": "इमेल अपडेट गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।",
+      "EMAIL_INVALID": "मान्य इमेल ठेगाना हाल्नुहोस्।",
+      "DISPUTE_NOT_FOUND": "विवाद फेला परेन।",
+      "DISPUTE_ALREADY_RESOLVED": "यो विवाद पहिले नै समाधान भइसकेको छ।",
+      "DISPUTE_RESPONSE_REQUIRED": "समाधान नोट थप्नुहोस् — कम्तीमा १० अक्षर।",
+      "DISPUTE_RESOLVE_FAILED": "विवाद समाधान गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।",
+      "DISPUTE_MERCHANT_SLA_ACTIVE": "व्यापारीसँग अझै सेवा स्तर सम्झौताअनुसार समय छ। जारी राख्न चाँडो एडमिन समाधान पुष्टि गर्नुहोस्।",
+      "SUBSCRIPTION_UPDATE_FAILED": "सदस्यता अपडेट गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।",
+      "TRIAL_EXTEND_FAILED": "ट्रायल थप्न सकिएन। दिन सङ्ख्या जाँच गरेर फेरि प्रयास गर्नुहोस्।",
+      "NOTIFICATIONS_LOAD_FAILED": "सूचनाहरू लोड गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।",
+      "NOTIFICATIONS_UPDATE_FAILED": "सूचनाहरू अपडेट गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।"
+    }
+  },
+  "notifications": {
+    "centre": {
+      "button": "सूचनाहरू",
+      "title": "सूचनाहरू",
+      "description": "विवाद SLA उल्लङ्घन सहित प्लेटफर्म अलर्टहरू।",
+      "markRead": "पढिएको चिन्ह लगाउनुहोस्",
+      "markAllRead": "सबै पढिएको चिन्ह लगाउनुहोस्",
+      "unread": "नपढिएका",
+      "unreadCount": "{count, plural, one {# नपढिएको} other {# नपढिएका}}",
+      "refreshing": "रिफ्रेस हुँदै…",
+      "emptyTitle": "सबै अप टु डेट",
+      "emptyDescription": "नयाँ अलर्टहरू यहाँ देखिन्छन्।"
+    },
+    "categories": {
+      "all": "सबै",
+      "disputes": "विवादहरू",
+      "account": "खाता"
+    },
+    "actions": {
+      "openDispute": "विवाद खोल्नुहोस्",
+      "view": "हेर्नुहोस्"
+    },
+    "disputeFiled": {
+      "title": "नयाँ स्ट्याम्प विवाद",
+      "body": "{customerName, select, null {एक ग्राहकले} other {{customerName} ले}} {businessName} मा भ्रमण विवाद गरे।"
+    },
+    "disputeResolved": {
+      "title": "विवाद अपडेट",
+      "body": "{businessName} सँगको तपाईंको विवाद {status} भयो।"
+    },
+    "disputeSlaBreach": {
+      "title": "विवाद SLA उल्लङ्घन",
+      "body": "{merchantName} को विवादले ४८-घण्टे व्यापारी SLA नाघ्यो।"
+    },
+    "rewardUnlocked": {
+      "title": "पुरस्कार तयार!",
+      "body": "तपाईंले {businessName} मा {cardName} मा पुरस्कार अनलक गर्नुभयो।"
+    },
+    "merchantApproved": {
+      "title": "व्यवसाय अनुमोदित",
+      "body": "{businessName} YORewards मा लाइभ छ।"
+    },
+    "smartPromo": {
+      "title": "लगभग पुग्यो",
+      "body": "{businessName} मा पुरस्कार अनलक गर्न अझै {stampsRemaining} स्ट्याम्प बाँकी।"
+    }
+  }
+}

@@ -924,12 +924,25 @@
     "subtitle": "Review missing-stamp claims from customers. Respond within 48 hours under your service level agreement.",
     "pendingTitle": "Awaiting review ({count})",
     "pendingEmpty": "No open disputes — you're all caught up.",
+    "pendingEmptyTitle": "Inbox clear",
     "resolvedTitle": "Recently resolved",
     "unknownCustomer": "Customer",
     "visitSummary": "Visit {date} · {amount}",
     "responseLabel": "Resolution note",
     "filedAt": "Filed {date}",
     "openDetail": "Open dispute",
+    "summary": {
+      "open": "Open",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "card": {
+      "claimLabel": "Missing stamp claim",
+      "amountLabel": "Claimed amount",
+      "visitLabel": "Visit date",
+      "filedLabel": "Filed",
+      "customerNote": "Customer note"
+    },
     "resolveSectionTitle": "Your resolution",
     "noteLabel": "Resolution note (required)",
     "notePlaceholder": "Explain your decision for the customer and audit log…",

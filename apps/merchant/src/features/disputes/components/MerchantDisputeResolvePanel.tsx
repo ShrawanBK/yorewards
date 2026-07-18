@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Clock } from "lucide-react";
-import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import { Field } from "@repo/ui/field";
 import { Textarea } from "@repo/ui/textarea";
@@ -13,23 +12,12 @@ import {
 } from "@repo/supabase/queries/stamp-disputes-shared";
 import { resolveMerchantDisputeAction } from "@/features/disputes/api/disputeActions";
 import { merchantPendingDisputeCountQueryKey } from "@/features/disputes/api/disputeQueries";
-import { MERCHANT_STATUS_BADGE } from "@/shared/constants/status-badges";
 import { isActionFailure } from "@/shared/types/action-result";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
 import { showActionSuccess } from "@/shared/utils/action-feedback";
 import { useQueryClient } from "@tanstack/react-query";
 
 const MIN_NOTE_LENGTH = 10;
-
-const DEADLINE_BADGE = {
-  on_track: MERCHANT_STATUS_BADGE.pending,
-  due: {
-    variant: "secondary" as const,
-    className:
-      "border-amber-500/50 bg-amber-500/10 text-amber-900 dark:text-amber-100",
-  },
-  overdue: MERCHANT_STATUS_BADGE.rejected,
-};
 
 type PendingResolve = {
   status: "approved" | "rejected";
@@ -55,7 +43,6 @@ export function MerchantDisputeResolvePanel({
   const trimmedNote = note.trim();
   const noteValid = trimmedNote.length >= MIN_NOTE_LENGTH;
   const deadlineLevel = getDisputeSlaLevel(dispute.status, dispute.createdAt);
-  const deadlineStyle = deadlineLevel ? DEADLINE_BADGE[deadlineLevel] : null;
 
   async function submitResolve(resolve: PendingResolve) {
     setIsPending(true);
@@ -105,40 +92,36 @@ export function MerchantDisputeResolvePanel({
 
   return (
     <section
-      className="space-y-4 border-t border-border pt-4"
+      className="space-y-3"
       aria-labelledby={`merchant-resolve-${dispute.id}-heading`}
     >
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h4 id={`merchant-resolve-${dispute.id}-heading`} className="text-sm font-medium">
-          {t("resolveSectionTitle")}
-        </h4>
-        {deadlineLevel && deadlineStyle ? (
-          <Badge variant={deadlineStyle.variant} className={deadlineStyle.className}>
-            {t(`responseDeadline.${deadlineLevel}`)}
-          </Badge>
-        ) : null}
-      </div>
+      <h4
+        id={`merchant-resolve-${dispute.id}-heading`}
+        className="text-xs font-medium tracking-wide uppercase"
+      >
+        {t("resolveSectionTitle")}
+      </h4>
 
       {deadlineLevel === "overdue" ? (
         <div
-          className="flex gap-3 rounded-lg border border-destructive/40 bg-destructive/10 p-4 text-sm"
+          className="flex gap-2 rounded-lg border border-destructive/40 bg-destructive/10 px-2.5 py-2 text-xs"
           role="alert"
         >
-          <Clock className="mt-0.5 size-4 shrink-0 text-destructive" aria-hidden="true" />
+          <Clock className="mt-0.5 size-3.5 shrink-0 text-destructive" aria-hidden="true" />
           <p>{t("deadlineOverdueAlert")}</p>
         </div>
       ) : deadlineLevel === "due" ? (
         <div
-          className="flex gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-950 dark:text-amber-100"
+          className="flex gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-2.5 py-2 text-xs text-amber-950 dark:text-amber-100"
           role="status"
         >
-          <Clock className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+          <Clock className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
           <p>{t("deadlineDueAlert")}</p>
         </div>
       ) : null}
 
       {error ? (
-        <p className="text-sm text-destructive" role="alert">
+        <p className="text-xs text-destructive" role="alert">
           {error}
         </p>
       ) : null}
@@ -148,16 +131,16 @@ export function MerchantDisputeResolvePanel({
           id={`merchant-note-${dispute.id}`}
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          rows={4}
+          rows={3}
           required
-          className="min-h-24"
+          className="min-h-16 text-sm"
           aria-invalid={note.length > 0 && !noteValid}
           aria-describedby={`merchant-note-hint-${dispute.id}`}
           placeholder={t("notePlaceholder")}
           disabled={isPending}
         />
       </Field>
-      <p id={`merchant-note-hint-${dispute.id}`} className="merchant-body-muted text-xs">
+      <p id={`merchant-note-hint-${dispute.id}`} className="merchant-body-muted text-[11px]">
         {t("noteHint")}
       </p>
 
@@ -165,7 +148,8 @@ export function MerchantDisputeResolvePanel({
         <Button
           type="button"
           variant="outline"
-          className="min-h-11 text-foreground"
+          size="sm"
+          className="min-h-9 text-foreground"
           disabled={isPending || !noteValid}
           onClick={() => requestResolve({ status: "rejected", issueStamp: false })}
         >
@@ -174,7 +158,8 @@ export function MerchantDisputeResolvePanel({
         <Button
           type="button"
           variant="secondary"
-          className="min-h-11 text-foreground"
+          size="sm"
+          className="min-h-9 text-foreground"
           disabled={isPending || !noteValid}
           onClick={() => requestResolve({ status: "approved", issueStamp: false })}
         >
@@ -182,7 +167,8 @@ export function MerchantDisputeResolvePanel({
         </Button>
         <Button
           type="button"
-          className="min-h-11"
+          size="sm"
+          className="min-h-9"
           disabled={isPending || !noteValid}
           aria-busy={isPending}
           onClick={() => requestResolve({ status: "approved", issueStamp: true })}

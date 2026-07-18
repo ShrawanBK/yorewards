@@ -43,7 +43,7 @@ export function getNotificationActionHref(
 
   switch (notification.type) {
     case "dispute_resolved":
-      return cardId ? `/wallet/${cardId}` : "/wallet";
+      return "/disputes";
     case "reward_unlocked":
       return cardId ? `/reward/${cardId}` : "/wallet/rewards";
     case "smart_promo":
@@ -55,11 +55,12 @@ export function getNotificationActionHref(
 
 export function getNotificationActionLabelKey(
   type: NotificationType,
-): "actions.openCard" | "actions.openReward" | "actions.view" {
+): "actions.openCard" | "actions.openReward" | "actions.view" | "actions.openDisputes" {
   switch (type) {
     case "reward_unlocked":
       return "actions.openReward";
     case "dispute_resolved":
+      return "actions.openDisputes";
     case "smart_promo":
       return "actions.openCard";
     default:

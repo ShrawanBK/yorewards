@@ -13,18 +13,6 @@ import { fail, logActionFailure } from "@repo/utils/action-error";
 import type { ActionResult } from "@/shared/types/action-result";
 import { assertMerchantAccess } from "@/shared/utils/merchant-access";
 
-const REVALIDATE_PATHS = [
-  "/merchant/disputes",
-  "/merchant/dashboard",
-  "/merchant/notifications",
-] as const;
-
-function revalidateDisputePaths() {
-  for (const path of REVALIDATE_PATHS) {
-    revalidatePath(path);
-  }
-}
-
 export async function listMerchantDisputesAction(
   merchantId: string,
   filter: StampDisputeFilter = "all",
@@ -105,7 +93,9 @@ export async function resolveMerchantDisputeAction(input: {
       issueStamp,
     });
 
-    revalidateDisputePaths();
+    // Client React Query invalidation updates the UI — avoid revalidatePath so
+    // the disputes page does not hard-refresh / remount on every resolve.
+    revalidatePath("/merchant/dashboard");
     return {};
   } catch (err) {
     if (err instanceof Error) {

@@ -242,6 +242,13 @@
     "pendingHint": "Waiting for the merchant to respond (within 48 hours).",
     "pendingBlocked": "You already have an open dispute for this card. We'll notify you when it's resolved.",
     "filedAt": "Filed {date}",
+    "card": {
+      "merchantClaim": "Missing stamp claim",
+      "visitClaim": "Visit claim",
+      "amountLabel": "Amount",
+      "visitLabel": "Visit",
+      "yourNote": "Your note"
+    },
     "status": {
       "pending": "Under review",
       "approved": "Approved",
@@ -399,6 +406,7 @@
     "actions": {
       "openCard": "Open card",
       "openReward": "Claim reward",
+      "openDisputes": "View disputes",
       "view": "View"
     },
     "disputeFiled": {
@@ -407,7 +415,9 @@
     },
     "disputeResolved": {
       "title": "Dispute update",
-      "body": "Your dispute with {businessName} was {status}."
+      "body": "Your dispute with {businessName} was {status}.",
+      "bodyApproved": "Your dispute with {businessName} was approved.",
+      "bodyRejected": "Your dispute with {businessName} was rejected."
     },
     "disputeSlaBreach": {
       "title": "Dispute SLA breach",

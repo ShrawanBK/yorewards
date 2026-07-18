@@ -39,7 +39,10 @@ export function useMerchantDisputes(
       return result.disputes;
     },
     initialData,
-    staleTime: 0,
+    // Trust SSR payload on open — only refresh on resolve / realtime / explicit invalidate.
+    staleTime: 60_000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
@@ -47,7 +50,7 @@ export function useMerchantDisputes(
       { kind: "merchant", merchantId },
       {
         onChange: () => {
-          void queryClient.refetchQueries({
+          void queryClient.invalidateQueries({
             queryKey: merchantDisputesQueryKey(merchantId),
           });
           void queryClient.invalidateQueries({
@@ -82,8 +85,10 @@ export function useMerchantPendingDisputeCount(
     },
     enabled,
     initialData: options?.initialCount,
-    staleTime: 30_000,
-    refetchInterval: 60_000,
+    staleTime: 60_000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
   });
 
   useEffect(() => {

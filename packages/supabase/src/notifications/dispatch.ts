@@ -83,6 +83,10 @@ export async function notifyDisputeResolved(
   >,
 ): Promise<void> {
   if (dispute.status === "pending") return;
+  if (!dispute.customerId) {
+    console.error("[notifyDisputeResolved] missing customerId", dispute.id);
+    return;
+  }
 
   const payload = {
     disputeId: dispute.id,
@@ -96,7 +100,10 @@ export async function notifyDisputeResolved(
     recipientId: dispute.customerId,
     type: "dispute_resolved",
     titleKey: "notifications.disputeResolved.title",
-    bodyKey: "notifications.disputeResolved.body",
+    bodyKey:
+      dispute.status === "approved"
+        ? "notifications.disputeResolved.bodyApproved"
+        : "notifications.disputeResolved.bodyRejected",
     payload,
     channel: "in_app",
   });

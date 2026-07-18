@@ -143,16 +143,18 @@ export async function createStampDispute(input: {
     supabase.from("customers").select("name").eq("id", input.customerId).maybeSingle(),
   ]);
 
-  void notifyDisputeFiled({
-    id: data.id,
-    merchantId: input.merchantId,
-    merchantName: merchant?.business_name ?? "Merchant",
-    customerName: customer?.name ?? null,
-    amountClaimed: input.amountClaimed,
-    currencyCode: input.currencyCode,
-  }).catch((err) => {
+  try {
+    await notifyDisputeFiled({
+      id: data.id,
+      merchantId: input.merchantId,
+      merchantName: merchant?.business_name ?? "Merchant",
+      customerName: customer?.name ?? null,
+      amountClaimed: input.amountClaimed,
+      currencyCode: input.currencyCode,
+    });
+  } catch (err) {
     console.error("[notifyDisputeFiled]", err);
-  });
+  }
 
   return data.id;
 }
@@ -405,9 +407,12 @@ export async function resolveStampDisputeAtomic(input: {
       customerCardId: dispute.customerCardId,
       status: dispute.status,
     });
-    void notifyDisputeResolved(dispute).catch((err) => {
+    // Await so serverless/server-action teardown cannot drop the insert.
+    try {
+      await notifyDisputeResolved(dispute);
+    } catch (err) {
       console.error("[notifyDisputeResolved]", err);
-    });
+    }
   }
 
   return data ?? null;

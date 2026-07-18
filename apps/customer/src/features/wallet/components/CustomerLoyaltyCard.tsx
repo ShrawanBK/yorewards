@@ -56,7 +56,7 @@ export function CustomerLoyaltyCard({ card }: CustomerLoyaltyCardProps) {
   return (
     <div
       ref={containerRef}
-      className="w-full max-w-sm overflow-hidden rounded-2xl text-white shadow-xl ring-1 ring-white/10"
+      className="w-full overflow-hidden rounded-2xl text-white shadow-xl ring-1 ring-white/10"
       style={{
         background: `linear-gradient(145deg, ${card.primaryColor} 0%, color-mix(in srgb, ${card.primaryColor} 62%, #0f172a) 100%)`,
       }}

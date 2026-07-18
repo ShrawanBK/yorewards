@@ -120,13 +120,17 @@ export function CardDetailView({
           </h2>
           <dl className="grid grid-cols-2 gap-3 text-sm">
             <div>
-              <dt className="text-muted-foreground">{t("insights.totalSpent")}</dt>
+              <dt className="text-muted-foreground">
+                {t("insights.totalSpent")}
+              </dt>
               <dd className="font-medium">
                 {formatAmount(spendSummary.totalSpent, spendSummary.currency)}
               </dd>
             </div>
             <div>
-              <dt className="text-muted-foreground">{t("insights.avgSpent")}</dt>
+              <dt className="text-muted-foreground">
+                {t("insights.avgSpent")}
+              </dt>
               <dd className="font-medium">
                 {formatAmount(spendSummary.averageSpent, spendSummary.currency)}
               </dd>
@@ -136,7 +140,9 @@ export function CardDetailView({
               <dd className="font-medium">{spendSummary.visitCount}</dd>
             </div>
             <div>
-              <dt className="text-muted-foreground">{t("insights.lastVisit")}</dt>
+              <dt className="text-muted-foreground">
+                {t("insights.lastVisit")}
+              </dt>
               <dd className="font-medium">
                 {spendSummary.lastVisitAt
                   ? new Date(spendSummary.lastVisitAt).toLocaleDateString()
@@ -149,7 +155,10 @@ export function CardDetailView({
 
       {visits.length > 0 ? (
         <section aria-labelledby="visit-history-heading">
-          <h2 id="visit-history-heading" className="mb-3 text-base font-semibold">
+          <h2
+            id="visit-history-heading"
+            className="mb-3 text-base font-semibold"
+          >
             {t("visits.title")}
           </h2>
           <ul className="space-y-2">

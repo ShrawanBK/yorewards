@@ -70,10 +70,10 @@ async function sendViaTwilio(phone: string, text: string): Promise<void> {
 /**
  * Resolve SMS provider.
  * NP → Sparrow (Twilio fallback when Sparrow unset).
- * FI → Twilio (GatewayAPI can slot in later behind the same interface).
+ * FI / AU → Twilio (GatewayAPI can slot in later for FI).
  */
 function resolveProvider(countryCode: string): SmsProvider {
-  if (countryCode === "FI") {
+  if (countryCode === "FI" || countryCode === "AU") {
     if (hasTwilioConfig()) return "twilio";
     return "dev_log";
   }
@@ -98,7 +98,7 @@ export async function sendSms(input: SendSmsInput): Promise<SmsProvider> {
       console.info(`[dev:${purpose}] ${phone}: ${text}`);
       return "dev_log";
     }
-    if (countryCode === "FI") {
+    if (countryCode === "FI" || countryCode === "AU") {
       throw new Error("Twilio is not configured");
     }
     throw new Error("Sparrow SMS is not configured");

@@ -33,15 +33,18 @@
     },
     "dialCodes": {
       "NP": "+977",
-      "FI": "+358"
+      "FI": "+358",
+      "AU": "+61"
     },
     "countries": {
       "NP": "Nepal",
-      "FI": "Suomi"
+      "FI": "Suomi",
+      "AU": "Australia"
     },
     "placeholders": {
       "phoneNP": "98XXXXXXXX",
       "phoneFI": "4XXXXXXXX",
+      "phoneAU": "4XXXXXXXX",
       "name": "esim. Sita Sharma"
     },
     "actions": {
@@ -66,6 +69,7 @@
       "phoneRequired": "Syötä puhelinnumerosi",
       "phoneNP": "Syötä kelvollinen nepalilainen matkapuhelinnumero (esim. 98XXXXXXXX)",
       "phoneFI": "Syötä kelvollinen suomalainen matkapuhelinnumero (esim. 4XXXXXXXX tai 04XXXXXXXX)",
+      "phoneAU": "Syötä kelvollinen australialainen matkapuhelinnumero (esim. 4XXXXXXXX tai 04XXXXXXXX)",
       "name": "Nimi vaaditaan",
       "missingPhone": "Puhelinnumero puuttuu. Palaa kirjautumiseen."
     }

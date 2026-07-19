@@ -71,7 +71,9 @@ export function CustomerOnboardingForm() {
 
   const phone = otpStep?.phone ?? phoneFromQuery;
   const country = detectCountry(phone);
-  const phoneLocal = phone.replace(country === "FI" ? "+358" : "+977", "");
+  const dialPrefix =
+    country === "FI" ? "+358" : country === "AU" ? "+61" : "+977";
+  const phoneLocal = phone.replace(dialPrefix, "");
 
   function handleNameSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

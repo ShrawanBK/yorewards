@@ -33,15 +33,18 @@
     },
     "dialCodes": {
       "NP": "+977",
-      "FI": "+358"
+      "FI": "+358",
+      "AU": "+61"
     },
     "countries": {
       "NP": "Nepal",
-      "FI": "Finland"
+      "FI": "Finland",
+      "AU": "Australia"
     },
     "placeholders": {
       "phoneNP": "98XXXXXXXX",
       "phoneFI": "4XXXXXXXX",
+      "phoneAU": "4XXXXXXXX",
       "name": "e.g. Sita Sharma"
     },
     "actions": {
@@ -66,6 +69,7 @@
       "phoneRequired": "Enter your phone number",
       "phoneNP": "Enter a valid Nepal mobile (e.g. 98XXXXXXXX)",
       "phoneFI": "Enter a valid Finland mobile (e.g. 4XXXXXXXX or 04XXXXXXXX)",
+      "phoneAU": "Enter a valid Australia mobile (e.g. 4XXXXXXXX or 04XXXXXXXX)",
       "name": "Name is required",
       "missingPhone": "Missing phone. Go back to login."
     }

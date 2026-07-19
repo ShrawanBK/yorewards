@@ -13,6 +13,13 @@ import { resolveActionError } from "@/shared/utils/resolve-action-error";
 import { isActionFailure } from "@/shared/types/action-result";
 import { isValidCustomerPhoneLocal, type CountryCode } from "@repo/utils/phone";
 
+const COUNTRIES = ["NP", "FI", "AU"] as const;
+
+function parseCountry(raw: string): CountryCode {
+  if (raw === "FI" || raw === "AU" || raw === "NP") return raw;
+  return "NP";
+}
+
 export function CustomerLoginForm() {
   const t = useTranslations("auth");
   const tErrors = useTranslations("errors.actions");
@@ -34,7 +41,7 @@ export function CustomerLoginForm() {
     () =>
       z
         .object({
-          country: z.enum(["NP", "FI"]),
+          country: z.enum(COUNTRIES),
           phoneLocal: z.string().min(1, t("errors.phoneRequired")),
         })
         .superRefine((data, ctx) => {
@@ -67,10 +74,8 @@ export function CustomerLoginForm() {
     clearErrors();
 
     const fd = new FormData(event.currentTarget);
-    const rawCountry = String(fd.get("country") ?? "NP");
+    const countryCode = parseCountry(String(fd.get("country") ?? "NP"));
     const phoneLocal = String(fd.get("phoneLocal") ?? "").trim();
-    const countryCode =
-      rawCountry === "FI" ? ("FI" as const) : ("NP" as const);
 
     if (!phoneLocal) {
       event.preventDefault();
@@ -78,7 +83,7 @@ export function CustomerLoginForm() {
       return;
     }
 
-    if (!isValidCustomerPhoneLocal(countryCode as CountryCode, phoneLocal)) {
+    if (!isValidCustomerPhoneLocal(countryCode, phoneLocal)) {
       event.preventDefault();
       setError("phoneLocal", {
         message: t(`errors.phone${countryCode}`),

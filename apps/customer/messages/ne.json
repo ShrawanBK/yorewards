@@ -33,15 +33,18 @@
     },
     "dialCodes": {
       "NP": "+977",
-      "FI": "+358"
+      "FI": "+358",
+      "AU": "+61"
     },
     "countries": {
       "NP": "नेपाल",
-      "FI": "फिनल्यान्ड"
+      "FI": "फिनल्यान्ड",
+      "AU": "अस्ट्रेलिया"
     },
     "placeholders": {
       "phoneNP": "98XXXXXXXX",
       "phoneFI": "4XXXXXXXX",
+      "phoneAU": "4XXXXXXXX",
       "name": "जस्तै: सीता शर्मा"
     },
     "actions": {
@@ -66,6 +69,7 @@
       "phoneRequired": "फोन नम्बर हाल्नुहोस्",
       "phoneNP": "मान्य नेपाल मोबाइल हाल्नुहोस् (जस्तै: 98XXXXXXXX)",
       "phoneFI": "मान्य फिनल्यान्ड मोबाइल हाल्नुहोस् (जस्तै: 4XXXXXXXX वा 04XXXXXXXX)",
+      "phoneAU": "मान्य अस्ट्रेलिया मोबाइल हाल्नुहोस् (जस्तै: 4XXXXXXXX वा 04XXXXXXXX)",
       "name": "नाम आवश्यक छ",
       "missingPhone": "फोन नम्बर छैन। लगइनमा फर्कनुहोस्।"
     }

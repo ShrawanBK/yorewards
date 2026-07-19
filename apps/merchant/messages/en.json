@@ -72,7 +72,8 @@
     },
     "countries": {
       "NP": "Nepal",
-      "FI": "Finland"
+      "FI": "Finland",
+      "AU": "Australia"
     },
     "actions": {
       "signin": "Sign in",
@@ -168,6 +169,7 @@
       "category": "Salon",
       "phoneNP": "+977 98XXXXXXXX",
       "phoneFI": "+358 4XXXXXXXX",
+      "phoneAU": "+61 4XXXXXXXX",
       "registrationNumber": "PAN / company registration",
       "websiteUrl": "https://instagram.com/yourbusiness",
       "businessAddress": "Street, city"
@@ -179,7 +181,8 @@
     },
     "countries": {
       "NP": "Nepal",
-      "FI": "Finland"
+      "FI": "Finland",
+      "AU": "Australia"
     },
     "actions": {
       "submit": "Create business",
@@ -199,7 +202,8 @@
       "businessAddress": "Enter your full business address",
       "phone": {
         "NP": "Enter a valid Nepal mobile number (e.g. +977 98XXXXXXXX)",
-        "FI": "Enter a valid Finland mobile number (e.g. +358 4XXXXXXXX)"
+        "FI": "Enter a valid Finland mobile number (e.g. +358 4XXXXXXXX)",
+        "AU": "Enter a valid Australia mobile number (e.g. +61 4XXXXXXXX)"
       }
     }
   },

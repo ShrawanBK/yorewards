@@ -4,16 +4,17 @@ import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Input } from "@repo/ui/input";
 import { Field } from "@repo/ui/field";
+import type { CountryCode } from "@repo/utils/phone";
 
 type PhoneFormValues = {
-  country: "NP" | "FI";
+  country: CountryCode;
   phoneLocal: string;
 };
 
 type PhoneCountryFieldsProps = {
   register: UseFormRegister<PhoneFormValues>;
   errors: FieldErrors<PhoneFormValues>;
-  country: "NP" | "FI";
+  country: CountryCode;
 };
 
 export function PhoneCountryFields({
@@ -38,6 +39,7 @@ export function PhoneCountryFields({
         >
           <option value="NP">{t("dialCodes.NP")}</option>
           <option value="FI">{t("dialCodes.FI")}</option>
+          <option value="AU">{t("dialCodes.AU")}</option>
         </select>
         <Input
           id="phoneLocal"
@@ -45,11 +47,7 @@ export function PhoneCountryFields({
           inputMode="tel"
           autoComplete="tel-national"
           className="min-w-0 flex-1"
-          placeholder={
-            country === "FI"
-              ? t("placeholders.phoneFI")
-              : t("placeholders.phoneNP")
-          }
+          placeholder={t(`placeholders.phone${country}`)}
           {...register("phoneLocal")}
         />
       </div>

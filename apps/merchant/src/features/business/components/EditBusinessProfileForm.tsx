@@ -33,7 +33,7 @@ export function EditBusinessProfileForm({
         .object({
           business_name: z.string().min(2, t("errors.businessName")),
           category: z.string().min(2, t("errors.category")),
-          country: z.enum(["NP", "FI"]),
+          country: z.enum(["NP", "FI", "AU"]),
           phone: z.string().min(1, t("errors.phoneRequired")),
           registration_number: z
             .string()
@@ -136,6 +136,7 @@ export function EditBusinessProfileForm({
         >
           <option value="NP">{t("countries.NP")}</option>
           <option value="FI">{t("countries.FI")}</option>
+          <option value="AU">{t("countries.AU")}</option>
         </select>
       </Field>
       <Field

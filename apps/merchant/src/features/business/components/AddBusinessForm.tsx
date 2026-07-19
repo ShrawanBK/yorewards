@@ -24,7 +24,7 @@ export function AddBusinessForm({ ownerEmail }: { ownerEmail: string }) {
         .object({
           business_name: z.string().min(2, t("errors.businessName")),
           category: z.string().min(2, t("errors.category")),
-          country: z.enum(["NP", "FI"]),
+          country: z.enum(["NP", "FI", "AU"]),
           phone: z.string().min(1, t("errors.phoneRequired")),
           registration_number: z
             .string()
@@ -133,6 +133,7 @@ export function AddBusinessForm({ ownerEmail }: { ownerEmail: string }) {
         >
           <option value="NP">{t("countries.NP")}</option>
           <option value="FI">{t("countries.FI")}</option>
+          <option value="AU">{t("countries.AU")}</option>
         </select>
       </Field>
       <Field
@@ -143,11 +144,7 @@ export function AddBusinessForm({ ownerEmail }: { ownerEmail: string }) {
         <Input
           id="phone"
           type="tel"
-          placeholder={
-            country === "FI"
-              ? t("placeholders.phoneFI")
-              : t("placeholders.phoneNP")
-          }
+          placeholder={t(`placeholders.phone${country}`)}
           {...form.register("phone")}
         />
       </Field>

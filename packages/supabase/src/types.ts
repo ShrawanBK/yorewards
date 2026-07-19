@@ -14,7 +14,7 @@ export type Json =
  * keeping strict unions below on check-constraint columns (Postgres `text` → plain `string` in codegen).
  */
 /** Strict unions — mirror supabase/migrations check constraints */
-export type CountryCode = "NP" | "FI";
+export type CountryCode = "NP" | "FI" | "AU";
 export type CurrencyCode = "NPR" | "EUR";
 export type SubscriptionTier = "free" | "starter" | "growth" | "enterprise";
 export type MerchantStaffRole = "cashier" | "manager" | "owner";
@@ -1122,7 +1122,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      country_code: ["NP", "FI"] as const,
+      country_code: ["NP", "FI", "AU"] as const,
       merchant_status: ["pending", "active", "suspended", "rejected"] as const,
       customer_status: ["active", "suspended"] as const,
       reward_status: ["collecting", "pending_otp", "unlocked"] as const,

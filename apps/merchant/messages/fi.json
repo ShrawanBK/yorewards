@@ -72,7 +72,8 @@
     },
     "countries": {
       "NP": "Nepal",
-      "FI": "Suomi"
+      "FI": "Suomi",
+      "AU": "Australia"
     },
     "actions": {
       "signin": "Kirjaudu",
@@ -168,6 +169,7 @@
       "category": "Kampaamo",
       "phoneNP": "+977 98XXXXXXXX",
       "phoneFI": "+358 4XXXXXXXX",
+      "phoneAU": "+61 4XXXXXXXX",
       "registrationNumber": "Y-tunnus / yrityksen rekisterinumero",
       "websiteUrl": "https://instagram.com/yourbusiness",
       "businessAddress": "Katu, kaupunki"
@@ -179,7 +181,8 @@
     },
     "countries": {
       "NP": "Nepal",
-      "FI": "Suomi"
+      "FI": "Suomi",
+      "AU": "Australia"
     },
     "actions": {
       "submit": "Luo yritys",
@@ -199,7 +202,8 @@
       "businessAddress": "Syötä yrityksen täydellinen osoite",
       "phone": {
         "NP": "Syötä kelvollinen nepalilainen matkapuhelinnumero (esim. +977 98XXXXXXXX)",
-        "FI": "Syötä kelvollinen suomalainen matkapuhelinnumero (esim. +358 4XXXXXXXX)"
+        "FI": "Syötä kelvollinen suomalainen matkapuhelinnumero (esim. +358 4XXXXXXXX)",
+        "AU": "Syötä kelvollinen australialainen matkapuhelinnumero (esim. +61 4XXXXXXXX)"
       }
     }
   },

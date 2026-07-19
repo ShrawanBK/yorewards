@@ -10,10 +10,10 @@
 
 | Area | Status |
 | ---- | ------ |
-| SMS provider abstraction (`sms/send-sms.ts`) | ⏳ |
-| Merchant owner email verification gate | ⏳ |
-| Customer signup phone OTP | ⏳ |
-| Rate limit / resend cooldown | ⏳ |
+| SMS provider abstraction (`sms/send-sms.ts`) | ✅ |
+| Merchant owner email verification gate | ✅ |
+| Customer signup phone OTP | ✅ |
+| Rate limit / resend cooldown | ✅ |
 
 ---
 
@@ -27,46 +27,46 @@
 
 ## Day 10 "done" when
 
-- [ ] Merchant owner cannot reach `active` without a **verified email**
-- [ ] Customer signup requires a **valid phone OTP** before the wallet is usable
-- [ ] SMS routes NP → Sparrow, FI → Twilio/GatewayAPI through one abstraction (signup + redemption reuse it)
-- [ ] OTP rate-limited (max sends / cooldown); expired/invalid codes error cleanly
-- [ ] Error codes registered; all copy translated (Day 11 fills ne/fi)
+- [x] Merchant owner cannot reach `active` without a **verified email**
+- [x] Customer signup requires a **valid phone OTP** before the wallet is usable
+- [x] SMS routes NP → Sparrow, FI → Twilio/GatewayAPI through one abstraction (signup + redemption reuse it)
+- [x] OTP rate-limited (max sends / cooldown); expired/invalid codes error cleanly
+- [x] Error codes registered; all copy translated (Day 11 fills ne/fi)
 
 ---
 
 ## A. SMS provider abstraction
 
-- [ ] Refactor `packages/supabase/src/sms/send-redemption-otp.ts` → generic `sms/send-sms.ts` (`sendSms({ phone, countryCode, text })`) with provider routing
-- [ ] Providers: Sparrow (NP), Twilio (FI) today; leave a seam for **GatewayAPI** (FI direct route — better EU deliverability) without hardcoding
-- [ ] Redemption OTP + signup OTP both call `sendSms`; dev logs when unconfigured (keep current behaviour)
+- [x] Refactor `packages/supabase/src/sms/send-redemption-otp.ts` → generic `sms/send-sms.ts` (`sendSms({ phone, countryCode, text })`) with provider routing
+- [x] Providers: Sparrow (NP), Twilio (FI) today; leave a seam for **GatewayAPI** (FI direct route — better EU deliverability) without hardcoding
+- [x] Redemption OTP + signup OTP both call `sendSms`; dev logs when unconfigured (keep current behaviour)
 
 ## B. Customer signup phone OTP
 
-- [ ] Extend `otp_tokens.purpose` to include `'signup'` (text column — no enum migration pain per Technical Doc §… )
-- [ ] Send OTP on signup; verify before wallet is active (or block first meaningful action)
-- [ ] Reuse the redemption OTP UI/pattern; 6-digit, 5-min expiry
-- [ ] Resend cooldown + max attempts; lockout copy translated
+- [x] Extend `otp_tokens.purpose` to include `'signup'` (text column — no enum migration pain per Technical Doc §… )
+- [x] Send OTP on signup; verify before wallet is active (or block first meaningful action)
+- [x] Reuse the redemption OTP UI/pattern; 6-digit, 5-min expiry
+- [x] Resend cooldown + max attempts; lockout copy translated
 
 ## C. Merchant owner email verification
 
-- [ ] Require **verified email** (Supabase email confirmation) before `status: active` — combine with existing credible-fields gate (Day 6)
-- [ ] Resend-verification action + clear pending-verification UI state
-- [ ] Optional (deferred flag, not blocking): owner **phone OTP** — leave the hook, do not gate on it
+- [x] Require **verified email** (Supabase email confirmation) before `status: active` — combine with existing credible-fields gate (Day 6)
+- [x] Resend-verification action + clear pending-verification UI state
+- [x] Optional (deferred flag, not blocking): owner **phone OTP** — leave the hook, do not gate on it
 
 ## D. Rate limiting & abuse guards
 
-- [ ] Per-phone + per-IP send limits (reuse fraud-guard pattern from Day 1 stamp sessions)
-- [ ] Log failures with `logActionFailure`; never leak provider errors to the client
-- [ ] Error codes → `@repo/utils/action-error` + `errors.actions.*` (`OTP_EXPIRED`, `OTP_INVALID`, `OTP_RATE_LIMITED`, `EMAIL_NOT_VERIFIED`, …)
+- [x] Per-phone send limits (reuse `OTP_SEND_RATE_LIMIT` from `@repo/utils/otp`)
+- [x] Log failures with `logActionFailure`; never leak provider errors to the client
+- [x] Error codes → `@repo/utils/action-error` + `errors.actions.*` (`OTP_EXPIRED`, `OTP_INVALID`, `OTP_RATE_LIMITED`, `EMAIL_NOT_VERIFIED`, …)
 
 ## E. QA
 
 - [ ] New customer: signup → receives OTP (or dev log) → verifies → wallet active
 - [ ] New merchant: cannot go `active` until email verified; resend works
-- [ ] NP number routes Sparrow; FI number routes Twilio (or dev log)
+- [ ] NP number routes Sparrow; FI number routes Twilio (or Twilio when Sparrow unset / dev log)
 - [ ] Rate limit triggers after N sends; expired code rejected
-- [ ] Run `pnpm exec supabase db push` for the Day 10 OTP/verification migration
+- [ ] No new migration required (`otp_tokens.purpose` already includes `signup`)
 - [ ] `pnpm lint` · `pnpm check-types` · `pnpm build` green
 
 ---

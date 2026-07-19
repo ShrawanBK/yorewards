@@ -23,7 +23,7 @@
     },
     "onboarding": {
       "title": "Melkein valmista",
-      "subtitle": "Kerro nimesi, jotta voimme viimeistellä lompakkosi.",
+      "subtitle": "Kerro nimesi ja vahvista puhelinnumerosi koodilla.",
       "phoneLabel": "Puhelin"
     },
     "fields": {
@@ -46,8 +46,21 @@
     },
     "actions": {
       "continue": "Jatka",
-      "start": "Aloita",
+      "start": "Lähetä vahvistuskoodi",
       "backToLogin": "Takaisin kirjautumiseen"
+    },
+    "otp": {
+      "sentHint": "Lähetimme 6-numeroisen koodin numeroon",
+      "otpLabel": "Vahvistuskoodi",
+      "otpPlaceholder": "000000",
+      "otpInvalid": "Syötä 6-numeroinen koodi tekstiviestistä",
+      "submit": "Vahvista ja jatka",
+      "verifying": "Vahvistetaan…",
+      "sending": "Lähetetään koodia…",
+      "resend": "Lähetä koodi uudelleen",
+      "changeDetails": "Vaihda nimi",
+      "sentToast": "Vahvistuskoodi lähetetty",
+      "resentToast": "Uusi koodi lähetetty"
     },
     "errors": {
       "phoneRequired": "Syötä puhelinnumerosi",
@@ -370,6 +383,8 @@
       "OTP_INVALID": "Koodi ei ole oikein — tarkista SMS ja yritä uudelleen.",
       "OTP_EXPIRED": "Koodi on vanhentunut — pyydä uusi.",
       "OTP_RATE_LIMITED": "Liian monta koodipyyntöä — odota muutama minuutti ja yritä uudelleen.",
+      "EMAIL_NOT_VERIFIED": "Vahvista sähköpostisi ennen kuin yrityksesi voi siirtyä liveen.",
+      "EMAIL_VERIFICATION_RESEND_FAILED": "Vahvistussähköpostia ei voitu lähettää uudelleen — yritä uudelleen.",
       "REWARD_NOT_READY": "Tätä palkintoa ei voi vielä lunastaa.",
       "REDEMPTION_CREATE_FAILED": "Lunastuskoodia ei voitu luoda — yritä uudelleen.",
       "STAMP_CATALOG_LOAD_FAILED": "Yrityksiä ei voitu ladata — yritä uudelleen.",

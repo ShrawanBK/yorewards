@@ -34,12 +34,14 @@ export async function MerchantStatusPanel({
   statusReason?: string | null;
 }) {
   const t = await getTranslations("dashboard");
+  const tVerify = await getTranslations("auth.verifyEmail");
   const badge = MERCHANT_STATUS_BADGE[status];
   const Icon = STATUS_ICON[status];
 
   const showConfigureCard =
     status === "pending" || status === "pending_verification";
   const showSettingsLink = status !== "active";
+  const showEmailResend = status === "pending_verification";
 
   return (
     <Card className="merchant-glass-card overflow-hidden">
@@ -87,8 +89,13 @@ export async function MerchantStatusPanel({
             <p className="mt-1 merchant-body-muted">{statusReason}</p>
           </div>
         ) : null}
-        {showConfigureCard || showSettingsLink ? (
+        {showConfigureCard || showSettingsLink || showEmailResend ? (
           <div className="flex flex-wrap gap-2">
+            {showEmailResend ? (
+              <Button asChild size="sm" variant="outline">
+                <Link href="/merchant/verify-email">{tVerify("resend")}</Link>
+              </Button>
+            ) : null}
             {showConfigureCard ? (
               <Button asChild size="sm">
                 <Link href="/merchant/loyalty-card">

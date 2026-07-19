@@ -23,7 +23,7 @@
     },
     "onboarding": {
       "title": "Almost there",
-      "subtitle": "Tell us your name to finish setting up your wallet.",
+      "subtitle": "Tell us your name, then verify your phone with a code.",
       "phoneLabel": "Phone"
     },
     "fields": {
@@ -46,8 +46,21 @@
     },
     "actions": {
       "continue": "Continue",
-      "start": "Get started",
+      "start": "Send verification code",
       "backToLogin": "Back to login"
+    },
+    "otp": {
+      "sentHint": "We sent a 6-digit code to",
+      "otpLabel": "Verification code",
+      "otpPlaceholder": "000000",
+      "otpInvalid": "Enter the 6-digit code from your SMS",
+      "submit": "Verify and continue",
+      "verifying": "Verifying…",
+      "sending": "Sending code…",
+      "resend": "Resend code",
+      "changeDetails": "Change name",
+      "sentToast": "Verification code sent",
+      "resentToast": "New code sent"
     },
     "errors": {
       "phoneRequired": "Enter your phone number",
@@ -370,6 +383,8 @@
       "OTP_INVALID": "That code isn't correct — check the SMS and try again.",
       "OTP_EXPIRED": "That code has expired — request a new one.",
       "OTP_RATE_LIMITED": "Too many code requests — wait a few minutes and try again.",
+      "EMAIL_NOT_VERIFIED": "Verify your email before your business can go live.",
+      "EMAIL_VERIFICATION_RESEND_FAILED": "We couldn't resend the verification email — please try again.",
       "REWARD_NOT_READY": "This reward isn't ready to claim yet.",
       "REDEMPTION_CREATE_FAILED": "We couldn't create your redemption code — please try again.",
       "STAMP_CATALOG_LOAD_FAILED": "We couldn't load businesses — please try again.",

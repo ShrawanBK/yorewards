@@ -8,6 +8,7 @@ import { switchActiveMerchant } from "@repo/supabase/queries/merchants";
 import { createOwnerStaffRow } from "@repo/supabase/queries/merchant-staff";
 import { ensureMerchantSubscription } from "@repo/supabase/queries/merchant-subscriptions";
 import { createDefaultLocationForMerchant } from "@repo/supabase/queries/locations";
+import { isAuthEmailVerified } from "@repo/supabase/queries/merchant-email-verification";
 import type { CountryCode } from "@repo/supabase/types";
 import { fail, logActionFailure } from "@repo/utils/action-error";
 import { sendMerchantApprovedEmail } from "@repo/utils/merchant-email";
@@ -27,6 +28,11 @@ export async function addBusinessAction(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return fail("UNAUTHORIZED");
+
+  const emailVerified = await isAuthEmailVerified();
+  if (!emailVerified) {
+    return fail("EMAIL_NOT_VERIFIED");
+  }
 
   const email = String(formData.get("email") ?? user.email ?? "");
   const country = String(formData.get("country") ?? "NP") as CountryCode;

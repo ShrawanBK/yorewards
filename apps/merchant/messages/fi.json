@@ -82,6 +82,14 @@
       "show": "Näytä salasana",
       "hide": "Piilota salasana"
     },
+    "verifyEmail": {
+      "title": "Tarkista sähköpostisi",
+      "description": "Lähetimme vahvistuslinkin kauppiastilisi aktivoimiseksi. Avaa linkki ja kirjaudu sitten sisään.",
+      "resend": "Lähetä vahvistussähköposti uudelleen",
+      "resending": "Lähetetään…",
+      "resentToast": "Vahvistussähköposti lähetetty",
+      "backToLogin": "Takaisin kirjautumiseen"
+    },
     "errors": {
       "email": "Syötä kelvollinen sähköposti",
       "password": "Vähintään 6 merkkiä",
@@ -260,7 +268,7 @@
       },
       "pending_verification": {
         "label": "Odottaa vahvistusta",
-        "description": "Vahvistamme yritystietojasi. Määritä leimakortti odottaessasi."
+        "description": "Vahvista sähköpostisi aktivoidaksesi tilisi. Tarkista vahvistuslinkki postilaatikostasi ja päivitä sitten tämä sivu."
       },
       "active": {
         "label": "Aktiivinen",
@@ -907,6 +915,8 @@
       "VERIFICATION_UPLOAD_FAILED": "Asiakirjaa ei voitu ladata — yritä uudelleen.",
       "VERIFICATION_DOC_REQUIRED": "Valitse ladattava asiakirja.",
       "ONBOARDING_FIELDS_REQUIRED": "Täydennä kaikki yrityksen uskottavuuskentät ennen julkaisua.",
+      "EMAIL_NOT_VERIFIED": "Vahvista sähköpostisi ennen kuin yrityksesi voi siirtyä liveen.",
+      "EMAIL_VERIFICATION_RESEND_FAILED": "Vahvistussähköpostia ei voitu lähettää uudelleen — yritä uudelleen.",
       "STAFF_INVITE_NOT_FOUND": "Ei odottavaa tiimikutsua tälle sähköpostille.",
       "STAFF_INVITE_EMAIL_MISMATCH": "Käytä samaa sähköpostiosoitetta, johon kutsu lähetettiin.",
       "STAFF_INVITE_EMAIL_DEFERRED": "Kutsu tallennettu, mutta sähköpostia ei voitu lähettää — tarkista Supabase Auth -sähköpostiasetukset tai käytä Resend-sähköpostia.",

@@ -2,7 +2,6 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@repo/supabase/server";
-import { createServiceRoleClient } from "@repo/supabase/service-role";
 import {
   createOrCompleteInviteAuthUser,
   isUserAlreadyExistsAuthError,
@@ -15,6 +14,7 @@ import {
   getPendingStaffInvitesForEmail,
   hasPendingStaffInvite,
 } from "@repo/supabase/queries/merchant-staff";
+import { resendAuthEmailVerification } from "@repo/supabase/queries/merchant-email-verification";
 import {
   fail,
   logActionFailure,
@@ -31,6 +31,16 @@ async function signInAndRedirect(
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
     logActionFailure("signInAndRedirect", error);
+    const lower = error.message.toLowerCase();
+    if (
+      lower.includes("email not confirmed") ||
+      lower.includes("email_not_confirmed") ||
+      lower.includes("confirm your email")
+    ) {
+      redirect(
+        `/merchant/verify-email?email=${encodeURIComponent(email)}`,
+      );
+    }
     return fail(mapAuthErrorCode(error.message));
   }
 
@@ -38,6 +48,12 @@ async function signInAndRedirect(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return fail("SIGN_IN_FAILED");
+
+  if (!user.email_confirmed_at) {
+    redirect(
+      `/merchant/verify-email?email=${encodeURIComponent(email)}`,
+    );
+  }
 
   const redirectPath = await resolvePostAuthRedirect(
     user.id,
@@ -97,16 +113,20 @@ export async function signUpMerchantAction(
       return fail(mapAuthErrorCode(message));
     }
   } else {
-    const admin = createServiceRoleClient();
+    const supabaseForSignUp = await createClient();
+    const merchantAppUrl =
+      process.env.NEXT_PUBLIC_MERCHANT_URL ?? "http://localhost:3001";
     const { data: authData, error: authError } =
-      await admin.auth.admin.createUser({
+      await supabaseForSignUp.auth.signUp({
         email,
         password,
-        email_confirm: true,
+        options: {
+          emailRedirectTo: `${merchantAppUrl}/merchant/login`,
+        },
       });
 
     if (authError) {
-      logActionFailure("signUpMerchant.createUser", authError);
+      logActionFailure("signUpMerchant.signUp", authError);
       if (isUserAlreadyExistsAuthError(authError)) {
         return fail("SIGN_UP_FAILED");
       }
@@ -115,6 +135,13 @@ export async function signUpMerchantAction(
 
     if (!authData.user) return fail("SIGN_UP_FAILED");
     userId = authData.user.id;
+
+    // Confirmations enabled → no session until email verified.
+    if (!authData.session || !authData.user.email_confirmed_at) {
+      redirect(
+        `/merchant/verify-email?email=${encodeURIComponent(email)}`,
+      );
+    }
   }
 
   const supabase = await createClient();
@@ -124,6 +151,17 @@ export async function signUpMerchantAction(
   });
   if (signInError) {
     logActionFailure("signUpMerchant.signIn", signInError);
+    const lower = signInError.message.toLowerCase();
+    if (
+      !inviteMode &&
+      (lower.includes("email not confirmed") ||
+        lower.includes("email_not_confirmed") ||
+        lower.includes("confirm"))
+    ) {
+      redirect(
+        `/merchant/verify-email?email=${encodeURIComponent(email)}`,
+      );
+    }
     if (inviteMode) {
       return fail("SIGN_UP_FAILED");
     }
@@ -206,4 +244,37 @@ export async function getPostAuthRedirectForSession(): Promise<string | null> {
   if (!user?.email) return null;
 
   return resolvePostAuthRedirect(user.id, user.email);
+}
+
+/** Resend signup confirmation email (logged-in or email from verify page). */
+export async function resendMerchantEmailVerificationAction(
+  emailFromQuery?: string,
+): Promise<ActionResult> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user?.email) {
+      await resendAuthEmailVerification();
+      return {};
+    }
+
+    const email = emailFromQuery?.trim().toLowerCase();
+    if (!email) return fail("EMAIL_INVALID");
+
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+    });
+    if (error) {
+      logActionFailure("resendMerchantEmailVerification", error);
+      return fail("EMAIL_VERIFICATION_RESEND_FAILED");
+    }
+    return {};
+  } catch (err) {
+    logActionFailure("resendMerchantEmailVerification", err);
+    return fail("EMAIL_VERIFICATION_RESEND_FAILED");
+  }
 }

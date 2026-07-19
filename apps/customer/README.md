@@ -20,23 +20,17 @@ Copy shared env from [`.env.example`](../../.env.example) into `apps/customer/.e
 - After tapping **Continue**, the terminal should show a **POST** (not `GET /login?country=…&phoneLocal=…`). Query params on GET mean the form fell back without JavaScript; restart dev and hard-refresh the page.
 - If login succeeds but you bounce back to `/login`, check the terminal for `[supabase] Failed to set auth cookies` and ensure `NEXT_PUBLIC_SUPABASE_URL` / keys are set in `.env.local`.
 
-## Reward OTP — local dev (no SMS)
+## Reward / signup OTP — local dev (no SMS)
 
-Redemption uses SMS OTP (Sparrow for Nepal, Twilio for Finland). You do **not** need SMS credentials for local testing.
+Signup and redemption use SMS OTP (Sparrow for Nepal, Twilio for Finland; Twilio also covers NP if Sparrow is unset). You do **not** need SMS credentials for local testing.
 
 1. Leave `SPARROW_SMS_TOKEN` and `TWILIO_*` **empty** in `apps/customer/.env.local`.
 2. Run the customer app in development (`pnpm exec turbo dev --filter=customer`).
-3. Reach stamp target so a card is `pending_otp`, then open **Claim reward** (`/reward/[cardId]`).
-4. Tap **Send verification code**.
-5. In the **terminal running the customer app**, find a line like:
+3. **Signup:** new phone → onboarding → send code → find `[dev:signup-otp]` in the terminal.
+4. **Reward:** reach stamp target → Claim reward → Send code → find `[dev:redemption-otp]` in the terminal.
+5. Enter that 6-digit code in the app.
 
-   ```text
-   [dev:redemption-otp] +97798XXXXXXXX: 123456
-   ```
-
-6. Enter that 6-digit code in the app to get your redemption code.
-
-The console fallback applies only when `NODE_ENV=development` and the SMS provider for the customer’s country is not configured. Production requires real Sparrow/Twilio credentials.
+With Twilio configured, real SMS is sent (FI always; NP when Sparrow is unset). Production requires Sparrow and/or Twilio credentials.
 
 ## Full loop E2E (Day 7 sign-off)
 

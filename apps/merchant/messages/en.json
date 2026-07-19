@@ -82,6 +82,14 @@
       "show": "Show password",
       "hide": "Hide password"
     },
+    "verifyEmail": {
+      "title": "Check your email",
+      "description": "We sent a verification link to activate your merchant account. Open the link, then sign in.",
+      "resend": "Resend verification email",
+      "resending": "Sending…",
+      "resentToast": "Verification email sent",
+      "backToLogin": "Back to sign in"
+    },
     "errors": {
       "email": "Enter a valid email",
       "password": "At least 6 characters",
@@ -260,7 +268,7 @@
       },
       "pending_verification": {
         "label": "Pending verification",
-        "description": "We're verifying your business details. Configure your loyalty card while you wait."
+        "description": "Verify your email to activate your account. Check your inbox for a confirmation link, then refresh this page."
       },
       "active": {
         "label": "Active",
@@ -907,6 +915,8 @@
       "VERIFICATION_UPLOAD_FAILED": "We couldn't upload that document — try again.",
       "VERIFICATION_DOC_REQUIRED": "Choose a document to upload.",
       "ONBOARDING_FIELDS_REQUIRED": "Complete all credible business fields before going live.",
+      "EMAIL_NOT_VERIFIED": "Verify your email before your business can go live.",
+      "EMAIL_VERIFICATION_RESEND_FAILED": "We couldn't resend the verification email — please try again.",
       "STAFF_INVITE_NOT_FOUND": "No pending team invite for this email.",
       "STAFF_INVITE_EMAIL_MISMATCH": "Use the same email address that received the invite.",
       "STAFF_INVITE_EMAIL_DEFERRED": "Invite saved, but we couldn't send email — check Supabase Auth email settings or use Resend email.",

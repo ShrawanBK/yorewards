@@ -9,8 +9,16 @@ import {
   getCustomerById,
   getCustomerIdFromSession,
 } from "@repo/supabase/queries/customers";
+import {
+  sendSignupOtp,
+  verifySignupOtp,
+} from "@repo/supabase/queries/signup-otp";
 import { createServiceRoleClient } from "@repo/supabase/service-role";
-import { fail, logActionFailure } from "@repo/utils/action-error";
+import {
+  fail,
+  logActionFailure,
+  type ActionErrorCode,
+} from "@repo/utils/action-error";
 import type { ActionResult } from "@/shared/types/action-result";
 import type { CustomerProfile } from "@/features/auth/types/auth.types";
 import { parseCustomerPhoneForm } from "@/features/auth/utils/phoneSchema";
@@ -34,6 +42,24 @@ function parsePhoneFromForm(formData: FormData) {
   }
 
   return { ok: false as const, reason: "missing" as const };
+}
+
+function mapSignupOtpError(err: unknown): ActionErrorCode {
+  if (err instanceof Error) {
+    const code = err.message as ActionErrorCode;
+    if (
+      code === "CUSTOMER_ALREADY_EXISTS" ||
+      code === "OTP_RATE_LIMITED" ||
+      code === "OTP_INVALID" ||
+      code === "OTP_EXPIRED"
+    ) {
+      return code;
+    }
+    if (err.message.includes("not configured")) {
+      return "OTP_SEND_FAILED";
+    }
+  }
+  return "OTP_SEND_FAILED";
 }
 
 /** Form action for `useActionState` — also works as a native POST without JS. */
@@ -82,11 +108,15 @@ export async function customerLoginAction(
   redirect("/wallet");
 }
 
-/** Form action for `useActionState` — also works as a native POST without JS. */
-export async function customerOnboardingAction(
-  _prevState: ActionResult | null,
+/**
+ * Step 1 of onboarding: validate name + phone, send signup SMS OTP.
+ * Does not create the customer yet.
+ */
+export async function sendSignupOtpAction(
   formData: FormData,
-): Promise<ActionResult | null> {
+): Promise<
+  ActionResult<{ step: "otp"; phone: string; name: string; maskedPhone: string }>
+> {
   const parsed = parsePhoneFromForm(formData);
   const name = String(formData.get("name") ?? "").trim();
 
@@ -106,32 +136,112 @@ export async function customerOnboardingAction(
         return fail("CUSTOMER_SUSPENDED");
       }
       await establishCustomerSession(existing.id);
-    } else {
-      const admin = createServiceRoleClient();
-      const { data: customer, error } = await admin
-        .from("customers")
-        .insert({
-          phone,
-          name,
-          country_code: detectCountry(phone),
-        })
-        .select()
-        .single();
-
-      if (error) {
-        logActionFailure("customerOnboarding.insert", error);
-        if (error.code === "23505") return fail("CUSTOMER_ALREADY_EXISTS");
-        return fail("CUSTOMER_ONBOARDING_FAILED");
-      }
-
-      await establishCustomerSession(customer.id);
+      redirect("/wallet");
     }
+
+    const result = await sendSignupOtp(phone);
+    return {
+      step: "otp",
+      phone,
+      name,
+      maskedPhone: result.maskedPhone,
+    };
   } catch (err) {
-    logActionFailure("customerOnboarding", err);
+    logActionFailure("sendSignupOtp", err);
+    return fail(mapSignupOtpError(err));
+  }
+}
+
+/** Resend signup OTP for the pending phone (rate-limited). */
+export async function resendSignupOtpAction(
+  phone: string,
+): Promise<ActionResult<{ maskedPhone: string }>> {
+  const normalized = phone.trim();
+  if (!normalized) return fail("CUSTOMER_PHONE_REQUIRED");
+
+  try {
+    const result = await sendSignupOtp(normalized);
+    return { maskedPhone: result.maskedPhone };
+  } catch (err) {
+    logActionFailure("resendSignupOtp", err);
+    return fail(mapSignupOtpError(err));
+  }
+}
+
+/**
+ * Step 2 of onboarding: verify OTP, create customer, establish session.
+ */
+export async function verifySignupOtpAction(
+  formData: FormData,
+): Promise<ActionResult | null> {
+  const parsed = parsePhoneFromForm(formData);
+  const name = String(formData.get("name") ?? "").trim();
+  const otp = String(formData.get("otp") ?? "").trim();
+
+  if (!parsed.ok) {
+    return fail(
+      parsed.reason === "missing" ? "CUSTOMER_PHONE_REQUIRED" : "INVALID_PHONE",
+    );
+  }
+  if (name.length < 2) return fail("CUSTOMER_NAME_REQUIRED");
+  if (!otp) return fail("OTP_INVALID");
+
+  const phone = parsed.phone;
+
+  try {
+    await verifySignupOtp(phone, otp);
+
+    const existing = await findCustomerByPhone(phone);
+    if (existing) {
+      if (existing.status === "suspended") {
+        return fail("CUSTOMER_SUSPENDED");
+      }
+      await establishCustomerSession(existing.id);
+      redirect("/wallet");
+    }
+
+    const admin = createServiceRoleClient();
+    const { data: customer, error } = await admin
+      .from("customers")
+      .insert({
+        phone,
+        name,
+        country_code: detectCountry(phone),
+      })
+      .select()
+      .single();
+
+    if (error) {
+      logActionFailure("verifySignupOtp.insert", error);
+      if (error.code === "23505") return fail("CUSTOMER_ALREADY_EXISTS");
+      return fail("CUSTOMER_ONBOARDING_FAILED");
+    }
+
+    await establishCustomerSession(customer.id);
+  } catch (err) {
+    logActionFailure("verifySignupOtp", err);
+    if (err instanceof Error) {
+      const code = err.message as ActionErrorCode;
+      if (
+        code === "OTP_INVALID" ||
+        code === "OTP_EXPIRED" ||
+        code === "CUSTOMER_ALREADY_EXISTS"
+      ) {
+        return fail(code);
+      }
+    }
     return fail("CUSTOMER_ONBOARDING_FAILED");
   }
 
   redirect("/wallet");
+}
+
+/** @deprecated Prefer sendSignupOtpAction + verifySignupOtpAction. */
+export async function customerOnboardingAction(
+  _prevState: ActionResult | null,
+  formData: FormData,
+): Promise<ActionResult | null> {
+  return sendSignupOtpAction(formData);
 }
 
 export async function customerLogoutAction(): Promise<void> {

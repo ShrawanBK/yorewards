@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition, type ReactNode } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Search, Stamp, TriangleAlert } from "lucide-react";
 import { Badge } from "@repo/ui/badge";
@@ -47,7 +47,16 @@ function formatSource(t: ReturnType<typeof useTranslations>, source: string) {
   return source;
 }
 
-export function AdminStampToolView() {
+export function AdminStampToolView({
+  initialCardId,
+  renderCardExtras,
+}: {
+  initialCardId?: string;
+  renderCardExtras?: (
+    card: AdminStampCardLookup,
+    ctx: { refreshCard: () => void },
+  ) => ReactNode;
+}) {
   const t = useTranslations("stamps");
   const tErrors = useTranslations("errors.actions");
   const format = useFormatter();
@@ -64,8 +73,34 @@ export function AdminStampToolView() {
   } | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  useEffect(() => {
+    if (!initialCardId) return;
+    setSearchQuery(initialCardId);
+    setSearchType("card_id");
+    startTransition(async () => {
+      const result = await lookupStampCardsAction(initialCardId, "card_id");
+      if ("error" in result) return;
+      setSearched(true);
+      setCards(result.cards);
+      setSelectedCardId(result.cards[0]?.customerCardId ?? initialCardId);
+    });
+  }, [initialCardId]);
+
   const selectedCard =
     cards.find((card) => card.customerCardId === selectedCardId) ?? cards[0] ?? null;
+
+  function refreshSelectedCard() {
+    if (!selectedCard) return;
+    startTransition(async () => {
+      const result = await lookupStampCardsAction(
+        selectedCard.customerCardId,
+        "card_id",
+      );
+      if ("error" in result) return;
+      setCards(result.cards);
+      setSelectedCardId(result.cards[0]?.customerCardId ?? selectedCard.customerCardId);
+    });
+  }
 
   function handleActionResult(result: StampActionResult, successKey: string) {
     if (isActionFailure(result)) {
@@ -290,15 +325,19 @@ export function AdminStampToolView() {
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button
-                type="button"
-                className="admin-btn-success"
-                onClick={() => handleIssue(selectedCard.customerCardId)}
-                disabled={isPending}
-              >
-                {t("actions.issue")}
-              </Button>
+              {!renderCardExtras ? (
+                <Button
+                  type="button"
+                  className="admin-btn-success"
+                  onClick={() => handleIssue(selectedCard.customerCardId)}
+                  disabled={isPending}
+                >
+                  {t("actions.issue")}
+                </Button>
+              ) : null}
             </div>
+
+            {renderCardExtras?.(selectedCard, { refreshCard: refreshSelectedCard })}
 
             <section className="space-y-3">
               <h3 className="text-sm font-medium">{t("sessions.title")}</h3>
@@ -306,27 +345,57 @@ export function AdminStampToolView() {
                 <p className="text-sm text-muted-foreground">{t("sessions.empty")}</p>
               ) : (
                 <div className="overflow-x-auto rounded-lg border border-border">
-                  <table className="w-full min-w-[480px] text-left text-sm">
+                  <table className="w-full min-w-[720px] text-left text-sm">
                     <thead className="border-b border-border bg-muted/40">
                       <tr>
-                        <th className="px-4 py-2 font-medium">{t("sessions.date")}</th>
+                        <th className="px-4 py-2 font-medium">{t("sessions.requested")}</th>
+                        <th className="px-4 py-2 font-medium">{t("sessions.approved")}</th>
                         <th className="px-4 py-2 font-medium">{t("sessions.source")}</th>
+                        <th className="px-4 py-2 font-medium">{t("sessions.branch")}</th>
+                        <th className="px-4 py-2 font-medium">{t("sessions.amount")}</th>
+                        <th className="px-4 py-2 font-medium">{t("sessions.approvedBy")}</th>
                         <th className="px-4 py-2 font-medium">{t("sessions.actions")}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
                       {selectedCard.recentApprovedSessions.map((session) => {
-                        const sessionDate = format.dateTime(
+                        const requestedDate = format.dateTime(
                           new Date(session.createdAt),
                           { dateStyle: "medium", timeStyle: "short" },
                         );
+                        const approvedDate = session.resolvedAt
+                          ? format.dateTime(new Date(session.resolvedAt), {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })
+                          : null;
+                        const amountLabel =
+                          session.amountSpent != null
+                            ? format.number(session.amountSpent, {
+                                style: "currency",
+                                currency: selectedCard.currencyCode,
+                              })
+                            : t("sessions.amountUnknown");
+
                         return (
                           <tr key={session.id}>
                             <td className="px-4 py-2 text-muted-foreground">
-                              <time dateTime={session.createdAt}>{sessionDate}</time>
+                              <time dateTime={session.createdAt}>{requestedDate}</time>
                             </td>
-                            <td className="px-4 py-2">
-                              {formatSource(t, session.source)}
+                            <td className="px-4 py-2 text-muted-foreground">
+                              {approvedDate ? (
+                                <time dateTime={session.resolvedAt!}>{approvedDate}</time>
+                              ) : (
+                                t("sessions.approvedPending")
+                              )}
+                            </td>
+                            <td className="px-4 py-2">{formatSource(t, session.source)}</td>
+                            <td className="px-4 py-2 text-muted-foreground">
+                              {session.branchName ?? t("sessions.branchUnknown")}
+                            </td>
+                            <td className="px-4 py-2">{amountLabel}</td>
+                            <td className="px-4 py-2 text-muted-foreground">
+                              {session.approvedByLabel ?? t("sessions.approverUnknown")}
                             </td>
                             <td className="px-4 py-2">
                               <Button
@@ -335,7 +404,7 @@ export function AdminStampToolView() {
                                 size="sm"
                                 className="admin-btn-danger-soft min-w-[5.5rem]"
                                 disabled={isPending}
-                                aria-label={t("actions.removeAria", { date: sessionDate })}
+                                aria-label={t("actions.removeAria", { date: requestedDate })}
                                 onClick={() =>
                                   setVoidTarget({
                                     sessionId: session.id,

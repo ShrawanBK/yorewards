@@ -5,6 +5,7 @@ import { Button } from "@repo/ui/button";
 import { useTranslations } from "next-intl";
 import { customerLogoutAction } from "@/features/auth";
 import { PwaInstallHint } from "@/features/pwa";
+import { LocaleSwitcher } from "@/shared/ui/LocaleSwitcher";
 import { PRIVACY_EMAIL } from "@/shared/constants/contact";
 import type { CustomerProfile } from "@/features/auth/types/auth.types";
 
@@ -14,6 +15,7 @@ export function ProfileView({
   customer: CustomerProfile | null;
 }) {
   const t = useTranslations("profile");
+  const tLocale = useTranslations("locale");
   const deletionMailto = `mailto:${PRIVACY_EMAIL}?subject=${encodeURIComponent(t("deletionEmailSubject"))}`;
 
   return (
@@ -30,7 +32,14 @@ export function ProfileView({
         </div>
       </dl>
       <PwaInstallHint />
+      <div className="space-y-2 border-t border-border pt-4">
+        <p className="text-sm font-medium">{tLocale("label")}</p>
+        <LocaleSwitcher />
+      </div>
       <div className="space-y-3 border-t border-border pt-4">
+        <Button asChild variant="outline" className="min-h-11 w-full text-foreground">
+          <Link href="/disputes">{t("disputesLink")}</Link>
+        </Button>
         <Button asChild variant="outline" className="min-h-11 w-full">
           <Link href="/privacy">{t("privacyLink")}</Link>
         </Button>

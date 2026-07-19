@@ -1,0 +1,67 @@
+---
+description: The repeatable recipe for building a V2 feature / build day end-to-end. Follow the ordered steps and gates so features land consistently and pass CI.
+alwaysApply: false
+---
+
+# Build-Day Recipe
+
+Follow this order for any data-backed feature or build day. It mirrors the disputes reference slice (`codebase-map.mdc`) and keeps every layer consistent.
+
+## 0. Orient (before writing code)
+
+1. Read the current day checklist in `resources/v2/` and the referenced PRD (`YORewards_PRD_Final_v2.md`) + Technical Doc sections.
+2. Check `resources/v2/Day9_10_Design_Decisions.md` and `V2_Backlog.md` for existing decisions — don't re-litigate settled choices or rebuild what already exists.
+3. Confirm which app(s) the feature touches and read the matching UI rule (`customer-ui`, `merchant-ui`, or `admin-ui`).
+
+## 1. Schema first (if new data)
+
+- Write a migration in `supabase/migrations/` (`YYYYMMDDHHMMSS_v2_<slug>.sql`) **with RLS + policies in the same file**.
+- Prefer an RPC for atomic multi-row writes.
+- `pnpm exec supabase db push`, then `pnpm supabase:types` and merge new columns/tables into `packages/supabase/src/types.ts` (keep strict unions). See `packages/supabase/AGENTS.md`.
+
+## 2. Data layer (`@repo/supabase`)
+
+- Server queries → `src/queries/<domain>.ts`. Client-safe types/helpers → `src/queries/<domain>-shared.ts` (imports only `../types`).
+- Add both paths to `packages/supabase/package.json` `exports`.
+
+## 3. Server action
+
+- `"use server"` in `apps/<app>/src/features/<domain>/api/<domain>Actions.ts`.
+- Order: **auth guard → input validation → authorization → mutation → revalidate/return**. (Defer expensive awaits until after cheap guards.)
+- Return `ActionResult` with `fail("CODE")` only. Register new codes in `packages/utils/src/action-error.ts` and add `errors.actions.*` copy in every app's `messages/{en,ne,fi}.json`.
+- Wrap DB calls in `try/catch` → `logActionFailure(context, err)` + `fail(...)`.
+
+## 4. Client/query wiring
+
+- Query-key factory + `invalidate*` helpers per `walletQueries.ts`.
+- Server state via TanStack Query; UI state via Zustand (`"use client"`). Realtime only if the feature is stamp queue / disputes.
+
+## 5. UI
+
+- Components in `features/<domain>/components/`, `"use client"` only at the leaf that needs it. Compose `@repo/ui` primitives and the app's shell/`PageHeader`.
+- All strings via `next-intl`; resolve action errors with `resolveActionError`; success → `showActionSuccess` toast.
+- Meet `.cursor/rules/accessibility.mdc` (labels, focus ring, `role="alert"`, translated `aria-*`, reduced motion).
+- Export public API from the feature `index.ts`. Keep `app/` pages thin.
+
+## 6. i18n parity
+
+- Add keys to `en.json` (source of truth) and to `ne.json` + `fi.json`. Run the key-parity check (Day 11 tooling) — no missing keys, no `TODO` placeholders in a shipped namespace.
+
+## 7. Gates (must pass before "done")
+
+```sh
+pnpm check-types
+pnpm lint
+pnpm build
+```
+
+Then run the ReadLints check on edited files, and walk the manual E2E path relevant to the feature. Only tick the checklist item when types + lint + build are green and the flow works end-to-end in the browser.
+
+## Anti-patterns (rejected in review)
+
+- `server.ts` import reaching a client component (use `*-shared.ts`).
+- English strings returned from a server action, or raw Supabase errors surfaced to UI.
+- Hardcoded copy / `aria-*` in components.
+- New table without RLS in the same migration.
+- Feature importing another feature; page holding business logic.
+- Editing `types.generated.ts` or importing it from app code.

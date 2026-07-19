@@ -11,6 +11,7 @@ import {
 } from "@repo/supabase/queries/stamps";
 import { createServiceRoleClient } from "@repo/supabase/service-role";
 import { fail, logActionFailure } from "@repo/utils/action-error";
+import type { Json } from "@repo/supabase/types";
 import type { ActionResult } from "@/shared/types/action-result";
 import type { LoyaltyQrPayload } from "@/features/scan/utils/parseLoyaltyQr";
 import { parseLoyaltyQrParams } from "@/features/scan/utils/parseLoyaltyQr";
@@ -25,6 +26,7 @@ function isValidPayload(payload: LoyaltyQrPayload): boolean {
 
 export async function submitStampScanAction(
   payload: LoyaltyQrPayload,
+  deviceInfo?: Json | null,
 ): Promise<
   ActionResult<{ sessionId: string } | { redirectTo: string }>
 > {
@@ -120,11 +122,22 @@ export async function submitStampScanAction(
       merchantId: payload.merchantId,
       customerCardId,
       locationId: payload.locationId,
+      deviceInfo: deviceInfo ?? null,
     });
 
     return { sessionId };
   } catch (err) {
     logActionFailure("submitStampScan", err);
+    const message = err instanceof Error ? err.message : "";
+    if (message.includes("stamp_branch_not_allowed")) {
+      return fail("STAMP_BRANCH_NOT_ALLOWED");
+    }
+    if (message.includes("stamp_rate_limited")) {
+      return fail("STAMP_RATE_LIMITED");
+    }
+    if (message.includes("plan_limit_customers")) {
+      return fail("PLAN_LIMIT_CUSTOMERS");
+    }
     return fail("SCAN_SESSION_FAILED");
   }
 }

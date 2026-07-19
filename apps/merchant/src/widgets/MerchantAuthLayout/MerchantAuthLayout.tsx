@@ -1,9 +1,17 @@
-import { Suspense } from "react";
+import { Suspense, type ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
 import { MerchantAuthScreen } from "@/features/auth";
 import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 
-export async function MerchantAuthLayout() {
+export async function MerchantAuthLayout({
+  children,
+  heading,
+  subheading,
+}: {
+  children?: ReactNode;
+  heading?: string;
+  subheading?: string;
+}) {
   const t = await getTranslations("auth");
 
   return (
@@ -34,14 +42,18 @@ export async function MerchantAuthLayout() {
               {t("brandEyebrow")}
             </p>
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              {t("heading")}
+              {heading ?? t("heading")}
             </h2>
-            <p className="text-base merchant-body-muted">{t("subheading")}</p>
+            <p className="text-base merchant-body-muted">
+              {subheading ?? t("subheading")}
+            </p>
           </div>
           <div className="merchant-glass-card p-6 sm:p-8">
-            <Suspense>
-              <MerchantAuthScreen />
-            </Suspense>
+            {children ?? (
+              <Suspense>
+                <MerchantAuthScreen />
+              </Suspense>
+            )}
           </div>
           <p className="text-center text-sm merchant-body-muted">
             {t("terms")}

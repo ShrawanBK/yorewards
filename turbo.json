@@ -11,7 +11,11 @@
     "SPARROW_SMS_FROM",
     "TWILIO_ACCOUNT_SID",
     "TWILIO_AUTH_TOKEN",
-    "TWILIO_PHONE_NUMBER"
+    "TWILIO_PHONE_NUMBER",
+    "RESEND_API_KEY",
+    "RESEND_FROM_EMAIL",
+    "NEXT_PUBLIC_MERCHANT_URL",
+    "CRON_SECRET"
   ],
   "tasks": {
     "build": {

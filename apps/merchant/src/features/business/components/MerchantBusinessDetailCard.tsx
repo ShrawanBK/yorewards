@@ -45,20 +45,7 @@ export function MerchantBusinessDetailCard({
       </CardHeader>
       <CardContent className="space-y-4">
         <dl className="space-y-3">
-          <DetailRow
-            label={t("fields.businessName")}
-            value={merchant.business_name}
-          />
-          <DetailRow label={t("fields.category")} value={merchant.category} />
-          <DetailRow
-            label={t("fields.country")}
-            value={t(`countries.${merchant.country}`)}
-          />
           <DetailRow label={t("details.email")} value={merchant.email} />
-          <DetailRow
-            label={t("fields.phoneOptional")}
-            value={merchant.phone ?? t("details.phoneNotProvided")}
-          />
           <DetailRow label={t("details.registered")} value={registered} />
           {approved ? (
             <DetailRow label={t("details.approved")} value={approved} />

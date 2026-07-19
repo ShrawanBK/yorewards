@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useActionState, useMemo, useState } from "react";
+import type { FormEvent } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -10,18 +11,37 @@ import { customerLoginAction } from "@/features/auth/api/authActions";
 import { PhoneCountryFields } from "@/features/auth/components/PhoneCountryFields";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
 import { isActionFailure } from "@/shared/types/action-result";
-import { isValidCustomerPhoneLocal } from "@repo/utils/phone";
+import { isValidCustomerPhoneLocal, type CountryCode } from "@repo/utils/phone";
+
+const COUNTRIES = ["NP", "FI", "AU"] as const;
+
+function parseCountry(raw: string): CountryCode {
+  if (raw === "FI" || raw === "AU" || raw === "NP") return raw;
+  return "NP";
+}
 
 export function CustomerLoginForm() {
   const t = useTranslations("auth");
   const tErrors = useTranslations("errors.actions");
-  const [error, setError] = useState<string | null>(null);
+  const [clientError, setClientError] = useState<string | null>(null);
+
+  const [serverState, formAction, isPending] = useActionState(
+    customerLoginAction,
+    null,
+  );
+
+  const serverError =
+    serverState && isActionFailure(serverState)
+      ? resolveActionError(tErrors, serverState.error)
+      : null;
+
+  const error = clientError ?? serverError;
 
   const schema = useMemo(
     () =>
       z
         .object({
-          country: z.enum(["NP", "FI"]),
+          country: z.enum(COUNTRIES),
           phoneLocal: z.string().min(1, t("errors.phoneRequired")),
         })
         .superRefine((data, ctx) => {
@@ -38,9 +58,10 @@ export function CustomerLoginForm() {
 
   const {
     register,
-    handleSubmit,
     watch,
-    formState: { errors, isSubmitting },
+    setError,
+    clearErrors,
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: { country: "NP" as const, phoneLocal: "" },
@@ -48,19 +69,38 @@ export function CustomerLoginForm() {
 
   const country = watch("country");
 
+  function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
+    setClientError(null);
+    clearErrors();
+
+    const fd = new FormData(event.currentTarget);
+    const countryCode = parseCountry(String(fd.get("country") ?? "NP"));
+    const phoneLocal = String(fd.get("phoneLocal") ?? "").trim();
+
+    if (!phoneLocal) {
+      event.preventDefault();
+      setError("phoneLocal", { message: t("errors.phoneRequired") });
+      return;
+    }
+
+    if (!isValidCustomerPhoneLocal(countryCode, phoneLocal)) {
+      event.preventDefault();
+      setError("phoneLocal", {
+        message: t(`errors.phone${countryCode}`),
+      });
+      return;
+    }
+
+    // Valid: allow native POST to the server action (works without JS too).
+  }
+
   return (
     <form
+      method="post"
+      action={formAction}
       className="space-y-4"
-      onSubmit={handleSubmit(async (values) => {
-        setError(null);
-        const fd = new FormData();
-        fd.set("country", values.country);
-        fd.set("phoneLocal", values.phoneLocal);
-        const result = await customerLoginAction(fd);
-        if (result && isActionFailure(result)) {
-          setError(resolveActionError(tErrors, result.error));
-        }
-      })}
+      onSubmit={handleFormSubmit}
+      noValidate
     >
       <PhoneCountryFields
         register={register}
@@ -75,7 +115,7 @@ export function CustomerLoginForm() {
       <Button
         type="submit"
         className="min-h-11 w-full bg-brand-purple hover:bg-brand-purple/90"
-        disabled={isSubmitting}
+        disabled={isPending}
       >
         {t("actions.continue")}
       </Button>

@@ -22,7 +22,7 @@ type EnrichedStampRow = {
   customer_cards: {
     current_stamps: number;
     customers: { name: string | null } | null;
-    loyalty_cards: { card_name: string; stamp_target: number } | null;
+    loyalty_cards: { card_name: string; stamp_target: number; min_spend: number; min_spend_currency: string } | null;
   } | null;
   merchant_locations: { name: string } | null;
 };
@@ -57,7 +57,7 @@ async function enrichPendingSession(
       customer_cards (
         current_stamps,
         customers ( name ),
-        loyalty_cards ( card_name, stamp_target )
+        loyalty_cards ( card_name, stamp_target, min_spend, min_spend_currency )
       ),
       merchant_locations ( name )
     `,
@@ -81,6 +81,8 @@ async function enrichPendingSession(
     branchName: enriched.merchant_locations?.name ?? null,
     currentStamps: card?.current_stamps ?? 0,
     stampTarget: card?.loyalty_cards?.stamp_target ?? 0,
+    minSpend: card?.loyalty_cards?.min_spend ?? 0,
+    minSpendCurrency: card?.loyalty_cards?.min_spend_currency ?? "NPR",
   };
 }
 

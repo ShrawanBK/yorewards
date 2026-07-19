@@ -12,6 +12,18 @@ export function invalidateCustomerWallet(
 ) {
   return queryClient.invalidateQueries({
     queryKey: walletQueryKeys.customer(customerId),
+    refetchType: "all",
+  });
+}
+
+/** Invalidate and wait for wallet data — use after stamp approval or new card. */
+export async function refreshCustomerWallet(
+  queryClient: QueryClient,
+  customerId: string,
+) {
+  await queryClient.invalidateQueries({
+    queryKey: walletQueryKeys.customer(customerId),
+    refetchType: "all",
   });
 }
 

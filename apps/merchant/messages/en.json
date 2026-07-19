@@ -10,7 +10,12 @@
     "switchToDark": "Switch to dark mode"
   },
   "a11y": {
-    "skipToMain": "Skip to main content"
+    "skipToMain": "Skip to main content",
+    "openNotifications": "Notifications{count, plural, =0 {} other {, {count} unread}}",
+    "disputesNavPending": "Disputes, {count, plural, one {# open} other {# open}}"
+  },
+  "locale": {
+    "label": "Language"
   },
   "nav": {
     "main": "Main navigation",
@@ -18,14 +23,19 @@
     "redeem": "Redeem",
     "analytics": "Analytics",
     "customers": "Customers",
+    "disputes": "Disputes",
+    "notifications": "Notifications",
     "business": "Business",
     "loyaltyCard": "Loyalty card",
+    "staff": "Team",
+    "billing": "Billing",
     "settings": "Settings",
     "logout": "Log out",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "switchBusiness": "Switch business",
     "switchBranch": "Counter branch",
+    "roleInBusiness": "Your role: {role}",
     "allBranchesHint": "Select which branch you are working at",
     "addBusiness": "Add another business",
     "success": {
@@ -62,7 +72,8 @@
     },
     "countries": {
       "NP": "Nepal",
-      "FI": "Finland"
+      "FI": "Finland",
+      "AU": "Australia"
     },
     "actions": {
       "signin": "Sign in",
@@ -71,6 +82,14 @@
     "password": {
       "show": "Show password",
       "hide": "Hide password"
+    },
+    "verifyEmail": {
+      "title": "Check your email",
+      "description": "We sent a verification link to activate your merchant account. Open the link, then sign in.",
+      "resend": "Resend verification email",
+      "resending": "Sending…",
+      "resentToast": "Verification email sent",
+      "backToLogin": "Back to sign in"
     },
     "errors": {
       "email": "Enter a valid email",
@@ -118,6 +137,7 @@
     },
     "status": {
       "pending": "Pending",
+      "pending_verification": "Pending verification",
       "active": "Active",
       "suspended": "Suspended",
       "rejected": "Rejected"
@@ -130,7 +150,11 @@
       "businessName": "Business name",
       "category": "Category",
       "country": "Country",
-      "phoneOptional": "Phone (optional)"
+      "phone": "Business phone",
+      "phoneOptional": "Phone (optional)",
+      "registrationNumber": "Registration / PAN number",
+      "websiteUrl": "Website or social profile",
+      "businessAddress": "Business address"
     },
     "details": {
       "title": "Account details",
@@ -144,22 +168,42 @@
       "businessName": "Helsinki Hair Studio",
       "category": "Salon",
       "phoneNP": "+977 98XXXXXXXX",
-      "phoneFI": "+358 4XXXXXXXX"
+      "phoneFI": "+358 4XXXXXXXX",
+      "phoneAU": "+61 4XXXXXXXX",
+      "registrationNumber": "PAN / company registration",
+      "websiteUrl": "https://instagram.com/yourbusiness",
+      "businessAddress": "Street, city"
+    },
+    "credibleHint": "We use these details to verify your business before you go live.",
+    "profileEdit": {
+      "title": "Business profile",
+      "subtitle": "Update your category, phone, and verification details."
     },
     "countries": {
       "NP": "Nepal",
-      "FI": "Finland"
+      "FI": "Finland",
+      "AU": "Australia"
     },
     "actions": {
-      "submit": "Submit for approval",
-      "back": "Back to dashboard"
+      "submit": "Create business",
+      "back": "Back to dashboard",
+      "saveProfile": "Save profile",
+      "savingProfile": "Saving…"
+    },
+    "success": {
+      "profileSaved": "Business profile saved."
     },
     "errors": {
       "businessName": "Business name is required",
       "category": "Category is required",
+      "phoneRequired": "Business phone is required",
+      "registrationNumber": "Enter your registration or PAN number",
+      "websiteUrl": "Enter a valid website or social profile URL",
+      "businessAddress": "Enter your full business address",
       "phone": {
         "NP": "Enter a valid Nepal mobile number (e.g. +977 98XXXXXXXX)",
-        "FI": "Enter a valid Finland mobile number (e.g. +358 4XXXXXXXX)"
+        "FI": "Enter a valid Finland mobile number (e.g. +358 4XXXXXXXX)",
+        "AU": "Enter a valid Australia mobile number (e.g. +61 4XXXXXXXX)"
       }
     }
   },
@@ -225,6 +269,10 @@
       "pending": {
         "label": "Pending approval",
         "description": "Your application is under review. Configure your loyalty card and branches while you wait — you'll go live as soon as an admin approves your account."
+      },
+      "pending_verification": {
+        "label": "Pending verification",
+        "description": "Verify your email to activate your account. Check your inbox for a confirmation link, then refresh this page."
       },
       "active": {
         "label": "Active",
@@ -348,9 +396,16 @@
     },
     "qr": {
       "title": "Branch QR codes",
-      "subtitle": "One loyalty card, many counters. Print a QR for each active branch.",
+      "subtitle": "Per-branch counter QR (one card, many counters). Download or print for each stamp-enabled branch.",
       "download": "Download PNG",
-      "noBranches": "Add at least one active branch to generate QR codes."
+      "print": "Print",
+      "noBranches": "Add at least one stamp-enabled branch to generate QR codes."
+    },
+    "branches": {
+      "title": "Branch availability",
+      "subtitle": "Choose which branches can stamp and redeem on this card. Leave all enabled to allow every branch.",
+      "stampAllowed": "Allow stamps",
+      "redeemAllowed": "Allow redemption"
     },
     "actions": {
       "save": "Save card settings"
@@ -371,12 +426,26 @@
     "unknownCustomer": "Customer",
     "progress": "{current} of {target} stamps collected",
     "expiresIn": "Expires in {time}",
+    "amountLabel": "Amount spent ({currency})",
+    "amountPlaceholder": "e.g. 450",
+    "amountRequired": "Enter the amount the customer spent before approving.",
+    "minSpendWarning": "Below minimum spend ({amount}) — you can still approve if the visit qualifies.",
+    "approve": "Approve",
+    "approving": "Approving…",
+    "reject": "Reject",
+    "quickRedeem": "Redeem code",
     "approveAria": "Approve stamp for {name}",
     "rejectAria": "Reject stamp for {name}",
     "rejectTitle": "Reject stamp request",
     "rejectDescription": "Optionally tell the customer why this request was rejected.",
     "rejectReasonLabel": "Reason (optional)",
+    "rejectReasonOptional": "No reason",
     "rejectReasonPlaceholder": "e.g. Minimum spend not met",
+    "rejectReasons": {
+      "min_spend_not_met": "Minimum spend not met",
+      "item_not_eligible": "Item not eligible",
+      "other": "Other"
+    },
     "cancel": "Cancel",
     "confirmReject": "Reject",
     "emptyTitle": "No pending requests",
@@ -390,6 +459,7 @@
     "demoLoyaltyAlertCta": "Go to loyalty card",
     "success": {
       "approved": "Stamp added for {customer} — one step closer to their reward!",
+      "approvedWithAmount": "Stamp added for {customer} ({amount} recorded).",
       "rejected": "{customer}'s request declined. They can scan again when ready.",
       "demoSeeded": "Demo queue is ready — try approving a stamp!"
     }
@@ -397,6 +467,11 @@
   "customers": {
     "title": "Customers",
     "subtitle": "Everyone collecting stamps at this business — filter by branch to see who visited a specific location.",
+    "upgrade": {
+      "title": "Customer CRM is a Starter feature",
+      "description": "Upgrade to see customer profiles, segments, private notes, and CSV export.",
+      "cta": "View plans"
+    },
     "loading": "Loading customers…",
     "branchFilter": "Branch",
     "allBranches": "All branches",
@@ -414,12 +489,54 @@
     },
     "table": {
       "name": "Customer",
+      "segment": "Segment",
+      "spend": "Total spend",
+      "visits": "Visits",
       "progress": "Stamps",
       "cycle": "Cycle",
       "status": "Status",
       "lastBranch": "Last branch",
       "lastVisit": "Last visit",
       "totalStamps": "All-time stamps"
+    },
+    "searchPlaceholder": "Search name or phone…",
+    "searchAria": "Search customers",
+    "sortAria": "Sort customers",
+    "sort": {
+      "spend": "Highest spend",
+      "visits": "Most visits",
+      "lastVisit": "Recent visit"
+    },
+    "noResults": "No customers match your search.",
+    "exportCsv": "Export CSV",
+    "exportStarterOnly": "CSV export is available on Starter plans and above.",
+    "openProfile": "View profile for {name}",
+    "segments": {
+      "vip": "VIP",
+      "regular": "Regular",
+      "at_risk": "At risk",
+      "new": "New",
+      "lapsed": "Lapsed"
+    },
+    "drawer": {
+      "loading": "Loading profile…",
+      "totalSpend": "Total spend",
+      "visits": "Visits",
+      "avgSpend": "Avg. per visit",
+      "lastVisit": "Last visit",
+      "stampHistory": "Stamp history",
+      "noVisits": "No approved visits yet.",
+      "rewardHistory": "Reward history",
+      "noRewards": "No rewards yet.",
+      "rewardRedeemed": "Redeemed",
+      "rewardPending": "Pending",
+      "notes": "Private notes",
+      "notesPlaceholder": "e.g. Prefers oat milk, birthday in March",
+      "saveNote": "Save note",
+      "savingNote": "Saving…"
+    },
+    "success": {
+      "noteSaved": "Note saved"
     }
   },
   "redemption": {
@@ -452,7 +569,11 @@
   },
   "analytics": {
     "title": "Analytics",
-    "subtitle": "Track stamps issued, rewards redeemed, and recent activity.",
+    "subtitle": "Track stamps issued, rewards redeemed, spend, and recent activity.",
+    "loading": "Loading analytics…",
+    "branchFilter": "Branch",
+    "allBranches": "All branches",
+    "branchFilterHint": "Spend metrics filter by branch; stamp counts are business-wide.",
     "stats": {
       "regionLabel": "Analytics overview",
       "collectors": "Active collectors",
@@ -475,6 +596,66 @@
         "stamp_voided": "Stamp voided",
         "redemption": "Reward redeemed"
       }
+    },
+    "spend": {
+      "title": "Spend analytics",
+      "revenue": "Loyalty revenue",
+      "avgVisit": "Avg. spend per visit",
+      "visitCount": "Approved visits",
+      "weekTrend": "Last 7 days",
+      "weekChartAria": "Bar chart of daily spend over the last seven days",
+      "empty": "No spend recorded yet. Amounts appear when staff approve stamp requests and enter how much the customer spent.",
+      "weekEmpty": "No spend in the last 7 days — older visits still count in loyalty revenue above."
+    }
+  },
+  "staff": {
+    "title": "Team",
+    "subtitle": "Invite cashiers and managers to help at the counter.",
+    "inviteTitle": "Invite team member",
+    "emailLabel": "Email",
+    "nameLabel": "Display name",
+    "roleLabel": "Role",
+    "inviteCta": "Send invite",
+    "inviting": "Sending…",
+    "listTitle": "Team members",
+    "remove": "Remove",
+    "roles": {
+      "owner": "Owner",
+      "manager": "Manager",
+      "cashier": "Cashier"
+    },
+    "status": {
+      "pending": "Invite pending",
+      "active": "Active",
+      "disabled": "Disabled"
+    },
+    "inviteSuccess": "Invite email sent",
+    "inviteSaved": "Invite saved",
+    "resend": "Resend email",
+    "resending": "Sending…",
+    "resendSuccess": "Invite email sent again",
+    "removeSuccess": "Team member removed",
+    "switcher": {
+      "title": "Counter staff",
+      "none": "No staff selected — approvals use your account.",
+      "active": "Acting as {name}",
+      "selectLabel": "Select staff member",
+      "selectPlaceholder": "Choose staff…",
+      "pinPlaceholder": "PIN",
+      "pinAria": "Staff PIN",
+      "switch": "Switch",
+      "switching": "Switching…",
+      "clear": "Clear"
+    }
+  },
+  "onboarding": {
+    "checklist": {
+      "title": "Complete your setup",
+      "subtitle": "{done} of {total} steps done",
+      "profile": "Complete business profile & phone",
+      "card": "Configure your loyalty card",
+      "qr": "Go live — print your QR code",
+      "cta": "Continue setup"
     }
   },
   "settings": {
@@ -483,9 +664,28 @@
     "account": {
       "title": "Account",
       "subtitle": "Your merchant login details.",
-      "email": "Email",
+      "emailLabel": "Email",
       "emailUnknown": "No email on file",
-      "signOutHint": "Use Log out in the sidebar to sign out of this device."
+      "signOutHint": "Use Log out in the sidebar to sign out of this device.",
+      "password": {
+        "title": "Change password",
+        "newLabel": "New password",
+        "confirmLabel": "Confirm password",
+        "show": "Show password",
+        "hide": "Hide password",
+        "submit": "Update password",
+        "saving": "Updating…",
+        "success": "Password updated"
+      },
+      "email": {
+        "title": "Change email",
+        "current": "Signed in as {email}",
+        "newLabel": "New email address",
+        "verifyHint": "We will send a confirmation link to the new address.",
+        "submit": "Update email",
+        "saving": "Updating…",
+        "success": "Check your inbox to confirm the new email"
+      }
     },
     "business": {
       "title": "Active business",
@@ -498,6 +698,7 @@
       "title": "Preferences",
       "subtitle": "Appearance and counter context.",
       "theme": "Color theme",
+      "language": "Language",
       "branch": "Counter branch",
       "branchUnknown": "Primary branch",
       "branchHint": "Change your counter branch from the sidebar when you have multiple locations."
@@ -505,18 +706,147 @@
     "legal": {
       "title": "Legal",
       "subtitle": "Privacy and data handling for YORewards.",
-      "privacy": "Privacy policy"
+      "privacy": "Privacy policy",
+      "terms": "Merchant subscription terms"
+    },
+    "promotions": {
+      "title": "Smart promotions",
+      "subtitle": "Automatically nudge customers when they are close to a reward."
+    },
+    "verification": {
+      "title": "Verified badge",
+      "subtitle": "Upload business documents for admin review.",
+      "status": "Current status: {status}"
+    }
+  },
+  "acceptInvite": {
+    "title": "Accept team invite",
+    "layoutSubheading": "Create an account with your invited email, or sign in if you already have one.",
+    "subtitle": "You're joining as {email}.",
+    "roleHint": "Invited role(s): {roles}",
+    "missingEmailTitle": "Invite link incomplete",
+    "missingEmailBody": "Open the invite link from your email again, or ask your manager to resend it.",
+    "notFoundTitle": "No pending invite",
+    "notFoundBody": "This invite may have expired or already been accepted.",
+    "tabs": {
+      "signin": "Sign in",
+      "signup": "Create account"
+    },
+    "fields": {
+      "email": "Invited email",
+      "password": "Password",
+      "confirmPassword": "Confirm password"
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password"
+    },
+    "actions": {
+      "signin": "Sign in and join team",
+      "signup": "Create account and join team"
+    },
+    "errors": {
+      "email": "Enter a valid email",
+      "password": "Password must be at least 6 characters",
+      "confirmPassword": "Passwords must match"
+    }
+  },
+  "billing": {
+    "title": "Billing",
+    "subtitle": "Manage your subscription and invoices.",
+    "plans": {
+      "free": "Free",
+      "starter": "Starter",
+      "growth": "Growth",
+      "enterprise": "Enterprise"
+    },
+    "currentPlan": {
+      "title": "Current plan",
+      "trialCountdown": "{days, plural, =0 {Trial ends today} one {# day left in trial} other {# days left in trial}}",
+      "freeHint": "Free includes 1 card, 50 customers, and 1 staff account."
+    },
+    "upgrade": {
+      "title": "Upgrade to Starter",
+      "starterBlurb": "NPR {price}/month after your 30-day free trial — CRM, CSV export, smart promotions, and verified badge.",
+      "termsPrefix": "I agree to the",
+      "termsLink": "merchant subscription terms",
+      "termsAria": "Accept merchant subscription terms",
+      "cta": "Start free trial with eSewa (sandbox)",
+      "pending": "Opening checkout…",
+      "sandboxNote": "Sandbox mode — no real charge. Completing checkout activates your Starter trial."
+    },
+    "invoices": {
+      "title": "Invoices",
+      "empty": "No invoices yet.",
+      "trial": "Trial",
+      "amount": "NPR {amount}"
+    },
+    "termsPage": {
+      "title": "Merchant subscription terms",
+      "updated": "Last updated July 2026",
+      "section1": {
+        "title": "Billing",
+        "body": "Paid plans renew monthly unless cancelled. Trials convert to paid unless you cancel before the trial ends."
+      },
+      "section2": {
+        "title": "Refunds",
+        "body": "Contact support for billing disputes. Failed payments receive a 7-day grace period before downgrade to Free."
+      },
+      "section3": {
+        "title": "Acceptance",
+        "body": "By starting a paid checkout you confirm you are authorized to bind this business to these terms."
+      }
+    }
+  },
+  "verification": {
+    "fields": {
+      "documentType": "Document type",
+      "file": "Upload file (PDF or image, max 5MB)"
+    },
+    "documentTypes": {
+      "registration": "Business registration",
+      "pan": "PAN / tax ID",
+      "businessLicense": "Business license",
+      "other": "Other"
+    },
+    "actions": {
+      "submit": "Submit for review",
+      "submitting": "Uploading…"
+    },
+    "success": {
+      "submitted": "Document submitted — we'll review it within 24 hours."
+    }
+  },
+  "promotions": {
+    "fields": {
+      "enabled": "Send “X more stamps” reminders",
+      "enabledAria": "Enable smart promotion reminders",
+      "threshold": "Notify when customer is this many stamps away"
+    },
+    "thresholdOptions": {
+      "one": "1 stamp away",
+      "two": "2 stamps away",
+      "three": "3 stamps away"
+    },
+    "hint": "Fires once per reward cycle when a stamp is approved.",
+    "actions": {
+      "save": "Save promotion settings",
+      "saving": "Saving…"
+    },
+    "success": {
+      "saved": "Promotion settings saved."
     }
   },
   "errors": {
     "actions": {
       "UNAUTHORIZED": "Please sign in to continue.",
+      "FORBIDDEN": "You don't have permission for that action.",
       "UNKNOWN": "That didn't work — give it another try in a moment.",
       "AUTH_FAILED": "We couldn't verify your session. Please sign in again.",
       "INVALID_CREDENTIALS": "That email or password doesn't look right. Double-check and try again.",
       "SIGN_IN_FAILED": "We couldn't sign you in right now. Please try again.",
       "SIGN_UP_FAILED": "We couldn't create your account yet. Please try again.",
-      "EMAIL_ALREADY_EXISTS": "You already have an account with this email — try signing in instead.",
+      "EMAIL_ALREADY_EXISTS": "We couldn't create your account yet. Please try again.",
       "BUSINESS_NOT_FOUND": "We couldn't find that business. Refresh the page and try again.",
       "BUSINESS_NOT_ACTIVE": "This unlocks once your business is approved — hang tight!",
       "INVALID_PHONE": "That phone number doesn't match the format for your selected country.",
@@ -538,6 +868,8 @@
       "LOYALTY_CARD_REWARD_VALUE_REQUIRED": "Tell us what they're earning (e.g. free coffee or 10% off).",
       "LOYALTY_CARD_REWARD_DESCRIPTION_REQUIRED": "Add reward text — this is what customers see on their card.",
       "LOYALTY_CARD_SAVE_FAILED": "We couldn't save your card — check the fields and try again.",
+      "LOYALTY_CARD_BRANCH_RULES_INVALID": "Branch settings are invalid — refresh and try again.",
+      "LOYALTY_CARD_BRANCH_STAMP_REQUIRED": "At least one branch must allow stamps.",
       "LOGO_FILE_REQUIRED": "Choose a logo image to upload.",
       "LOGO_FILE_TOO_LARGE": "That image is too large — keep it under 2MB.",
       "LOGO_FILE_TYPE_INVALID": "Use a JPG, PNG, or WebP image for your logo.",
@@ -551,6 +883,10 @@
       "STAMP_NOT_FOUND": "That stamp request is gone — it may have expired or been handled already.",
       "STAMP_EXPIRED": "This request timed out — the customer can scan your QR again.",
       "STAMP_NOT_PENDING": "Someone already handled this request.",
+      "STAMP_AMOUNT_REQUIRED": "Enter the amount spent before approving.",
+      "STAMP_AMOUNT_INVALID": "Enter a valid spend amount greater than zero.",
+      "STAMP_MIN_SPEND_NOT_MET": "Amount is below this card's minimum spend.",
+      "STAMP_BRANCH_NOT_ALLOWED": "This branch isn't allowed to stamp on this card.",
       "STAMP_APPROVE_FAILED": "We couldn't approve the stamp — please try again.",
       "STAMP_REJECT_REASON_TOO_LONG": "Keep the reason under 120 characters.",
       "STAMP_REJECT_FAILED": "We couldn't decline the request — please try again.",
@@ -559,7 +895,156 @@
       "DEMO_SEED_FAILED": "We couldn't create demo data — please try again.",
       "DEMO_NO_REDEMPTION_CODE": "Demo stamps loaded! Redemption codes DEMO01–DEMO99 are all in use.",
       "DEMO_REDEMPTION_CREATE_FAILED": "Demo stamps loaded, but we couldn't create a redemption code.",
-      "ANALYTICS_LOAD_FAILED": "We couldn't load analytics — refresh the page."
+      "ANALYTICS_LOAD_FAILED": "We couldn't load analytics — refresh the page.",
+      "CUSTOMER_DETAIL_LOAD_FAILED": "We couldn't load this customer profile — try again.",
+      "CUSTOMER_NOTE_SAVE_FAILED": "We couldn't save your note — try again.",
+      "CSV_EXPORT_NOT_ALLOWED": "CSV export requires a Starter plan or above.",
+      "CSV_EXPORT_FAILED": "We couldn't export customers — try again.",
+      "STAFF_INVITE_FAILED": "We couldn't send that invite — try again.",
+      "STAFF_PIN_INVALID": "That PIN doesn't match — try again.",
+      "STAFF_NOT_FOUND": "We couldn't find that team member.",
+      "STAFF_REMOVE_FAILED": "We couldn't remove that team member — try again.",
+      "PASSWORD_UPDATE_FAILED": "We couldn't update your password — try again.",
+      "PASSWORD_CONFIRM_MISMATCH": "Passwords don't match.",
+      "EMAIL_UPDATE_FAILED": "We couldn't update your email — try again.",
+      "EMAIL_INVALID": "Enter a valid email address.",
+      "PLAN_LIMIT_CUSTOMERS": "This business reached its Free plan customer limit (50). Ask them to upgrade to Starter.",
+      "PLAN_LIMIT_STAFF": "Your plan allows up to {limit} team members. Upgrade to invite more.",
+      "PLAN_LIMIT_CARDS": "Your plan limit for loyalty cards has been reached. Upgrade to add more.",
+      "PLAN_FEATURE_CRM": "Customer CRM requires a Starter plan or above.",
+      "PLAN_FEATURE_REQUIRED": "This feature requires a paid plan.",
+      "BILLING_CHECKOUT_FAILED": "We couldn't start checkout — please try again.",
+      "BILLING_TERMS_REQUIRED": "Accept the subscription terms before checkout.",
+      "BILLING_TRIAL_ALREADY_USED": "You already have an active trial or paid plan.",
+      "VERIFICATION_UPLOAD_FAILED": "We couldn't upload that document — try again.",
+      "VERIFICATION_DOC_REQUIRED": "Choose a document to upload.",
+      "ONBOARDING_FIELDS_REQUIRED": "Complete all credible business fields before going live.",
+      "EMAIL_NOT_VERIFIED": "Verify your email before your business can go live.",
+      "EMAIL_VERIFICATION_RESEND_FAILED": "We couldn't resend the verification email — please try again.",
+      "STAFF_INVITE_NOT_FOUND": "No pending team invite for this email.",
+      "STAFF_INVITE_EMAIL_MISMATCH": "Use the same email address that received the invite.",
+      "STAFF_INVITE_EMAIL_DEFERRED": "Invite saved, but we couldn't send email — check Supabase Auth email settings or use Resend email.",
+      "DISPUTE_NOT_FOUND": "This dispute wasn't found.",
+      "DISPUTE_ALREADY_RESOLVED": "This dispute was already handled.",
+      "DISPUTE_RESPONSE_REQUIRED": "Add a resolution note — at least 10 characters.",
+      "DISPUTE_RESOLVE_FAILED": "We couldn't update this dispute — try again.",
+      "NOTIFICATIONS_LOAD_FAILED": "We couldn't load notifications — try again.",
+      "NOTIFICATIONS_UPDATE_FAILED": "We couldn't update notifications — try again.",
+      "STAMP_ISSUE_FAILED": "We couldn't issue the stamp — try again."
+    }
+  },
+  "disputes": {
+    "title": "Stamp disputes",
+    "subtitle": "Review missing-stamp claims from customers. Respond within 48 hours under your service level agreement.",
+    "pendingTitle": "Awaiting review ({count})",
+    "pendingEmpty": "No open disputes — you're all caught up.",
+    "pendingEmptyTitle": "Inbox clear",
+    "resolvedTitle": "Recently resolved",
+    "unknownCustomer": "Customer",
+    "visitSummary": "Visit {date} · {amount}",
+    "responseLabel": "Resolution note",
+    "filedAt": "Filed {date}",
+    "openDetail": "Open dispute",
+    "summary": {
+      "open": "Open",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "card": {
+      "claimLabel": "Missing stamp claim",
+      "amountLabel": "Claimed amount",
+      "visitLabel": "Visit date",
+      "filedLabel": "Filed",
+      "customerNote": "Customer note"
+    },
+    "resolveSectionTitle": "Your resolution",
+    "noteLabel": "Resolution note (required)",
+    "notePlaceholder": "Explain your decision for the customer and audit log…",
+    "noteHint": "At least 10 characters required.",
+    "rejectCta": "Reject",
+    "approveNoStampCta": "Approve (no stamp)",
+    "approveWithStampCta": "Approve & add stamp",
+    "resolving": "Resolving…",
+    "refreshing": "Syncing latest disputes…",
+    "responseDeadline": {
+      "on_track": "Within agreement",
+      "due": "Due soon",
+      "overdue": "Past agreement"
+    },
+    "deadlineDueAlert": "This dispute is approaching the 48-hour service level agreement. Please respond soon.",
+    "deadlineOverdueAlert": "This dispute is past the 48-hour service level agreement. Admin may step in if you do not resolve it.",
+    "status": {
+      "pending": "Open",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "detail": {
+      "title": "Dispute details",
+      "subtitle": "Review the claim and approve or reject with a response.",
+      "backToList": "Back to disputes",
+      "switchingBusiness": "Switching to {business}…",
+      "switchingBusinessHint": "Opening this dispute for the correct business."
+    },
+    "success": {
+      "approved": "Dispute approved",
+      "approvedWithStamp": "Dispute approved — stamp added",
+      "rejected": "Dispute rejected"
+    }
+  },
+  "notifications": {
+    "centre": {
+      "button": "Notifications",
+      "title": "Notifications",
+      "description": "Alerts about disputes, approvals, and account activity.",
+      "markRead": "Mark read",
+      "markAllRead": "Mark all read",
+      "unread": "Unread",
+      "read": "Read",
+      "allRead": "All read",
+      "unreadCount": "{count, plural, one {# unread} other {# unread}}",
+      "unreadSummary": "{count, plural, =0 {No unread notifications} one {1 unread notification} other {# unread notifications}}",
+      "totalCount": "{count, plural, one {# notification total} other {# notifications total}}",
+      "categoryUnreadSummary": "{unread} unread of {total} in this category",
+      "refreshing": "Refreshing…",
+      "emptyTitle": "All caught up",
+      "emptyDescription": "New alerts will appear here.",
+      "promotionsEmptyTitle": "No promotions yet",
+      "promotionsEmptyDescription": "Merchant offers and boosts will show up here later."
+    },
+    "categories": {
+      "all": "All",
+      "disputes": "Disputes",
+      "account": "Account",
+      "promotions": "Promotions"
+    },
+    "actions": {
+      "openDispute": "Open dispute",
+      "openDashboard": "Open dashboard",
+      "view": "View"
+    },
+    "disputeFiled": {
+      "title": "New stamp dispute",
+      "body": "{customerName, select, null {A customer} other {{customerName}}} disputed a visit at {businessName}."
+    },
+    "disputeResolved": {
+      "title": "Dispute update",
+      "body": "Your dispute with {businessName} was {status}."
+    },
+    "disputeSlaBreach": {
+      "title": "Dispute SLA breach",
+      "body": "A dispute for {merchantName} passed the 48-hour merchant SLA."
+    },
+    "rewardUnlocked": {
+      "title": "Reward ready!",
+      "body": "You unlocked a reward on {cardName} at {businessName}."
+    },
+    "merchantApproved": {
+      "title": "Business approved",
+      "body": "{businessName} is live on YORewards."
+    },
+    "smartPromo": {
+      "title": "Almost there",
+      "body": "Only {stampsRemaining} more stamp(s) to unlock your reward at {businessName}."
     }
   }
 }

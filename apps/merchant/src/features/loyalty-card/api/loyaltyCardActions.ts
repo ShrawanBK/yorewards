@@ -9,6 +9,11 @@ import {
   updateMerchantBranding,
   upsertLoyaltyCardForMerchant,
 } from "@repo/supabase/queries/loyalty-cards";
+import {
+  replaceLoyaltyCardLocationRules,
+  type LoyaltyCardLocationRule,
+} from "@repo/supabase/queries/loyalty-card-locations";
+import { getActiveLocationsByMerchantId } from "@repo/supabase/queries/locations";
 import type { CurrencyCode, RewardType } from "@repo/supabase/types";
 import { fail, logActionFailure } from "@repo/utils/action-error";
 import type { ActionFailure, ActionResult } from "@/shared/types/action-result";
@@ -97,12 +102,35 @@ export async function saveLoyaltyCardConfigAction(
   if (!rewardValue) return fail("LOYALTY_CARD_REWARD_VALUE_REQUIRED");
   if (!rewardDescription) return fail("LOYALTY_CARD_REWARD_DESCRIPTION_REQUIRED");
 
+  const locationRulesRaw = String(formData.get("location_rules") ?? "").trim();
+  let locationRules: LoyaltyCardLocationRule[] = [];
+  if (locationRulesRaw) {
+    try {
+      const parsed = JSON.parse(locationRulesRaw) as LoyaltyCardLocationRule[];
+      if (!Array.isArray(parsed)) {
+        return fail("LOYALTY_CARD_BRANCH_RULES_INVALID");
+      }
+      locationRules = parsed.filter(
+        (rule) =>
+          typeof rule.locationId === "string" &&
+          typeof rule.stampAllowed === "boolean" &&
+          typeof rule.redeemAllowed === "boolean",
+      );
+    } catch {
+      return fail("LOYALTY_CARD_BRANCH_RULES_INVALID");
+    }
+  }
+
+  if (locationRules.length > 0 && !locationRules.some((r) => r.stampAllowed)) {
+    return fail("LOYALTY_CARD_BRANCH_STAMP_REQUIRED");
+  }
+
   try {
     await updateMerchantBranding(merchantId, {
       primary_color: primaryColor,
     });
 
-    await upsertLoyaltyCardForMerchant(merchantId, {
+    const loyaltyCard = await upsertLoyaltyCardForMerchant(merchantId, {
       card_name: cardName,
       description,
       stamp_target: stampTarget,
@@ -114,10 +142,21 @@ export async function saveLoyaltyCardConfigAction(
       is_active: true,
     });
 
+    const activeLocations = await getActiveLocationsByMerchantId(merchantId);
+    await replaceLoyaltyCardLocationRules(
+      loyaltyCard.id,
+      locationRules,
+      activeLocations.map((location) => location.id),
+    );
+
     revalidateLoyaltyCardPaths();
     return {};
   } catch (e) {
     logActionFailure("saveLoyaltyCardConfig", e);
+    const message = e instanceof Error ? e.message : "";
+    if (message.includes("plan_limit_cards")) {
+      return fail("PLAN_LIMIT_CARDS");
+    }
     return fail("LOYALTY_CARD_SAVE_FAILED");
   }
 }

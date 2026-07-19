@@ -8,6 +8,12 @@ export async function proxy(request: NextRequest) {
     if (pathname === "/sw.js" || pathname.startsWith("/workbox-")) {
       return new NextResponse(null, { status: 404 });
     }
+    if (
+      pathname.startsWith("/_next/webpack-hmr") ||
+      pathname.startsWith("/_next/turbopack")
+    ) {
+      return NextResponse.next({ request });
+    }
   }
 
   return updateSession(request);
@@ -15,6 +21,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|_next/webpack-hmr|_next/turbopack|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

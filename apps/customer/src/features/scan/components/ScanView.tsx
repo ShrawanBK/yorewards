@@ -3,14 +3,18 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { Button } from "@repo/ui/button";
+import { useAuthStore } from "@/features/auth";
 import { submitStampScanAction } from "@/features/scan/api/scanActions";
 import { QrScanner } from "@/features/scan/components/QrScanner";
+import { ManualStampPicker } from "@/features/scan/components/ManualStampPicker";
 import {
   parseLoyaltyQrParams,
   parseLoyaltyQrText,
 } from "@/features/scan/utils/parseLoyaltyQr";
+import { refreshCustomerWallet } from "@/features/wallet/api/walletQueries";
 import { resolveActionError } from "@/shared/utils/resolve-action-error";
 import { isActionFailure } from "@/shared/types/action-result";
 
@@ -22,9 +26,12 @@ export function ScanView({ searchParams }: ScanViewProps) {
   const t = useTranslations("scan");
   const tErrors = useTranslations("errors.actions");
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const customerId = useAuthStore((s) => s.customerId);
   const [error, setError] = useState<string | null>(null);
   const [errorCode, setErrorCode] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [showManual, setShowManual] = useState(false);
   const [scannerKey, setScannerKey] = useState(0);
   const processedDeepLink = useRef(false);
 
@@ -63,15 +70,21 @@ export function ScanView({ searchParams }: ScanViewProps) {
       }
 
       if ("redirectTo" in result && result.redirectTo) {
+        if (customerId) {
+          await refreshCustomerWallet(queryClient, customerId);
+        }
         router.push(result.redirectTo);
         return;
       }
 
       if ("sessionId" in result) {
+        if (customerId) {
+          await refreshCustomerWallet(queryClient, customerId);
+        }
         router.push(`/stamp/pending/${result.sessionId}`);
       }
     },
-    [busy, router, tErrors, resetScanner],
+    [busy, router, tErrors, resetScanner, queryClient, customerId],
   );
 
   const handleScan = useCallback(
@@ -106,7 +119,21 @@ export function ScanView({ searchParams }: ScanViewProps) {
         <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
       </div>
 
-      <QrScanner key={scannerKey} onScan={handleScan} paused={busy} />
+      <QrScanner key={scannerKey} onScan={handleScan} paused={busy || showManual} />
+
+      <Button
+        type="button"
+        variant="outline"
+        className="min-h-11 w-full"
+        onClick={() => setShowManual((v) => !v)}
+        aria-expanded={showManual}
+      >
+        {showManual ? t("hideManual") : t("manualCta")}
+      </Button>
+
+      {showManual ? (
+        <ManualStampPicker disabled={busy} onSelect={handlePayload} />
+      ) : null}
 
       {busy ? (
         <p className="text-center text-sm text-muted-foreground">

@@ -17,6 +17,13 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_YOREWARDS_APP: "customer",
   },
+  // Update when your LAN IP changes (ipconfig). Phone must match an entry here.
+  allowedDevOrigins: [
+    "localhost:3000",
+    "127.0.0.1:3000",
+    "192.168.68.104", // Local IP?
+    "192.168.68.104:3000", // Local IP
+  ],
 };
 
 export default withPWA(withNextIntl(nextConfig));

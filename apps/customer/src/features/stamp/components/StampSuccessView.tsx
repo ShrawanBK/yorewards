@@ -9,6 +9,10 @@ import type { StampSuccessDetails } from "@/features/stamp/types/stamp.types";
 
 type StampSuccessViewProps = StampSuccessDetails;
 
+function formatAmount(amount: number, currency: string) {
+  return `${currency} ${amount.toLocaleString()}`;
+}
+
 function isRewardReady(rewardStatus: StampSuccessDetails["rewardStatus"]): boolean {
   return rewardStatus === "pending_otp" || rewardStatus === "unlocked";
 }
@@ -20,6 +24,8 @@ export function StampSuccessView({
   rewardStatus,
   cardName,
   businessName,
+  amountSpent,
+  currency,
 }: StampSuccessViewProps) {
   const t = useTranslations("stamp.success");
   const shouldReduceMotion = useReducedMotion();
@@ -29,12 +35,12 @@ export function StampSuccessView({
     <div className="flex flex-1 flex-col items-center justify-center gap-6 p-6 text-center">
       <motion.div
         className="flex size-24 items-center justify-center rounded-full bg-brand-purple/10 text-brand-purple"
-        initial={shouldReduceMotion ? false : { scale: 0 }}
-        animate={{ scale: shouldReduceMotion ? 1 : [0, 1.15, 1] }}
+        initial={shouldReduceMotion ? false : { scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
         transition={
           shouldReduceMotion
             ? { duration: 0 }
-            : { duration: 0.3, type: "spring", stiffness: 400, damping: 15 }
+            : { type: "tween", duration: 0.35, ease: [0.34, 1.56, 0.64, 1] }
         }
       >
         <Stamp className="size-12" aria-hidden />
@@ -49,6 +55,11 @@ export function StampSuccessView({
         <p className="text-lg font-semibold text-brand-purple">
           {t("progress", { current: currentStamps, target: stampTarget })}
         </p>
+        {amountSpent != null && amountSpent > 0 ? (
+          <p className="text-sm text-muted-foreground">
+            {t("spent", { amount: formatAmount(amountSpent, currency) })}
+          </p>
+        ) : null}
       </div>
 
       {rewardReady ? (

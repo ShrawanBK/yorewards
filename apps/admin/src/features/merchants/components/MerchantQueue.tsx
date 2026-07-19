@@ -21,6 +21,7 @@ type FilterValue = "all" | MerchantStatus;
 
 const STATUS_ORDER: MerchantStatus[] = [
   "pending",
+  "pending_verification",
   "active",
   "suspended",
   "rejected",
@@ -48,6 +49,7 @@ export function MerchantQueue({ merchants }: { merchants: Merchant[] }) {
     const base: Record<FilterValue, number> = {
       all: merchants.length,
       pending: 0,
+      pending_verification: 0,
       active: 0,
       suspended: 0,
       rejected: 0,

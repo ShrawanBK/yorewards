@@ -6,7 +6,10 @@ import type { MerchantRow } from "@repo/supabase/queries/merchants";
 import type { PendingStampQueueItem } from "@repo/supabase/queries/stamps";
 import type { Database } from "@repo/supabase/types";
 import { getTranslations } from "next-intl/server";
+import { getMerchantRoleForUser } from "@repo/supabase/queries/merchant-staff";
 import { MerchantStatusPanel } from "@/features/dashboard";
+import { SetupChecklist } from "@/features/onboarding/components/SetupChecklist";
+import { isMerchantProfileComplete } from "@/features/business/utils/credibleOnboarding";
 import { StampQueuePanel } from "@/features/stamp-queue";
 import { PageHeader } from "@/shared/ui/PageHeader";
 
@@ -27,14 +30,17 @@ export async function MerchantDashboard({
   metrics,
   pendingQueue,
   activeBranchName,
+  userId,
 }: {
   merchants: MerchantRow[];
   merchant: Merchant;
   metrics: DashboardMetrics;
   pendingQueue: PendingStampQueueItem[];
   activeBranchName: string | null;
+  userId: string;
 }) {
   const t = await getTranslations("dashboard");
+  const role = await getMerchantRoleForUser(userId, merchant.id);
 
   const quickActions = [
     {
@@ -43,30 +49,38 @@ export async function MerchantDashboard({
       title: t("quickActions.redeem.title"),
       description: t("quickActions.redeem.description"),
     },
-    {
-      href: "/merchant/analytics",
-      icon: Stamp,
-      title: t("quickActions.analytics.title"),
-      description: t("quickActions.analytics.description"),
-    },
-    {
-      href: "/merchant/business",
-      icon: Building2,
-      title: t("quickActions.business.title"),
-      description: t("quickActions.business.description"),
-    },
-    {
-      href: "/merchant/loyalty-card",
-      icon: CreditCard,
-      title: t("quickActions.loyaltyCard.title"),
-      description: t("quickActions.loyaltyCard.description"),
-    },
-    {
-      href: "/merchant/settings",
-      icon: Settings,
-      title: t("quickActions.settings.title"),
-      description: t("quickActions.settings.description"),
-    },
+    ...(role !== "cashier"
+      ? [
+          {
+            href: "/merchant/analytics",
+            icon: Stamp,
+            title: t("quickActions.analytics.title"),
+            description: t("quickActions.analytics.description"),
+          },
+        ]
+      : []),
+    ...(role === "owner"
+      ? [
+          {
+            href: "/merchant/business",
+            icon: Building2,
+            title: t("quickActions.business.title"),
+            description: t("quickActions.business.description"),
+          },
+          {
+            href: "/merchant/loyalty-card",
+            icon: CreditCard,
+            title: t("quickActions.loyaltyCard.title"),
+            description: t("quickActions.loyaltyCard.description"),
+          },
+          {
+            href: "/merchant/settings",
+            icon: Settings,
+            title: t("quickActions.settings.title"),
+            description: t("quickActions.settings.description"),
+          },
+        ]
+      : []),
   ] as const;
 
   return (
@@ -75,6 +89,14 @@ export async function MerchantDashboard({
         title={t("welcome", { name: merchant.business_name })}
         description={t("subtitle")}
       />
+
+      {role === "owner" ? (
+        <SetupChecklist
+          profileComplete={isMerchantProfileComplete(merchant)}
+          loyaltyCardConfigured={metrics.loyaltyCardConfigured}
+          merchantActive={merchant.status === "active"}
+        />
+      ) : null}
 
       <StampQueuePanel
         merchantId={merchant.id}

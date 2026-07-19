@@ -10,6 +10,12 @@
     "profile": "Profile",
     "aria": "Main navigation"
   },
+  "locale": {
+    "label": "Language"
+  },
+  "a11y": {
+    "openNotifications": "Notifications{count, plural, =0 {} other {, {count} unread}}"
+  },
   "auth": {
     "login": {
       "title": "Welcome to YORewards",
@@ -17,7 +23,7 @@
     },
     "onboarding": {
       "title": "Almost there",
-      "subtitle": "Tell us your name to finish setting up your wallet.",
+      "subtitle": "Tell us your name, then verify your phone with a code.",
       "phoneLabel": "Phone"
     },
     "fields": {
@@ -27,26 +33,43 @@
     },
     "dialCodes": {
       "NP": "+977",
-      "FI": "+358"
+      "FI": "+358",
+      "AU": "+61"
     },
     "countries": {
       "NP": "Nepal",
-      "FI": "Finland"
+      "FI": "Finland",
+      "AU": "Australia"
     },
     "placeholders": {
       "phoneNP": "98XXXXXXXX",
       "phoneFI": "4XXXXXXXX",
+      "phoneAU": "4XXXXXXXX",
       "name": "e.g. Sita Sharma"
     },
     "actions": {
       "continue": "Continue",
-      "start": "Get started",
+      "start": "Send verification code",
       "backToLogin": "Back to login"
+    },
+    "otp": {
+      "sentHint": "We sent a 6-digit code to",
+      "otpLabel": "Verification code",
+      "otpPlaceholder": "000000",
+      "otpInvalid": "Enter the 6-digit code from your SMS",
+      "submit": "Verify and continue",
+      "verifying": "Verifying…",
+      "sending": "Sending code…",
+      "resend": "Resend code",
+      "changeDetails": "Change name",
+      "sentToast": "Verification code sent",
+      "resentToast": "New code sent"
     },
     "errors": {
       "phoneRequired": "Enter your phone number",
       "phoneNP": "Enter a valid Nepal mobile (e.g. 98XXXXXXXX)",
       "phoneFI": "Enter a valid Finland mobile (e.g. 4XXXXXXXX or 04XXXXXXXX)",
+      "phoneAU": "Enter a valid Australia mobile (e.g. 4XXXXXXXX or 04XXXXXXXX)",
       "name": "Name is required",
       "missingPhone": "Missing phone. Go back to login."
     }
@@ -58,6 +81,7 @@
     "title": "Profile",
     "name": "Name",
     "phone": "Phone",
+    "disputesLink": "My stamp disputes",
     "privacyLink": "Privacy policy",
     "requestDeletion": "Request data deletion",
     "requestDeletionHint": "We'll process GDPR deletion requests by email.",
@@ -117,6 +141,14 @@
       "title": "You have a reward ready to claim",
       "description": "Open a card below to verify your phone and get your redemption code."
     },
+    "searchPlaceholder": "Search cards…",
+    "searchAria": "Search loyalty cards",
+    "sortAria": "Sort cards",
+    "sortRecent": "Most recent",
+    "sortRewardReady": "Reward ready first",
+    "rewardHistory": "Reward history",
+    "insights": "Spending insights",
+    "noResults": "No cards match your search.",
     "empty": {
       "title": "No cards yet",
       "description": "Scan a QR code at a participating business to collect your first stamp.",
@@ -133,7 +165,19 @@
     "retryCamera": "Allow camera",
     "requestingCamera": "Requesting access…",
     "backToWallet": "Back to wallet",
-    "signInAgain": "Sign in again"
+    "signInAgain": "Sign in again",
+    "manualCta": "Can't scan?",
+    "hideManual": "Hide manual entry",
+    "manual": {
+      "title": "Enter manually",
+      "subtitle": "Pick the business and branch where you visited.",
+      "loading": "Loading businesses…",
+      "merchantLabel": "Business",
+      "merchantPlaceholder": "Select a business",
+      "branchLabel": "Branch",
+      "branchPlaceholder": "Select a branch",
+      "submit": "Request stamp"
+    }
   },
   "stamp": {
     "pending": {
@@ -148,7 +192,8 @@
       "rewardReady": "You've reached your reward — claim it now.",
       "claimReward": "Claim reward",
       "backToWallet": "Back to wallet",
-      "scanAgain": "Scan again"
+      "scanAgain": "Scan again",
+      "spent": "You spent {amount} on this visit"
     },
     "rejected": {
       "title": "Stamp not added",
@@ -184,6 +229,101 @@
       "copied": "Copied!",
       "copyAria": "Copy redemption code to clipboard",
       "codeAria": "Redemption code {code}"
+    },
+    "insights": {
+      "title": "Your visits",
+      "totalSpent": "Total spent",
+      "avgSpent": "Avg. per visit",
+      "visits": "Visits",
+      "lastVisit": "Last visit",
+      "noVisits": "—"
+    },
+    "visits": {
+      "title": "Visit history",
+      "unknownBranch": "Branch"
+    }
+  },
+  "dispute": {
+    "title": "Missing a stamp?",
+    "subtitle": "Tell us about a visit that wasn't recorded. The merchant will review your request.",
+    "openForm": "File a dispute",
+    "cancel": "Cancel",
+    "visitDate": "Visit date",
+    "amount": "Amount spent",
+    "description": "What happened?",
+    "descriptionPlaceholder": "e.g. I paid NPR 500 but didn't get a stamp",
+    "submit": "Submit dispute",
+    "submitting": "Submitting…",
+    "historyTitle": "Your disputes",
+    "resolutionLabel": "Resolution",
+    "pendingHint": "Waiting for the merchant to respond (within 48 hours).",
+    "pendingBlocked": "You already have an open dispute for this card. We'll notify you when it's resolved.",
+    "filedAt": "Filed {date}",
+    "card": {
+      "merchantClaim": "Missing stamp claim",
+      "visitClaim": "Visit claim",
+      "amountLabel": "Amount",
+      "visitLabel": "Visit",
+      "yourNote": "Your note"
+    },
+    "status": {
+      "pending": "Under review",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "list": {
+      "title": "Stamp disputes",
+      "subtitle": "Track requests you've filed when a stamp was missing.",
+      "back": "Back to profile",
+      "emptyTitle": "No disputes yet",
+      "emptyDescription": "If a visit wasn't stamped, you can file a dispute from that loyalty card.",
+      "emptyPending": "No open disputes.",
+      "emptyApproved": "No approved disputes yet.",
+      "emptyRejected": "No rejected disputes.",
+      "tabs": {
+        "pending": "Open",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      }
+    },
+    "success": {
+      "submitted": "Dispute submitted",
+      "hint": "The merchant will review your request. You'll see updates here."
+    }
+  },
+  "insights": {
+    "title": "Spending insights",
+    "subtitle": "See how much you've spent at YoRewards merchants.",
+    "back": "Back to wallet",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "monthlyTotal": "This month",
+    "noSpend": "No spending recorded this month yet.",
+    "vsLastMonth": "{amount} {direction} than last month",
+    "more": "more",
+    "less": "less",
+    "stampsThisMonth": "{count, plural, one {# stamp} other {# stamps}} earned this month",
+    "byMerchant": "By merchant",
+    "chartAria": "Bar chart of spending by merchant this month",
+    "dailyTrend": "Daily spending",
+    "dailyTrendAria": "Line chart of daily spending for the selected month",
+    "historyTitle": "Spending history",
+    "filterMerchant": "Filter by merchant",
+    "allMerchants": "All merchants",
+    "minAmountPlaceholder": "Min. amount",
+    "minAmountAria": "Minimum spend amount filter",
+    "historyEmpty": "No visits match your filters.",
+    "unknownBranch": "Branch"
+  },
+  "rewardHistory": {
+    "title": "Reward history",
+    "back": "Back to wallet",
+    "empty": "No rewards yet — collect stamps to earn your first reward.",
+    "status": {
+      "active": "Active",
+      "redeemed": "Redeemed",
+      "expired": "Expired",
+      "earned": "Earned"
     }
   },
   "reward": {
@@ -239,13 +379,80 @@
       "SCAN_LOCATION_INVALID": "This branch isn't valid for scanning.",
       "SCAN_SESSION_FAILED": "We couldn't start your stamp request — please try again.",
       "SCAN_CAMERA_DENIED": "Camera access is required to scan.",
+      "STAMP_BRANCH_NOT_ALLOWED": "This branch can't stamp on this card right now.",
+      "STAMP_RATE_LIMITED": "Too many scan attempts — wait a moment and try again.",
+      "PLAN_LIMIT_CUSTOMERS": "This business has reached its customer limit on the Free plan. Ask the merchant to upgrade.",
       "STAMP_SESSION_NOT_FOUND": "Stamp request not found.",
       "OTP_SEND_FAILED": "We couldn't send the verification code — please try again.",
       "OTP_INVALID": "That code isn't correct — check the SMS and try again.",
       "OTP_EXPIRED": "That code has expired — request a new one.",
       "OTP_RATE_LIMITED": "Too many code requests — wait a few minutes and try again.",
+      "EMAIL_NOT_VERIFIED": "Verify your email before your business can go live.",
+      "EMAIL_VERIFICATION_RESEND_FAILED": "We couldn't resend the verification email — please try again.",
       "REWARD_NOT_READY": "This reward isn't ready to claim yet.",
-      "REDEMPTION_CREATE_FAILED": "We couldn't create your redemption code — please try again."
+      "REDEMPTION_CREATE_FAILED": "We couldn't create your redemption code — please try again.",
+      "STAMP_CATALOG_LOAD_FAILED": "We couldn't load businesses — please try again.",
+      "DISPUTE_DESCRIPTION_INVALID": "Describe what happened — at least 10 characters.",
+      "DISPUTE_AMOUNT_INVALID": "Enter a valid amount spent on your visit.",
+      "DISPUTE_VISIT_DATE_REQUIRED": "Select the date of your visit.",
+      "DISPUTE_LIMIT_EXCEEDED": "You've reached the dispute limit for this business this month.",
+      "DISPUTE_SUBMIT_FAILED": "We couldn't submit your dispute — please try again.",
+      "INSIGHTS_LOAD_FAILED": "We couldn't load your spending insights — please try again.",
+      "NOTIFICATIONS_LOAD_FAILED": "We couldn't load notifications — please try again.",
+      "NOTIFICATIONS_UPDATE_FAILED": "We couldn't update notifications — please try again."
+    }
+  },
+  "notifications": {
+    "centre": {
+      "title": "Notifications",
+      "description": "Updates about disputes, rewards, and promotions.",
+      "markRead": "Mark read",
+      "markAllRead": "Mark all read",
+      "unread": "Unread",
+      "unreadCount": "{count, plural, one {# unread} other {# unread}}",
+      "refreshing": "Refreshing…",
+      "emptyTitle": "All caught up",
+      "emptyDescription": "New alerts will appear here.",
+      "promotionsEmptyTitle": "No promotions yet",
+      "promotionsEmptyDescription": "Merchant offers and boosts will show up here later."
+    },
+    "categories": {
+      "all": "All",
+      "disputes": "Disputes",
+      "rewards": "Rewards",
+      "promotions": "Promotions"
+    },
+    "actions": {
+      "openCard": "Open card",
+      "openReward": "Claim reward",
+      "openDisputes": "View disputes",
+      "view": "View"
+    },
+    "disputeFiled": {
+      "title": "New stamp dispute",
+      "body": "{customerName, select, null {A customer} other {{customerName}}} disputed a visit at {businessName}."
+    },
+    "disputeResolved": {
+      "title": "Dispute update",
+      "body": "Your dispute with {businessName} was {status}.",
+      "bodyApproved": "Your dispute with {businessName} was approved.",
+      "bodyRejected": "Your dispute with {businessName} was rejected."
+    },
+    "disputeSlaBreach": {
+      "title": "Dispute SLA breach",
+      "body": "A dispute for {merchantName} passed the 48-hour merchant SLA."
+    },
+    "rewardUnlocked": {
+      "title": "Reward ready!",
+      "body": "You unlocked a reward on {cardName} at {businessName}."
+    },
+    "merchantApproved": {
+      "title": "Business approved",
+      "body": "{businessName} is live on YORewards."
+    },
+    "smartPromo": {
+      "title": "Almost there",
+      "body": "Only {stampsRemaining} more stamp(s) to unlock your reward at {businessName}."
     }
   }
 }

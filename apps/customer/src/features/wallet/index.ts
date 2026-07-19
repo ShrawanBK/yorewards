@@ -9,6 +9,7 @@ export {
   walletQueryKeys,
   invalidateCustomerWallet,
   invalidateCustomerCard,
+  refreshCustomerWallet,
 } from "./api/walletQueries";
 export type { CustomerWalletCard } from "./types/wallet.types";
 export type { CustomerCardDetail } from "./types/card-detail.types";

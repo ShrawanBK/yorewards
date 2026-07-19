@@ -1,0 +1,46 @@
+---
+description: Customer PWA UI — light theme, mobile-first, PWA shell, bottom nav, accessibility. Applies to apps/customer.
+globs:
+  - apps/customer/**
+---
+
+# Customer PWA — UI Conventions
+
+The customer app (`app.yorewards.com.np`) is a **mobile-first, light-theme installable PWA** — the opposite of the merchant dashboard (dark, desktop). Do not copy merchant tokens here.
+
+## Foundations
+
+- **Font:** Geist / Geist Mono (`--font-geist-sans`, `--font-geist-mono`) — set in `app/layout.tsx`. Do not add Plus Jakarta Sans (that's merchant).
+- **Theme:** light. Brand accent is violet (`rgb(124 58 237)` ≈ `violet-600`). Use `@repo/ui` primitives + Tailwind tokens; avoid hardcoded hex in components except where matching existing brand animations.
+- **UI primitives:** import from `@repo/ui/*` (shadcn). Toaster is mounted in root layout (`@repo/ui/sonner`) — trigger via the shared feedback helpers, don't add another `<Toaster>`.
+
+## Structure
+
+- Routing dir is `app/` with route groups: `(public)` (marketing/landing), `(auth)` (sign-in/up), `(main)` (authenticated wallet shell), and `stamp` (scan/approve flow).
+- `(main)` renders `@/widgets/CustomerProtectedShell`; auth pages use `@/widgets/CustomerAuthLayout`. Compose these — don't rebuild the shell per page.
+- Feature code in `src/features/*`; each exposes a barrel `index.ts`. Providers: `CustomerProviders` = `QueryProvider` + `AuthProvider`.
+
+## Mobile-first & PWA
+
+- Design for a phone viewport first; scale up with `sm:`/`md:`. Respect safe areas — root viewport sets `viewportFit: "cover"`; use `env(safe-area-inset-*)` for fixed bars.
+- Primary tap targets ≥ **44×44 px** (this is a touch app). Bottom nav is the main navigation and is isolated as a persistent view-transition element (`::view-transition-group(customer-bottom-nav)`); keep that isolation when editing nav.
+- Never set `user-scalable=no` / `maximum-scale=1`.
+
+## Motion
+
+- Reuse existing keyframes in `app/globals.css` (`scan-pulse`, `progress-shimmer`, `stamp-pending-*`) instead of inventing new ones.
+- All animation must degrade under `prefers-reduced-motion: reduce` — the globals already gate the shared animations; extend that block for anything new.
+- Page/route animation follows the `vercel-react-view-transitions` skill: page-level `<ViewTransition>` in page components (not layouts), `default="none"`, directional slides only for hierarchical navigation.
+
+## Data & state (see `codebase-map.mdc`)
+
+- Server state → **TanStack Query**; client/UI state → **Zustand** in `"use client"` only. Realtime only for the stamp/dispute flows.
+- Mutations go through server actions returning `ActionResult` codes; resolve with `resolveActionError`, confirm success with `showActionSuccess` (translated toast).
+
+## i18n (mandatory)
+
+- Every string via `next-intl` (`useTranslations`), keys in `apps/customer/messages/{en,ne,fi}.json`. Build zod schemas inside components so validation messages are translatable. This includes `aria-label`s (`a11y.*`).
+
+## Accessibility
+
+Follow `.cursor/rules/accessibility.mdc` (WCAG 2.2 AA): one `<h1>` per page, semantic landmarks, visible `focus-visible` ring, labelled inputs, `role="alert"` for inline errors, icon-only buttons get translated `aria-label`. Verify body/label contrast ≥ 4.5:1 on the light background.

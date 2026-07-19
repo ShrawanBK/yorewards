@@ -14,10 +14,29 @@ export type Json =
  * keeping strict unions below on check-constraint columns (Postgres `text` → plain `string` in codegen).
  */
 /** Strict unions — mirror supabase/migrations check constraints */
-export type CountryCode = "NP" | "FI";
+export type CountryCode = "NP" | "FI" | "AU";
 export type CurrencyCode = "NPR" | "EUR";
+export type SubscriptionTier = "free" | "starter" | "growth" | "enterprise";
+export type MerchantStaffRole = "cashier" | "manager" | "owner";
+export type MerchantStaffStatus = "pending" | "active" | "disabled";
 export type CustomerStatus = "active" | "suspended";
-export type MerchantStatus = "pending" | "active" | "suspended" | "rejected";
+export type MerchantStatus =
+  | "pending"
+  | "pending_verification"
+  | "active"
+  | "suspended"
+  | "rejected";
+export type VerificationStatus =
+  | "unverified"
+  | "pending"
+  | "verified"
+  | "rejected";
+export type SubscriptionStatus =
+  | "free"
+  | "trialing"
+  | "active"
+  | "past_due"
+  | "canceled";
 export type RewardStatus = "collecting" | "pending_otp" | "unlocked";
 export type RewardType = "free_item" | "percent_discount" | "fixed_discount";
 export type StampSource = "qr_scan" | "admin_manual";
@@ -30,6 +49,15 @@ export type StampSessionStatus =
 export type RedemptionStatus = "pending" | "redeemed";
 export type OtpPurpose = "redemption" | "signup";
 export type AuditTargetType = "merchant" | "customer" | "stamp" | "redemption";
+export type NotificationRecipientType = "merchant_staff" | "customer" | "admin";
+export type NotificationChannel = "in_app" | "email";
+export type NotificationType =
+  | "dispute_filed"
+  | "dispute_resolved"
+  | "dispute_sla_breach"
+  | "reward_unlocked"
+  | "merchant_approved"
+  | "smart_promo";
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
@@ -222,10 +250,48 @@ export type Database = {
           },
         ];
       };
+      loyalty_card_locations: {
+        Row: {
+          loyalty_card_id: string;
+          location_id: string;
+          stamp_allowed: boolean;
+          redeem_allowed: boolean;
+        };
+        Insert: {
+          loyalty_card_id: string;
+          location_id: string;
+          stamp_allowed?: boolean;
+          redeem_allowed?: boolean;
+        };
+        Update: {
+          loyalty_card_id?: string;
+          location_id?: string;
+          stamp_allowed?: boolean;
+          redeem_allowed?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_card_locations_loyalty_card_id_fkey";
+            columns: ["loyalty_card_id"];
+            isOneToOne: false;
+            referencedRelation: "loyalty_cards";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "loyalty_card_locations_location_id_fkey";
+            columns: ["location_id"];
+            isOneToOne: false;
+            referencedRelation: "merchant_locations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       merchants: {
         Row: {
           approved_at: string | null;
           approved_by: string | null;
+          business_address: string | null;
+          business_card_image_url: string | null;
           business_name: string;
           category: string;
           country: CountryCode;
@@ -235,14 +301,23 @@ export type Database = {
           logo_url: string | null;
           phone: string | null;
           primary_color: string;
+          registration_number: string | null;
           rejection_reason: string | null;
+          smart_promo_enabled: boolean;
+          smart_promo_threshold: number;
           status: MerchantStatus;
           status_reason: string | null;
+          subscription_tier: SubscriptionTier;
           user_id: string;
+          verification_status: VerificationStatus;
+          verified_at: string | null;
+          website_url: string | null;
         };
         Insert: {
           approved_at?: string | null;
           approved_by?: string | null;
+          business_address?: string | null;
+          business_card_image_url?: string | null;
           business_name: string;
           category: string;
           country: CountryCode;
@@ -252,14 +327,23 @@ export type Database = {
           logo_url?: string | null;
           phone?: string | null;
           primary_color?: string;
+          registration_number?: string | null;
           rejection_reason?: string | null;
+          smart_promo_enabled?: boolean;
+          smart_promo_threshold?: number;
           status?: MerchantStatus;
           status_reason?: string | null;
+          subscription_tier?: SubscriptionTier;
           user_id: string;
+          verification_status?: VerificationStatus;
+          verified_at?: string | null;
+          website_url?: string | null;
         };
         Update: {
           approved_at?: string | null;
           approved_by?: string | null;
+          business_address?: string | null;
+          business_card_image_url?: string | null;
           business_name?: string;
           category?: string;
           country?: CountryCode;
@@ -269,10 +353,17 @@ export type Database = {
           logo_url?: string | null;
           phone?: string | null;
           primary_color?: string;
+          registration_number?: string | null;
           rejection_reason?: string | null;
+          smart_promo_enabled?: boolean;
+          smart_promo_threshold?: number;
           status?: MerchantStatus;
           status_reason?: string | null;
+          subscription_tier?: SubscriptionTier;
           user_id?: string;
+          verification_status?: VerificationStatus;
+          verified_at?: string | null;
+          website_url?: string | null;
         };
         Relationships: [];
       };
@@ -407,8 +498,11 @@ export type Database = {
       };
       stamp_sessions: {
         Row: {
+          amount_spent: number | null;
+          approved_by: string | null;
           created_at: string;
           customer_card_id: string;
+          device_info: Json | null;
           id: string;
           location_id: string | null;
           merchant_id: string;
@@ -419,8 +513,11 @@ export type Database = {
           status: StampSessionStatus;
         };
         Insert: {
+          amount_spent?: number | null;
+          approved_by?: string | null;
           created_at?: string;
           customer_card_id: string;
+          device_info?: Json | null;
           id?: string;
           location_id?: string | null;
           merchant_id: string;
@@ -431,8 +528,11 @@ export type Database = {
           status?: StampSessionStatus;
         };
         Update: {
+          amount_spent?: number | null;
+          approved_by?: string | null;
           created_at?: string;
           customer_card_id?: string;
+          device_info?: Json | null;
           id?: string;
           location_id?: string | null;
           merchant_id?: string;
@@ -466,6 +566,386 @@ export type Database = {
           },
         ];
       };
+      stamp_transactions: {
+        Row: {
+          amount_spent: number;
+          approved_by: string | null;
+          customer_card_id: string;
+          customer_id: string;
+          device_info: Json | null;
+          id: string;
+          location_id: string | null;
+          loyalty_card_id: string;
+          merchant_id: string;
+          session_token: string;
+          stamp_session_id: string;
+          stamped_at: string;
+        };
+        Insert: {
+          amount_spent: number;
+          approved_by?: string | null;
+          customer_card_id: string;
+          customer_id: string;
+          device_info?: Json | null;
+          id?: string;
+          location_id?: string | null;
+          loyalty_card_id: string;
+          merchant_id: string;
+          session_token: string;
+          stamp_session_id: string;
+          stamped_at?: string;
+        };
+        Update: {
+          amount_spent?: number;
+          approved_by?: string | null;
+          customer_card_id?: string;
+          customer_id?: string;
+          device_info?: Json | null;
+          id?: string;
+          location_id?: string | null;
+          loyalty_card_id?: string;
+          merchant_id?: string;
+          session_token?: string;
+          stamp_session_id?: string;
+          stamped_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "stamp_transactions_stamp_session_id_fkey";
+            columns: ["stamp_session_id"];
+            isOneToOne: true;
+            referencedRelation: "stamp_sessions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "stamp_transactions_location_id_fkey";
+            columns: ["location_id"];
+            isOneToOne: false;
+            referencedRelation: "merchant_locations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "stamp_transactions_merchant_id_fkey";
+            columns: ["merchant_id"];
+            isOneToOne: false;
+            referencedRelation: "merchants";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "stamp_transactions_loyalty_card_id_fkey";
+            columns: ["loyalty_card_id"];
+            isOneToOne: false;
+            referencedRelation: "loyalty_cards";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      stamp_disputes: {
+        Row: {
+          amount_claimed: number;
+          created_at: string;
+          currency_code: string;
+          customer_card_id: string;
+          customer_id: string;
+          description: string;
+          id: string;
+          merchant_id: string;
+          merchant_response: string | null;
+          resolved_at: string | null;
+          sla_alerted_at: string | null;
+          stamp_session_id: string | null;
+          status: string;
+          visit_date: string;
+        };
+        Insert: {
+          amount_claimed: number;
+          created_at?: string;
+          currency_code?: string;
+          customer_card_id: string;
+          customer_id: string;
+          description: string;
+          id?: string;
+          merchant_id: string;
+          merchant_response?: string | null;
+          resolved_at?: string | null;
+          sla_alerted_at?: string | null;
+          stamp_session_id?: string | null;
+          status?: string;
+          visit_date: string;
+        };
+        Update: {
+          amount_claimed?: number;
+          created_at?: string;
+          currency_code?: string;
+          customer_card_id?: string;
+          customer_id?: string;
+          description?: string;
+          id?: string;
+          merchant_id?: string;
+          merchant_response?: string | null;
+          resolved_at?: string | null;
+          sla_alerted_at?: string | null;
+          stamp_session_id?: string | null;
+          status?: string;
+          visit_date?: string;
+        };
+        Relationships: [];
+      };
+      merchant_customer_notes: {
+        Row: {
+          customer_id: string;
+          id: string;
+          merchant_id: string;
+          note: string;
+          updated_at: string;
+        };
+        Insert: {
+          customer_id: string;
+          id?: string;
+          merchant_id: string;
+          note?: string;
+          updated_at?: string;
+        };
+        Update: {
+          customer_id?: string;
+          id?: string;
+          merchant_id?: string;
+          note?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      merchant_staff: {
+        Row: {
+          id: string;
+          merchant_id: string;
+          user_id: string | null;
+          invited_email: string;
+          display_name: string | null;
+          role: MerchantStaffRole;
+          status: MerchantStaffStatus;
+          pin_hash: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          merchant_id: string;
+          user_id?: string | null;
+          invited_email: string;
+          display_name?: string | null;
+          role?: MerchantStaffRole;
+          status?: MerchantStaffStatus;
+          pin_hash?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          merchant_id?: string;
+          user_id?: string | null;
+          invited_email?: string;
+          display_name?: string | null;
+          role?: MerchantStaffRole;
+          status?: MerchantStaffStatus;
+          pin_hash?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      merchant_subscriptions: {
+        Row: {
+          id: string;
+          merchant_id: string;
+          tier: SubscriptionTier;
+          status: SubscriptionStatus;
+          trial_ends_at: string | null;
+          current_period_start: string | null;
+          current_period_end: string | null;
+          payment_provider: "esewa" | "khalti" | null;
+          provider_customer_id: string | null;
+          terms_accepted_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          merchant_id: string;
+          tier?: SubscriptionTier;
+          status?: SubscriptionStatus;
+          trial_ends_at?: string | null;
+          current_period_start?: string | null;
+          current_period_end?: string | null;
+          payment_provider?: "esewa" | "khalti" | null;
+          provider_customer_id?: string | null;
+          terms_accepted_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          merchant_id?: string;
+          tier?: SubscriptionTier;
+          status?: SubscriptionStatus;
+          trial_ends_at?: string | null;
+          current_period_start?: string | null;
+          current_period_end?: string | null;
+          payment_provider?: "esewa" | "khalti" | null;
+          provider_customer_id?: string | null;
+          terms_accepted_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      merchant_invoices: {
+        Row: {
+          id: string;
+          merchant_id: string;
+          subscription_id: string | null;
+          amount_npr: number;
+          tier: SubscriptionTier;
+          status: "pending" | "paid" | "failed" | "refunded";
+          provider: "esewa" | "khalti" | null;
+          provider_reference: string | null;
+          invoice_period_start: string | null;
+          invoice_period_end: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          merchant_id: string;
+          subscription_id?: string | null;
+          amount_npr: number;
+          tier: SubscriptionTier;
+          status?: "pending" | "paid" | "failed" | "refunded";
+          provider?: "esewa" | "khalti" | null;
+          provider_reference?: string | null;
+          invoice_period_start?: string | null;
+          invoice_period_end?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          merchant_id?: string;
+          subscription_id?: string | null;
+          amount_npr?: number;
+          tier?: SubscriptionTier;
+          status?: "pending" | "paid" | "failed" | "refunded";
+          provider?: "esewa" | "khalti" | null;
+          provider_reference?: string | null;
+          invoice_period_start?: string | null;
+          invoice_period_end?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      merchant_verification_documents: {
+        Row: {
+          id: string;
+          merchant_id: string;
+          document_type: "registration" | "pan" | "business_license" | "other";
+          file_url: string;
+          status: "pending" | "approved" | "rejected";
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          rejection_reason: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          merchant_id: string;
+          document_type: "registration" | "pan" | "business_license" | "other";
+          file_url: string;
+          status?: "pending" | "approved" | "rejected";
+          reviewed_by?: string | null;
+          reviewed_at?: string | null;
+          rejection_reason?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          merchant_id?: string;
+          document_type?: "registration" | "pan" | "business_license" | "other";
+          file_url?: string;
+          status?: "pending" | "approved" | "rejected";
+          reviewed_by?: string | null;
+          reviewed_at?: string | null;
+          rejection_reason?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      smart_promo_notifications: {
+        Row: {
+          id: string;
+          merchant_id: string;
+          customer_id: string;
+          customer_card_id: string;
+          reward_cycle_key: string;
+          stamps_remaining: number;
+          sent_at: string;
+        };
+        Insert: {
+          id?: string;
+          merchant_id: string;
+          customer_id: string;
+          customer_card_id: string;
+          reward_cycle_key: string;
+          stamps_remaining: number;
+          sent_at?: string;
+        };
+        Update: {
+          id?: string;
+          merchant_id?: string;
+          customer_id?: string;
+          customer_card_id?: string;
+          reward_cycle_key?: string;
+          stamps_remaining?: number;
+          sent_at?: string;
+        };
+        Relationships: [];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          recipient_type: NotificationRecipientType;
+          recipient_id: string;
+          type: NotificationType;
+          title_key: string;
+          body_key: string;
+          payload: Record<string, unknown>;
+          channel: NotificationChannel;
+          read_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          recipient_type: NotificationRecipientType;
+          recipient_id: string;
+          type: NotificationType;
+          title_key: string;
+          body_key: string;
+          payload?: Record<string, unknown>;
+          channel?: NotificationChannel;
+          read_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          recipient_type?: NotificationRecipientType;
+          recipient_id?: string;
+          type?: NotificationType;
+          title_key?: string;
+          body_key?: string;
+          payload?: Record<string, unknown>;
+          channel?: NotificationChannel;
+          read_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -476,18 +956,39 @@ export type Database = {
         Returns: undefined;
       };
       approve_stamp_session: {
-        Args: { p_session_id: string };
+        Args: {
+          p_session_id: string;
+          p_amount_spent: number;
+          p_approved_by?: string | null;
+        };
         Returns: undefined;
       };
       current_customer_id: { Args: never; Returns: string };
       current_merchant_id: { Args: never; Returns: string };
       current_merchant_ids: { Args: never; Returns: string[] };
+      merchant_role_for: {
+        Args: { p_merchant_id: string };
+        Returns: MerchantStaffRole;
+      };
       increment_stamps: {
         Args: { card_id: string; new_status: string };
         Returns: undefined;
       };
       issue_stamp_manual: { Args: { p_card_id: string }; Returns: string };
+      resolve_stamp_dispute: {
+        Args: {
+          p_dispute_id: string;
+          p_status: string;
+          p_response?: string | null;
+          p_issue_stamp?: boolean;
+        };
+        Returns: string;
+      };
       void_stamp: { Args: { p_session_id: string }; Returns: undefined };
+      process_dispute_sla_breach_notifications: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
+      };
     };
     Enums: {
       [_ in never]: never;
@@ -621,7 +1122,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      country_code: ["NP", "FI"] as const,
+      country_code: ["NP", "FI", "AU"] as const,
       merchant_status: ["pending", "active", "suspended", "rejected"] as const,
       customer_status: ["active", "suspended"] as const,
       reward_status: ["collecting", "pending_otp", "unlocked"] as const,

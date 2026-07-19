@@ -1,0 +1,122 @@
+@import "tailwindcss";
+@import "@repo/ui/globals.css";
+
+@source "..";
+
+@theme inline {
+  --font-sans: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+  --color-primary-dark: oklch(0.38 0.1 224);
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
+}
+
+/* Softer light mode — scoped so dark tokens from @repo/ui are not overridden */
+:root:not(.dark) {
+  --background: oklch(0.952 0.009 220);
+  --card: oklch(0.978 0.006 218);
+  --popover: oklch(0.978 0.006 218);
+  --muted: oklch(0.912 0.012 218);
+  --muted-foreground: oklch(0.41 0.028 215);
+  --secondary: oklch(0.902 0.014 218);
+  --secondary-foreground: oklch(0.22 0.025 228);
+  --border: oklch(0.862 0.014 215);
+  --input: oklch(0.882 0.012 215);
+  --sidebar: oklch(0.926 0.014 218);
+  --sidebar-accent: oklch(0.892 0.016 218);
+  --sidebar-accent-foreground: oklch(0.24 0.03 224);
+  --sidebar-primary: oklch(0.45 0.105 223);
+  --sidebar-border: oklch(0.862 0.014 215);
+}
+
+.dark {
+  --muted-foreground: oklch(0.78 0.016 214.4);
+}
+
+@layer utilities {
+  .merchant-app-bg {
+    @apply bg-background;
+  }
+
+  .light .merchant-app-bg {
+    background-color: var(--background);
+    background-image:
+      radial-gradient(
+        ellipse 100% 70% at 50% -20%,
+        oklch(0.609 0.126 221.723 / 0.06),
+        transparent 60%
+      );
+  }
+
+  .dark .merchant-app-bg {
+    background-color: var(--background);
+    background-image:
+      radial-gradient(
+        ellipse 90% 60% at 50% -30%,
+        oklch(0.609 0.126 221.723 / 0.12),
+        transparent 55%
+      ),
+      radial-gradient(
+        ellipse 50% 40% at 100% 0%,
+        oklch(0.52 0.105 223.128 / 0.08),
+        transparent 50%
+      );
+  }
+
+  .merchant-glass-card {
+    @apply rounded-xl border border-border bg-card shadow-sm;
+  }
+
+  .light .merchant-glass-card {
+    @apply shadow-[0_1px_3px_oklch(0.3_0.02_220/0.08),0_4px_12px_oklch(0.3_0.02_220/0.04)];
+  }
+
+  .dark .merchant-glass-card {
+    @apply shadow-md shadow-black/10;
+  }
+
+  .merchant-nav-link {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50;
+  }
+
+  .merchant-nav-active {
+    @apply bg-sidebar-accent font-semibold text-sidebar-primary;
+    box-shadow: inset 3px 0 0 0 var(--sidebar-primary);
+  }
+
+  .merchant-nav-attention {
+    @apply bg-amber-500/15 font-semibold text-amber-950 dark:text-amber-100;
+    box-shadow: inset 3px 0 0 0 oklch(0.75 0.15 85);
+  }
+
+  .merchant-stat-label {
+    @apply text-sm font-semibold tracking-wide text-muted-foreground uppercase;
+  }
+
+  .merchant-body-muted {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .merchant-chip {
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-sm font-semibold;
+  }
+
+  .text-primary-dark {
+    color: var(--color-primary-dark);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}

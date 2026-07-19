@@ -9,13 +9,14 @@ alwaysApply: true
 
 | Document                                | Path                                                          |
 | --------------------------------------- | ------------------------------------------------------------- |
-| Product requirements (what to build)    | `resources/YORewards_PRD_Final_v1.md`                         |
-| Technical implementation (how to build) | `resources/YORewards_Technical_Doc_v1.md`                     |
+| Product requirements (what to build)    | `resources/YORewards_PRD_Final_v1.md` (V1) · `resources/YORewards_PRD_Final_v2.md` (V2) |
+| Technical implementation (how to build) | `resources/YORewards_Technical_Doc.md`                        |
 | Turborepo / new app setup               | `resources/Turborepo_App_Setup_Guide.md`                      |
-| **Current build day**                   | `resources/Day6_Checklist.md` (super admin)                   |
-| **Upcoming**                            | `Day7_Checklist.md` (customer) · `Day8_Checklist.md` (launch) |
-| **Completed**                           | `Day5_Checklist.md` (merchant MVP) · `Day4_Checklist.md` · …  |
-| **Post-MVP / v2 ideas**                 | `resources/V2_Backlog.md`                                     |
+| **V2 sprint index**                     | `resources/v2/README.md`                                      |
+| **Current build day**                   | `resources/v2/Day9_Checklist.md` (V2 completion: notifications) |
+| **V2 completion phase**                 | `Day9`–`Day12` in `resources/v2/` (notifications, verification, i18n, launch) |
+| **V1 completed**                        | `resources/v1/Day1_Checklist.md` … `Day8_Checklist.md`        |
+| **Post-sprint / deferred (V3)**         | `resources/v2/V2_Backlog.md`                                  |
 
 When the user asks to build a feature, start a build day, design schema, or choose libraries: **read the relevant sections** from the PRD and Technical Doc first. These files may be updated — always use the current version in `resources/`.
 

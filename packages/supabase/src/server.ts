@@ -20,22 +20,24 @@ export async function createClient() {
 
   const cookieStore = await cookies();
 
-  const cookieMethods: CookieMethodsServer = {
+  const cookieMethods = {
     getAll() {
       return cookieStore.getAll();
     },
     setAll(
       cookiesToSet: { name: string; value: string; options: CookieOptions }[],
+      headers: Record<string, string>,
     ) {
+      void headers;
       try {
         cookiesToSet.forEach(({ name, value, options }) => {
           cookieStore.set(name, value, options);
         });
       } catch {
-        // setAll from a Server Component — middleware/session refresh handles cookies
+        // Server Components cannot set cookies — proxy.ts refreshes sessions.
       }
     },
-  };
+  } satisfies CookieMethodsServer;
 
   return createServerClient<Database>(url, anonKey, {
     cookieOptions: getSupabaseAuthCookieOptions(),

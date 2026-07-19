@@ -1,0 +1,1050 @@
+{
+  "app": {
+    "title": "YORewards Kauppias",
+    "description": "Kauppiaan hallintapaneeli",
+    "cta": "Kirjaudu sisään"
+  },
+  "theme": {
+    "toggleTheme": "Vaihda väriteemaa",
+    "switchToLight": "Vaihda vaaleaan tilaan",
+    "switchToDark": "Vaihda tummaan tilaan"
+  },
+  "a11y": {
+    "skipToMain": "Siirry pääsisältöön",
+    "openNotifications": "Ilmoitukset{count, plural, =0 {} other {, {count} lukematonta}}",
+    "disputesNavPending": "Reklamaatiot, {count, plural, one {# avoin} other {# avointa}}"
+  },
+  "locale": {
+    "label": "Kieli"
+  },
+  "nav": {
+    "main": "Päänavigaatio",
+    "dashboard": "Hallintapaneeli",
+    "redeem": "Lunasta",
+    "analytics": "Analytiikka",
+    "customers": "Asiakkaat",
+    "disputes": "Reklamaatiot",
+    "notifications": "Ilmoitukset",
+    "business": "Yritys",
+    "loyaltyCard": "Leimakortti",
+    "staff": "Tiimi",
+    "billing": "Laskutus",
+    "settings": "Asetukset",
+    "logout": "Kirjaudu ulos",
+    "openMenu": "Avaa valikko",
+    "closeMenu": "Sulje valikko",
+    "switchBusiness": "Vaihda yritystä",
+    "switchBranch": "Kassatoimipiste",
+    "roleInBusiness": "Roolisi: {role}",
+    "allBranchesHint": "Valitse toimipiste, jossa työskentelet",
+    "addBusiness": "Lisää toinen yritys",
+    "success": {
+      "businessSwitched": "Hallinnoit nyt yritystä {business}.",
+      "branchSwitched": "Kassa asetettu toimipisteeseen {branch} — uudet skannaukset merkitään tänne."
+    }
+  },
+  "auth": {
+    "brandEyebrow": "YORewards",
+    "brandTitle": "Kasvata palaavia käyntejä digitaalisilla leimoilla",
+    "brandBlurb": "Luo leimakortteja, hyväksy leimoja reaaliajassa ja palkitse vakioasiakkaita — ilman paperikortteja.",
+    "brandFooter": "Kauppiaan hallintapaneeli",
+    "heading": "Tili",
+    "subheading": "Kirjaudu sisään tai luo kauppiastili aloittaaksesi.",
+    "terms": "Jatkamalla hyväksyt YORewardsin kauppiaan ehdot.",
+    "tabs": {
+      "signin": "Kirjaudu",
+      "signup": "Rekisteröidy"
+    },
+    "fields": {
+      "email": "Sähköposti",
+      "password": "Salasana",
+      "confirmPassword": "Vahvista salasana",
+      "businessName": "Yrityksen nimi",
+      "category": "Kategoria",
+      "country": "Maa",
+      "phoneOptional": "Puhelin (valinnainen)"
+    },
+    "placeholders": {
+      "email": "you@business.com",
+      "businessName": "Kathmandu Coffee Co.",
+      "category": "Kahvila",
+      "phone": "+977…"
+    },
+    "countries": {
+      "NP": "Nepal",
+      "FI": "Suomi",
+      "AU": "Australia"
+    },
+    "actions": {
+      "signin": "Kirjaudu",
+      "signup": "Luo tili"
+    },
+    "password": {
+      "show": "Näytä salasana",
+      "hide": "Piilota salasana"
+    },
+    "verifyEmail": {
+      "title": "Tarkista sähköpostisi",
+      "description": "Lähetimme vahvistuslinkin kauppiastilisi aktivoimiseksi. Avaa linkki ja kirjaudu sitten sisään.",
+      "resend": "Lähetä vahvistussähköposti uudelleen",
+      "resending": "Lähetetään…",
+      "resentToast": "Vahvistussähköposti lähetetty",
+      "backToLogin": "Takaisin kirjautumiseen"
+    },
+    "errors": {
+      "email": "Syötä kelvollinen sähköposti",
+      "password": "Vähintään 6 merkkiä",
+      "confirmPassword": "Salasanat eivät täsmää",
+      "businessName": "Yrityksen nimi on pakollinen",
+      "category": "Kategoria on pakollinen"
+    }
+  },
+  "business": {
+    "onboarding": {
+      "title": "Määritä yrityksesi",
+      "subtitle": "Lisää ensimmäinen yrityksesi hyväksyttäväksi.",
+      "formTitle": "Yrityksen tiedot",
+      "formSubtitle": "Tarkistamme hakemuksesi ennen kuin voit aloittaa."
+    },
+    "title": "Lisää yritys",
+    "subtitle": "Rekisteröi toinen yritys tilillesi.",
+    "formTitle": "Yrityksen tiedot",
+    "formSubtitle": "Jokainen yritys saa oman leimakortin hyväksynnän jälkeen.",
+    "hubTitle": "Yrityskeskus",
+    "hubSubtitle": "Hallitse yrityksiä, toimipisteitä ja korttiasetuksia yhdessä paikassa.",
+    "listTitle": "Yrityksesi",
+    "listSubtitle": "Valitse hallinnoitava yritys. Suodata aktiiviset tai passiiviset tilit.",
+    "branchCount": "{count, plural, =0 {Ei toimipisteitä} one {# toimipiste} other {# toimipistettä}}",
+    "tabs": {
+      "overview": "Yhteenveto",
+      "branches": "Toimipisteet",
+      "loyaltyCard": "Leimakortti"
+    },
+    "loyaltyCardSummary": {
+      "title": "Leimakortti",
+      "subtitle": "Yksi kortti per yritys — jaettu kaikille toimipisteille.",
+      "cardName": "Kortin nimi",
+      "stampTarget": "Leimoja palkintoon",
+      "notConfigured": "Leimakorttia ei ole vielä määritetty.",
+      "configure": "Määritä leimakortti"
+    },
+    "selected": "Hallinnassa",
+    "addAnother": "Lisää toinen yritys",
+    "filters": {
+      "all": "Kaikki",
+      "active": "Aktiivinen",
+      "inactive": "Passiivinen"
+    },
+    "status": {
+      "pending": "Odottaa",
+      "pending_verification": "Odottaa vahvistusta",
+      "active": "Aktiivinen",
+      "suspended": "Keskeytetty",
+      "rejected": "Hylätty"
+    },
+    "empty": {
+      "title": "Mikään yritys ei vastaa tätä suodatinta",
+      "description": "Kokeile toista suodatinta tai lisää uusi yritys."
+    },
+    "fields": {
+      "businessName": "Yrityksen nimi",
+      "category": "Kategoria",
+      "country": "Maa",
+      "phone": "Yrityksen puhelin",
+      "phoneOptional": "Puhelin (valinnainen)",
+      "registrationNumber": "Rekisteri- / Y-tunnus",
+      "websiteUrl": "Verkkosivusto tai someprofiili",
+      "businessAddress": "Yrityksen osoite"
+    },
+    "details": {
+      "title": "Tilitiedot",
+      "email": "Yhteyssähköposti",
+      "registered": "Rekisteröity",
+      "approved": "Hyväksytty",
+      "brandColor": "Brändiväri",
+      "phoneNotProvided": "Ei annettu"
+    },
+    "placeholders": {
+      "businessName": "Helsinki Hair Studio",
+      "category": "Kampaamo",
+      "phoneNP": "+977 98XXXXXXXX",
+      "phoneFI": "+358 4XXXXXXXX",
+      "phoneAU": "+61 4XXXXXXXX",
+      "registrationNumber": "Y-tunnus / yrityksen rekisterinumero",
+      "websiteUrl": "https://instagram.com/yourbusiness",
+      "businessAddress": "Katu, kaupunki"
+    },
+    "credibleHint": "Käytämme näitä tietoja yrityksesi vahvistamiseen ennen julkaisua.",
+    "profileEdit": {
+      "title": "Yritysprofiili",
+      "subtitle": "Päivitä kategoria, puhelin ja vahvistustiedot."
+    },
+    "countries": {
+      "NP": "Nepal",
+      "FI": "Suomi",
+      "AU": "Australia"
+    },
+    "actions": {
+      "submit": "Luo yritys",
+      "back": "Takaisin hallintapaneeliin",
+      "saveProfile": "Tallenna profiili",
+      "savingProfile": "Tallennetaan…"
+    },
+    "success": {
+      "profileSaved": "Yritysprofiili tallennettu."
+    },
+    "errors": {
+      "businessName": "Yrityksen nimi on pakollinen",
+      "category": "Kategoria on pakollinen",
+      "phoneRequired": "Yrityksen puhelin on pakollinen",
+      "registrationNumber": "Syötä rekisteri- tai Y-tunnus",
+      "websiteUrl": "Syötä kelvollinen verkkosivuston tai someprofiilin URL",
+      "businessAddress": "Syötä yrityksen täydellinen osoite",
+      "phone": {
+        "NP": "Syötä kelvollinen nepalilainen matkapuhelinnumero (esim. +977 98XXXXXXXX)",
+        "FI": "Syötä kelvollinen suomalainen matkapuhelinnumero (esim. +358 4XXXXXXXX)",
+        "AU": "Syötä kelvollinen australialainen matkapuhelinnumero (esim. +61 4XXXXXXXX)"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Hallintapaneeli",
+    "welcome": "Tervetuloa takaisin, {name}",
+    "subtitle": "Kanta-asiakasohjelmasi yhdellä silmäyksellä",
+    "logout": "Kirjaudu ulos",
+    "accountStatus": "Tilin tila",
+    "rejectionReason": "Hylkäyksen syy",
+    "suspensionReason": "Keskeytyksen syy",
+    "activeHint": "Hyväksy leimapyyntöjä reaaliajassa ja vahvista palkintojen lunastuksia.",
+    "stats": {
+      "regionLabel": "Ohjelman tilastot",
+      "collectors": "Aktiiviset kerääjät",
+      "stampsWeek": "Leimoja tällä viikolla",
+      "redeemedWeek": "Lunastettu tällä viikolla",
+      "branches": "Toimipisteet",
+      "activeBranches": "{count, plural, =0 {Ei aktiivisia toimipisteitä} one {# aktiivinen toimipiste} other {# aktiivista toimipistettä}}",
+      "loyaltyCard": "Leimakortti",
+      "configured": "Määritetty",
+      "notConfigured": "Ei määritetty",
+      "configuredHint": "Asiakkaat voivat kerätä leimoja palkintoaan varten.",
+      "notConfiguredHint": "Aseta leimatavoite ja palkinto aloittaaksesi.",
+      "nextStep": "Seuraava askel",
+      "awaitingApproval": "Viimeistele asetukset, kun tilisi on hyväksytty."
+    },
+    "quickActions": {
+      "title": "Pikatoiminnot",
+      "open": "Avaa",
+      "redeem": {
+        "title": "Lunasta palkinto",
+        "description": "Syötä asiakkaan 6 merkin koodi."
+      },
+      "analytics": {
+        "title": "Analytiikka",
+        "description": "Leimat, lunastukset ja viimeisin toiminta."
+      },
+      "business": {
+        "title": "Yritys ja toimipisteet",
+        "description": "Hallitse sijainteja ja kassan QR-koodeja."
+      },
+      "loyaltyCard": {
+        "title": "Leimakortti",
+        "description": "Mukauta leimoja, palkintoja ja brändäystä."
+      },
+      "settings": {
+        "title": "Asetukset",
+        "description": "Tili- ja yritysasetukset."
+      }
+    },
+    "links": {
+      "business": "Hallitse yrityksiä",
+      "loyaltyCard": "Määritä leimakortti",
+      "redeem": "Lunasta koodi",
+      "analytics": "Näytä analytiikka"
+    },
+    "statusActions": {
+      "configureCard": "Määritä leimakortti",
+      "viewSettings": "Tiliasetukset"
+    },
+    "status": {
+      "pending": {
+        "label": "Odottaa hyväksyntää",
+        "description": "Hakemuksesi on tarkistettavana. Määritä leimakortti ja toimipisteet odottaessasi — pääset käyttöön heti, kun admin hyväksyy tilisi."
+      },
+      "pending_verification": {
+        "label": "Odottaa vahvistusta",
+        "description": "Vahvista sähköpostisi aktivoidaksesi tilisi. Tarkista vahvistuslinkki postilaatikostasi ja päivitä sitten tämä sivu."
+      },
+      "active": {
+        "label": "Aktiivinen",
+        "description": "Tilisi on hyväksytty. Luo leimakortteja ja aloita leimojen kerääminen."
+      },
+      "rejected": {
+        "label": "Hylätty",
+        "description": "Hakemustasi ei hyväksytty. Katso syy alta tai ota yhteyttä tukeen."
+      },
+      "suspended": {
+        "label": "Keskeytetty",
+        "description": "Tilisi on tilapäisesti keskeytetty. Ota yhteyttä tukeen."
+      }
+    }
+  },
+  "branches": {
+    "listTitle": "Toimipisteet",
+    "listSubtitle": "Jokainen toimipiste saa oman kassa-QR:n. Leimat kerryttävät samaa leimakorttia.",
+    "empty": {
+      "title": "Ei vielä toimipisteitä",
+      "description": "Lisää ensimmäinen toimipiste luodaksesi kassa-QR-koodin."
+    },
+    "badges": {
+      "primary": "Ensisijainen",
+      "inactive": "Passiivinen"
+    },
+    "fields": {
+      "name": "Toimipisteen nimi",
+      "address": "Osoite",
+      "city": "Kaupunki"
+    },
+    "placeholders": {
+      "name": "Thamel-toimipiste",
+      "address": "Katu ja numero",
+      "city": "Kathmandu"
+    },
+    "form": {
+      "addTitle": "Lisää toimipiste",
+      "addSubtitle": "Asiakkaat voivat leimata missä tahansa aktiivisessa toimipisteessä.",
+      "editTitle": "Muokkaa toimipistettä",
+      "editSubtitle": "Päivitä toimipisteen tiedot."
+    },
+    "deactivate": {
+      "title": "Passivoi toimipiste?",
+      "description": "“{name}” piilotetaan QR-latauksista. Jo kerätyt leimat säilyvät."
+    },
+    "actions": {
+      "addBranch": "Lisää toimipiste",
+      "add": "Lisää toimipiste",
+      "save": "Tallenna muutokset",
+      "edit": "Muokkaa",
+      "setPrimary": "Aseta ensisijaiseksi",
+      "deactivate": "Passivoi",
+      "cancel": "Peruuta"
+    },
+    "success": {
+      "added": "{branch} on käytössä! Lataa QR-koodi, kun olet valmis.",
+      "updated": "{branch} tallennettu.",
+      "primarySet": "{branch} on nyt ensisijainen toimipisteesi.",
+      "deactivated": "{branch} passivoitu. Jo kerätyt leimat säilyvät."
+    }
+  },
+  "loyaltyCard": {
+    "title": "Leimakortti",
+    "subtitle": "Suunnittele kortti, aseta leimasäännöt ja lataa QR-koodit toimipisteittäin.",
+    "readOnlyNotice": "Tilisi ei voi juuri nyt muokata leimakorttia. Ota yhteyttä tukeen, jos tämä on virhe.",
+    "pendingSetupHint": "Odotat hyväksyntää — määritä kortti nyt, jotta olet valmis ensimmäisenä päivänä.",
+    "defaults": {
+      "description": "Kerää leimoja ja avaa palkinto."
+    },
+    "sections": {
+      "identity": "Kortin tiedot",
+      "rules": "Leimasäännöt",
+      "reward": "Palkinto"
+    },
+    "fields": {
+      "logo": "Yrityksen logo",
+      "primaryColor": "Brändiväri",
+      "cardName": "Kortin nimi",
+      "description": "Kortin kuvaus",
+      "stampTarget": "Leimoja palkintoon",
+      "minSpend": "Vähimmäisosto per käynti",
+      "currency": "Valuutta",
+      "rewardDescription": "Asiakkaalle näkyvä palkintoteksti",
+      "rewardValue": {
+        "free_item": "Ilmaisen tuotteen nimi",
+        "percent_discount": "Alennusprosentti",
+        "fixed_discount": "Alennussumma"
+      }
+    },
+    "hints": {
+      "logo": "JPG tai PNG, max 2 Mt. Pakataan automaattisesti ennen latausta.",
+      "minSpend": "Jätä 0, jos ei vähimmäistä. Näkyy asiakaskortilla, kun asetettu."
+    },
+    "rewardTypes": {
+      "free_item": "Ilmainen tuote",
+      "percent_discount": "Prosenttialennus",
+      "fixed_discount": "Kiinteä alennus"
+    },
+    "preview": {
+      "label": "Live-esikatselu",
+      "orientationLabel": "Esikatselun suunta",
+      "landscape": "Vaaka",
+      "portrait": "Pysty",
+      "tapStampHint": "Napauta leimoja esikatsellaksesi edistymistä.",
+      "stampsAria": "Leimojen edistyminen",
+      "stampSlot": "Leima {index}, {state}",
+      "stampFilled": "täytetty",
+      "stampEmpty": "tyhjä",
+      "moreStamps": "{count} leimaa lisää",
+      "progressShort": "{current} / {target}",
+      "progress": "{current} / {target} leimaa",
+      "minSpendShort": "Min. {amount} / käynti",
+      "minSpend": "Vähimmäisosto {amount} per käynti",
+      "rewardPlaceholder": "Palkintosi näkyy tässä",
+      "rewardType": {
+        "free_item": "Ilmainen tuote",
+        "percent_discount": "Alennus",
+        "fixed_discount": "Kiinteä alennus"
+      }
+    },
+    "qr": {
+      "title": "Toimipisteiden QR-koodit",
+      "subtitle": "Toimipistekohtainen kassa-QR (yksi kortti, monta kassaa). Lataa tai tulosta jokaiselle leimoja sallivalle toimipisteelle.",
+      "download": "Lataa PNG",
+      "print": "Tulosta",
+      "noBranches": "Lisää vähintään yksi leimoja salliva toimipiste QR-koodien luomiseksi."
+    },
+    "branches": {
+      "title": "Toimipisteiden saatavuus",
+      "subtitle": "Valitse, mitkä toimipisteet voivat leimata ja lunastaa tällä kortilla. Jätä kaikki päälle salliaksesi kaikki toimipisteet.",
+      "stampAllowed": "Salli leimat",
+      "redeemAllowed": "Salli lunastus"
+    },
+    "actions": {
+      "save": "Tallenna korttiasetukset"
+    },
+    "success": {
+      "saved": "{card} on tallennettu — asiakkaat näkevät nämä päivitykset.",
+      "logoUploaded": "Logo ladattu kortille {card}!"
+    },
+    "errors": {
+      "logoUpload": "Kuvaa ei voitu ladata — kokeile pienempää JPG- tai PNG-tiedostoa."
+    }
+  },
+  "stampQueue": {
+    "title": "Leimojen hyväksyntäjono",
+    "subtitle": "Hyväksy tai hylkää asiakkaiden skannauspyynnöt reaaliajassa.",
+    "workingAt": "Työskentelet toimipisteessä {branch}",
+    "inactiveNotice": "Yrityksesi on hyväksyttävä ennen leimapyyntöjen hyväksymistä.",
+    "unknownCustomer": "Asiakas",
+    "progress": "{current} / {target} leimaa kerätty",
+    "expiresIn": "Vanhenee {time}",
+    "amountLabel": "Ostosumma ({currency})",
+    "amountPlaceholder": "esim. 450",
+    "amountRequired": "Syötä asiakkaan ostosumma ennen hyväksyntää.",
+    "minSpendWarning": "Alle vähimmäisoston ({amount}) — voit silti hyväksyä, jos käynti kelpaa.",
+    "approve": "Hyväksy",
+    "approving": "Hyväksytään…",
+    "reject": "Hylkää",
+    "quickRedeem": "Lunasta koodi",
+    "approveAria": "Hyväksy leima asiakkaalle {name}",
+    "rejectAria": "Hylkää leima asiakkaalle {name}",
+    "rejectTitle": "Hylkää leimapyyntö",
+    "rejectDescription": "Kerro asiakkaalle valinnaisesti, miksi pyyntö hylättiin.",
+    "rejectReasonLabel": "Syy (valinnainen)",
+    "rejectReasonOptional": "Ei syytä",
+    "rejectReasonPlaceholder": "esim. Vähimmäisostoa ei täytetty",
+    "rejectReasons": {
+      "min_spend_not_met": "Vähimmäisostoa ei täytetty",
+      "item_not_eligible": "Tuote ei kelpaa",
+      "other": "Muu"
+    },
+    "cancel": "Peruuta",
+    "confirmReject": "Hylkää",
+    "emptyTitle": "Ei odottavia pyyntöjä",
+    "emptyDescription": "Kun asiakas skannaa toimipisteesi QR:n, pyyntö näkyy täällä heti.",
+    "emptyCta": "Näytä leimakortti ja QR-koodit",
+    "loadDemo": "Lataa demodata",
+    "demoSeeded": "Demoleimapyynnöt ovat jonossa — kokeile hyväksyä yksi!",
+    "demoSeededWithCode": "Demo valmis! Kokeile lunastaa koodi {code} Lunasta-sivulla.",
+    "demoLoyaltyAlertTitle": "Määritä leimakortti ensin",
+    "demoLoyaltyAlertDescription": "Tallenna leimakortin asetukset ennen demo-leima- ja lunastusdatan lataamista.",
+    "demoLoyaltyAlertCta": "Siirry leimakorttiin",
+    "success": {
+      "approved": "Leima lisätty asiakkaalle {customer} — askel lähempänä palkintoa!",
+      "approvedWithAmount": "Leima lisätty asiakkaalle {customer} ({amount} kirjattu).",
+      "rejected": "{customer}-asiakkaan pyyntö hylättiin. Hän voi skannata uudelleen, kun on valmis.",
+      "demoSeeded": "Demojono on valmis — kokeile hyväksyä leima!"
+    }
+  },
+  "customers": {
+    "title": "Asiakkaat",
+    "subtitle": "Kaikki, jotka keräävät leimoja tässä yrityksessä — suodata toimipisteittäin nähdäksesi kävijät.",
+    "upgrade": {
+      "title": "Asiakas-CRM on Starter-ominaisuus",
+      "description": "Päivitä nähdäksesi asiakasprofiilit, segmentit, yksityiset muistiinpanot ja CSV-viennin.",
+      "cta": "Näytä suunnitelmat"
+    },
+    "loading": "Ladataan asiakkaita…",
+    "branchFilter": "Toimipiste",
+    "allBranches": "Kaikki toimipisteet",
+    "branchFilterHint": "Toimipistesuodatin näyttää asiakkaat, joilla on vähintään yksi leimatapahtuma kyseisessä paikassa.",
+    "emptyTitle": "Ei vielä asiakkaita",
+    "emptyDescription": "Asiakkaat näkyvät täällä, kun ensimmäinen leimapyyntö hyväksytään tai he skannaavat QR:n (päivä 5). Lataa demodata hallintapaneelista esikatselua varten.",
+    "unknownCustomer": "Asiakas",
+    "unknownBranch": "—",
+    "never": "Ei koskaan",
+    "progress": "{current} / {target}",
+    "rewardStatus": {
+      "collecting": "Kerää",
+      "pending_otp": "Palkinto valmis",
+      "unlocked": "Avattu"
+    },
+    "table": {
+      "name": "Asiakas",
+      "segment": "Segmentti",
+      "spend": "Kokonaiskulutus",
+      "visits": "Käynnit",
+      "progress": "Leimat",
+      "cycle": "Kierros",
+      "status": "Tila",
+      "lastBranch": "Viimeisin toimipiste",
+      "lastVisit": "Viimeisin käynti",
+      "totalStamps": "Kaikkien aikojen leimat"
+    },
+    "searchPlaceholder": "Hae nimeä tai puhelinta…",
+    "searchAria": "Hae asiakkaita",
+    "sortAria": "Järjestä asiakkaat",
+    "sort": {
+      "spend": "Suurin kulutus",
+      "visits": "Eniten käyntejä",
+      "lastVisit": "Viimeisin käynti"
+    },
+    "noResults": "Mikään asiakas ei vastaa hakuasi.",
+    "exportCsv": "Vie CSV",
+    "exportStarterOnly": "CSV-vienti on saatavilla Starter-suunnitelmissa ja sitä korkeammilla.",
+    "openProfile": "Näytä profiili: {name}",
+    "segments": {
+      "vip": "VIP",
+      "regular": "Säännöllinen",
+      "at_risk": "Riskissä",
+      "new": "Uusi",
+      "lapsed": "Passivoitunut"
+    },
+    "drawer": {
+      "loading": "Ladataan profiilia…",
+      "totalSpend": "Kokonaiskulutus",
+      "visits": "Käynnit",
+      "avgSpend": "Keskim. / käynti",
+      "lastVisit": "Viimeisin käynti",
+      "stampHistory": "Leimahistoria",
+      "noVisits": "Ei vielä hyväksyttyjä käyntejä.",
+      "rewardHistory": "Palkintohistoria",
+      "noRewards": "Ei vielä palkintoja.",
+      "rewardRedeemed": "Lunastettu",
+      "rewardPending": "Odottaa",
+      "notes": "Yksityiset muistiinpanot",
+      "notesPlaceholder": "esim. Suosii kauramaitoa, syntymäpäivä maaliskuussa",
+      "saveNote": "Tallenna muistiinpano",
+      "savingNote": "Tallennetaan…"
+    },
+    "success": {
+      "noteSaved": "Muistiinpano tallennettu"
+    }
+  },
+  "redemption": {
+    "title": "Lunasta palkinto",
+    "subtitle": "Syötä asiakkaan 6 merkin koodi vahvistaaksesi palkinnon.",
+    "inactiveNotice": "Yrityksesi on hyväksyttävä ennen lunastusten vahvistamista.",
+    "codeLabel": "Lunastuskoodi",
+    "codePlaceholder": "ABC123",
+    "lookup": "Hae koodi",
+    "unknownCustomer": "Asiakas",
+    "confirmTitle": "Vahvista palkinto: {name}",
+    "reward": "Palkinto",
+    "card": "Kortti",
+    "stampsThisCycle": "Leimat tällä kierroksella",
+    "stampProgress": "{current} / {target}",
+    "approvedThisCycle": "Hyväksytty tällä kierroksella",
+    "allTimeVisits": "Kaikkien aikojen hyväksytyt käynnit",
+    "approvedCount": "{count, plural, one {# käynti} other {# käyntiä}}",
+    "cycle": "Kierros",
+    "confirmHintNoCarryover": "Vahvista vasta, kun olet antanut asiakkaalle palkinnon. Kortti nollautuu 0 leimaan ja aloittaa kierroksen {nextCycle}.",
+    "confirmHintWithCarryover": "Vahvista vasta, kun olet antanut asiakkaalle palkinnon. Hän aloittaa kierroksen {nextCycle} {carryover, plural, one {# leimalla} other {# leimalla}} jo kerättynä.",
+    "confirm": "Vahvista lunastus",
+    "successTitle": "Palkinto toimitettu: {customer}!",
+    "successDescriptionNoCarryover": "Kortti on nollattu 0 leimaan — valmis keräämään uudelleen.",
+    "successDescriptionWithCarryover": "Kierros {nextCycle} on alkanut {carryover, plural, one {# leimalla} other {# leimalla}} jo kortilla.",
+    "success": {
+      "confirmedNoCarryover": "Palkinto vahvistettu: {customer}! Uusi leimakierros on alkanut.",
+      "confirmedWithCarryover": "Palkinto vahvistettu: {customer}! Kierros {nextCycle} alkoi {carryover, plural, one {# leimalla} other {# leimalla}} siirrettynä."
+    }
+  },
+  "analytics": {
+    "title": "Analytiikka",
+    "subtitle": "Seuraa annettuja leimoja, lunastettuja palkintoja, kulutusta ja viimeisintä toimintaa.",
+    "loading": "Ladataan analytiikkaa…",
+    "branchFilter": "Toimipiste",
+    "allBranches": "Kaikki toimipisteet",
+    "branchFilterHint": "Kulutusmittarit suodatetaan toimipisteittäin; leimalaskurit ovat yrityskohtaisia.",
+    "stats": {
+      "regionLabel": "Analytiikan yhteenveto",
+      "collectors": "Aktiiviset kerääjät",
+      "collectorsHint": "Asiakkaat, joilla on vähintään yksi leima aktiivisella kortilla.",
+      "stamps": "Annetut leimat",
+      "redeemed": "Lunastetut palkinnot",
+      "redemptionRate": "Lunastusaste",
+      "rateHint": "Lunastetut palkinnot ÷ kerrat, jolloin asiakas saavutti leimatavoitteen.",
+      "period": {
+        "today": "Tänään",
+        "week": "Tällä viikolla",
+        "month": "Tässä kuussa"
+      }
+    },
+    "activity": {
+      "title": "Viimeisin toiminta",
+      "empty": "Ei vielä leima- tai lunastustoimintaa.",
+      "types": {
+        "stamp_approved": "Leima hyväksytty",
+        "stamp_voided": "Leima mitätöity",
+        "redemption": "Palkinto lunastettu"
+      }
+    },
+    "spend": {
+      "title": "Kulutusanalytiikka",
+      "revenue": "Kanta-asiakastulot",
+      "avgVisit": "Keskim. kulutus / käynti",
+      "visitCount": "Hyväksytyt käynnit",
+      "weekTrend": "Viimeiset 7 päivää",
+      "weekChartAria": "Pylväskaavio päivittäisestä kulutuksesta viimeiseltä seitsemältä päivältä",
+      "empty": "Ei vielä kirjattua kulutusta. Summat näkyvät, kun henkilökunta hyväksyy leimapyyntöjä ja syöttää ostosumman.",
+      "weekEmpty": "Ei kulutusta viimeiseen 7 päivään — vanhemmat käynnit näkyvät silti yllä olevissa kanta-asiakastuloissa."
+    }
+  },
+  "staff": {
+    "title": "Tiimi",
+    "subtitle": "Kutsu kassatyöntekijöitä ja esimiehiä auttamaan kassalla.",
+    "inviteTitle": "Kutsu tiimin jäsen",
+    "emailLabel": "Sähköposti",
+    "nameLabel": "Näyttönimi",
+    "roleLabel": "Rooli",
+    "inviteCta": "Lähetä kutsu",
+    "inviting": "Lähetetään…",
+    "listTitle": "Tiimin jäsenet",
+    "remove": "Poista",
+    "roles": {
+      "owner": "Omistaja",
+      "manager": "Esimies",
+      "cashier": "Kassatyöntekijä"
+    },
+    "status": {
+      "pending": "Kutsu odottaa",
+      "active": "Aktiivinen",
+      "disabled": "Poistettu käytöstä"
+    },
+    "inviteSuccess": "Kutsusähköposti lähetetty",
+    "inviteSaved": "Kutsu tallennettu",
+    "resend": "Lähetä sähköposti uudelleen",
+    "resending": "Lähetetään…",
+    "resendSuccess": "Kutsusähköposti lähetetty uudelleen",
+    "removeSuccess": "Tiimin jäsen poistettu",
+    "switcher": {
+      "title": "Kassahenkilökunta",
+      "none": "Ei valittua henkilökuntaa — hyväksynnät käyttävät tiliäsi.",
+      "active": "Toimit nimellä {name}",
+      "selectLabel": "Valitse tiimin jäsen",
+      "selectPlaceholder": "Valitse henkilökunta…",
+      "pinPlaceholder": "PIN",
+      "pinAria": "Henkilökunnan PIN",
+      "switch": "Vaihda",
+      "switching": "Vaihdetaan…",
+      "clear": "Tyhjennä"
+    }
+  },
+  "onboarding": {
+    "checklist": {
+      "title": "Viimeistele asetukset",
+      "subtitle": "{done} / {total} vaihetta valmis",
+      "profile": "Täydennä yritysprofiili ja puhelin",
+      "card": "Määritä leimakortti",
+      "qr": "Aloita — tulosta QR-koodisi",
+      "cta": "Jatka asetuksia"
+    }
+  },
+  "settings": {
+    "title": "Asetukset",
+    "subtitle": "Tili- ja yritysasetukset.",
+    "account": {
+      "title": "Tili",
+      "subtitle": "Kauppiaan kirjautumistiedot.",
+      "emailLabel": "Sähköposti",
+      "emailUnknown": "Ei sähköpostia tiedostossa",
+      "signOutHint": "Kirjaudu ulos sivupalkin Kirjaudu ulos -kohdasta tällä laitteella.",
+      "password": {
+        "title": "Vaihda salasana",
+        "newLabel": "Uusi salasana",
+        "confirmLabel": "Vahvista salasana",
+        "show": "Näytä salasana",
+        "hide": "Piilota salasana",
+        "submit": "Päivitä salasana",
+        "saving": "Päivitetään…",
+        "success": "Salasana päivitetty"
+      },
+      "email": {
+        "title": "Vaihda sähköposti",
+        "current": "Kirjautunut: {email}",
+        "newLabel": "Uusi sähköpostiosoite",
+        "verifyHint": "Lähetämme vahvistuslinkin uuteen osoitteeseen.",
+        "submit": "Päivitä sähköposti",
+        "saving": "Päivitetään…",
+        "success": "Tarkista postilaatikko vahvistaaksesi uuden sähköpostin"
+      }
+    },
+    "business": {
+      "title": "Aktiivinen yritys",
+      "subtitle": "Yritys, jota hallinnoit sivupalkin vaihtajassa.",
+      "switchHint": "Käytä sivupalkin Vaihda yritystä -kohtaa vaihtaaksesi hallinnoitavaa yritystä.",
+      "manageLink": "Yritys ja toimipisteet",
+      "loyaltyLink": "Leimakortti ja QR"
+    },
+    "preferences": {
+      "title": "Asetukset",
+      "subtitle": "Ulkoasu ja kassakonteksti.",
+      "theme": "Väriteema",
+      "language": "Kieli",
+      "branch": "Kassatoimipiste",
+      "branchUnknown": "Ensisijainen toimipiste",
+      "branchHint": "Vaihda kassatoimipistettä sivupalkista, kun sinulla on useita sijainteja."
+    },
+    "legal": {
+      "title": "Juridiset",
+      "subtitle": "YORewardsin tietosuoja ja tietojen käsittely.",
+      "privacy": "Tietosuojakäytäntö",
+      "terms": "Kauppiaan tilausehdot"
+    },
+    "promotions": {
+      "title": "Älykkäät kampanjat",
+      "subtitle": "Muistuta asiakkaita automaattisesti, kun palkinto on lähellä."
+    },
+    "verification": {
+      "title": "Vahvistettu-merkki",
+      "subtitle": "Lataa yritysdokumentteja adminin tarkistettavaksi.",
+      "status": "Nykyinen tila: {status}"
+    }
+  },
+  "acceptInvite": {
+    "title": "Hyväksy tiimikutsu",
+    "layoutSubheading": "Luo tili kutsutulla sähköpostilla tai kirjaudu, jos sinulla on jo tili.",
+    "subtitle": "Liityt osoitteella {email}.",
+    "roleHint": "Kutsuttu(t) rooli(t): {roles}",
+    "missingEmailTitle": "Kutsulinkki puutteellinen",
+    "missingEmailBody": "Avaa kutsulinkki sähköpostistasi uudelleen tai pyydä esimiestä lähettämään se uudelleen.",
+    "notFoundTitle": "Ei odottavaa kutsua",
+    "notFoundBody": "Tämä kutsu on saattanut vanhentua tai se on jo hyväksytty.",
+    "tabs": {
+      "signin": "Kirjaudu",
+      "signup": "Luo tili"
+    },
+    "fields": {
+      "email": "Kutsuttu sähköposti",
+      "password": "Salasana",
+      "confirmPassword": "Vahvista salasana"
+    },
+    "password": {
+      "show": "Näytä salasana",
+      "hide": "Piilota salasana"
+    },
+    "actions": {
+      "signin": "Kirjaudu ja liity tiimiin",
+      "signup": "Luo tili ja liity tiimiin"
+    },
+    "errors": {
+      "email": "Syötä kelvollinen sähköposti",
+      "password": "Salasanan on oltava vähintään 6 merkkiä",
+      "confirmPassword": "Salasanojen on täsmättävä"
+    }
+  },
+  "billing": {
+    "title": "Laskutus",
+    "subtitle": "Hallitse tilaustasi ja laskuja.",
+    "plans": {
+      "free": "Ilmainen",
+      "starter": "Starter",
+      "growth": "Growth",
+      "enterprise": "Enterprise"
+    },
+    "currentPlan": {
+      "title": "Nykyinen suunnitelma",
+      "trialCountdown": "{days, plural, =0 {Kokeilu päättyy tänään} one {# päivä kokeilua jäljellä} other {# päivää kokeilua jäljellä}}",
+      "freeHint": "Ilmainen sisältää 1 kortin, 50 asiakasta ja 1 henkilökuntatilin."
+    },
+    "upgrade": {
+      "title": "Päivitä Starteriin",
+      "starterBlurb": "NPR {price}/kk 30 päivän ilmaisen kokeilun jälkeen — CRM, CSV-vienti, älykkäät kampanjat ja vahvistettu-merkki.",
+      "termsPrefix": "Hyväksyn",
+      "termsLink": "kauppiaan tilausehdot",
+      "termsAria": "Hyväksy kauppiaan tilausehdot",
+      "cta": "Aloita ilmainen kokeilu eSewalla (sandbox)",
+      "pending": "Avataan kassaa…",
+      "sandboxNote": "Sandbox-tila — ei oikeaa veloitusta. Kassan suorittaminen aktivoi Starter-kokeilun."
+    },
+    "invoices": {
+      "title": "Laskut",
+      "empty": "Ei vielä laskuja.",
+      "trial": "Kokeilu",
+      "amount": "NPR {amount}"
+    },
+    "termsPage": {
+      "title": "Kauppiaan tilausehdot",
+      "updated": "Viimeksi päivitetty heinäkuu 2026",
+      "section1": {
+        "title": "Laskutus",
+        "body": "Maksulliset suunnitelmat uusiutuvat kuukausittain, ellei niitä peruuteta. Kokeilut muuttuvat maksullisiksi, ellei niitä peruuteta ennen kokeilun päättymistä."
+      },
+      "section2": {
+        "title": "Hyvitykset",
+        "body": "Ota yhteyttä tukeen laskutuskiistoissa. Epäonnistuneet maksut saavat 7 päivän lisäajan ennen siirtymistä Ilmaiseen."
+      },
+      "section3": {
+        "title": "Hyväksyntä",
+        "body": "Aloittamalla maksullisen kassan vahvistat olevasi valtuutettu sitomaan tämä yritys näihin ehtoihin."
+      }
+    }
+  },
+  "verification": {
+    "fields": {
+      "documentType": "Asiakirjatyyppi",
+      "file": "Lataa tiedosto (PDF tai kuva, max 5 Mt)"
+    },
+    "documentTypes": {
+      "registration": "Yritysrekisteri",
+      "pan": "PAN / verotunnus",
+      "businessLicense": "Toimilupa",
+      "other": "Muu"
+    },
+    "actions": {
+      "submit": "Lähetä tarkistettavaksi",
+      "submitting": "Ladataan…"
+    },
+    "success": {
+      "submitted": "Asiakirja lähetetty — tarkistamme sen 24 tunnin kuluessa."
+    }
+  },
+  "promotions": {
+    "fields": {
+      "enabled": "Lähetä ”X leimaa jäljellä” -muistutuksia",
+      "enabledAria": "Ota älykkäät kampanjamuistutukset käyttöön",
+      "threshold": "Ilmoita, kun asiakkaalla on näin monta leimaa jäljellä"
+    },
+    "thresholdOptions": {
+      "one": "1 leima jäljellä",
+      "two": "2 leimaa jäljellä",
+      "three": "3 leimaa jäljellä"
+    },
+    "hint": "Laukeaa kerran per palkintokierros, kun leima hyväksytään.",
+    "actions": {
+      "save": "Tallenna kampanja-asetukset",
+      "saving": "Tallennetaan…"
+    },
+    "success": {
+      "saved": "Kampanja-asetukset tallennettu."
+    }
+  },
+  "errors": {
+    "actions": {
+      "UNAUTHORIZED": "Kirjaudu sisään jatkaaksesi.",
+      "FORBIDDEN": "Sinulla ei ole oikeutta tähän toimintoon.",
+      "UNKNOWN": "Se ei onnistunut — yritä hetken kuluttua uudelleen.",
+      "AUTH_FAILED": "Istuntoa ei voitu vahvistaa. Kirjaudu uudelleen.",
+      "INVALID_CREDENTIALS": "Sähköposti tai salasana ei näytä oikealta. Tarkista ja yritä uudelleen.",
+      "SIGN_IN_FAILED": "Kirjautuminen ei onnistunut juuri nyt. Yritä uudelleen.",
+      "SIGN_UP_FAILED": "Tiliä ei voitu vielä luoda. Yritä uudelleen.",
+      "EMAIL_ALREADY_EXISTS": "Tiliä ei voitu vielä luoda. Yritä uudelleen.",
+      "BUSINESS_NOT_FOUND": "Yritystä ei löytynyt. Päivitä sivu ja yritä uudelleen.",
+      "BUSINESS_NOT_ACTIVE": "Tämä avautuu, kun yrityksesi on hyväksytty — odota hetki!",
+      "INVALID_PHONE": "Puhelinnumero ei vastaa valitun maan muotoa.",
+      "BRANCH_NOT_FOUND": "Toimipistettä ei löytynyt. Päivitä sivu ja yritä uudelleen.",
+      "BRANCH_NAME_REQUIRED": "Anna toimipisteelle nimi, jotta asiakkaat tietävät missä leimaavat.",
+      "ADD_BRANCH_FAILED": "Toimipistettä ei voitu lisätä — yritä uudelleen.",
+      "UPDATE_BRANCH_FAILED": "Toimipisteen tietoja ei voitu tallentaa — yritä uudelleen.",
+      "SET_PRIMARY_BRANCH_FAILED": "Ensisijaista toimipistettä ei voitu asettaa — yritä uudelleen.",
+      "DEACTIVATE_BRANCH_FAILED": "Toimipistettä ei voitu passivoida — yritä uudelleen.",
+      "MERCHANT_UPDATE_FAILED": "Muutoksia ei voitu tallentaa — yritä uudelleen.",
+      "REJECTION_REASON_REQUIRED": "Lisää syy ennen hylkäystä.",
+      "LOYALTY_CARD_NAME_INVALID": "Lisää kortin nimi — enintään 40 merkkiä.",
+      "LOYALTY_CARD_DESCRIPTION_INVALID": "Lisää lyhyt kuvaus asiakkaille — enintään 120 merkkiä.",
+      "LOYALTY_CARD_COLOR_INVALID": "Valitse kelvollinen hex-väri (esim. #7C3AED).",
+      "LOYALTY_CARD_STAMP_TARGET_INVALID": "Leimoja palkintoon on oltava 5–50.",
+      "LOYALTY_CARD_MIN_SPEND_INVALID": "Vähimmäisosto ei voi olla negatiivinen — käytä 0, jos ei vähimmäistä.",
+      "LOYALTY_CARD_CURRENCY_INVALID": "Valitse NPR tai EUR vähimmäisostolle.",
+      "LOYALTY_CARD_REWARD_TYPE_INVALID": "Valitse, miten asiakkaat ansaitsevat palkinnon.",
+      "LOYALTY_CARD_REWARD_VALUE_REQUIRED": "Kerro, mitä he ansaitsevat (esim. ilmainen kahvi tai 10 % alennus).",
+      "LOYALTY_CARD_REWARD_DESCRIPTION_REQUIRED": "Lisää palkintoteksti — tämä näkyy asiakkaan kortilla.",
+      "LOYALTY_CARD_SAVE_FAILED": "Korttia ei voitu tallentaa — tarkista kentät ja yritä uudelleen.",
+      "LOYALTY_CARD_BRANCH_RULES_INVALID": "Toimipisteasetukset ovat virheelliset — päivitä ja yritä uudelleen.",
+      "LOYALTY_CARD_BRANCH_STAMP_REQUIRED": "Vähintään yhden toimipisteen on sallittava leimat.",
+      "LOGO_FILE_REQUIRED": "Valitse ladattava logokuva.",
+      "LOGO_FILE_TOO_LARGE": "Kuva on liian suuri — pidä se alle 2 Mt.",
+      "LOGO_FILE_TYPE_INVALID": "Käytä JPG-, PNG- tai WebP-kuvaa logolle.",
+      "LOGO_UPLOAD_FAILED": "Logoa ei voitu ladata — kokeile pienempää kuvaa.",
+      "REDEMPTION_CODE_INVALID": "Syötä asiakkaan sovelluksesta täysi 6 merkin koodi.",
+      "REDEMPTION_NOT_FOUND": "Ei aktiivista lunastusta tälle koodille — pyydä asiakasta tarkistamaan sovellus.",
+      "REDEMPTION_LOOKUP_FAILED": "Koodia ei voitu hakea — yritä uudelleen.",
+      "REDEMPTION_ALREADY_COMPLETED": "Tämä palkinto on jo lunastettu.",
+      "REDEMPTION_CONFIRM_FAILED": "Lunastusta ei voitu vahvistaa — yritä uudelleen.",
+      "STAMP_QUEUE_LOAD_FAILED": "Leimajonoa ei voitu ladata — päivitä sivu.",
+      "STAMP_NOT_FOUND": "Leimapyyntöä ei löydy — se on saattanut vanhentua tai olla jo käsitelty.",
+      "STAMP_EXPIRED": "Pyyntö vanheni — asiakas voi skannata QR:n uudelleen.",
+      "STAMP_NOT_PENDING": "Joku on jo käsitellyt tämän pyynnön.",
+      "STAMP_AMOUNT_REQUIRED": "Syötä ostosumma ennen hyväksyntää.",
+      "STAMP_AMOUNT_INVALID": "Syötä kelvollinen ostosumma, joka on suurempi kuin nolla.",
+      "STAMP_MIN_SPEND_NOT_MET": "Summa on alle tämän kortin vähimmäisoston.",
+      "STAMP_BRANCH_NOT_ALLOWED": "Tämä toimipiste ei saa leimata tällä kortilla.",
+      "STAMP_APPROVE_FAILED": "Leimaa ei voitu hyväksyä — yritä uudelleen.",
+      "STAMP_REJECT_REASON_TOO_LONG": "Pidä syy alle 120 merkin.",
+      "STAMP_REJECT_FAILED": "Pyyntöä ei voitu hylätä — yritä uudelleen.",
+      "DEMO_DEV_ONLY": "Demodata on saatavilla vain paikallisessa kehityksessä.",
+      "DEMO_LOYALTY_CARD_REQUIRED": "Tallenna leimakortti ensin, sitten lataa demodata.",
+      "DEMO_SEED_FAILED": "Demodataa ei voitu luoda — yritä uudelleen.",
+      "DEMO_NO_REDEMPTION_CODE": "Demoleimat ladattu! Lunastuskoodit DEMO01–DEMO99 ovat kaikki käytössä.",
+      "DEMO_REDEMPTION_CREATE_FAILED": "Demoleimat ladattu, mutta lunastuskoodia ei voitu luoda.",
+      "ANALYTICS_LOAD_FAILED": "Analytiikkaa ei voitu ladata — päivitä sivu.",
+      "CUSTOMER_DETAIL_LOAD_FAILED": "Asiakasprofiilia ei voitu ladata — yritä uudelleen.",
+      "CUSTOMER_NOTE_SAVE_FAILED": "Muistiinpanoa ei voitu tallentaa — yritä uudelleen.",
+      "CSV_EXPORT_NOT_ALLOWED": "CSV-vienti edellyttää Starter-suunnitelmaa tai korkeampaa.",
+      "CSV_EXPORT_FAILED": "Asiakkaita ei voitu viedä — yritä uudelleen.",
+      "STAFF_INVITE_FAILED": "Kutsua ei voitu lähettää — yritä uudelleen.",
+      "STAFF_PIN_INVALID": "PIN ei täsmää — yritä uudelleen.",
+      "STAFF_NOT_FOUND": "Tiimin jäsentä ei löytynyt.",
+      "STAFF_REMOVE_FAILED": "Tiimin jäsentä ei voitu poistaa — yritä uudelleen.",
+      "PASSWORD_UPDATE_FAILED": "Salasanaa ei voitu päivittää — yritä uudelleen.",
+      "PASSWORD_CONFIRM_MISMATCH": "Salasanat eivät täsmää.",
+      "EMAIL_UPDATE_FAILED": "Sähköpostia ei voitu päivittää — yritä uudelleen.",
+      "EMAIL_INVALID": "Syötä kelvollinen sähköpostiosoite.",
+      "PLAN_LIMIT_CUSTOMERS": "Tämä yritys saavutti Ilmaisen suunnitelman asiakasrajan (50). Pyydä heitä päivittämään Starteriin.",
+      "PLAN_LIMIT_STAFF": "Suunnitelmasi sallii enintään {limit} tiimin jäsentä. Päivitä kutsuaksesi lisää.",
+      "PLAN_LIMIT_CARDS": "Leimakorttien suunnitelmaraja on saavutettu. Päivitä lisätäksesi lisää.",
+      "PLAN_FEATURE_CRM": "Asiakas-CRM edellyttää Starter-suunnitelmaa tai korkeampaa.",
+      "PLAN_FEATURE_REQUIRED": "Tämä ominaisuus edellyttää maksullista suunnitelmaa.",
+      "BILLING_CHECKOUT_FAILED": "Kassaa ei voitu aloittaa — yritä uudelleen.",
+      "BILLING_TERMS_REQUIRED": "Hyväksy tilausehdot ennen kassaa.",
+      "BILLING_TRIAL_ALREADY_USED": "Sinulla on jo aktiivinen kokeilu tai maksullinen suunnitelma.",
+      "VERIFICATION_UPLOAD_FAILED": "Asiakirjaa ei voitu ladata — yritä uudelleen.",
+      "VERIFICATION_DOC_REQUIRED": "Valitse ladattava asiakirja.",
+      "ONBOARDING_FIELDS_REQUIRED": "Täydennä kaikki yrityksen uskottavuuskentät ennen julkaisua.",
+      "EMAIL_NOT_VERIFIED": "Vahvista sähköpostisi ennen kuin yrityksesi voi siirtyä liveen.",
+      "EMAIL_VERIFICATION_RESEND_FAILED": "Vahvistussähköpostia ei voitu lähettää uudelleen — yritä uudelleen.",
+      "STAFF_INVITE_NOT_FOUND": "Ei odottavaa tiimikutsua tälle sähköpostille.",
+      "STAFF_INVITE_EMAIL_MISMATCH": "Käytä samaa sähköpostiosoitetta, johon kutsu lähetettiin.",
+      "STAFF_INVITE_EMAIL_DEFERRED": "Kutsu tallennettu, mutta sähköpostia ei voitu lähettää — tarkista Supabase Auth -sähköpostiasetukset tai käytä Resend-sähköpostia.",
+      "DISPUTE_NOT_FOUND": "Tätä reklamaatiota ei löytynyt.",
+      "DISPUTE_ALREADY_RESOLVED": "Tämä reklamaatio on jo käsitelty.",
+      "DISPUTE_RESPONSE_REQUIRED": "Lisää ratkaisumuistiinpano — vähintään 10 merkkiä.",
+      "DISPUTE_RESOLVE_FAILED": "Reklamaatiota ei voitu päivittää — yritä uudelleen.",
+      "NOTIFICATIONS_LOAD_FAILED": "Ilmoituksia ei voitu ladata — yritä uudelleen.",
+      "NOTIFICATIONS_UPDATE_FAILED": "Ilmoituksia ei voitu päivittää — yritä uudelleen.",
+      "STAMP_ISSUE_FAILED": "Leimaa ei voitu myöntää — yritä uudelleen."
+    }
+  },
+  "disputes": {
+    "title": "Leimakiistat",
+    "subtitle": "Tarkista asiakkaiden puuttuvien leimien ilmoitukset. Vastaa 48 tunnin kuluessa palvelutasosopimuksen mukaan.",
+    "pendingTitle": "Odottaa tarkastusta ({count})",
+    "pendingEmpty": "Ei avoimia kiistoja — olet ajan tasalla.",
+    "pendingEmptyTitle": "Postilaatikko tyhjä",
+    "resolvedTitle": "Äskettäin ratkaistut",
+    "unknownCustomer": "Asiakas",
+    "visitSummary": "Käynti {date} · {amount}",
+    "responseLabel": "Ratkaisumuistiinpano",
+    "filedAt": "Jätetty {date}",
+    "openDetail": "Avaa reklamaatio",
+    "summary": {
+      "open": "Avoin",
+      "approved": "Hyväksytty",
+      "rejected": "Hylätty"
+    },
+    "card": {
+      "claimLabel": "Puuttuvan leiman ilmoitus",
+      "amountLabel": "Ilmoitettu summa",
+      "visitLabel": "Käynnin päivämäärä",
+      "filedLabel": "Jätetty",
+      "customerNote": "Asiakkaan muistiinpano"
+    },
+    "resolveSectionTitle": "Ratkaisusi",
+    "noteLabel": "Ratkaisumuistiinpano (pakollinen)",
+    "notePlaceholder": "Selitä päätöksesi asiakkaalle ja auditointilokiin…",
+    "noteHint": "Vähintään 10 merkkiä vaaditaan.",
+    "rejectCta": "Hylkää",
+    "approveNoStampCta": "Hyväksy (ei leimaa)",
+    "approveWithStampCta": "Hyväksy ja lisää leima",
+    "resolving": "Ratkaistaan…",
+    "refreshing": "Synkronoidaan uusimpia kiistoja…",
+    "responseDeadline": {
+      "on_track": "Sopimuksen mukainen",
+      "due": "Erääntyy pian",
+      "overdue": "Yli sopimuksen"
+    },
+    "deadlineDueAlert": "Tämä kiista lähestyy 48 tunnin palvelutasosopimusta. Vastaa pian.",
+    "deadlineOverdueAlert": "Tämä kiista on yli 48 tunnin palvelutasosopimuksen. Admin voi puuttua asiaan, jos et ratkaise sitä.",
+    "status": {
+      "pending": "Avoin",
+      "approved": "Hyväksytty",
+      "rejected": "Hylätty"
+    },
+    "detail": {
+      "title": "Kiistan tiedot",
+      "subtitle": "Tarkista ilmoitus ja hyväksy tai hylkää vastauksella.",
+      "backToList": "Takaisin kiistoihin",
+      "switchingBusiness": "Vaihdetaan yritykseen {business}…",
+      "switchingBusinessHint": "Avataan tämä kiista oikealle yritykselle."
+    },
+    "success": {
+      "approved": "Kiista hyväksytty",
+      "approvedWithStamp": "Kiista hyväksytty — leima lisätty",
+      "rejected": "Kiista hylätty"
+    }
+  },
+  "notifications": {
+    "centre": {
+      "button": "Ilmoitukset",
+      "title": "Ilmoitukset",
+      "description": "Hälytyksiä kiistoista, hyväksynnöistä ja tilitoiminnasta.",
+      "markRead": "Merkitse luetuksi",
+      "markAllRead": "Merkitse kaikki luetuiksi",
+      "unread": "Lukematon",
+      "read": "Luettu",
+      "allRead": "Kaikki luettu",
+      "unreadCount": "{count, plural, one {# lukematonta} other {# lukematonta}}",
+      "unreadSummary": "{count, plural, =0 {Ei lukemattomia ilmoituksia} one {1 lukematon ilmoitus} other {# lukematonta ilmoitusta}}",
+      "totalCount": "{count, plural, one {# ilmoitus yhteensä} other {# ilmoitusta yhteensä}}",
+      "categoryUnreadSummary": "{unread} lukematonta / {total} tässä kategoriassa",
+      "refreshing": "Päivitetään…",
+      "emptyTitle": "Kaikki ajan tasalla",
+      "emptyDescription": "Uudet hälytykset näkyvät täällä.",
+      "promotionsEmptyTitle": "Ei vielä kampanjoita",
+      "promotionsEmptyDescription": "Kauppiaan tarjoukset ja tehostukset näkyvät täällä myöhemmin."
+    },
+    "categories": {
+      "all": "Kaikki",
+      "disputes": "Reklamaatiot",
+      "account": "Tili",
+      "promotions": "Kampanjat"
+    },
+    "actions": {
+      "openDispute": "Avaa reklamaatio",
+      "openDashboard": "Avaa hallintapaneeli",
+      "view": "Näytä"
+    },
+    "disputeFiled": {
+      "title": "Uusi leimakiista",
+      "body": "{customerName, select, null {Asiakas} other {{customerName}}} kiisti käynnin yrityksessä {businessName}."
+    },
+    "disputeResolved": {
+      "title": "Kiistan päivitys",
+      "body": "Kiistasi yrityksen {businessName} kanssa oli {status}."
+    },
+    "disputeSlaBreach": {
+      "title": "Kiistan SLA-rikkomus",
+      "body": "Kauppiaan {merchantName} kiista ylitti 48 tunnin kauppias-SLA:n."
+    },
+    "rewardUnlocked": {
+      "title": "Palkinto valmis!",
+      "body": "Avasit palkinnon kortilla {cardName} yrityksessä {businessName}."
+    },
+    "merchantApproved": {
+      "title": "Yritys hyväksytty",
+      "body": "{businessName} on käytössä YORewardsissa."
+    },
+    "smartPromo": {
+      "title": "Melkein valmis",
+      "body": "Vain {stampsRemaining} leima(a) jäljellä palkinnon avaamiseen yrityksessä {businessName}."
+    }
+  }
+}

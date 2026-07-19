@@ -7,6 +7,9 @@ export { AuthProvider, useAuthStore } from "./store/authStore";
 export {
   customerLoginAction,
   customerOnboardingAction,
+  sendSignupOtpAction,
+  resendSignupOtpAction,
+  verifySignupOtpAction,
   customerLogoutAction,
   getCustomerSessionAction,
 } from "./api/authActions";

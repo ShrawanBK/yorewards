@@ -3,6 +3,8 @@ import { getCustomerIdFromSession } from "@repo/supabase/queries/customers";
 import { getStampSuccessContextForCustomer } from "@repo/supabase/queries/stamps";
 import { StampSuccessView } from "@/features/stamp";
 
+export const dynamic = "force-dynamic";
+
 type StampSuccessPageProps = {
   params: Promise<{ sessionId: string }>;
 };

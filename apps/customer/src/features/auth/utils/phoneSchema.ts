@@ -5,6 +5,12 @@ import {
   type CountryCode,
 } from "@repo/utils/phone";
 
+const ALLOWED_COUNTRIES: CountryCode[] = ["NP", "FI", "AU"];
+
+function isCountryCode(value: string): value is CountryCode {
+  return ALLOWED_COUNTRIES.includes(value as CountryCode);
+}
+
 export function parseCustomerPhoneForm(
   country: string,
   local: string,
@@ -12,16 +18,15 @@ export function parseCustomerPhoneForm(
   const trimmed = local.trim();
   if (!trimmed) return { ok: false, reason: "missing" };
 
-  if (country !== "NP" && country !== "FI") {
+  if (!isCountryCode(country)) {
     return { ok: false, reason: "invalid" };
   }
 
-  const countryCode = country as CountryCode;
-  if (!isValidCustomerPhoneLocal(countryCode, trimmed)) {
+  if (!isValidCustomerPhoneLocal(country, trimmed)) {
     return { ok: false, reason: "invalid" };
   }
 
-  return { ok: true, phone: normalisePhone(buildPhoneFromLocal(countryCode, trimmed)) };
+  return { ok: true, phone: normalisePhone(buildPhoneFromLocal(country, trimmed)) };
 }
 
 export function isValidCustomerPhone(raw: string): boolean {
@@ -31,6 +36,9 @@ export function isValidCustomerPhone(raw: string): boolean {
   }
   if (phone.startsWith("+358")) {
     return isValidCustomerPhoneLocal("FI", phone.replace("+358", ""));
+  }
+  if (phone.startsWith("+61")) {
+    return isValidCustomerPhoneLocal("AU", phone.replace("+61", ""));
   }
   return false;
 }

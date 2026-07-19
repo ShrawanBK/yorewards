@@ -1,5 +1,6 @@
 import { createServiceRoleClient } from "../service-role";
 import type { Database } from "../types";
+import { assertMerchantLoyaltyCardLimit } from "./merchant-limits";
 
 export type LoyaltyCardRow =
   Database["public"]["Tables"]["loyalty_cards"]["Row"];
@@ -41,6 +42,11 @@ export async function upsertLoyaltyCardForMerchant(
 
     if (error) throw error;
     return data;
+  }
+
+  const limit = await assertMerchantLoyaltyCardLimit(merchantId);
+  if (!limit.ok) {
+    throw new Error("plan_limit_cards");
   }
 
   const { data, error } = await supabase

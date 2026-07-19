@@ -1,3 +1,4 @@
+import { listStampDisputesForCustomerCard } from "@repo/supabase/queries/stamp-disputes";
 import { CardDetailView } from "@/features/wallet";
 
 type WalletCardPageProps = {
@@ -6,5 +7,13 @@ type WalletCardPageProps = {
 
 export default async function WalletCardPage({ params }: WalletCardPageProps) {
   const { cardId } = await params;
-  return <CardDetailView cardId={cardId} />;
+  let disputes: Awaited<ReturnType<typeof listStampDisputesForCustomerCard>> = [];
+
+  try {
+    disputes = await listStampDisputesForCustomerCard(cardId);
+  } catch {
+    disputes = [];
+  }
+
+  return <CardDetailView cardId={cardId} initialDisputes={disputes} />;
 }

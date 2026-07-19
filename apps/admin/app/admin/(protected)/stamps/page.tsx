@@ -1,5 +1,10 @@
-import { AdminStampToolView } from "@/features/stamps";
+import { AdminStampsWorkbench } from "./AdminStampsWorkbench";
 
-export default function AdminStampsPage() {
-  return <AdminStampToolView />;
+type PageProps = {
+  searchParams: Promise<{ cardId?: string }>;
+};
+
+export default async function AdminStampsPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  return <AdminStampsWorkbench initialCardId={params.cardId} />;
 }

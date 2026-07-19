@@ -1,5 +1,6 @@
 "use server";
 
+import { unstable_noStore as noStore } from "next/cache";
 import { getCustomerIdFromSession } from "@repo/supabase/queries/customers";
 import { getStampSessionForCustomer } from "@repo/supabase/queries/stamps";
 import { fail, logActionFailure } from "@repo/utils/action-error";
@@ -15,6 +16,7 @@ export async function getStampSessionStatusAction(
     customerCardId: string;
   }>
 > {
+  noStore();
   const customerId = await getCustomerIdFromSession();
   if (!customerId) return fail("UNAUTHORIZED");
 
